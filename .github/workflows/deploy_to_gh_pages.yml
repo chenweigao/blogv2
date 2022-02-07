@@ -14,10 +14,10 @@ jobs:
       uses: jenkey2011/vuepress-deploy@master
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        TARGET_REPO: chenweigao/myblog
+        TARGET_REPO: chenweigao/blogv2
         TARGET_BRANCH: gh_pages
         BUILD_SCRIPT: yarn && yarn build
-        BUILD_DIR: dist/
+        BUILD_DIR: public/
         CNAME: vueblog.weigao.cc
      
     - name: Lint Markdown

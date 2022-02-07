@@ -5,6 +5,7 @@ export default defineUserConfig<DefaultThemeOptions>({
   title: 'Something',
   description: 'Nothing',
   theme: 'reco',
+  "dest": "public",
   themeConfig: {
     style: '@vuepress-reco/style-default',
     logo: '/favicon.png',
