@@ -32,7 +32,7 @@ bannerBrand: # bannerBrand 模块的配置
 blog: # blog 模块的配置
   socialLinks: # 社交 icon 请到 [Xions](https://www.xicons.org/#/zh-CN) 页面的 tabler 下获取，复制名称即可
     - { icon: 'BrandGithub', link: 'https://github.com/chenweigao' }
-    - { icon: 'BrandTwitter', link: 'https://twitter.com/reco_luan' }
+    - { icon: 'BrandTwitter', link: 'https://github.com/chenweigao' }
 footer: # 底部模块的配置
   record: 域名备案文案
   recordLink: 域名备案地址

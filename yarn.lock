@@ -718,41 +718,35 @@
   resolved "https://registry.npmjs.org/@vue/shared/-/shared-3.2.29.tgz#07dac7051117236431d2f737d16932aa38bbb925"
   integrity sha512-BjNpU8OK6Z0LVzGUppEk0CMYm/hKDnZfYdjSmPOs0N+TR1cLKJAkDwW8ASZUvaaSLEi6d3hVM7jnWnX+6yWnHw==
 
-"@vuepress-reco/shared@^2.0.1-alpha.26":
-  version "2.0.1-alpha.26"
-  resolved "https://registry.npmjs.org/@vuepress-reco/shared/-/shared-2.0.1-alpha.26.tgz#29b65c4569e64d5f12ee06c9d4b85c129e776162"
-  integrity sha512-IjYmfqcWsBeMr56B4d2Cy+u7G5ATQWOX1jgN4O/cwGe/udXkAI11Y0buv8EImI5rZ232SUVWD+Ozo0gUoCCF7g==
+"@vuepress-reco/shared@^2.0.0-beta.0":
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@vuepress-reco/shared/-/shared-2.0.0-beta.0.tgz#3e6d30c9c7d5809976329073d8014a13f56984fd"
+  integrity sha512-VT6tzaoJXKj1SG1s8IAhFvVBSEl9zjCVKS7bVk8MDLcU7tlEF40ouNO/78yF0Oad0yNJyq/fAP0OROVcNyFE7Q==
   dependencies:
+    "@vicons/tabler" "^0.11.0"
     "@vuepress/core" "2.0.0-beta.33"
 
-"@vuepress-reco/style-default@^2.0.1-alpha.32":
-  version "2.0.1-alpha.32"
-  resolved "https://registry.npmjs.org/@vuepress-reco/style-default/-/style-default-2.0.1-alpha.32.tgz#b0625e0b40e123191e1c36a8712620b72751a154"
-  integrity sha512-Iq34jhbkH1NHeuWHWvsLbMkniI7yN7jytmSoqam0c8r0DBdl071YCxpNq2AjZNOmriAsbyrFnE8/acudUf9sSA==
+"@vuepress-reco/style-default@^2.0.0-beta.0":
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@vuepress-reco/style-default/-/style-default-2.0.0-beta.0.tgz#380bda63fe003cc4ec6613595654bf9c104eb2b3"
+  integrity sha512-vkYnqrxBTR7LcMYWZQCCXb088xmfmeNqcufeMHdKVbtDr1KkesPKKt/aYE1RMx4hRb9tBBaGF4P2iiSS97TqLA==
   dependencies:
-    "@vuepress-reco/shared" "^2.0.1-alpha.26"
-    "@vuepress-reco/vuepress-plugin-bulletin-popover" "^2.0.1-alpha.32"
+    "@vuepress-reco/shared" "^2.0.0-beta.0"
+    "@vuepress-reco/vuepress-plugin-bulletin-popover" "^2.0.0-beta.0"
     "@vuepress-reco/vuepress-plugin-comments" "^2.0.1-alpha.26"
     "@vuepress/bundler-webpack" "2.0.0-beta.33"
     "@vuepress/client" "2.0.0-beta.33"
     "@vuepress/core" "2.0.0-beta.33"
     "@vuepress/plugin-back-to-top" "^2.0.0-beta.33"
     "@vuepress/plugin-git" "^2.0.0-beta.33"
-    "@vuepress/plugin-nprogress" "^2.0.0-beta.33"
-    "@vuepress/plugin-register-components" "2.0.0-beta.33"
     "@vuepress/plugin-theme-data" "^2.0.0-beta.33"
     "@vuepress/shared" "2.0.0-beta.33"
     "@vuepress/utils" "2.0.0-beta.33"
-    postcss "8.4.5"
-    postcss-each "^1.1.0"
-    postcss-import "14.0.2"
-    postcss-nested "^5.0.6"
-    tailwindcss "^2.1.1"
 
-"@vuepress-reco/vuepress-plugin-bulletin-popover@^2.0.1-alpha.32":
-  version "2.0.1-alpha.32"
-  resolved "https://registry.npmjs.org/@vuepress-reco/vuepress-plugin-bulletin-popover/-/vuepress-plugin-bulletin-popover-2.0.1-alpha.32.tgz#445f937e09da3a11edef8e736ca13ef2d3dde980"
-  integrity sha512-BTLCvI83fCF4zEbdn9yqWAqHOXY7ItfgmFGKCjhqFczVzKZZdqMvC9Md1b+aFICNVOr3sokn5oijapOT5xcswQ==
+"@vuepress-reco/vuepress-plugin-bulletin-popover@^2.0.0-beta.0":
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@vuepress-reco/vuepress-plugin-bulletin-popover/-/vuepress-plugin-bulletin-popover-2.0.0-beta.0.tgz#0869994a41d4443e9c543fc1f9295ecb7127f64b"
+  integrity sha512-v+0RJl8c3z+hqewfa9oom+MFcfDO8o1pM9JzYHBL6L8Rc3ufi8AOmPKDERh4VQv0D99iQ339EzvoPedDIinfYA==
 
 "@vuepress-reco/vuepress-plugin-comments@^2.0.1-alpha.26":
   version "2.0.1-alpha.26"
@@ -765,12 +759,12 @@
     "@vuepress/utils" "2.0.0-beta.33"
     valine "1.4.14"
 
-"@vuepress-reco/vuepress-plugin-page@^2.0.1-alpha.26":
-  version "2.0.1-alpha.26"
-  resolved "https://registry.npmjs.org/@vuepress-reco/vuepress-plugin-page/-/vuepress-plugin-page-2.0.1-alpha.26.tgz#94a8054a2948ecdf18b8abf4e9e8a2384e87fbc2"
-  integrity sha512-LTTh+AgkPzVDh9Ao3jFwKe894iF43Jpfj7CxRaBMu2YpJ8N8a15GXEmOf2jUynkyJtPgDr/e7vKEkxV27gazEA==
+"@vuepress-reco/vuepress-plugin-page@^2.0.0-beta.0":
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@vuepress-reco/vuepress-plugin-page/-/vuepress-plugin-page-2.0.0-beta.0.tgz#cb76809dd6a104380dfd272c51a6e79c95816e9c"
+  integrity sha512-O3Y3j408KQVD4CEap1Fjqy+9CHJvTV2ph8Eh+dH2NmDLkz83XT/dA2ANUY/t+h+qI8f32ESPuWtLyt7VAQWmKg==
   dependencies:
-    "@vuepress-reco/shared" "^2.0.1-alpha.26"
+    "@vuepress-reco/shared" "^2.0.0-beta.0"
     "@vuepress/client" "2.0.0-beta.33"
     "@vuepress/core" "2.0.0-beta.33"
     "@vuepress/utils" "2.0.0-beta.33"
@@ -4594,9 +4588,9 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tailwindcss@^2.1.1:
+tailwindcss@^2.2.19:
   version "2.2.19"
-  resolved "https://registry.npmjs.org/tailwindcss/-/tailwindcss-2.2.19.tgz#540e464832cd462bb9649c1484b0a38315c2653c"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-2.2.19.tgz#540e464832cd462bb9649c1484b0a38315c2653c"
   integrity sha512-6Ui7JSVtXadtTUo2NtkBBacobzWiQYVjYW0ZnKaP9S1ZCKQ0w7KVNz+YSDI/j7O7KCMHbOkz94ZMQhbT9pOqjw==
   dependencies:
     arg "^5.0.1"
@@ -4843,23 +4837,30 @@ vue@^3.2.26:
     "@vue/server-renderer" "3.2.27"
     "@vue/shared" "3.2.27"
 
-vuepress-theme-reco@2.0.1-alpha.32:
-  version "2.0.1-alpha.32"
-  resolved "https://registry.npmjs.org/vuepress-theme-reco/-/vuepress-theme-reco-2.0.1-alpha.32.tgz#4dec69c3b2d64a5f456f6460cd07be65fb0cb47a"
-  integrity sha512-BbK6uuSMhPVzX5g6jaIwcJnkYCmxJdiHS4a1Cq88jxDoQkcawKB6WFyfQu7OEq5FekSVAwGqiNXjETSFBgkXZA==
+vuepress-theme-reco@2.0.0-beta.0:
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/vuepress-theme-reco/-/vuepress-theme-reco-2.0.0-beta.0.tgz#098b2083f9972f89e06319ad492d5e11d5de9130"
+  integrity sha512-maN5y9QmTh8EOcY7NODSRBgkJ34M93g5+pX8aQ1JC09VxuZoTTIM91myIDDBgjMoxPV5Ep6I2RE7AxwnLqy3JA==
   dependencies:
-    "@vicons/tabler" "^0.11.0"
-    "@vuepress-reco/style-default" "^2.0.1-alpha.32"
-    "@vuepress-reco/vuepress-plugin-page" "^2.0.1-alpha.26"
+    "@vuepress-reco/style-default" "^2.0.0-beta.0"
+    "@vuepress-reco/vuepress-plugin-page" "^2.0.0-beta.0"
     "@vuepress-reco/vuepress-plugin-vue-preview" "^2.0.1-alpha.28"
     "@vuepress/plugin-active-header-links" "2.0.0-beta.33"
     "@vuepress/plugin-container" "^2.0.0-beta.33"
     "@vuepress/plugin-external-link-icon" "^2.0.0-beta.33"
     "@vuepress/plugin-git" "2.0.0-beta.33"
+    "@vuepress/plugin-nprogress" "^2.0.0-beta.33"
     "@vuepress/plugin-palette" "^2.0.0-beta.33"
     "@vuepress/plugin-prismjs" "^2.0.0-beta.33"
+    "@vuepress/plugin-register-components" "2.0.0-beta.33"
     "@vuepress/plugin-search" "^2.0.0-beta.33"
+    "@vuepress/plugin-theme-data" "^2.0.0-beta.33"
     "@vuepress/utils" "^2.0.0-beta.33"
+    postcss "8.4.5"
+    postcss-each "^1.1.0"
+    postcss-import "14.0.2"
+    postcss-nested "^5.0.6"
+    tailwindcss "^2.2.19"
 
 vuepress-vite@2.0.0-beta.33:
   version "2.0.0-beta.33"

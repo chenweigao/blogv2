@@ -11,7 +11,7 @@ export default defineUserConfig<DefaultThemeOptions>({
     logo: '/favicon.png',
     author: 'author someone',
     authorAvatar: 'avatar.png',
-    docsRepo: 'https://github.com/chenweigao/myblog',
+    docsRepo: 'https://github.com/chenweigao/blogv2',
     docsBranch: 'master',
     docsDir: 'docs',
     lastUpdatedText: '',
@@ -50,6 +50,24 @@ export default defineUserConfig<DefaultThemeOptions>({
           text: 'Python Test',
           children: ['pytest']
         }
+      ],
+      '/docs/tool/': [
+        {
+          text: 'Tools',
+          children: ['on-my-zsh', 'bpytop']
+        },
+        {
+          text: 'Source',
+          children: ['apt', 'pip', 'gem']
+        },
+        // {
+        //   text: 'Windows',
+        //   children: ['vim', 'git']
+        // },
+        // {
+        //   text: 'Plugin',
+        //   children: ['apt', 'pip', 'gem']
+        // }
       ]
     },
     navbar:
@@ -62,7 +80,8 @@ export default defineUserConfig<DefaultThemeOptions>({
         children: [
           { text: 'vuepress-reco', link: '/docs/theme-reco/theme' },
           { text: 'vuepress-theme-reco', link: '/blogs/other/guide' },
-          { text: 'Python', link: '/docs/python/python-start' }
+          { text: 'Python', link: '/docs/python/python-start' },
+          { text: 'Tools', link: '/docs/tool/tools' }
         ]
       },
     ],
@@ -89,25 +108,25 @@ export default defineUserConfig<DefaultThemeOptions>({
           </ul>`,
           style: 'font-size: 12px;'
         },
-        {
-          type: 'hr',
-        },
-        {
-          type: 'title',
-          content: 'GitHub',
-        },
-        {
-          type: 'text',
-          content: `
-          <ul>
-            <li><a href="https://github.com/vuepress-reco/vuepress-theme-reco-next/issues">Issues<a/></li>
-            <li><a href="https://github.com/vuepress-reco/vuepress-theme-reco-next/discussions/1">Discussions<a/></li>
-          </ul>`,
-          style: 'font-size: 12px;'
-        },
-        {
-          type: 'hr',
-        },
+        // {
+        //   type: 'hr',
+        // },
+        // {
+        //   type: 'title',
+        //   content: 'GitHub',
+        // },
+        // {
+        //   type: 'text',
+        //   content: `
+        //   <ul>
+        //     <li><a href="https://github.com/vuepress-reco/vuepress-theme-reco-next/issues">Issues<a/></li>
+        //     <li><a href="https://github.com/vuepress-reco/vuepress-theme-reco-next/discussions/1">Discussions<a/></li>
+        //   </ul>`,
+        //   style: 'font-size: 12px;'
+        // },
+        // {
+        //   type: 'hr',
+        // },
         // {
         //   type: 'buttongroup',
         //   children: [
@@ -133,4 +152,16 @@ export default defineUserConfig<DefaultThemeOptions>({
     autoAddCategoryToNavbar: false  // 自动将首页、分类和标签添加至头部导航条
   },
   // debug: true,
+  // plugins: [
+  //   [
+  //     'vuepress-plugin-mathjax',
+  //     {
+  //       target: 'chtml',
+  //       macros: {
+  //         '*': '\\times',
+  //       },
+  //     },
+  //   ],
+  //   'vuepress-plugin-smooth-scroll'
+  // ]
 })

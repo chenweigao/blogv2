@@ -2,7 +2,7 @@
 title: Git
 date: 2020-05-14
 tags:
- - tools
+ - git
 categories:
  -  Tools
 ---
