@@ -84,7 +84,7 @@ export default defineUserConfig<DefaultThemeOptions>({
           type: 'text',
           content: `
           <ul>
-            <li>297859260</li>
+            <li>QQ: 297859260</li>
             <li>Email：mail@weigao.cc</li>
           </ul>`,
           style: 'font-size: 12px;'
@@ -108,15 +108,15 @@ export default defineUserConfig<DefaultThemeOptions>({
         {
           type: 'hr',
         },
-        {
-          type: 'buttongroup',
-          children: [
-            {
-              text: '打赏',
-              link: '/docs/others/donate.html'
-            }
-          ]
-        }
+        // {
+        //   type: 'buttongroup',
+        //   children: [
+        //     {
+        //       text: '打赏',
+        //       link: '/docs/others/donate.html'
+        //     }
+        //   ]
+        // }
       ],
     },
     // valineConfig 配置与 1.x 一致
