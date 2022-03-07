@@ -24,7 +24,7 @@ categories:
 
 ### LC521 最长特殊序列1 -- 判断子序列
 
-https://leetcode-cn.com/problems/longest-uncommon-subsequence-i/
+[LC521](https://leetcode-cn.com/problems/longest-uncommon-subsequence-i/)
 
 这个题目涉及到基础知识：如何判断一个字符串是否另一个的子序列？ @todo
 
@@ -37,12 +37,22 @@ https://leetcode-cn.com/problems/longest-uncommon-subsequence-i/
 
 但是实际上是想太多了，可以分情况讨论：
 
-1. 'aaa' and 'bbbb', 我们选择 'bbbb', 因为其长度为 4, 所以肯定不是 'aaa' 的子序列；
-2. 'aaa' and 'aaaa' 也一样；
-3. 'abc' and 'abc', 就是 3;
-4. 'abcd' and 'abcd' 就是 4.
+1. `aaa` and `bbbb`, 我们选择 `bbbb`, 因为其长度为 4, 所以肯定不是 `aaa` 的子序列；
+2. `aaa` and `aaaa` 也一样；
+3. `abc` and `abc`, 就是 3;
+4. `abcd` and `abcd` 就是 4.
 
-合理劣迹题目非常重要。
+合理理解题目非常重要。
+
+实现的代码如下：
+
+```python
+class Solution:
+    def findLUSlength(self, a: str, b: str) -> int:
+        if a == b:
+            return -1
+        return max(len(a), len(b))
+```
 
 
 ### 查找字符串中第一个出现的不重复的元素（阿里）
