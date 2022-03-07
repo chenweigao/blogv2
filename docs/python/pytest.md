@@ -366,6 +366,9 @@ class WidgetTestCase(unittest.TestCase):
     
     def tearDown(self):
         self.widget.dispose()
+        
+if __name__ == '__main__':
+    unittest.main()
 ```
 
 ### skip 测试用例
