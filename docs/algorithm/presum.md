@@ -83,6 +83,81 @@ pre_sum      = [7, 11, 16, 19, 27] #
 
 ## 例题解析
 
+### LC2055 蜡烛之间的盘子
+
+[LC2055](https://leetcode-cn.com/problems/plates-between-candles/)
+
+直接看代码和测试用例：
+
+```python
+class Solution:
+    def platesBetweenCandles(self, s: str, queries: List[List[int]]) -> List[int]:
+        """
+        先找到最左边的 | 再找到最右边的 | 然后计算之间 * 的个数
+        但是暴力解法会超时，区间和一类的解法就使用前缀和的思想
+        """
+        # 先计算每个位置为止蜡烛的数量前缀和数组
+        n = len(s)
+        presum = [0] * (n + 1)
+        for i in range(n):
+            if s[i] == '*':
+                presum[i+1] = presum[i] + 1
+            else:
+                presum[i+1] = presum[i]
+
+        # 找到左右两个蜡烛的位置，注意到如果直接从左右两边搜索还是会超时，所以需要优化
+        # 我们尝试使用数组来维护这个边界
+        left, right = [0] * n, [0] * n
+        l, r = -1, -1
+        for i in range(n):
+            if s[i] == '|':
+                l = i
+            left[i] = l
+
+        for i in range(n-1, -1, -1):
+            if s[i] == '|':
+                r = i
+            right[i] = r
+        res = []
+        for query in queries:
+            # 注意理解这边：right, left
+            x, y = right[query[0]], left[query[1]]
+            if x < 0 or y < 0 or x >= y:
+                res.append(0)
+            else:
+                res.append(presum[y] - presum[x])
+        return res
+```
+
+测试用例如下：
+
+```python
+class TestSolution(unittest.TestCase):
+    def setUp(self):
+        self.s = Solution()
+        return super().setUp()
+
+    def tearDown(self):
+        self.s = None
+
+    def test_01(self):
+        s = "**|**|***|"
+        # presum = [0, 1, 2, 2, 3, 4, 4, 5, 6, 7, 7]
+        queries = [[2, 5], [5, 9]]
+        res = self.s.platesBetweenCandles(s, queries)
+        self.assertEqual([2, 3], res)
+
+    def test_02(self):
+        s = "***|**|*****|**||**|*"
+        queries = [[1, 17], [4, 5], [14, 17], [5, 11], [15, 16]]
+        res = self.s.platesBetweenCandles(s, queries)
+        self.assertEqual([9, 0, 0, 0, 0], res)
+
+
+if __name__ == '__main__':
+    unittest.main()
+````
+
 ### LC560 和为 k 的子数组
 
 > 给定一个整数数组和一个整数 k，你需要找到该数组中和为 k 的连续的子数组的个数。
