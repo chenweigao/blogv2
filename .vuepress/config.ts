@@ -34,7 +34,7 @@ export default defineUserConfig<DefaultThemeOptions>({
         },
         {
           text: 'Algorithm',
-          children: ['sort', 'dfs_bfs', 'binary_search', 'backtrack', 'lcs', 'fibonacci', 'dp', 'package', 'slide_window']
+          children: ['sort', 'dfs_bfs', 'binary_search', 'backtrack', 'lcs', 'fibonacci', 'dp', 'package', 'slide_window', 'presum']
         }
       ],
       '/docs/python/': [
