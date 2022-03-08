@@ -14,7 +14,7 @@ date: 2021-06-01
 | LC525 [连续数组](https://leetcode-cn.com/problems/contiguous-array/) |                    |                       |      |
 | LC209 长度最小的子数组                                       | 前缀和 + 二分      |                       |      |
 
-
+[[toc]]
 
 ## 概述
 
@@ -79,9 +79,55 @@ pre_sum      = [7, 11, 16, 19, 27] #
 :::
 
 
-
-
 ## 例题解析
+
+### LC1588 所有奇数长度子数组的和
+
+[LC1588](https://leetcode-cn.com/problems/sum-of-all-odd-length-subarrays/)
+
+这道题可以帮助理解：如何获取数组中所有奇数长度的子数组，并求和。比较基础的处理方法，考验编程的基础。
+
+```python
+import unittest
+from typing import List
+
+
+class Solution:
+    def sumOddLengthSubarrays(self, arr: List[int]) -> int:
+        """
+        奇数子序列的和，如何与前缀和联系起来？
+        前缀和的本质是为了求解数组区间的和，我们枚举所有的奇数数组区间，然后求和
+        """
+        presum = [0] * (len(arr) + 1)
+        for i in range(len(arr)):
+            presum[i + 1] = arr[i] + presum[i]
+
+        res = 0
+        for start in range(len(arr)):
+            length = 1
+            while length + start <= len(arr):
+                end = start + length - 1
+                res += presum[end+1] - presum[start]
+                length += 2
+
+        return res
+```
+
+特别的，如果是 C++/C 实现，可以如下所示：
+
+```c++
+for (int start = 0; start < n; start++)
+{
+    for (int length = 1; start + length <= n; length += 2)
+    {
+        int end = start + length - 1;
+        for (int i = start; i <= end; i++)
+        {
+            sum += arr[i];
+        }
+    }
+}
+```
 
 ### LC2055 蜡烛之间的盘子
 
