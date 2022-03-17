@@ -1,5 +1,5 @@
 ---
-title: Binary Tree
+title: Tree
 date: 2022-2-7
 ---
 
@@ -111,6 +111,12 @@ def levelOrder(root):
 ```
 
 这是目前可以写出的比较高效的一个算法，应当牢记。
+
+## Trie 前缀树
+
+@todo 实现前缀树
+
+https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/shi-xian-trie-qian-zhui-shu-by-leetcode-ti500/
 
 ## BST
 
