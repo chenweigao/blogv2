@@ -152,3 +152,43 @@ class Solution:
         if root.right:
             self.inorder(root.right, res)
 ```
+
+
+## 二叉树遍历例题
+
+### LC606 根据二叉树创建字符串（前序遍历）
+
+https://leetcode-cn.com/problems/construct-string-from-binary-tree/
+
+题目的大概意思是，前序遍历二叉树，但是给每个子节点都用括号包裹起来，如果子节点是空的话，就不用括号。是一道简单题。
+
+这道题目的核心难点在于，如何包裹。解法给出了一个**讨论情况然后分别处理**的方法：
+
+1. 左右节点都没有了，返回；
+2. 左节点有，右节点没有，左节点包裹后继续递归；
+3. 左节点没有，右节点有，左节点用空括号（题目要求），右节点递归
+4. 左右节点都有，都递归
+
+其实现方式如下：
+
+```python
+class Solution:
+    def tree2str(self, root: Optional[TreeNode]) -> str:
+        if not root:
+            return ''
+        
+        res = str(root.val)
+        if not root.left and not root.right:
+            return res
+
+        left = self.tree2str(root.left)
+        right = self.tree2str(root.right)
+
+        res += '(' + left + ')'
+        if right:
+            res += '(' + right + ')'
+
+        return res
+```
+
+
