@@ -5,11 +5,9 @@ date: 2022-2-7
 
 [[toc]]
 
-## Traversal
+## Preorder Traversal
 
-### Preorder Traversal
-
-#### 多叉树的前序遍历
+### 多叉树的前序遍历
 
 多叉树的前序遍历，给定多叉树，用数组表示：`root = [1,null,3,2,4,null,5,6]`, 每个层级之间用 `null` 进行隔离，根据这个输出这棵树的前序遍历结果。
 
@@ -26,7 +24,7 @@ class Node:
         self.children = children
 ```
 
-##### 递归法
+#### 递归法
 
 递归法的实现如下：
 
@@ -49,7 +47,7 @@ class Solution:
 我们定义一个 `res` 用于存储最终结果，然后先遍历 `root`, 再遍历 `root` 所有的子节点，因为存储的时候按照从左到右的顺序存储，因此这种遍历是可以达到前序遍历的效果的。
 
 
-##### 迭代法
+#### 迭代法
 
 前序遍历的迭代，要求根-左-右的顺序返回各个节点，我们给出迭代的解法如下所示：
 
@@ -77,8 +75,17 @@ class Solution:
 
 多多理解，十分巧妙！
 
+### 二叉树的前序遍历
 
-### Level Order Traversal
+#### 递归法
+
+@todo
+
+#### 迭代法
+
+@todo
+
+## Level Order Traversal
 
 [LC102 - Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
 
