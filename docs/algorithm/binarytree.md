@@ -121,6 +121,27 @@ def levelOrder(root):
 
 这是目前可以写出的比较高效的一个算法，应当牢记。
 
+## Inorder Traversal
+
+### 二叉树的中序遍历
+
+#### 递归方法
+
+二叉树的中序遍历递归解法参考如下：
+
+```python
+def dfs(root: Optional[TreeNode], res):
+    if not root:
+        return
+    dfs(root.left, res)
+    res.append(root.val)
+    dfs(root.right, res)
+```
+
+#### 迭代方法
+
+@todo
+
 ## Trie 前缀树
 
 @todo 实现前缀树
@@ -159,6 +180,76 @@ class Solution:
         if root.right:
             self.inorder(root.right, res)
 ```
+
+### LC653 两数之和 IV - 输入 BST
+
+> 给定一个二叉搜索树 root 和一个目标结果 k，如果 BST 中存在两个元素且它们的和等于给定的目标结果，则返回 true。
+
+这个题目需要用到二叉搜索树和两数之和解法的一些特性：
+
+1. 二叉搜索树中序遍历出的结果是有序的（左根右）
+2. 两数之和问题可以使用双指针来求解，或者使用 hash map
+
+#### 解法1：DFS + hash map
+
+这个解法的核心思路就是，把这个 BST 当作普通的二叉树处理，然后使用 hash map 记录元素出现的个数，比较直观的解法，其实现代码如下：
+
+```python
+class Solution:
+    def __init__(self):
+        self.dic = collections.defaultdict(int)
+
+    def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
+        if not root:
+            return False
+
+        if k - root.val in self.dic.keys():
+            return True
+
+        self.dic[root.val] += 1
+        return self.findTarget(root.left, k) or self.findTarget(root.right, k)
+```
+
+#### 解法2：中序遍历 + 双指针
+
+由于我们知道 BST 的中序遍历出来的结果是升序的，所以说我们可以把中序遍历的结果保存起来，然后用双指针去找，看有没有结果。
+
+在此复习一下二叉树的中序遍历，中序遍历的解法可以看上文总结。
+
+```python
+class Solution:
+    def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
+        # 中序遍历 BST
+        res = []
+
+        def dfs(root: Optional[TreeNode]):
+            if not root:
+                return
+            dfs(root.left)
+            res.append(root.val)
+            dfs(root.right)
+
+        dfs(root, res)
+        # 此时 res 已经是升序了，我们使用双指针
+        l, r = 0, len(res) - 1
+        # 这边 while l < r 也可以
+        while l != r:
+            if res[l] + res[r] == k:
+                return True
+            elif res[l] + res[r] > k:
+                r -= 1
+            else:
+                l += 1
+
+        return False
+```
+
+
+#### 解法3：迭代 + 双指针
+
+这个解法不再需要额外的空间消耗，比较不错。
+
+@todo
 
 
 ## 二叉树遍历例题
