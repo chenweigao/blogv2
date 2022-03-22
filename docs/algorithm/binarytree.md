@@ -3,8 +3,6 @@ title: Tree
 date: 2022-2-7
 ---
 
-[[toc]]
-
 ## Preorder Traversal
 
 ### 多叉树的前序遍历
