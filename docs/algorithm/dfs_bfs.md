@@ -874,6 +874,59 @@ class Solution:
 
 这个题目较为复杂，还需要多多理解！
 
+### LC2039 网络空闲的时刻
+
+这个题目[描述](https://leetcode-cn.com/problems/the-time-when-the-network-becomes-idle/)比较复杂，核心思路是使用 BFS 对图进行遍历，看代码：
+
+```python
+class Solution:
+    def networkBecomesIdle(self, edges: List[List[int]], patience: List[int]) -> int:
+        n = len(patience)
+        g = collections.defaultdict(list)
+        for u, v in edges:
+            g[u].append(v)
+            g[v].append(u)
+            
+        q = collections.deque([0])
+        visited = [True] + [False] * (n-1)
+        res = 0
+        dist = 1
+        while q:
+            for _ in range(len(q)):
+                u = q.popleft()
+                for v in g[u]:
+                    if visited[v]:  
+                        continue
+                    visited[v] = True
+                    q.append(v)
+                    res = max(res, (dist * 2 - 1) //
+                            patience[v] * patience[v] + dist * 2 + 1)
+            dist += 1
+        return res
+```
+
+
+其对应的测试代码如下：
+
+```python
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.s = Solution()
+
+    def test(self):
+        edges = [[0, 1], [1, 2]]
+        patience = [0, 2, 1]
+        res = self.s.networkBecomesIdle(edges, patience)
+        print(res)
+
+    def test2(self):
+        edges = [[5, 7], [15, 18], [12, 6], [5, 1], [11, 17], [3, 9], [6, 11], [14, 7], [19, 13], [13, 3], [
+            4, 12], [9, 15], [2, 10], [18, 4], [5, 14], [17, 5], [16, 2], [7, 1], [0, 16], [10, 19], [1, 8]]
+        patience = [0, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1]
+        res = self.s.networkBecomesIdle(edges, patience)
+        self.assertEqual(67, res)
+```
+
 ### LC365 水壶问题
 
 两个水壶 x, y 和无限多的水，能否通过使用这两个水壶，得到恰好 z 容量的水？
