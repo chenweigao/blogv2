@@ -1,9 +1,9 @@
 ---
 title: Python ORM - peewee
 date: 2019-09-14
-categories:
+category:
  - Database
-tags:
+tag:
  - database
  - python
 ---

@@ -1,9 +1,9 @@
 ---
 title: Docker 入门
 date: 2019-8-8
-tags:
+tag:
  - docker
-categories:
+category:
  - Server
  - Cloud
 ---

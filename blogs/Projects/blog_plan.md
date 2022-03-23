@@ -1,9 +1,9 @@
 ---
 title: Blog Update Plan
 date: 2021-05-26
-tags:
+tag:
  - blog
-categories:
+category:
  - Projects
 sticky: 3
 ---

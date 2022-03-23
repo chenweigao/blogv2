@@ -1,10 +1,10 @@
 ---
 title: ArrayTrack
 date: 2017-10-10
-tags:
+tag:
  - paper
  - CSI
-categories:
+category:
  - Research
 ---
 

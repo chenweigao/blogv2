@@ -1,9 +1,9 @@
 ---
 title: Paper Report
 date: 2020-5-15
-tags:
+tag:
  - paper
-categories:
+category:
  - Others
 sidebar: false
 keys:

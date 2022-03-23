@@ -1,10 +1,10 @@
 ---
 title: LaTeX 用法和语法总结
 date: 2020-3-10
-tags:
+tag:
  - paper
  - latex
-categories:
+category:
  - Research
 ---
 

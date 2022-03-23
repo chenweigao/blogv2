@@ -1,10 +1,10 @@
 ---
 title: CSI Tool
 date: 2017-9-10
-tags:
+tag:
  - paper
  - CSI
-categories:
+category:
  - Research
 ---
 

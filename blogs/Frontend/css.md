@@ -1,9 +1,9 @@
 ---
 title: CSS
 date: 2019-4-28
-tags:
+tag:
  - frontend
-categories:
+category:
  -  Frontend
 ---
 

@@ -1,11 +1,11 @@
 ---
 title: YOLO and DarkNet
 date: 2019-9-10
-tags:
+tag:
  - paper
  - CV
  - deeplearning
-categories:
+category:
  - Research
 ---
 

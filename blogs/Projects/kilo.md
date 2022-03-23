@@ -1,10 +1,10 @@
 ---
 title: Linux Text Editor：Kilo, C
 date: 2018-7-10
-tags:
+tag:
  - Linux
  - c/c++
-categories:
+category:
  - Projects
 ---
 

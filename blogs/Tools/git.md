@@ -1,9 +1,9 @@
 ---
 title: Git
 date: 2020-05-14
-tags:
+tag:
  - git
-categories:
+category:
  -  Tools
 ---
 
@@ -136,14 +136,14 @@ git clone --depth=1 ulr
 
 ## Tag
 
-show tags:
+show tag:
 
 ```bash
 git tag
 git tag -l
 ```
 
-add tags:
+add tag:
 
 ```bash
 git tag -a v1.0 -m "my first version"

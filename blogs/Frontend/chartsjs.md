@@ -1,10 +1,10 @@
 ---
 title: Charts.js
 date: 2019-5-15
-tags:
+tag:
  - frontend
  - figures
-categories:
+category:
  -  Frontend
 ---
 

@@ -1,9 +1,9 @@
 ---
 title: 深度实践 KVM -- KVM 技术详解与实战
 date: 2020-04-26
-tags:
+tag:
  - cloud
-categories:
+category:
  - Cloud
 ---
 

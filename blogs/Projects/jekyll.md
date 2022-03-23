@@ -1,9 +1,9 @@
 ---
 title: Jekyll GitHub Pages Blog
 date: 2017-11-10
-tags:
+tag:
  - blog
-categories:
+category:
  - Projects
 ---
 
@@ -98,7 +98,7 @@ We create a new markdown file named `2018-02-02-test.md`:
 ---
 layout: article
 title:  "This is a test blog"
-tags:
+tag:
   - blog
 modify_date: 2017-01-01
 ---

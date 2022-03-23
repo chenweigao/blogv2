@@ -1,9 +1,9 @@
 ---
 title: QQ 自动聊天机器人
 date: 2018-11-10
-tags:
+tag:
  - python
-categories:
+category:
  - Projects
 ---
 

@@ -1,10 +1,10 @@
 ---
 title: 设计模式
 date: 2021-10-18
-tags:
+tag:
  - Java
  - Backend
-categories:
+category:
  - Server
 ---
 

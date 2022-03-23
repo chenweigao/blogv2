@@ -1,9 +1,9 @@
 ---
 title: Linux Kernel Build：Linux 内核编译
 date: 2018-6-8
-tags:
+tag:
  - Linux
-categories:
+category:
  - Server
  - Linux
 ---

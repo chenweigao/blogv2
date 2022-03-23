@@ -1,9 +1,9 @@
 ---
 title: Vim 使用入门
 date: 2020-05-14
-tags:
+tag:
  - vim
-categories:
+category:
  -  Tools
 ---
 

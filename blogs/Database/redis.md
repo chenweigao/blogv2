@@ -1,9 +1,9 @@
 ---
 title: Redis and redis-py
 date: 2019-09-3
-categories:
+category:
  - Database
-tags:
+tag:
  - database
  - python
 ---

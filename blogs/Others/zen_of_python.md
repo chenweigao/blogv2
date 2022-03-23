@@ -1,9 +1,9 @@
 ---
 title: The Zen of Python
 date: 2017-1-1
-tags:
+tag:
  - python
-categories:
+category:
  -  Others
 sticky: 1
 sidebar: false

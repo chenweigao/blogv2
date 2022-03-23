@@ -1,10 +1,10 @@
 ---
 title: Linux 进程和线程
 date: 2017-6-8
-tags:
+tag:
  - Linux
  - Thread
-categories:
+category:
  - Linux
 ---
 

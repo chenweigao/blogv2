@@ -1,9 +1,9 @@
 ---
 title: MongoDB Database
 date: 2018-8-8
-tags:
+tag:
  - database
-categories:
+category:
  -  Database
 ---
 

@@ -1,9 +1,9 @@
 ---
 title: Flask
 date: 2018-8-10
-tags:
+tag:
  - web framework 
-categories:
+category:
  - Frameworks
 ---
 

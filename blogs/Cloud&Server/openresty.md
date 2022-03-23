@@ -1,10 +1,10 @@
 ---
 title: Openresty 基础总结
 date: 2019-6-10
-tags:
+tag:
  - server
  - nginx
-categories:
+category:
  - Server
 ---
 

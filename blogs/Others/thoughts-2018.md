@@ -1,9 +1,9 @@
 ---
 title: 日常感悟
 date: 2018-1-5
-tags:
+tag:
  - thoughts
-categories:
+category:
  -  Others
 keys:
  - '578631217db13b23c595f24a2587b4f3'

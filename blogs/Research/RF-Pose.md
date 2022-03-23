@@ -1,11 +1,11 @@
 ---
 title: RF-Pose
 date: 2018-12-10
-tags:
+tag:
  - paper
  - CSI
  - CV
-categories:
+category:
  - Research
 ---
 

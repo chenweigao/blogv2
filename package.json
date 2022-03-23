@@ -1,21 +1,22 @@
 {
-  "name": "blogv2-dev",
-  "version": "2.0.0",
-  "description": "Demo for vuepress-theme-reco@2.x.",
-  "repository": "git@github.com:chenweigao/blogv2.git",
-  "author": "weiggao <mail@weigao.cc>",
-  "license": "MIT",
-  "scripts": {
-    "dev": "vuepress dev .",
-    "start": "vuepress dev .",
-    "build": "vuepress build .",
-    "docs:build": "vuepress build docs",
-    "docs:clean-dev": "vuepress dev docs --clean-cache",
-    "docs:dev": "vuepress dev docs"
-  },
-  "devDependencies": {
-    "vuepress": "^2.0.0-beta.36",
-    "vuepress-theme-reco": "^2.0.0-beta.2",
-    "vuepress-theme-hope": "^2.0.0-beta.24"
+    "name": "blogv2-dev",
+    "version": "2.0.0",
+    "description": "Demo for vuepress-theme-reco@2.x.",
+    "repository": "git@github.com:chenweigao/blogv2.git",
+    "author": "weiggao <mail@weigao.cc>",
+    "license": "MIT",
+    "scripts": {
+      "dev": "vuepress dev .",
+      "start": "vuepress dev .",
+      "build": "vuepress build .",
+      "docs:build": "vuepress build .",
+      "docs:clean-dev": "vuepress dev . --clean-cache",
+      "docs:dev": "vuepress dev ."
+    },
+    "devDependencies": {
+      "vuepress": "^2.0.0-beta.36",
+      "vuepress-theme-reco": "^2.0.0-beta.2",
+      "vuepress-theme-hope": "^2.0.0-beta.24"
+    }
   }
-}
+  

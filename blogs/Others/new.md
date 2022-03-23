@@ -1,9 +1,9 @@
 ---
 title: 2019 新年感悟
 date: 2019-1-1
-tags:
+tag:
  - thoughts
-categories:
+category:
  -  Others
 ---
 

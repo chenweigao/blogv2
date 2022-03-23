@@ -1,10 +1,10 @@
 ---
 title: Vue.js 总结
 date: 2019-6-14
-tags:
+tag:
  - vue.js
  - frontend
-categories:
+category:
  -  Frontend
 ---
 

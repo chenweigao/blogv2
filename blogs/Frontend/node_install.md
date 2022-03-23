@@ -1,11 +1,11 @@
 ---
 title: Node.js 安装和 yarn 包管理
 date: 2019-9-17
-tags:
+tag:
  - node.js
  - frontend
  - yarn
-categories:
+category:
  -  Frontend
 ---
 

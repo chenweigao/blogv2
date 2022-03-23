@@ -1,10 +1,10 @@
 ---
 title: OpenCV
 date: 2019-12-10
-tags:
+tag:
  - paper
  - CV
-categories:
+category:
  - Research
 ---
 

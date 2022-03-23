@@ -1,10 +1,10 @@
 ---
 title: Splicer
 date: 2018-2-10
-tags:
+tag:
  - paper
  - CSI
-categories:
+category:
  - Research
 ---
 

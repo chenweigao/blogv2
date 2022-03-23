@@ -1,11 +1,11 @@
 ---
 title: Tensorflow I/O
 date: 2017-12-10
-tags:
+tag:
  - paper
  - CV
  - deeplearning
-categories:
+category:
  - Research
 publish: false
 ---

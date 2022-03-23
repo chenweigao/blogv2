@@ -1,9 +1,9 @@
 ---
 title: HTTP and HTTP/2
 date: 2019-11-11
-tags:
+tag:
  - http
-categories:
+category:
  -  Networks
 ---
 
