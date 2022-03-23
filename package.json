@@ -8,10 +8,14 @@
   "scripts": {
     "dev": "vuepress dev .",
     "start": "vuepress dev .",
-    "build": "vuepress build ."
+    "build": "vuepress build .",
+    "docs:build": "vuepress build docs",
+    "docs:clean-dev": "vuepress dev docs --clean-cache",
+    "docs:dev": "vuepress dev docs"
   },
   "devDependencies": {
     "vuepress": "^2.0.0-beta.36",
-    "vuepress-theme-reco": "^2.0.0-beta.2"
+    "vuepress-theme-reco": "^2.0.0-beta.2",
+    "vuepress-theme-hope": "^2.0.0-beta.24"
   }
 }
