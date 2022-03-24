@@ -7,8 +7,8 @@ export default defineThemeConfig({
   hostname: "https://vuepress-theme-hope-v2-demo.mrhope.site",
 
   author: {
-    name: "Mr.Hope",
-    url: "https://mrhope.site",
+    name: "chener",
+    url: "https://vueblog.weigao.cc",
   },
 
   iconPrefix: "iconfont icon-",
@@ -30,14 +30,14 @@ export default defineThemeConfig({
     "/others/tools/": "structure"
   },
 
-  footer: "默认页脚",
+  footer: "2017-2022",
 
   displayFooter: true,
 
   pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
 
   blog: {
-    description: "一个前端开发者",
+    description: "someone..",
     intro: "/intro.html",
     medias: {
       Baidu: "https://example.com",

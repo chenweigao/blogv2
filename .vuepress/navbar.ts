@@ -3,7 +3,7 @@ import { defineNavbarConfig } from "vuepress-theme-hope";
 export default defineNavbarConfig([
   "/",
   "/home",
-  { text: "博客", icon: "creative", link: "/blogs/" },
+  { text: "博客", icon: "creative", link: "/category/" },
   {
     text: "算法",
     icon: "creative",

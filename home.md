@@ -3,8 +3,8 @@ home: true
 icon: home
 title: 项目主页
 heroImage: /logo.svg
-heroText: 项目名称
-tagline: 你可以在这里放置或是整个项目的描述。
+heroText: someone
+tagline:  blog & wiki
 actions:
   - text: 使用指南 💡
     link: /zh/guide/
