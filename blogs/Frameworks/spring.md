@@ -48,6 +48,26 @@ User user = (User) applicationContext.getBean("user");
 
 @todo
 
+### Spring bean 的作用域
+
+- singleton 单例
+- prototype 
+- request 
+- session 
+- global-session(Spring 5 以后废弃)
+
+#### Spring singleton 是线程安全吗？
+
+不是。bean 可以分为有状态对象 stateful bean 和无状态对象 stateless bean, 有状态对象保存有实例变量，有数据，不是线程安全的；
+
+对于单例 bean, 存在多个线程共享这个 bean 的实例，如果是一个无状态 bean, 那么各个线程不会对这个 bean 进行查询以外的操作，这时候是线程安全的。如果是有状态 bean, 这时候存在资源的竞争。
+
+如何避免？
+
+1. 可以通过 `ThreadLocal` 来解决线程安全的问题，因为 `ThreadLocal` 为每个线程保存线程私有的数据。
+2. 定义无状态 bean(实际生产中较难)。
+ 
+
 ## AOP
 
 ### 什么是 AOP? 
@@ -73,3 +93,4 @@ public @interface EnableAspectJAutoProxy {
 ```
 
 `AspectJAutoProxyRegistrar` 为一个 `AspectJ` 自动代理注册器，通过 `@import` 注解导入。
+
