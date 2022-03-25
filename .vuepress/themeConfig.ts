@@ -98,5 +98,14 @@ export default defineThemeConfig({
         plugins: ["highlight", "math", "search", "notes", "zoom"],
       },
     },
+
+    search: {
+      locales: {
+        "/zh/": {
+          placeholder: "搜索",
+        },
+      },
+    },
+
   },
 });
