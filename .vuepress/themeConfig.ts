@@ -13,7 +13,7 @@ export default defineThemeConfig({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "/logo.svg",
+  logo: "/icons8-icosahedron-96.png",
 
   repo: "https://github.com/chenweigao",
 
