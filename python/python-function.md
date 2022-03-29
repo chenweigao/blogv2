@@ -1,263 +1,7 @@
----
-title: Python Start
-date: 2017-8-20
----
 
-> Python’s simplicity lets you become productive quickly, but this often means you aren’t using everything it has to offer.  With this hands-on guide, you’ll learn how to write        effective, idiomatic Python code by leveraging its best—and possibly most neglected—features. Author Luciano Ramalho takes you through Python’s core language features and            libraries, and shows you how to make your code shorter, faster, and more readable at the same time.
+# High-level Function
 
-<!-- more -->
-
-
-## Python 文件操作
-
-### Q&A
-
-1. `a` 是可访问可修改的吗？
-   不是。`a`表示在文件后追加写，append。`a+` 既可以追加到文件中，也可以读取文件中的内容，而 `a` 是不可以读操作的。
-
-### Summary
-
-| 模式 | 操作              | 文件不存在 | 是否覆盖 |
-| ---- | ----------------- | ---------- | -------- |
-| r    | read 只读         | 报错       | -        |
-| w    | write 可写        | 创建       | 是       |
-| a    | append 文件后追加 | 创建       | 否 追加  |
-| r+   | 可读 可写         | 报错       | 是       |
-| w+   | 可读 可写         | 创建       | 是       |
-| a+   | 可读 可写         | 创建       | 否 追加  |
-
-### BCD `fopen()` 手册
-
-> The argument mode points to a string beginning with one of the following sequences (Additional characters may follow these sequences.):
-
-- `r`   Open text file for **reading**.  The stream is positioned at the
-         **beginning** of the file.
-
-- `r+`  Open for **reading and writing**.  The stream is positioned at the
-         **beginning** of the file.
-
-- `w`   Truncate file to **zero length** or create text file for **writing**.
-         The stream is positioned at the **beginning** of the file.
-
-- `w+`  Open for **reading and writing**.  The file is created if it does not
-         exist, otherwise it is **truncated**.  The stream is positioned at
-         the **beginning** of the file.
-
-- `a` Open for **writing**.  The file is created if it does not exist.  The
-         stream is positioned at the **end** of the file.  Subsequent writes
-         to the file will always end up at the then current end of file,
-         irrespective of any intervening fseek(3) or similar.
-
-- `a+`  Open for **reading and writing**.  The file is created if it does not
-         exist.  The stream is positioned at the **end** of the file.  Subse-
-         quent writes to the file will always end up at the then current
-         end of file, irrespective of any intervening fseek(3) or similar.
-
-## Data Struct
-
-### Slicing
-
-```py
->>> s = 'bicycle'
->>> s[3:]
-'ycle'
->>> s[:3]
-'bic'
->>> s[::3]
-'bye'
->>> s[::-1]
-'elcycib'
-```
-
-If you want to *reverse a string*, the last example is a choice.
-
-- assigning to slices
-
-```python
->>> l = list(range(10))
->>> l
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
->>> l[2:5]
-[2, 3, 4]
->>> l[2:5] = [20,30]
->>> l
-[0, 1, 20, 30, 5, 6, 7, 8, 9]
-```
-
-what you can see is that **[2,3,4]** is replaced by **[20,30]**
-
-### List
-
-- list of list
-
-  ```python
-  >>> board = [['_'] * 3 for i in range(3)]
-  >>> board
-  [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
-  >>> board[1][2] = 'x'
-  >>> board
-  [['_', '_', '_'], ['_', '_', 'x'], ['_', '_', '_']]
-  ```
-
-  The first line is the right way to multiply it,rather than:
-
-  ```python
-  >>> wrong_board = [['_'] * 3] * 3
-  >>> wrong_board[1][2] = 0
-  >>> wrong_board
-  [['_', '_', 0], ['_', '_', 0], ['_', '_', 0]]
-  ```
-
-- `list.sort()` & `sorted(list)`
-
-  The `list.sort()` method sorts a list in-place, that is, without making a copy.
-
-  In contrast, the built-in function `sorted(list)` creates a new list and returns it.
-
-### sort and sorted
-
-:::tip skill
-在对 list 排序时， 可以使用 `sorted()` 或者 `sort()` + `deepcopy()` 两种方式
-
-[example code](/algorithm/python/)
-:::
-
-1. sorted()
-
-    descending order (降序)
-
-    ```py
-    def max_n(lst, n=1, reverse=True):
-        return sorted(lst, reverse=reverse)[:n]
-    ```
-
-2. sort() + deepcopy()
-
-    ascending order (升序)
-
-    ```py
-    from copy import deepcopy
-    
-    def min_n(lst, n=1):
-        numbers = deepcopy(lst)
-        numbers.sort()
-        return numbers[:n]
-    ```
-
-- make list a stack or queue
-
-  The .append and .pop methods make a list usable as a stack or a queue (if you use .append and .pop(0), you get LIFO, Last in First out, behavior).
-  
-  But inserting and removing from the left of a list (the 0-index end) is costly because the entire list must be shifted.
-
-- deques and queues
-
-  ```python
-  from collections import deque
-  dq = deque(range(10), maxlen=10)
-  # dq: deque([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], maxlen=10)
-  dq.rotate(3)
-  # [7, 8, 9, 0, 1, 2, 3, 4, 5, 6]
-  # this function rotates items from the right end
-  # and when dp.rotate(-3) is from the left
-  dq.appendleft(-1)
-  # [-1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-  dq.extend([11, 22, 33])
-  # [3, 4, 5, 6, 7, 8, 9, 11, 22, 33]
-  # default is insert from right
-  ```
-
-  What is different between `append()` and `extend()`? here is an example:
-
-  ```python
-  >>> dp
-  # deque([10, 30, 20, 10, 3, 4, 5, 6, 7, 8], maxlen=10)
-  
-  >>> dp.appendleft([1, 2])
-  # deque([[1, 2], 10, 30, 20, 10, 3, 4, 5, 6, 7], maxlen=10)
-  
-  >>> dp.extendleft([1, 2])
-  # deque([2, 1, [1, 2], 10, 30, 20, 10, 3, 4, 5], maxlen=10)
-  ```
-
-  Note that `extendleft(iter)` works by appending each successive item of the iter argument to the left of the deque, therefore the final position of the items is reversed.
-
-### Bisect
-
-`#bisect: [baɪ'sɛkt]`
-
-> Bisection is the general activity of dividing a geometric figure into two equal parts
-
-### Set
-
-Python 的集合是一个十分方便的对于元素可以操作的序列，除了去掉重复元素外，还可以进行稽核之间的运算。
-
-```python
-student = {'Tom', 'Jim', 'Mary', 'Tom', 'Jack', 'Rose'}
-print(student)   # 输出集合，重复的元素被自动去掉
-
-a = set('abracadabra')
-b = set('alacazam')
-
-print(a - b)     # a 和 b 的差集
-
-print(a | b)     # a 和 b 的并集
-
-print(a & b)     # a 和 b 的交集
-
-print(a ^ b)     # a 和 b 中不同时存在的元素
-```
-
-set 的集合运算十分有用，看下面的代码：
-
-``` python
-class Solution:
-    def findWords(self, words):
-        """
-        :type words: List[str]
-        :rtype: List[str]
-        """
-        a = set('qwertyuiop')
-        b = set('asdfghjkl')
-        c = set('zxcvbnm')
-        ans = []
-        for word in words:
-            w = set(word.lower())
-            if (w & a == w) or (w & b == w) or (w & c == w):
-                ans.append(word)
-        return ans
-```
-
-上述代码实现了一个求解某序列是否在键盘的同一行的操作，通过求交集看是否结果等于自身就可以很方便地求解出结果。
-
-### set
-
-1. 使用 set 一般用于 **判断一个值是否存在其中**
-2. when to keep elements sorted and unique.
-
-Example: 忽略常见单词，只对不在集合中的单词统计出现次数：
-
-```cpp
-set<string> exclude = {"some", "words"};
-//code
-if(exclude.find(word) == exclude.end()) {
-    //code
-}
-```
-
-对比如果使用 vector 实现：
-
-```cpp
-vector<string> exclude = {"some", "words"};
-//code
-auto is_exclude = std::binary_search(exclude.cbegin(), exclude.cend(), word);
-//bool binary_search()
-auto reply = is_exclude ? "excluded" : "not excluded";
-```
-
-## High-level Function
-
-### str.maketrans()
+## str.maketrans()
 
 用于创建字符映射的转换表，接收两个字符串参数，第一个参数表示需要转化的字符，第二个参数表示转换的目标。
 
@@ -276,7 +20,7 @@ str_test.translate(tran_tab)
 
 LeetCode 上有题目可以使用该方法求解回文子串，具体可以参考[代码](https://github.com/chenweigao/_code/blob/master/LeetCode/LC125_valid_palindrome.py)
 
-### Python import string
+## Python import string
 
 ```py
 import string
@@ -291,7 +35,7 @@ dir(string)
 
 - `string.digits`: 所有的数字。
 
-### count()
+## count()
 
 用于统计字符串里某个字符出现的次数 `count()` 方法，语法：
 
@@ -316,7 +60,7 @@ return not sum(map(({'R': 1, 'L': -1, 'U': 1j, 'D': -1j}).get, moves))
 
 第二行代码实现了一个计算坐标的方法。
 
-### map()
+## map()
 
 `map()` 会根据提供的函数对指定序列做映射。
 
@@ -346,7 +90,7 @@ for number in oldList:
 map(str, oldList)
 ```
 
-### int2list and list2int
+## int2list and list2int
 
 - int2list
 
@@ -370,7 +114,7 @@ def list2int(aList):
     return int(''.join(list(map(str, aList))))
 ```
 
-### isinstance()
+## isinstance()
 
 Python 中判断类型的方法
 
@@ -382,7 +126,7 @@ True
 True
 ```
 
-### zip()
+## zip()
 
 `zip(*iterators)`: returns a iterator of tuples.
 
@@ -400,7 +144,7 @@ for _ in zip(*str):
 # zip('ABCD', 'xy') --> Ax By
 ```
 
-### enumerate()
+## enumerate()
 
 Example 2(接上 zip 的例子):
 
@@ -425,7 +169,7 @@ print(longestCommonPrefix(test_strs))
 `enumerate()` 列举出来的下标从 0 开始，所以使用 `[:i]` 作为切片 而不是 `[:i-1]`
 :::
 
-### reduce(), lcd and gcd
+## reduce(), lcd and gcd
 
 `functools.reduce` 可以应用带有两个参数的函数来将一个可迭代的对象的项转化为单个的值，而干函数的两个参数是下一项和前一次应用该函数的结果。
 
@@ -442,7 +186,7 @@ product = functools.reduce(lambda x, y: x*y, range(1,11))
 6
 ```
 
-#### gcd and lcm
+### gcd and lcm
 
 - [最小公倍数](https://github.com/chenweigao/_code/blob/master/python/gcd.py)
 
@@ -454,7 +198,7 @@ product = functools.reduce(lambda x, y: x*y, range(1,11))
 lcm(x,y) = x * y / gcd(x,y)
 :::
 
-### Bit operation
+## Bit operation
 
 | 运算符 | 描述     |
 | ------ | -------- |
@@ -479,7 +223,7 @@ class Solution:
         return not (num & (num + 1))
 ```
 
-### all()
+## all()
 
 ```py
 all(iterable, /)
@@ -522,7 +266,7 @@ class Solution:
 
 Tips: `len(matrix)` gets the number of rows, `len(matrix[0])` gets the number of columns.
 
-### filter()
+## filter()
 
 假设你想从考试分数的一个列表中删除所有的 0 分，如下的循环可以完成这个任务：
 
@@ -545,7 +289,7 @@ newList = list(filter(isPositive, oldList))
 newList = list(filter(lambda number: number > 0, oldList))
 ```
 
-### __name__
+## __name__
 
 `__name__` 这个系统变量显示了当前模块执行过程中的名称，`__main__` 一般作为函数的入口，或者整个工程开始运行的入口。
 
@@ -574,7 +318,7 @@ Someone else called me! my name is test
 Someone else called me! my name is test
 ```
 
-### random()
+## random()
 
 ```py
 import random
@@ -660,36 +404,6 @@ class Screen(object):
 在上述例子中，`width` 为可读写的，而 `resolution` 为只读属性。
 
 
-## Effective Python
-
-### Function Closure
-
-([EP 15](https://github.com/chenweigao/_code/blob/master/Effective_Python/EP15.py))有的时候需要将重要的消息或者意外的事件优先显示在其他内容前面，可以使用以下代码：
-
-```python
-def sort_priority(values, group):
-    found = False
-
-    def helper(x):
-        nonlocal found
-        if x in group:
-            found = True
-            return (0, x)
-        return (1, x)
-    values.sort(key=helper)
-    return found
-```
-
-上述代码把 `helper()` 这个闭包函数，传给 `sort` 方法的 `key` 参数。
-
-**思考**：第 7 行和第 8 行的 return 的含义？
-
-### Generator
-
-([EP 16](https://github.com/chenweigao/_code/blob/master/Effective_Python/EP16.py))生成器是使用 `yield` 表达式的函数，为了提高编程效率，考虑用**生成器来改写直接返回列表的函数**。调用生成器时，会返回迭代器。
-
-在这个例子中的错误示例中，使用 `append` 把所有的结果都放在列表里面，如果输入量非常大的话，会导致程序消耗尽内存而奔溃。
-
 ## urllib
 
 ### Reading json file from URL
@@ -754,47 +468,6 @@ url='http://api.weixin.oa.com/itilalarmcgi/sendmsg'
 response = requests.post(url, data=values)
 ```
 
-
-## Python Tools
-
-### IPython
-
-```bash
-pip install jupyter
-jupyter notebook
-```
-
-### %timeit
-
-In `IPython`, we could use `%timeit` to calculate the time consume of a command:
-
-```py
-In [1]: %timeit [1, 2, 3, 4, 5]
-
-In [2]: %timeit (1, 2, 3, 4, 5)
-```
-
-### Personalized
-
-```py
-import sys
-sys.ps1
-'>>>'
-
-sys.ps1 = 'cwg-python>>'
-```
-
-这样就可以改变解释器前面的那个外观了，注意修改后退出不会保存修改的结果。
-
-### File Server
-
-```py
-python -m http.server
-#default port: 8000
-
-python -m http.server 80
-#in port 80
-```
 
 ## Networks and Interprocess Communication
 

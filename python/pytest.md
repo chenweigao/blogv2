@@ -1,15 +1,6 @@
----
-title: Pytest Summary
-date: 2020-08-02
-tag:
- - pytest
-category:
- - Python
----
+# Pytest
 
 总结一下 Pytest 和 Python Unitest 相关的基础用法和学习心得。
-
-<!-- more -->
 
 Pytest 的[官方文档](https://learning-pytest.readthedocs.io/zh/latest/)
 
