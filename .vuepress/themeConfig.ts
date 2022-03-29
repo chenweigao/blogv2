@@ -13,7 +13,7 @@ export default defineThemeConfig({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "/icons8-icosahedron-96.png",
+  logo: "/icons8-three-leaf-clover-96.png",
 
   repo: "https://github.com/chenweigao",
 
@@ -28,7 +28,7 @@ export default defineThemeConfig({
     "/algorithm/details/": "structure",
     "/python/": "structure",
     "/others/tools/": "structure",
-    "linux": "structure"
+    "/linux/": "structure"
   },
 
   footer: "2017-2022",
