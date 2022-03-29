@@ -24,6 +24,7 @@ export default defineHopeConfig({
     },
   },
 
-  themeConfig
+  themeConfig,
+
 });
 
