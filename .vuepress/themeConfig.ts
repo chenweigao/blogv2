@@ -4,7 +4,7 @@ import sidebar from "./sidebar";
 
 export default defineThemeConfig({
 
-  hostname: "https://vuepress-theme-hope-v2-demo.mrhope.site",
+  hostname: "https://vueblog.weigao.cc",
 
   author: {
     name: "chener",
@@ -27,7 +27,8 @@ export default defineThemeConfig({
     "/algorithm/data_struct/": "structure",
     "/algorithm/details/": "structure",
     "/python/": "structure",
-    "/others/tools/": "structure"
+    "/others/tools/": "structure",
+    "linux": "structure"
   },
 
   footer: "2017-2022",
@@ -86,10 +87,10 @@ export default defineThemeConfig({
     // 你也可以使用 Waline
     comment: {
       type: "giscus",
-      repo: "vuepress-theme-hope/giscus-discussions",
-      repoId: "R_kgDOG_Pt2A",
+      repo: "chenweigao/gitalk",
+      repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
       category: "Announcements",
-      categoryId: "DIC_kwDOG_Pt2M4COD69",
+      categoryId: "DIC_kwDOB3xgIM4COUME",
     },
 
     mdEnhance: {
@@ -106,6 +107,5 @@ export default defineThemeConfig({
         },
       },
     },
-
   },
 });
