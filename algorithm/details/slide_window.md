@@ -1,17 +1,24 @@
----
-title: Slide Window
-date: 2019-9-6
-tag:
- - algorithm
- - leetcode
- - slide_window
-category:
- - Algorithm
----
+# Slide Window
 
 双指针技术可以解决很多问题，在面试中往往能成为加分项。
 
 ## Problems
+
+### LC2024 考试的最大困扰度
+
+:::tip 题目要求
+输入：answerKey = "TFFT", k = 1
+
+输出：3
+
+解释：我们可以将最前面的 'T' 换成 'F' ，得到 answerKey = "FFFT" 。
+或者，我们可以将第二个 'T' 换成 'F' ，得到 answerKey = "TFFF" 。
+两种情况下，都有三个连续的 'F' 。
+
+来源：力扣（LeetCode）链接：https://leetcode-cn.com/problems/maximize-the-confusion-of-an-exam 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+:::
+
+
 
 
 ### 和为 S 的连续正数序列

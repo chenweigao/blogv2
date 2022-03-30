@@ -3,19 +3,19 @@ import { defineNavbarConfig } from "vuepress-theme-hope";
 export default defineNavbarConfig([
   "/",
   "/home",
-  { text: "博客", icon: "linter", link: "/category/" },
+  { text: "Blog", icon: "linter", link: "/category/" },
   {
-    text: "算法",
+    text: "Algorithm",
     icon: "bit",
     prefix: "/algorithm/",
     children: [
       {
-        text: "数据结构",
+        text: "Data Struct",
         icon: "stack",
         link: "data_struct/"
       },
       {
-        text: "算法",
+        text: "Algorithm",
         icon: "bit",
         link: "details/"
       },
