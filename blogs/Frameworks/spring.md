@@ -5,16 +5,13 @@ tag:
 category:
  - Frameworks
 ---
-
-# Spring 
-
+# Spring
 
 ## 什么是 spring？
 
 1. Spring 在创立之初是一个轻量级的 java 开源开发框架（轻量相对于J2EE EJB而言，其实 spring 也是比较大了），其提出是为了解决企业应用开发的复杂性而创建的，spring 可以更加快速、简单的构建应用，在目前是最受欢迎的 java 框架。
 2. 其设计理念在于分层架构思想，分层架构使得开发者可以自由选择要使用的组件。
 3. Spring 的核心优势在于其可以无缝集成主流开发框架，只需通过配置和简单的对象注入。
-
 
 Spring 的两个核心特性：IoC 和 AOP（控制反转和面向切面编程）
 
@@ -40,6 +37,7 @@ User user = (User) applicationContext.getBean("user");
 通过上面的代码，问问题：ApplicationContext 和 BeanFactory 的区别是什么？
 
 回答：
+
 1. ApplicationContext 是 BeanFactory 的子接口；
 2. BeanFactory 通过延迟加载的方式来注入 bean, ApplicationContext 是在容器启动时就一次性创建了所有的 bean；
 3. ApplicationContext 提供了更完整的功能，如统一的资源文件访问方式、支持国际化、同时加载多个配置文件等。
@@ -51,9 +49,9 @@ User user = (User) applicationContext.getBean("user");
 ### Spring bean 的作用域
 
 - singleton 单例
-- prototype 
-- request 
-- session 
+- prototype
+- request
+- session
 - global-session(Spring 5 以后废弃)
 
 #### Spring singleton 是线程安全吗？
@@ -66,11 +64,10 @@ User user = (User) applicationContext.getBean("user");
 
 1. 可以通过 `ThreadLocal` 来解决线程安全的问题，因为 `ThreadLocal` 为每个线程保存线程私有的数据。
 2. 定义无状态 bean(实际生产中较难)。
- 
 
 ## AOP
 
-### 什么是 AOP? 
+### 什么是 AOP?
 
 AOP 是面向切面编程的意思。其思想在于把与业务无关的，各个业务模块可以公用的模块（如日志、事务、异步调用等）封装起来，减少重复代码、降低耦合，其相关的设计模式为代理模式。
 
@@ -94,3 +91,32 @@ public @interface EnableAspectJAutoProxy {
 
 `AspectJAutoProxyRegistrar` 为一个 `AspectJ` 自动代理注册器，通过 `@import` 注解导入。
 
+## 如何解决循环依赖？
+
+### 循环依赖与 IoC
+
+> 类与类之间的依赖关系形成了闭环，就会导致循环依赖问题的产生。
+
+通过 Spring IOC 流程的源码分析循环依赖问题：
+
+1. 先从缓存中获取，获取不到则继续往下走
+2. 实例化 Class A
+3. 依赖注入 Class A 对象的成员变量（setter） -- 注意到此时辉产生循环依赖
+4. 初始化 Class A（初始化方法）
+5. 将 Class A 的引用放入一级缓存
+
+循环依赖的三种情况：
+
+1. 通过构造方法进行依赖注入的时候产生的循环依赖
+2. 通过 setter 方法进行依赖注入的时候产生的循环依赖（多例模式下）
+3. 通过 setter 方法进行依赖注入的时候产生的循环依赖（单例模式下）-- Spring 解决了这种场景下循环依赖的问题
+
+构造方法进行依赖主语的时候，new 对象的时候就阻塞住了。而多例的循环依赖每次 `getBean()` 时，都会产生一个新的 bean, 最终导致 OOM 发生。
+
+### Spring 三大缓存
+
+:::tip
+Spring 解决循环依赖主要是通过两个缓存。总的来说，Spring 有三大缓存：一级缓存 singletonObjects, 二级缓存 earlySingletonObjects 和三级缓存 singletonFactories.
+:::
+
+参考：https://juejin.cn/post/6895753832815394824 继续书写。

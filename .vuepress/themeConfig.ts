@@ -28,6 +28,7 @@ export default defineThemeConfig({
     "/algorithm/details/": "structure",
     "/python/": "structure",
     "/others/tools/": "structure",
+    "/others/tmp/": "structure",
     "/linux/": "structure"
   },
 

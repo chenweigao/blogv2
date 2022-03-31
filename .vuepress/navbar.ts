@@ -32,6 +32,11 @@ export default defineNavbarConfig([
         text: "Tools",
         icon: "material",
         link: "tools/"
+      },
+      { 
+        text: "Temp", 
+        icon: "any",
+        link: "tmp/"
       }
     ]
   },
