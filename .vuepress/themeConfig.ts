@@ -13,7 +13,7 @@ export default defineThemeConfig({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "/icons8-three-leaf-clover-96.png",
+  logo: "logo.png",
 
   repo: "https://github.com/chenweigao",
 
