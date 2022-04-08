@@ -22,64 +22,63 @@ class Node:
         self.children = children
 ```
 
-#### 递归法
+1. 递归法
 
-递归法的实现如下：
+    递归法的实现如下：
 
-```python
-class Solution:
-    def preorder(self, root: 'Node') -> List[int]:
-        res = []
-        self.dfs(root, res)
-        return res
+    ```python
+    class Solution:
+        def preorder(self, root: 'Node') -> List[int]:
+            res = []
+            self.dfs(root, res)
+            return res
 
-    def dfs(self, root: 'Node', res: List[int]) -> List[int]:
-        if not root:
-            return None
+        def dfs(self, root: 'Node', res: List[int]) -> List[int]:
+            if not root:
+                return None
 
-        res.append(root.val)
-        for child in root.children:
-            self.dfs(child, res)
-```
+            res.append(root.val)
+            for child in root.children:
+                self.dfs(child, res)
+    ```
 
-我们定义一个 `res` 用于存储最终结果，然后先遍历 `root`, 再遍历 `root` 所有的子节点，因为存储的时候按照从左到右的顺序存储，因此这种遍历是可以达到前序遍历的效果的。
+    我们定义一个 `res` 用于存储最终结果，然后先遍历 `root`, 再遍历 `root` 所有的子节点，因为存储的时候按照从左到右的顺序存储，因此这种遍历是可以达到前序遍历的效果的。
 
+2. 迭代法
 
-#### 迭代法
+    前序遍历的迭代，要求根-左-右的顺序返回各个节点，我们给出迭代的解法如下所示：
 
-前序遍历的迭代，要求根-左-右的顺序返回各个节点，我们给出迭代的解法如下所示：
-
-```python
-class Solution:
-    def preorder(self, root: 'Node') -> List[int]:
-        if root is None:
-            return []
-        
-        stack = [root]
-        res = []
-        while stack:
-            node = stack.pop()
-            if node is not None:
-                res.append(node.val)
-                # 栈顶元素是左侧元素
-                stack.extend(node.children[::-1])
+    ```python
+    class Solution:
+        def preorder(self, root: 'Node') -> List[int]:
+            if root is None:
+                return []
             
-        return res
-```
+            stack = [root]
+            res = []
+            while stack:
+                node = stack.pop()
+                if node is not None:
+                    res.append(node.val)
+                    # 栈顶元素是左侧元素
+                    stack.extend(node.children[::-1])
+                
+            return res
+    ```
 
-我们仔细研究一下，这个迭代中有几个关键点：
-1. 使用了**栈**
-2. 把 node 的 children 逆序入栈，保证了先出栈的元素一定是最左侧的
+    我们仔细研究一下，这个迭代中有几个关键点：
+    1. 使用了**栈**
+    2. 把 node 的 children 逆序入栈，保证了先出栈的元素一定是最左侧的
 
-多多理解，十分巧妙！
+    多多理解，十分巧妙！
 
 ### 二叉树的前序遍历
 
-#### 递归法
+递归法:
 
 @todo
 
-#### 迭代法
+迭代法:
 
 @todo
 
@@ -121,6 +120,62 @@ def levelOrder(root):
 
 这是目前可以写出的比较高效的一个算法，应当牢记。
 
+也可以参考下面的解法：
+
+```python
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+        q = collections.deque([root])
+        res = []
+        while q:
+            # 这个 node 已经取出了
+            size = len(q)
+            tmp = []
+            for _ in range(size):
+                # 在 for 循环中把 q 这个队列拿空
+                # 第一次 for 迭代循环的是 root 节点
+                node = q.popleft()
+                if node.left:
+                    q.append(node.left)
+                if node.right:
+                    q.append(node.right)
+                tmp.append(node.val)
+
+            if tmp:
+                res.append(tmp)
+
+        return res
+```
+
+也可以使用递归的方法：
+
+```python
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+
+        res = []
+
+        def dfs(root: TreeNode, res, level: int):
+            if len(res) == level:
+                res.append([])
+            res[level].append(root.val)
+            
+            if root.left:
+                dfs(root.left, res, level + 1)
+            if root.right:
+                dfs(root.right, res, level + 1)
+
+        dfs(root, res, 0)
+
+        return res
+```
+
+当遍历到一个新的深度 level，而最终结果 res 中还没有创建 level 对应的列表时，应该在 res 中新建一个列表用来保存该 level 的所有节点。
+
 ## Inorder Traversal
 
 ### 二叉树的中序遍历
@@ -146,7 +201,7 @@ def dfs(root: Optional[TreeNode], res):
 
 @todo 实现前缀树
 
-https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/shi-xian-trie-qian-zhui-shu-by-leetcode-ti500/
+<https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/shi-xian-trie-qian-zhui-shu-by-leetcode-ti500/>
 
 ## BST
 
@@ -256,7 +311,7 @@ class Solution:
 
 ### LC606 根据二叉树创建字符串（前序遍历）
 
-https://leetcode-cn.com/problems/construct-string-from-binary-tree/
+<https://leetcode-cn.com/problems/construct-string-from-binary-tree/>
 
 题目的大概意思是，前序遍历二叉树，但是给每个子节点都用括号包裹起来，如果子节点是空的话，就不用括号。是一道简单题。
 
