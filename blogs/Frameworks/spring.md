@@ -109,7 +109,7 @@ public @interface EnableAspectJAutoProxy {
 
 1. 通过构造方法进行依赖注入的时候产生的循环依赖
 2. 通过 setter 方法进行依赖注入的时候产生的循环依赖（多例模式下）
-3. 通过 setter 方法进行依赖注入的时候产生的循环依赖（单例模式下）-- Spring 解决了这种场景下循环依赖的问题
+3. **通过 setter 方法进行依赖注入的时候产生的循环依赖（单例模式下）-- Spring 解决了这种场景下循环依赖的问题**
 
 构造方法进行依赖主语的时候，new 对象的时候就阻塞住了。而多例的循环依赖每次 `getBean()` 时，都会产生一个新的 bean, 最终导致 OOM 发生。
 
@@ -118,5 +118,22 @@ public @interface EnableAspectJAutoProxy {
 :::tip
 Spring 解决循环依赖主要是通过两个缓存。总的来说，Spring 有三大缓存：一级缓存 singletonObjects, 二级缓存 earlySingletonObjects 和三级缓存 singletonFactories.
 :::
+
+#### 一级缓存 singletonObjects
+
+1. 对容器外提供单例 bean 的存储功能
+2. 非创建中的 bean 才会被存储在该缓存
+
+#### 二级缓存 earlySingletonObjects
+
+主要是存储原生的早期 bean.
+
+1. 用于存储单例模式下创建的 bean 实例（该 bean 还在创建中）
+2. 该缓存对内使用，Spring 内部的框架裸机使用该缓存
+
+#### 三级缓存 singletonFactories
+
+主要是存储代理的 bean.
+
 
 参考：https://juejin.cn/post/6895753832815394824 继续书写。
