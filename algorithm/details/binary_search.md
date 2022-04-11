@@ -309,6 +309,23 @@ class Solution:
 
 解法一比解法二好很多，可以掌握一下！
 
+如果是要求结果是整数，则使用以下解法：
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        # 二分法, 要求结果是取整的
+        l, r = 0, x
+        res = -1
+        while l <= r:
+            mid = (l + r) // 2
+            if mid ** 2 <= x:
+                res = mid
+                l = mid + 1
+            else:
+                r = mid - 1
+        return res
+```
 
 ### 数字在排序数组中出现的次数
 
