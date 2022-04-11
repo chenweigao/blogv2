@@ -268,6 +268,48 @@ round(2.6) # 3 四舍五入
 /docs/.vuepress/code/algorithm/isPerfectSquare.py
 
 
+### 求根号 x 的值
+
+可以使用二分法，解法一如下：
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        # 二分法
+        delta = 1e-5
+        l, r = 1, x
+        while l < r:
+            mid = (l + r) * 0.5
+            if abs(mid ** 2 - x) < delta:
+                return mid
+            elif mid ** 2 > x:
+                r = mid
+            else:
+                l = mid
+
+        return l
+```
+
+解法二如下：
+
+```python
+    mid = (l + r) * 0.5
+
+    while True:
+        if mid ** 2 > x:
+            r = mid
+        else:
+            l = mid
+        last = mid
+        mid = (l + r) * 0.5
+        if abs(mid - last) < delta:
+            break
+    return mid
+```
+
+解法一比解法二好很多，可以掌握一下！
+
+
 ### 数字在排序数组中出现的次数
 
 > 统计一个数字在排序数组中出现的次数。
