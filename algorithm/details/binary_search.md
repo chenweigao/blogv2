@@ -12,7 +12,7 @@ category:
 
 ### 1. 二分搜索模板
 
-### 1.1 基本的二分搜索算法 
+### 1.1 基本的二分搜索算法
 
 1. 手工实现
 
@@ -90,7 +90,7 @@ category:
              return -1
      ```
 
-   ### 1.3 寻找右侧边界的二分搜索
+### 1.3 寻找右侧边界的二分搜索
 
    1. 手工实现
 
@@ -138,7 +138,6 @@ category:
 - 初始化时，形式为 `left = 0, right = n - 1`, 故为左闭右闭区间。
 
 
-
 :::danger bug!!!
 对于左闭右开区间(`[left, right)` )而言，应注意：
 
@@ -168,7 +167,7 @@ category:
 
 针对此问题，可以写出伪代码如下所示：
 
-```
+```python
 l = -1, r = N
 while l + 1 != r
   m = (l + r) / 2 取下界
@@ -183,8 +182,7 @@ return l or r
 
 ![binary_search_3](/binary_search/binary_search_3.png)
 
-
-参考视频：https://www.bilibili.com/video/BV1d54y1q7k7
+参考视频：<https://www.bilibili.com/video/BV1d54y1q7k7>
 
 ## Code
 
@@ -215,9 +213,7 @@ function binary_search(A, n, T):
 
 二分查找有序序列中某个元素的位置，如果没找到，则返回其需要插入的位置(LC 035):
 
-
-@[code](/docs/.vuepress/code/algorithm/binarySearch.py)
-
+@[code](../code/binarySearch.py)
 
 ### bisect
 
@@ -254,8 +250,7 @@ round(2.6) # 3 四舍五入
 在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。
 请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
 
-/docs/.vuepress/code/algorithm/find_in_array.py
-
+@[code](../code/find_in_array.py)
 
 :::tip
 注意到这里用到了 **先小(<)后大(>), 先左(l)后右** 的口诀。
@@ -265,67 +260,7 @@ round(2.6) # 3 四舍五入
 
 使用二分查找判断某个数是否完全平方数：
 
-/docs/.vuepress/code/algorithm/isPerfectSquare.py
-
-
-### 求根号 x 的值
-
-可以使用二分法，解法一如下：
-
-```python
-class Solution:
-    def mySqrt(self, x: int) -> int:
-        # 二分法
-        delta = 1e-5
-        l, r = 1, x
-        while l < r:
-            mid = (l + r) * 0.5
-            if abs(mid ** 2 - x) < delta:
-                return mid
-            elif mid ** 2 > x:
-                r = mid
-            else:
-                l = mid
-
-        return l
-```
-
-解法二如下：
-
-```python
-    mid = (l + r) * 0.5
-
-    while True:
-        if mid ** 2 > x:
-            r = mid
-        else:
-            l = mid
-        last = mid
-        mid = (l + r) * 0.5
-        if abs(mid - last) < delta:
-            break
-    return mid
-```
-
-解法一比解法二好很多，可以掌握一下！
-
-如果是要求结果是整数，则使用以下解法：
-
-```python
-class Solution:
-    def mySqrt(self, x: int) -> int:
-        # 二分法, 要求结果是取整的
-        l, r = 0, x
-        res = -1
-        while l <= r:
-            mid = (l + r) // 2
-            if mid ** 2 <= x:
-                res = mid
-                l = mid + 1
-            else:
-                r = mid - 1
-        return res
-```
+@[code](../code/isPerfectSquare.)
 
 ### 数字在排序数组中出现的次数
 
@@ -335,9 +270,7 @@ class Solution:
 
 这个题目对查找插入位置的概念进行了强化：
 
-
-@/docs/.vuepress/code/algorithm/get_number_of_k.py
-
+@[code](../code/get_number_of_k.py)
 
 ### Find Peak Element - 寻找峰值
 
@@ -349,11 +282,9 @@ class Solution:
 >
 > 解释: 你的函数可以返回索引 1，其峰值元素为 2；或者返回索引 5， 其峰值元素为 6。
 
-
 这道题目只要求返回一个峰值，所以可以从前往后遍历，遇到符合条件的返回即可，暴力解法和二分法的代码如下：
 
- @/docs/.vuepress/code/algorithm/findPeakElement.py
-
+@[code](../code/findPeakElement.py)
 
 ### 875. 爱吃香蕉的珂珂
 
@@ -362,17 +293,17 @@ class Solution:
 > 珂珂可以决定她吃香蕉的速度 K （单位：根/小时）。每个小时，她将会选择一堆香蕉，从中吃掉 K 根。如果这堆香蕉少于 K 根，她将吃掉这堆的所有香蕉，然后这一小时内不会再吃更多的香蕉。  
 >
 > 珂珂喜欢慢慢吃，但仍然想在警卫回来前吃掉所有的香蕉。
-> 
+>
 > 返回她可以在 H 小时内吃掉所有香蕉的最小速度 K（K 为整数）。
 >
->来源：力扣（LeetCode）
-> 链接：https://leetcode-cn.com/problems/koko-eating-bananas
+> 来源：力扣（LeetCode）
+> 链接：<https://leetcode-cn.com/problems/koko-eating-bananas>
 > 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
-
 
 下面两种解法展示了不同边界条件下该如何处理：
 
 /docs/.vuepress/code/algorithm/binary_search_koko_1.py
 
+@[code](../code/binary_search_koko_1.py)
 
-/docs/.vuepress/code/algorithm/binary_search_koko_2.py
+@[code](../code/binary_search_koko_2.py)
