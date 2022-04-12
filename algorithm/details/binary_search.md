@@ -137,7 +137,6 @@ category:
 - 初始化时，形式为 `left = 0, right = n`, 其中 `n` 表示数组的长度，由于数组取不到下标 `n`, 故为左闭右开区间；
 - 初始化时，形式为 `left = 0, right = n - 1`, 故为左闭右闭区间。
 
-
 :::danger bug!!!
 对于左闭右开区间(`[left, right)` )而言，应注意：
 
@@ -241,7 +240,7 @@ math.floor(7/4) # 1 or 7//4
 round(2.6) # 3 四舍五入
 ```
 
-一般而言，我们在快速排序或者二分查找中如果要计算 mid, 则可以使用 $$mid = left + \frac{right - left}{2}$$ 来计算，可以参考[二分查找 python 代码](https://github.com/chenweigao/_code/blob/master/data_struct/binary_search.py)
+一般而言，我们在快速排序或者二分查找中如果要计算 mid, 则可以使用 $mid = left + \frac{right - left}{2}$ 来计算[^1]。
 
 ## Problems
 
@@ -260,7 +259,7 @@ round(2.6) # 3 四舍五入
 
 使用二分查找判断某个数是否完全平方数：
 
-@[code](../code/isPerfectSquare.)
+@[code](../code/isPerfectSquare.py)
 
 ### 数字在排序数组中出现的次数
 
@@ -301,8 +300,6 @@ round(2.6) # 3 四舍五入
 > 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 下面两种解法展示了不同边界条件下该如何处理：
-
-/docs/.vuepress/code/algorithm/binary_search_koko_1.py
 
 @[code](../code/binary_search_koko_1.py)
 
@@ -364,3 +361,7 @@ class Solution:
                 r = mid - 1
         return res
 ```
+
+## 参考文献
+
+[^1]: 参考[二分查找 python 代码](https://github.com/chenweigao/_code/blob/master/data_struct/binary_search.py)
