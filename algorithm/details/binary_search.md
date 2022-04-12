@@ -307,3 +307,60 @@ round(2.6) # 3 四舍五入
 @[code](../code/binary_search_koko_1.py)
 
 @[code](../code/binary_search_koko_2.py)
+
+### 求根号 x 的值
+
+可以使用二分法，解法一如下：
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        # 二分法
+        delta = 1e-5
+        l, r = 1, x
+        while l < r:
+            mid = (l + r) * 0.5
+            if abs(mid ** 2 - x) < delta:
+                return mid
+            elif mid ** 2 > x:
+                r = mid
+            else:
+                l = mid
+        return l
+```
+
+解法二如下：
+
+```python
+    mid = (l + r) * 0.5
+    while True:
+        if mid ** 2 > x:
+            r = mid
+        else:
+            l = mid
+        last = mid
+        mid = (l + r) * 0.5
+        if abs(mid - last) < delta:
+            break
+    return mid
+```
+
+解法一比解法二好很多，可以掌握一下！
+
+如果是要求结果是整数，则使用以下解法：
+
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        # 二分法, 要求结果是取整的
+        l, r = 0, x
+        res = -1
+        while l <= r:
+            mid = (l + r) // 2
+            if mid ** 2 <= x:
+                res = mid
+                l = mid + 1
+            else:
+                r = mid - 1
+        return res
+```
