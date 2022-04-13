@@ -164,6 +164,9 @@ class SolutionDFS:
 
 @[code](../code/dfs.py)
 
+但是不幸的是，上述的解法会导致超时，所以我们要配合缓存，来求解这个问题：
+
+@[code](../code/329.py)
 
 ### LC841. 钥匙和房间
 
