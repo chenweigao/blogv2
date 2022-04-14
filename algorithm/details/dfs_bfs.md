@@ -181,7 +181,7 @@ class SolutionDFS:
 > 如果能进入每个房间返回 true，否则返回 false。
 >
 > 来源：力扣（LeetCode）
-> 链接：https://leetcode-cn.com/problems/keys-and-rooms
+> 链接：<https://leetcode-cn.com/problems/keys-and-rooms>
 > 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 其 DFS 解法如下所示：
@@ -204,6 +204,45 @@ class Solution:
         dfs(0)
         return num == n
 ```
+
+如果这个不好理解，可以参考如下 DFS 解法：
+
+```python
+class Solution:
+    def canVisitAllRooms(self, rooms: List[List[int]]) -> bool:
+        visited = set()
+        visited.add(0)
+        
+        def dfs(i, visited):
+            visited.add(i)
+            for key in rooms[i]:
+                if key not in visited:
+                    visited.add(key)
+                    dfs(key, visited)
+        
+        dfs(0, visited)
+        return len(visited) == len(rooms)
+```
+
+使用 `stack` 的解法如下：
+
+```python
+class Solution:
+    def canVisitAllRooms(self, rooms: List[List[int]]) -> bool:
+        visited = set()
+        visited.add(0)
+        stack = [0]
+
+        while stack:
+            idx = stack.pop()
+            for key in rooms[idx]:
+                if key not in visited:
+                    visited.add(key)
+                    stack.append(key)
+        return len(rooms) == len(visited)
+```
+
+还有 BFS 解法，可参考下文。
 
 ### LC200 岛屿数量
 
