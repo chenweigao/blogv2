@@ -224,6 +224,23 @@ class Solution:
         return len(visited) == len(rooms)
 ```
 
+二刷的解法更加简洁：
+
+```python
+class Solution:
+    def canVisitAllRooms(self, rooms: List[List[int]]) -> bool:
+        visited = set()
+        def dfs(i: int):
+            visited.add(i)
+            for key in rooms[i]:
+                if key not in visited:
+                    visited.add(key)
+                    dfs(key)
+                    
+        dfs(0)
+        return len(visited) == len(rooms)
+```
+
 使用 `stack` 的解法如下：
 
 ```python
