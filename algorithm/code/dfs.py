@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Solution:
     def __init__(self, *args, **kwargs):
         self.dirs = [
@@ -6,7 +9,7 @@ class Solution:
         self.m = None
         self.n = None
 
-    def longestIncreasingPath(self, matrix: 'List[List[int]]') -> int:
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
         if len(matrix) == 0:
             return 0
         self.m = len(matrix)
@@ -26,6 +29,7 @@ class Solution:
                 ans = max(ans, self.dfs(matrix, x, y))
         ans += 1
         return ans
+
 
 nums = [
     [3, 4, 5],
