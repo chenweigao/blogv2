@@ -13,7 +13,7 @@ export default defineThemeConfig({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "logo.png",
+  logo: "favicon.png",
 
   repo: "https://github.com/chenweigao",
 

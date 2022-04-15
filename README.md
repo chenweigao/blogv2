@@ -3,7 +3,7 @@ home: true
 layout: Blog
 icon: home
 title: 博客主页
-heroImage: /icons8-icosahedron-96.png
+# heroImage: /avatar.png
 heroText: Someone Blog
 heroFullScreen: true
 tagline: wiki & blog
@@ -33,7 +33,7 @@ projects:
     desc: 伙伴详细介绍
     link: https://你的伙伴链接
 
-  - icon: /logo.svg
+  - icon: /logo.png
     name: 自定义项目
     desc: 自定义详细介绍
     link: https://你的自定义链接

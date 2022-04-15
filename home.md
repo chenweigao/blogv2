@@ -2,7 +2,7 @@
 home: true
 icon: home
 title: 项目主页
-heroImage: /logo.svg
+# heroImage: /avatar.png
 heroText: someone
 tagline:  blog & wiki
 actions:
