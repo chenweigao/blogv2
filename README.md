@@ -3,7 +3,7 @@ home: true
 layout: Blog
 icon: home
 title: 博客主页
-heroImage: /dojo-icon.svg
+heroImage: /craftcms.svg
 heroText: Someone Blog
 heroFullScreen: true
 tagline: wiki & blog
