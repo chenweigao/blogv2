@@ -13,7 +13,7 @@ export default defineThemeConfig({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "favicon.png",
+  logo: "dojo-icon.svg",
 
   repo: "https://github.com/chenweigao",
 

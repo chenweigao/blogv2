@@ -2,4 +2,4 @@
 .vuepress/.temp
 node_modules
 dist/
-public/
+public/*
