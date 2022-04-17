@@ -1,6 +1,6 @@
 ---
 title:  Soft Skills - The Software Developer's Lift Manual
-date: 2021-10-24
+Date: 2021-10-24
 tag:
  - others
 category:

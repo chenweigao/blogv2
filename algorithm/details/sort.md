@@ -1,6 +1,6 @@
 ---
 title: Sort
-date: 2019-9-12
+Date: 2019-9-12
 tag:
  - algorithm
  - leetcode

@@ -1,6 +1,6 @@
 ---
 title: 编程生涯总结 - weigaochen
-date: 2017-6-14
+Date: 2017-6-14
 tag:
  - codelife
 category:

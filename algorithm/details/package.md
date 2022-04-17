@@ -1,6 +1,6 @@
 ---
 title:  Knapsack
-date: 2021-05-22
+Date: 2021-05-22
 tag:
  - algorithm
  - dp

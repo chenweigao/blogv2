@@ -1,6 +1,6 @@
 ---
 title: The Zen of Python
-date: 2017-1-1
+Date: 2017-1-1
 tag:
  - python
 category:

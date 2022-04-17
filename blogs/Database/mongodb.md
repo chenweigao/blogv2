@@ -1,6 +1,6 @@
 ---
 title: MongoDB Database
-date: 2018-8-8
+Date: 2018-8-8
 tag:
  - database
 category:
@@ -192,7 +192,7 @@ sqlite> .mode column
 sqlite> SELECT * FROM COMPANY;
 ```
 
-update:
+upDate:
 
 ```bash
 sqlite> UPDATE COMPANY SET ADDRESS = 'Texas' WHERE ID = 6;

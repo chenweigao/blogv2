@@ -1,6 +1,6 @@
 ---
 title: YOLO and DarkNet
-date: 2019-9-10
+Date: 2019-9-10
 tag:
  - paper
  - CV

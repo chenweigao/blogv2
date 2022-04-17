@@ -1,6 +1,6 @@
 ---
 title: JS code - JavaScript 常见语法
-date: 2019-4-28
+Date: 2019-4-28
 tag:
  - javascript
  - frontend

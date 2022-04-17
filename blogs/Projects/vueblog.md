@@ -1,6 +1,6 @@
 ---
 title: Vuepress Blog Guide
-date: 2018-5-10
+Date: 2018-5-10
 tag:
  - vue.js
  - blog
@@ -253,7 +253,7 @@ Source code is:
 ```md
 ---
 title: 烤鸭的做法
-date: 2019-08-08
+Date: 2019-08-08
 sidebar: 'auto'
 category:
  - 烹饪
@@ -278,7 +278,7 @@ sticky: 2
 ```md
 ---
 title: 
-date: 2018-5-10
+Date: 2018-5-10
 tag:
  - vue.js
 category:

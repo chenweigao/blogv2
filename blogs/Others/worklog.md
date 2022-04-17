@@ -1,6 +1,6 @@
 ---
 title: 2018 bug 日记
-date: 2018-1-5
+Date: 2018-1-5
 tag:
  - bug log
 category:

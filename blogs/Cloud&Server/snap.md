@@ -1,6 +1,6 @@
 ---
 title: Linux 包管理：Snap
-date: 2017-10-10
+Date: 2017-10-10
 tag:
  - Linux
 category:

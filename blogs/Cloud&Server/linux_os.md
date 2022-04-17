@@ -1,6 +1,6 @@
 ---
 title: Linux 进程和线程
-date: 2017-6-8
+Date: 2017-6-8
 tag:
  - Linux
  - Thread

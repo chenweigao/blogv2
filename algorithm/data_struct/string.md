@@ -1,6 +1,6 @@
 ---
 title: String
-date: 2019-9-3
+Date: 2019-9-3
 tag:
  - algorithm
  - leetcode

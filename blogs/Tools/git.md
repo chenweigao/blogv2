@@ -1,6 +1,6 @@
 ---
 title: Git
-date: 2020-05-14
+Date: 2020-05-14
 tag:
  - git
 category:

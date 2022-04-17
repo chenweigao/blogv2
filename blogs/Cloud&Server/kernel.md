@@ -1,6 +1,6 @@
 ---
 title: Linux Kernel Build：Linux 内核编译
-date: 2018-6-8
+Date: 2018-6-8
 tag:
  - Linux
 category:

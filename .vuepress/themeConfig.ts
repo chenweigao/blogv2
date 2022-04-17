@@ -18,7 +18,6 @@ export default defineThemeConfig({
   repo: "https://github.com/chenweigao",
 
   docsDir: "demo/src",
-  titleIcon: true,
   // navbar
   navbar: navbar,
 

@@ -42,7 +42,7 @@ Thermal Zone Device 在 Thermal 框架中理解为**获取温度的设备**。
 
 dts 的配置：
 
-@[code](./code/thermal_zone.dts)
+@[code{1-13}](./code/thermal_zone.dts)
 
 上述代码为拷贝过来的，具体的理解，目前如下：
 

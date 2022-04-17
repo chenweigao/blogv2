@@ -1,6 +1,6 @@
 ---
 title: Tree
-date: 2022-2-7
+Date: 2022-2-7
 ---
 
 ## Preorder Traversal

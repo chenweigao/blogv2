@@ -1,6 +1,6 @@
 ---
 title: MySql 基础总结
-date: 2019-09-14
+Date: 2019-09-14
 category:
  - Database
 tag:

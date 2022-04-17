@@ -1,6 +1,6 @@
 ---
 title: Information and Theory - An improved mOPE coding method
-date: 2018-6-10
+Date: 2018-6-10
 tag:
  - paper
 category:
