@@ -285,7 +285,7 @@ round(2.6) # 3 四舍五入
 
 @[code](../code/findPeakElement.py)
 
-### 875. 爱吃香蕉的珂珂
+### LC875 爱吃香蕉的珂珂
 
 > 珂珂喜欢吃香蕉。这里有 N 堆香蕉，第 i 堆中有 piles[i] 根香蕉。警卫已经离开了，将在 H 小时后回来。
 >
@@ -301,9 +301,15 @@ round(2.6) # 3 四舍五入
 
 下面两种解法展示了不同边界条件下该如何处理：
 
-@[code](../code/binary_search_koko_1.py)
+@[code{6-28}](../code/binary_search_koko_1.py)
 
-@[code](../code/binary_search_koko_2.py)
+@[code{5-15}](../code/binary_search_koko_2.py)
+
+上述代码的两种解法都是可以的，区别在于边界条件的不同，可以参考比较，加以掌握。
+
+除此之外，我们对上述代码进行一个简单的阐述：
+1. `l`, `r` 左右区间的取值。我们根据题目要求分析得知，要求解一个速度，这个速度是每次吃香蕉的速度，这个速度的最小值为 1, 最大值就是这一对香蕉里面最多的那个，速度介于 `[1, max(piles)]` 之间。分析这个也是求解二分问题的关键。
+2. `check` 函数的作用是，求解速度为 `x` 的时候，吃完所有香蕉所需要的时间，其中吃一堆香蕉的时间可以分情况计算，向上取整就是这个速度吃完当前堆的香蕉所需要的时间。我们计算出这个时间，和给定的时间进行比较，如果说计算出来的时间不够吃完所有的香蕉，那么我们需要在右边区间搜索，反之也一样。
 
 ### 求根号 x 的值
 
@@ -364,4 +370,4 @@ class Solution:
 
 ## 参考文献
 
-[^1]: 参考[二分查找 python 代码](https://github.com/chenweigao/_code/blob/master/data_struct/binary_search.py)
+[^1]: [二分查找 python 代码](https://github.com/chenweigao/_code/blob/master/data_struct/binary_search.py)
