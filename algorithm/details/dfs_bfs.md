@@ -318,6 +318,55 @@ class Solution:
         return count
 ```
 
+### LC386 字典序排数
+
+> 输入：n = 13
+>
+> 输出：[1,10,11,12,13,2,3,4,5,6,7,8,9]
+
+<https://leetcode-cn.com/problems/lexicographical-numbers/>
+
+其 DFS 的递归解法如下：
+
+```python
+class Solution:
+    def lexicalOrder(self, n: int) -> List[int]:
+        res = []
+
+        def dfs(cur: int):
+            if cur > n:
+                return
+            res.append(cur)
+            for _ in range(10):
+                dfs(cur * 10 + _)
+
+        for i in range(1, 10):
+            dfs(i)
+        return res
+```
+
+注意到上述代码，我们在外层循环递归的时候从 `1` 开始而不是从 `0` 开始，因为我们不需要递归 `0` 开头的。
+
+但是题目中要求了你必须设计一个时间复杂度为 `O(n)` 且使用 `O(1)` 额外空间的算法，所以我们尝试使用迭代的方法来解决这个问题。
+
+```python
+class Solution:
+    def lexicalOrder(self, n: int) -> List[int]:
+        res = [0] * n
+        num = 1
+        for i in range(n):
+            res[i] = num
+            if num * 10 <= n:
+                num *= 10
+            else:
+                while num % 10 == 9 or num + 1 > n:
+                    num //= 10
+                num += 1
+        return res
+```
+
+这种解法的核心在于判断末尾是否已经搜索完成，搜索完成的话退回上一位。
+
 ## BFS
 
 ### 概览
