@@ -54,7 +54,7 @@ I3C 增加了大量的系统接口，并保持了向后兼容。
 
 > With I3C, one or more master devices can be connected to one or more slaves via the bus. 
 
-I3C 支持多个 master devices 连接到多个 slaves.
+🟢 I3C 支持多个 master devices 连接到多个 slaves.
 
 > I3C the evolution of I²C.
 
@@ -91,14 +91,13 @@ I3C 的应用范围。
 
 ### I2C Problem
 
-Q: I2C 总线可以挂多个 Sensor, 但是我们的 SoC 中设置了很多 I2C Controller, 为什么要这么做呢？
+✅✅✅ Q: I2C 总线可以挂多个 Sensor, 但是我们的 SoC 中设置了很多 I2C Controller, 为什么要这么做呢？
 
 1. 虽然一个 I2C 总线可以挂多个 Sensor, 但是总线可以传输的总的数据是固定的
 2. 不同的 I2C Controller 是挂在不同的处理器上面的，如 ACPU 有一个 I2C Controller, MCPU 也有一个 I2C Controller, 那么我们设置多个 I2C Controller 可以避免不同的 CPU 子系统对一个 controller 进行复用，简化软件控制
 
----------------
 
-Q: SensorHub 和 I2C 对 Sensor 而言有什么区别？
+✅✅✅ Q: SensorHub 和 I2C 对 Sensor 而言有什么区别？
 
 I2C Controller 有些属于 CPU 控制，有些属于 SensorHub 控制；这也是为什么说 I2C 控制 Sensor 但是有一个 SensorHub，其关系应该是这样的：SensorHub --> I2C Controller(驱动软件) --> I2C 总线 --> Sensor.
 
