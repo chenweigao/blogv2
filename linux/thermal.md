@@ -109,47 +109,37 @@ Thermal Core 作为中枢注册 Governor, 注册 Thermal 类，并且基于 Devi
 ### thermal_zone_device
 
 ```c
-/**
- * struct thermal_zone_device - structure for a thermal zone
- * @id:		unique id number for each thermal zone
- * @type:	the thermal zone device type
- * @device:	&struct device for this thermal zone
- * @trip_temp_attrs:	attributes for trip points for sysfs: trip temperature
- * @trip_type_attrs:	attributes for trip points for sysfs: trip type
- * @trip_hyst_attrs:	attributes for trip points for sysfs: trip hysteresis
- * @mode:		current mode of this thermal zone
- * @devdata:	private pointer for device private data
- * @trips:	number of trip points the thermal zone supports
- * @trips_disabled;	bitmap for disabled trips
- * @passive_delay_jiffies: number of jiffies to wait between polls when
- *			performing passive cooling.
- * @polling_delay_jiffies: number of jiffies to wait between polls when
- *			checking whether trip points have been crossed (0 for
- *			interrupt driven systems)
- * @temperature:	current temperature.  This is only for core code,
- *			drivers should use thermal_zone_get_temp() to get the
- *			current temperature
- * @last_temperature:	previous temperature read
- * @emul_temperature:	emulated temperature when using CONFIG_THERMAL_EMULATION
- * @passive:		1 if you've crossed a passive trip point, 0 otherwise.
- * @prev_low_trip:	the low current temperature if you've crossed a passive
-			trip point.
- * @prev_high_trip:	the above current temperature if you've crossed a
-			passive trip point.
- * @need_update:	if equals 1, thermal_zone_device_update needs to be invoked.
- * @ops:	operations this &thermal_zone_device supports
- * @tzp:	thermal zone parameters
- * @governor:	pointer to the governor for this thermal zone
- * @governor_data:	private pointer for governor data
- * @thermal_instances:	list of &struct thermal_instance of this thermal zone
- * @ida:	&struct ida to generate unique id for this zone's cooling
- *		devices
- * @lock:	lock to protect thermal_instances list
- * @node:	node in thermal_tz_list (in thermal_core.c)
- * @poll_queue:	delayed work for polling
- * @notify_event: Last notification event
- */
 struct thermal_zone_device {
+	int id;
+	char type[THERMAL_NAME_LENGTH];
+	struct device device;
+	struct attribute_group trips_attribute_group;
+	struct thermal_attr *trip_temp_attrs;
+	struct thermal_attr *trip_type_attrs;
+	struct thermal_attr *trip_hyst_attrs;
+	void *devdata;
+	int trips;
+	unsigned long trips_disabled;	/* bitmap for disabled trips */
+	int passive_delay;
+	int polling_delay;
+	int temperature;
+	int last_temperature;
+	int emul_temperature;
+	int passive;
+	int prev_low_trip;
+	int prev_high_trip;
+	unsigned int forced_passive;
+	atomic_t need_update;
+	struct thermal_zone_device_ops *ops;
+	struct thermal_zone_params *tzp;
+	struct thermal_governor *governor;
+	void *governor_data;
+	struct list_head thermal_instances;
+	struct ida ida;
+	struct mutex lock;
+	struct list_head node;
+	struct delayed_work poll_queue;
+	enum thermal_notify_event notify_event;
 }
 ```
 
@@ -216,6 +206,122 @@ struct thermal_zone_params {
 
 如寻找对应的 governor: `governor = __find_governor(tz->tzp->governor_name);` 就用到了 `tzp->governor_name` 这个参数。
 
+#### @ops
+
+指的是 thermal 可以操作的类型：
+
+```c
+struct thermal_zone_device_ops {
+	int (*bind) (struct thermal_zone_device *,
+		     struct thermal_cooling_device *);
+	int (*unbind) (struct thermal_zone_device *,
+		       struct thermal_cooling_device *);
+	int (*get_temp) (struct thermal_zone_device *, int *);
+	int (*set_trips) (struct thermal_zone_device *, int, int);
+	int (*get_mode) (struct thermal_zone_device *,
+			 enum thermal_device_mode *);
+	int (*set_mode) (struct thermal_zone_device *,
+		enum thermal_device_mode);
+	int (*get_trip_type) (struct thermal_zone_device *, int,
+		enum thermal_trip_type *);
+	int (*get_trip_temp) (struct thermal_zone_device *, int, int *);
+	int (*set_trip_temp) (struct thermal_zone_device *, int, int);
+	int (*get_trip_hyst) (struct thermal_zone_device *, int, int *);
+	int (*set_trip_hyst) (struct thermal_zone_device *, int, int);
+	int (*get_crit_temp) (struct thermal_zone_device *, int *);
+	int (*set_emul_temp) (struct thermal_zone_device *, int);
+	int (*get_trend) (struct thermal_zone_device *, int,
+			  enum thermal_trend *);
+	int (*notify) (struct thermal_zone_device *, int,
+		       enum thermal_trip_type);
+};
+```
+
+- `get_temp`
+
+获取温度 `int (*get_temp) (struct thermal_zone_device *, int *);`
+
+```c
+if (d->override_ops && d->override_ops->get_temp)
+	return d->override_ops->get_temp(zone, temp);
+```
+
+- `get_trip_temp`
+
+在 `thermal_sysfs.c` 中调用：
+
+```c
+static ssize_t
+trip_point_temp_show(struct device *dev, struct device_attribute *attr,
+                     char *buf)
+{
+        struct thermal_zone_device *tz = to_thermal_zone(dev);
+        int trip, ret;
+        int temperature;
+
+        if (!tz->ops->get_trip_temp)
+                return -EPERM;
+
+        if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip) != 1)
+                return -EINVAL;
+
+        ret = tz->ops->get_trip_temp(tz, trip, &temperature);
+
+        if (ret)
+                return ret;
+
+        return sprintf(buf, "%d\n", temperature);
+}
+```
+
+- `set_trip_temp`
+
+```c
+static ssize_t
+trip_point_temp_store(struct device *dev, struct device_attribute *attr,
+                      const char *buf, size_t count)
+{
+        struct thermal_zone_device *tz = to_thermal_zone(dev);
+        int trip, ret;
+        int temperature, hyst = 0;
+        enum thermal_trip_type type;
+
+        if (!tz->ops->set_trip_temp)
+                return -EPERM;
+
+        if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip) != 1)
+                return -EINVAL;
+
+        if (kstrtoint(buf, 10, &temperature))
+                return -EINVAL;
+
+        ret = tz->ops->set_trip_temp(tz, trip, temperature);
+        if (ret)
+                return ret;
+
+        if (tz->ops->get_trip_hyst) {
+                ret = tz->ops->get_trip_hyst(tz, trip, &hyst);
+                if (ret)
+                        return ret;
+        }
+
+        ret = tz->ops->get_trip_type(tz, trip, &type);
+        if (ret)
+                return ret;
+
+        thermal_notify_tz_trip_change(tz->id, trip, type, temperature, hyst);
+
+        thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
+
+        return count;
+}
+```
+
+这个调用中有几个知识点可以注意的：
+
+1. 关于 `sscanf()`: `sscanf(attr->attr.name, "trip_point_%d_temp", &trip) != 1`, 这个调用的意思是说，`attr->attr.name` 类似于 `trip_point_123_temp`, 然后我们可以把这个 `123` 拿出来写进 `trip` 中去，并返回写入变量的个数。在这个例子中我们只写入了 `trip`, 所以写入成功的话就返回 `1`.
+
+2. `kstrtoint(buf, 10, &temperature)` 是将字符串转化为 `int` 整数，我们将 `buf` 中的值以 10 进制的形式传递给了 `temperature`.
 
 ## thermal_core.h
 
