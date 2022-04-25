@@ -323,6 +323,11 @@ trip_point_temp_store(struct device *dev, struct device_attribute *attr,
 
 2. `kstrtoint(buf, 10, &temperature)` 是将字符串转化为 `int` 整数，我们将 `buf` 中的值以 10 进制的形式传递给了 `temperature`.
 
+3. 返回的错误码：
+`#define EINVAL 22`;
+`#define EPERM 1;`
+
+
 ## thermal_core.h
 
 ### struct thermal_governor
