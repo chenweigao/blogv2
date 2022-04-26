@@ -373,6 +373,26 @@ struct list_head {
 
 ## thermel_core.c
 
+### __init thermal_init
+
+thermal 的初始化函数，thermal 驱动模块的入口。
+
+1. thermal_netlink_init();
+
+netlink 机制，猜测是用于内核空间和用户空间通信。
+
+2. thermal_register_governors()
+
+这个步骤是向 thermal core 注册 governors.
+
+#### postcore_initcall
+
+注意最后调用：`postcore_initcall(thermal_init);`, 在之前的代码中使用的是 `fs_initcall()`, 但是最新的代码更改成了前者。 `fs_initcall()` 用的原因是因为：thermal 模块加载进内核用的 `fs_initcall()`，tsadc 驱动一般用的是 `module_init()`，前者会早于后者加载，这点比较重要，有些代码流程上会依赖这种先后关系，需要留意。
+这边使用 `postcore_initcall(thermal_init);`, 也是为了解决调用顺序的问题。
+
+
+要理解这个我们需要了解内核初始化过程中的调用顺序[^2], 可以参考 \<init.h\> 那篇文章的分析。
+
 
 ### __find_governor
 
@@ -521,3 +541,4 @@ thermal_zone_device_register(const char *type, int trips, int mask,
 ## Reference
 
 [^1]: [Linux电源管理（五）thermal](https://www.it610.com/article/1288705954065489920.htm)
+[^2]: [内核初始化过程中的调用顺序](https://e-mailky.github.io/2016-10-14-linux_kernel_init_seq)
