@@ -1,7 +1,3 @@
----
-title: DFS and BFS
-Date: 2019-11-20
----
 
 📑📑📑 深度优先搜索算法
 
@@ -26,19 +22,6 @@ Date: 2019-11-20
 Breadth-First Search，缩写为 BFS，又称为宽度优先搜索，是一种图形搜索算法。简单的说，BFS 是从根结点开始，沿着树的宽度遍历树的结点。如果所有结点均被访问，则算法中止。
 
 广度优先搜索也广泛应用在图论问题中。
-
-## Problems content
-
-- [number of island: LC200](https://leetcode.com/problems/number-of-islands/)
-
-- [Target Sum: LC494](https://leetcode.com/problems/target-sum/)
-
-| 问题                       | 链接                                                         | 类型 | 备注 |
-| -------------------------- | ------------------------------------------------------------ | ---- | ---- |
-| LC104 二叉树的最大深度 | [104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/) | DFS, BFS |  |
-| LC329 矩阵中的最长递增路径 | [LC 329](https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix/) | DFS  |      |
-| LC841. 钥匙和房间         | https://leetcode-cn.com/problems/keys-and-rooms | DFS, BFS     |      |
-|                            |                                                              |      |      |
 
 
 
@@ -168,7 +151,7 @@ class SolutionDFS:
 
 @[code](../code/329.py)
 
-### LC841. 钥匙和房间
+### LC841 钥匙和房间
 
 > 有 N 个房间，开始时你位于 0 号房间。每个房间有不同的号码：0，1，2，...，N-1，并且房间里可能有一些钥匙能使你进入下一个房间。
 >
@@ -269,16 +252,16 @@ class Solution:
 >
 > 此外，你可以假设该网格的四条边均被水包围。
 >
->  
+> 
 >
 > 示例 1：
 >
 > ```
 > 输入：grid = [
->   ["1","1","1","1","0"],
->   ["1","1","0","1","0"],
->   ["1","1","0","0","0"],
->   ["0","0","0","0","0"]
+> ["1","1","1","1","0"],
+> ["1","1","0","1","0"],
+> ["1","1","0","0","0"],
+> ["0","0","0","0","0"]
 > ]
 > ```
 >
@@ -366,6 +349,98 @@ class Solution:
 ```
 
 这种解法的核心在于判断末尾是否已经搜索完成，搜索完成的话退回上一位。
+
+### LC417 太平洋大西洋水流问题
+
+题目描述见 <https://leetcode-cn.com/problems/pacific-atlantic-water-flow/>, 简单概括一下，这个题目就是给你一个二维的矩阵，然后看这个二维矩阵中的元素是不是都可以到太平洋和大西洋，其中太平洋在矩阵的左边和上边环绕，大西洋在矩阵的右边和下边环绕。
+
+#### DFS
+
+我们给出这个问题的 DFS 解法：
+
+```python
+class Solution:
+    def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
+        # 水必须流进大西洋 and 太平洋
+        m, n = len(heights), len(heights[0])
+
+        def search(starts: List):
+            visited = set()
+
+            def dfs(x: int, y: int):
+                if (x, y) in visited:
+                    return
+                visited.add((x, y))
+                for nx, ny in ((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)):
+                    if 0 <= nx < m and 0 <= ny < n \
+                            and heights[nx][ny] >= heights[x][y]:
+                        dfs(nx, ny)
+
+            for x, y in starts:
+                dfs(x, y)
+
+            return visited
+        # 从矩阵的上边界和左边界开始搜索, (0, 0) 不重复加
+        # [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (1, 0), (2, 0), (3, 0), (4, 0)]
+        pacific = [(0, i) for i in range(n)] + [(i, 0) for i in range(1, m)]
+
+        # 从矩阵的下边界和右边界开始
+        atlantic = [(m - 1, i) for i in range(n)] + [(i, n - 1) for i in range(m - 1)]
+
+        return list(map(list, search(pacific) & search(atlantic)))
+```
+
+这个题目中用到了一种“反向搜索”的概念，其实本质来说，就是从矩阵边界进行搜索。根绝题目含义，反向搜索的时候，每次只能移动到高度相同或者高度更大的单元格。
+
+注意到我们的初始化，pacific 和 atlantic 均表示边界元素的坐标。
+
+#### BFS
+
+我们给出这个问题的 BFS 解法：
+
+```python
+    def pacificAtlanticBfs(self, heights: List[List[int]]) -> List[List[int]]:
+        # 水必须流进大西洋 and 太平洋
+        m, n = len(heights), len(heights[0])
+
+        def bfs(starts: List):
+            visited = set(starts)
+            q = collections.deque(starts)
+            while q:
+                x, y = q.popleft()
+                for nx, ny in ((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)):
+                    if 0 <= nx < m and 0 <= ny < n \
+                            and heights[nx][ny] >= heights[x][y] \
+                            and (nx, ny) not in visited:
+                        visited.add((nx, ny))
+                        q.append((nx, ny))
+            return visited
+
+        pacific = [(0, i) for i in range(n)] + [(i, 0) for i in range(1, m)]
+        atlantic = [(m - 1, i) for i in range(n)] + [(i, n - 1) for i in range(m - 1)]
+
+        return list(map(list, bfs(pacific) & bfs(atlantic)))
+```
+
+#### Testcase
+
+其对应的测试用例如下：
+
+```python
+class Test(unittest.TestCase):
+    def setUp(self) -> None:
+        self.s = Solution()
+
+    def test01(self):
+        heights = [[1, 2, 2, 3, 5], [3, 2, 3, 4, 4], [2, 4, 5, 3, 1], [6, 7, 1, 4, 5], [5, 1, 1, 2, 4]]
+        res = self.s.pacificAtlantic(heights)
+        print(res)
+        self.assertCountEqual([[0, 4], [1, 3], [1, 4], [2, 2], [3, 0], [3, 1], [4, 0]], res)
+```
+
+需要注意的是，这个测试用例的 `self.assertCountEqual` 表示 list 的顺序不同，但是其中的元素出现个数相等。
+
+
 
 ## BFS
 
@@ -763,7 +838,7 @@ class Solution:
 >
 > 如果小镇存在秘密法官并且可以确定他的身份，请返回该法官的编号。否则，返回 -1。
 >
->  
+> 
 >
 > 示例 1：
 >
@@ -917,7 +992,7 @@ class Solution:
    - ❓❓❓ 如何将一个 list 全部加入 set 中呢？有两种做法:
 
      1. `visited |= set(deadends)`
-     
+
      2. `visited.update(deadends)`
 
      
