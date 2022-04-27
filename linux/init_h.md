@@ -100,21 +100,29 @@ postcore_initcall(thermal_init);
 
 理解上述代码需要参考《Linux 内核初始化定义》[^2] 这篇文章。
 
-- `#define __init		__section(".init.text") __cold  __latent_entropy __noinitretpoline __nocfi`
+- 第 3-4 行代码
 
-`__init` 用于标记函数，这个放在 `.init.text` section, 标记为初始化的函数，仅仅只是能在初始化的期间使用，在模块装载后，会将初始化函数扔掉。这样做可以将初始化函数占用的内存释放出来。
+  `#define __init		__section(".init.text") __cold  __latent_entropy __noinitretpoline __nocfi`
 
-`__cold` 是告诉编译器这个函数很可能不被执行到。
+  ``__init` 用于标记函数，这个放在 `.init.text` section, 标记为初始化的函数，仅仅只是能在初始化的期间使用，在模块装载后，会将初始化函数扔掉。这样做可以将初始化函数占用的内存释放出来。
 
-`#define notrace __attribute__((no_instrument_function))` 说明 `notrace` 的定义，其作用是在程序中加入 hook, 让它在每次进入和退出函数的时候分别调用这个函数。
+  `__cold` 是告诉编译器这个函数很可能不被执行到。
 
-- `#define __initdata	__section(".init.data")`
+- notrace 
 
-`__initdata` 用于标记数据。
+  `#define notrace __attribute__((no_instrument_function))` 说明 `notrace` 的定义，其作用是在程序中加入 hook, 让它在每次进入和退出函数的时候分别调用这个函数。
 
-- `#define __exit_call	__used __section(".exitcall.exit")`
+- __initdata
 
-在模块卸载的时候使用，如果模块直接被编进内核就不会被调用；如果内核编译的时候没有包含该模块。则此标记的函数将被简单的丢弃。、
+  `#define __initdata	__section(".init.data")`
+
+​		`__initdata` 用于标记数据。
+
+- 第 8 行代码 __exit_call	
+
+  `#define __exit_call	__used __section(".exitcall.exit")`
+
+  在模块卸载的时候使用，如果模块直接被编进内核就不会被调用；如果内核编译的时候没有包含该模块。则此标记的函数将被简单的丢弃。
 
 
 ```c
@@ -130,7 +138,7 @@ postcore_initcall(thermal_init);
 对于 `__section` 的定义，在 `compiler_attributes.h` 中可以找到：
 
 ```c
-#define __section(section)              __attribute__((__section__(section)))
+#define __section(section) __attribute__((__section__(section)))
 ```
 
 我们不难看出，其本质就是一个 `__attribute__`.
@@ -138,6 +146,10 @@ postcore_initcall(thermal_init);
 ### `__attribute__`
 
 可以设置函数属性(Function Attribute), 变量属性(Variable Attribute), 类型属性(Type Attribute)[^3].
+
+GNU CC 需要使用 `–Wall` 编译器来击活 `__attribute__` 功能。
+
+具体后续再进行研究。
 
 
 ## Linux 内核初始化
