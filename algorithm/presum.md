@@ -1,7 +1,4 @@
----
-title:  "Prefix, Presum"
-Date: 2021-06-01
----
+# Prefix, Presum
 
 ## 例题索引
 
