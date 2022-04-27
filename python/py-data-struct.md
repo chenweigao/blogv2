@@ -60,6 +60,23 @@ what you can see is that **[2,3,4]** is replaced by **[20,30]**
 
   In contrast, the built-in function `sorted(list)` creates a new list and returns it.
 
+- 找到列表中每一行的最大元素和每一列的最大元素
+
+```python
+        row = len(heights)
+        col = len(heights[0])
+      
+        max_row = [0] * row
+        max_col = [0] * col
+
+        for i in range(row):
+            max_row[i] = max(heights[i])
+
+        for j in range(col):
+            for i in range(row):
+                max_col[j] = max(heights[i][j], max_col[j])
+```
+
 ## sort and sorted
 
 :::tip skill
