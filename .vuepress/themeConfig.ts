@@ -24,7 +24,7 @@ export default defineThemeConfig({
   // sidebar
   sidebar: {
     "/algorithm/data_struct/": "structure",
-    "/algorithm/details/": "structure",
+    "/algorithm/": "structure",
     "/python/": "structure",
     "/others/tools/": "structure",
     "/others/tmp/": "structure",

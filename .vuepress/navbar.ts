@@ -17,7 +17,7 @@ export default defineNavbarConfig([
       {
         text: "Algorithm",
         icon: "bit",
-        link: "details/"
+        link: ""
       },
     ]
   },
