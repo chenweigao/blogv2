@@ -12,7 +12,7 @@
 
 这些函数在内核初始化过程中的调用顺序只和这里的函数指针的顺序有关，和函数本身在 `.init.text` 的区段无关。在 2.4 内核中，这些函数指针的顺序也是和链接的顺序有关的，是不确定的。在 2.6 内核中，`initcall.init` 区段又分成7个子区段，分别是:
 
-```c
+```markdown
 .initcall1.init  
 .initcall2.init  
 .initcall3.init  
@@ -24,7 +24,7 @@
 
 各个区段定义的方法分别是：
 
-```c
+```markdown
 core_initcall(fn) --->.initcall1.init  
 postcore_initcall(fn) --->.initcall2.init  
 arch_initcall(fn) --->.initcall3.init  
@@ -130,19 +130,40 @@ postcore_initcall(thermal_init);
 对于 `__section` 的定义，在 `compiler_attributes.h` 中可以找到：
 
 ```c
-/*
- *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-section-function-attribute
- *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-section-variable-attribute
- * clang: https://clang.llvm.org/docs/AttributeReference.html#section-declspec-allocate
- */
 #define __section(section)              __attribute__((__section__(section)))
 ```
 
 我们不难看出，其本质就是一个 `__attribute__`.
 
-### __attribute__
+### `__attribute__`
 
 可以设置函数属性(Function Attribute), 变量属性(Variable Attribute), 类型属性(Type Attribute)[^3].
+
+
+## Linux 内核初始化
+
+### start_kernel
+
+内核初始化的 C 语言入口[^4]是 `start_kernel`, 该函数首先初始化基础设施，即初始化内核的各个子系统，然后调用函数 `rest_init`, 该函数的执行流程如下：
+
+1. 创建 1 号线程，即 init 线程，线程函数是 `kernel_init`
+2. 创建 2 号线程，即 kthread 线程，负责创建内核线程
+3. 0 号线程最终变成空闲线程
+
+### init 线程
+
+init 线程继续初始化，执行的主要操作如下：
+
+1. `smp_prepare_cpus()` 在启动从处理器以前执行准备工作
+2. `do_pre_smp_initcalls()`: 执行必须在初始化 SMP 系统以前执行的早期初始化，即使用宏 `early_initcall` 注册的初始化函数
+3. `smp_init()`: 初始化 SMP 系统（对称多处理器系统），启动所有从处理器
+4. `do_initcalls()`: 执行级别 0~7 的初始化
+5. ... 暂略
+
+分析：
+
+1. 我们可以看到，`do_initcalls()` 这一步骤执行了级别 0~7 的初始化，所以说我们 thermal 模块的初始化就是在这个阶段完成的。
+2. 从上文看到，在初始化 thermal 的时候，从处理器已经完成启动了。这句话的深层含义是说，系统启动时拔核等操作是在更底层完成的，要和加载区分进行区分，不要混淆。
 
 
 ## Reference
@@ -150,3 +171,4 @@ postcore_initcall(thermal_init);
 [^1]: [内核初始化过程中的调用顺序](https://e-mailky.github.io/2016-10-14-linux_kernel_init_seq)
 [^2]: [Linux 内核初始化定义](https://blog.csdn.net/beatbean/article/details/8448623)
 [^3]: [GNU __attribute__ 机制](https://sites.google.com/site/emmoblin/gcc-tech/gun-attribute)
+[^4]: 《Linux 内核深度解析》
