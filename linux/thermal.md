@@ -1,6 +1,7 @@
 ---
 index: 1
 
+
 ---
 
 
@@ -121,15 +122,54 @@ struct thermal_zone_params {
 | k_pu              | s32    | *Proportional parameter of the PID controller when undershooting* |                                                     |
 | k_i               | s32    | *Integral parameter of the PID controller*                   |                                                     |
 | k_d               | s32    | *Derivative parameter of the PID controller*                 |                                                     |
-| integral_cutoff   | s32    | *threshold below which the error is no longer accumulated*   |                                                     |
-| slope             | int    | *slope of a linear temperature adjustment curve.*            |                                                     |
-| offset            | int    | *offset of a linear temperature adjustment curve.*           |                                                     |
+| integral_cutoff   | s32    | *threshold below which the error is no longer accumulated*   | 低于此阈值的错误将不再累计                          |
+| slope             | int    | *slope of a linear temperature adjustment curve.*            | 线性温度调节曲线的斜率                              |
+| offset            | int    | *offset of a linear temperature adjustment curve.*           | 线性温度调节曲线的偏移                              |
+
+:::tip s32, u32 in int-l64.h
+
+```c
+typedef __signed__ int __s32;
+typedef unsigned int __u32;
+```
+
+:::
 
 #### thermal_bind_params 
 
-thermal_bind_params 结构体如下：
+thermal_bind_params (thermal.h)结构体如下：
 
-@todo
+```c
+/* Structure that holds binding parameters for a zone */
+struct thermal_bind_params {
+	struct thermal_cooling_device *cdev;
+
+	int weight;
+
+	int trip_mask;
+
+	unsigned long *binding_limits;
+	int (*match) (struct thermal_zone_device *tz,
+			struct thermal_cooling_device *cdev);
+};
+```
+
+在深入分析之前，我们需要了解到，`thermal_bind_params ` 隶属结构如下：
+
+```mermaid
+flowchart LR
+    A(thermal_zone_device )-->B( thermal_zone_params *tzp)
+    B-->C(thermal_bind_params *tbp)
+```
+
+| param          | type          | comments                                                     | means |
+| :------------- | ------------- | ------------------------------------------------------------ | ----- |
+| weight         | int           | *This is a measure of 'how effectively these devices can  cool 'this' thermal zone. It shall be determined by platform characterization. This value is relative to the rest of the weights so a cooling device whose weight is double that of another cooling device is twice as effective. See Documentation/driver-api/thermal/sysfs-api.rst for more information.* |       |
+| trip_mask      | int           | *This is a bit mask that gives the binding relation between this thermal zone and cdev, for a particular trip point.* |       |
+| binding_limits | unsigned long | *This is an array of cooling state limits. Must have exactly  2 \* thermal_zone.number_of_trip_points. It is an array consisting  of tuples  \<lower-state upper-state\> of state limits. Each trip  will be associated with one state limit tuple when binding.  A NULL pointer means <THERMAL_NO_LIMITS THERMAL_NO_LIMITS>  on all trips.* |       |
+| match          |               | `int (*match) (struct thermal_zone_device *tz, struct thermal_cooling_device *cdev);` |       |
+
+
 
 ### thermal_zone_device_ops *ops
 
