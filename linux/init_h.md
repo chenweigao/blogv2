@@ -1,4 +1,4 @@
-# init.h 
+# init.h
 
 ## Abstract
 
@@ -97,6 +97,32 @@ postcore_initcall(thermal_init);
 #define __exitdata	__section(".exit.data")
 #define __exit_call	__used __section(".exitcall.exit")
 ```
+
+各个区段的示意图如下：
+
+```mermaid
+flowchart LR
+    subgraph section
+    a1[[.text]]
+    a2[[.rodata]]
+    a3[[.data]]
+    a4[[.bss]]
+    end
+```
+
+```mermaid
+flowchart LR
+    subgraph section2
+    a5[[.symtab]]
+    a6[[.rel.text]]
+    a7[[.rel.data]]
+    a8[[.debug]]
+    a9[[.line]]
+    a10[[.stetab]]
+    end
+```
+
+上述应该在一个 Section 中，为了方便，将这两个分开画了。
 
 理解上述代码需要参考《Linux 内核初始化定义》[^2] 这篇文章。
 

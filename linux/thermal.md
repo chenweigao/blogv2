@@ -74,6 +74,52 @@ struct thermal_zone_device {
 }
 ```
 
+为了更方便分析，我们给出一个简单的类图：
+
+```mermaid
+classDiagram
+  direction LR
+  class thermal_zone_device {
+    - thermal_zone_params: *tzp
+    - thermal_zone_device_ops: *ops
+  }
+  
+  class thermal_zone_device_ops {
+  	<<*ops>>
+    - bind : int*
+    - unbind
+    - get_temp
+    - set_trips
+    - get_mode
+    - set_mode
+    - get_trip_type
+    - get_trip_temp
+    -- ..
+  }
+  
+  class thermal_zone_params {
+  	<<*tzp>>
+    - governor_name
+    - num_tbps
+    - thermal_bind_params : *tbp
+    - ...
+  }
+  
+  class thermal_bind_params {
+  	<<*tbp>>
+  	- thermal_cooling_device : *cdev
+  	- weight
+  	- trip_mask
+  	- binding_limits: unsigned long *
+  	- match: int *
+  }
+  thermal_zone_device --|> thermal_zone_device_ops
+  thermal_zone_device --|> thermal_zone_params
+  thermal_zone_params --|> thermal_bind_params
+```
+
+
+
 ### thermal_zone_params *tzp
 
 在上述结构体的 24 行，结构体细节如下：
@@ -108,6 +154,15 @@ struct thermal_zone_params {
 ```
 
 🟡🟡🟡发散：如寻找对应的 governor: `governor = __find_governor(tz->tzp->governor_name);` 就用到了 `tzp->governor_name` 这个参数。
+
+我们看一下 `tzp` 的位置：
+
+```mermaid
+flowchart LR
+    A(thermal_zone_device )-->B(thermal_zone_params *tzp)
+```
+
+
 
 我们去掉原生代码中的注释信息，然后用表格的形式一一分析这些参数：
 
@@ -174,6 +229,15 @@ flowchart LR
 ### thermal_zone_device_ops *ops
 
 指的是 thermal 可以操作的类型：
+
+其隶属的结构如下：
+
+```mermaid
+flowchart LR
+    A(thermal_zone_device )-->B(thermal_zone_device_ops *ops)
+```
+
+其结构体定义如下：
 
 ```c
 struct thermal_zone_device_ops {
