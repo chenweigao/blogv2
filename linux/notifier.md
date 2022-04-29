@@ -1,4 +1,4 @@
-# Linux Notifier
+# Notifier
 
 ## Abstract
 
@@ -14,18 +14,43 @@
 
 ## Notifier Struct
 
-## notifier_chain(notifier_head)
+### notifier_chain(notifier_head)
 
 我们需要了解到，通知链可以分为 4 种[^1]，如下表所示：
 
-| 通知链(notifier.c)                  | 定义                                                         | 备注 |
-| ----------------------------------- | ------------------------------------------------------------ | ---- |
-| 原子通知链 atomic_notifier_head     | 采用**自旋锁**，通知链元素的回调函数（当事件发生时要执行的函数）在中断或原子操作上下文中运行，不允许阻塞。 |      |
-| 可阻塞通知链 blocking_notifier_head | 通知链使用**信号量**实现回调函数的加锁，通知链元素的回调函数在进程上下文中运行，允许阻塞。 |      |
-| 原始通知链 raw_notifier_head        | 对通知链元素的回调函数**没有任何限制**，所有锁和保护机制都由调用者维护。 |      |
-| SRCU 通知链 srcu_notifier_head      | 可阻塞通知链的一种变体，采用**互斥锁**和叫做 **可睡眠的读拷贝更新机制** (Sleepable Read-Copy UpdateSleepable Read-Copy Update)。 |      |
+| 通知链(notifier.c)                  | 定义                                                         |
+| ----------------------------------- | ------------------------------------------------------------ |
+| 原子通知链 atomic_notifier_head     | 采用**自旋锁**，通知链元素的回调函数（当事件发生时要执行的函数）在中断或原子操作上下文中运行，不允许阻塞。 |
+| 可阻塞通知链 blocking_notifier_head | 通知链使用**信号量**实现回调函数的加锁，通知链元素的回调函数在进程上下文中运行，允许阻塞。 |
+| 原始通知链 raw_notifier_head        | 对通知链元素的回调函数**没有任何限制**，所有锁和保护机制都由调用者维护。 |
+| SRCU 通知链 srcu_notifier_head      | 可阻塞通知链的一种变体，采用**互斥锁**和叫做**可睡眠的读拷贝更新机制** (Sleepable Read-Copy UpdateSleepable Read-Copy Update)。 |
 
 这几种通知链的区别是在**执行通知链上的回调函数时是否有安全保护措施**。
+
+```mermaid
+flowchart LR
+  subgraph notifier
+    direction TB
+    subgraph atomic_notifier_head
+    end
+    subgraph blocking_notifier_head
+    end
+    subgraph raw_notifier_head
+    end
+    subgraph srcu_notifier_head
+    end
+  end
+  subgraph struct
+  	subgraph notifier_block
+  	end
+  end
+  atomic_notifier_head -.- has -.->	 struct
+  blocking_notifier_head -.- has -.->	 struct
+  raw_notifier_head -.- has -.-> struct
+  srcu_notifier_head -.- has -.->	 struct
+```
+
+上图主要阐述了这 4 中 notifier_chain 中都有共同的 notifier_block, 阐述了 notifier 和 notifier_block 的关系。
 
 ### atomic_notifier_head
 
@@ -160,7 +185,7 @@ struct srcu_notifier_head {
 
 ### notifier_block
 
-通知链表(也称作通知块，挂在通知链上面) `notifier_block` 的数据结构定义如下：
+通知链表(也称作通知块，挂在通知链上面，上文有图)， `notifier_block` 的数据结构定义如下：
 
 ```c
 struct notifier_block
@@ -204,11 +229,21 @@ typedef	int (*notifier_fn_t)(struct notifier_block *nb,
 
 我们可以看到，新版的内核对函数指正进行了封装。个人理解这样做的好处在于，在阅读源码的时候，能更加方便的理解参数的含义。
 
+新封装的函数指针 `notifier_fn_t` 的参数理解如下：
+
+| 参数   | 类型             | 含义                                                  |
+| ------ | ---------------- | ----------------------------------------------------- |
+| nb     | notifier_block * |                                                       |
+| action | unsigned long    | 用于指明事件的类型；通知都是一个整数                  |
+| data   | void *           | void 类型的内存地址，在不同的子系统中表示不同的信息。 |
+
+对于第三个参数，需要注意的是：我们在设计自己的通知链系统可以用第三个入参实现在通知系统和被通知系统之间*数据的传递*，以便被通知系统的工作可以更加紧凑、高效。
+
 ## APIs
 
 ### Abstract
 
-API 主要可以分为三类，如下图所示：
+API 主要可以分为三类，如下图所示（无视那个虚线，为了排版）：
 
 ```mermaid
 classDiagram
@@ -239,7 +274,7 @@ classDiagram
 
 ### notifier_chain_register
 
-通知链需要进行注册，对于一个链表的注册，需要一个表头，指向这个通知链表的第一个元素，注册函数的定义如下（Linux 内核中有很多的注册函数，我们拿一个举例）：
+通知链需要进行注册（注意到注册的时候要保证通知链存在，需要的前置步骤是后文的 init 部分，或者前文的 struct 部分也有介绍），对于一个链表的注册，需要一个表头，指向这个通知链表的第一个元素，注册函数的定义如下（Linux 内核中有很多的注册函数，我们拿一个举例）：
 
 ```c
 // notifier.c
@@ -264,6 +299,8 @@ int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
 | nh   | atomic_notifier_head* | Pointer to head of the atomic notifier chain. <br />指向调用链头部的一个指针。 |
 | n    | notifier_block*       | 前文分析过的 notifier_block                                  |
 
+第 9 行，使用了一个自旋锁，这是由 `atomic_notifier_head` 中的 `lock` 属性决定的。
+
 atomic_notifier_head 的定义如下：
 
 ```c
@@ -275,7 +312,35 @@ struct atomic_notifier_head {
 
 具体分析见上文。
 
+#### notifier_chain_register
 
+静态方法 notifier_chain_register 的实现如下：
+
+>  Notifier chain core routines.  The exported routines below are layered on top of these, with appropriate locking added.
+
+notifier chain 的核心代码。
+
+```c
+static int notifier_chain_register(struct notifier_block **nl,
+				   struct notifier_block *n)
+{
+	while ((*nl) != NULL) {
+		if (unlikely((*nl) == n)) {
+			WARN(1, "notifier callback %ps already registered",
+			     n->notifier_call);
+			return -EEXIST;
+		}
+		if (n->priority > (*nl)->priority)
+			break;
+		nl = &((*nl)->next);
+	}
+	n->next = *nl;
+	rcu_assign_pointer(*nl, n);
+	return 0;
+}
+```
+
+`n1` 在调用的时候作为 `head` 传入，确保 `n` 的优先级比 `n1` 低。
 
 ### notifier_chain_unregister
 
@@ -369,7 +434,7 @@ NOKPROBE_SYMBOL(notifier_call_chain);
 
 在前面我们提到，通知链有四种，我们在使用的时候，需要了解到我们的场景中，需要使用哪个调用链。
 
-我们在 `notifier.h` 文件中搜索通知链的大写名称即可看到不同类通知链的初始化函数，我们拿 `ATOMIC_NOTIFIER_HEAD` 举例：
+我们在 `notifier.h` 文件中搜索通知链的大写名称即可看到不同类通知链的初始化函数，我们拿 `ATOMIC_NOTIFIER_HEAD` 举例（上文也研究过了）：
 
 ```c
 #define ATOMIC_NOTIFIER_HEAD(name)				\
@@ -416,6 +481,8 @@ ATOMIC_INIT_NOTIFIER_HEAD(&dock_notifier_list);
 
 init 通知链以后，我们还需要往通知链上面注册、卸载通知块，或者遍历通知块。这里的通知块指的是 `notifier_block`, 内核提供的通知链的接口我们在上文已经进行了研究，为了方便理解，我们再对其进行一个归类总结，主要可以分为三类，其源码定义如下：
 
+register：
+
 ```c
 extern int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
 		struct notifier_block *nb);
@@ -425,7 +492,11 @@ extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
 		struct notifier_block *nb);
 extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
 		struct notifier_block *nb);
+```
 
+unregister: 
+
+```c
 extern int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
 		struct notifier_block *nb);
 extern int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,
@@ -434,7 +505,11 @@ extern int raw_notifier_chain_unregister(struct raw_notifier_head *nh,
 		struct notifier_block *nb);
 extern int srcu_notifier_chain_unregister(struct srcu_notifier_head *nh,
 		struct notifier_block *nb);
+```
 
+call:
+
+```c
 extern int atomic_notifier_call_chain(struct atomic_notifier_head *nh,
 		unsigned long val, void *v);
 extern int blocking_notifier_call_chain(struct blocking_notifier_head *nh,
@@ -489,6 +564,16 @@ int call_netevent_notifiers(unsigned long val, void *v);
 2. 通知者：事件的通知者。检测到某个事件或者产生某个事件的时候，通知所有对该事件产生兴趣的一方，通知者需要**定义一个通知链**，并在其中保存每一个被通知者对事件的回调函数。
 
    通知这个过程本质上就是遍历通知链中的每一项，然后调用相应的回调函数。
+
+## Summary
+
+### Something 
+
+我们以后在阅读调用链相关的源码的时候，可以参考以下的方法：
+
+1. 注册通知链回调函数的系统和提供通知链的系统之间一定存在某种联系，且本系统需要那个系统对某个重要事件进行响应
+2. 看本系统注册的通知链回调函数的实现：它对哪些事情感兴趣，是怎么处理的？
+3. 提供通知链对象的系统有哪些事件？
 
 ## Reference
 
