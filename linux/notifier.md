@@ -23,7 +23,7 @@
 | 原子通知链 atomic_notifier_head     | 采用**自旋锁**，通知链元素的回调函数（当事件发生时要执行的函数）在中断或原子操作上下文中运行，不允许阻塞。 |
 | 可阻塞通知链 blocking_notifier_head | 通知链使用**信号量**实现回调函数的加锁，通知链元素的回调函数在进程上下文中运行，允许阻塞。 |
 | 原始通知链 raw_notifier_head        | 对通知链元素的回调函数**没有任何限制**，所有锁和保护机制都由调用者维护。 |
-| SRCU 通知链 srcu_notifier_head      | 可阻塞通知链的一种变体，采用**互斥锁**和叫做**可睡眠的读拷贝更新机制** (Sleepable Read-Copy UpdateSleepable Read-Copy Update)。 |
+| SRCU 通知链 srcu_notifier_head      | 可阻塞通知链的一种变体，采用**互斥锁**和叫做**可睡眠的读拷贝更新机制** (Sleep-able Read-Copy Update)。 |
 
 这几种通知链的区别是在**执行通知链上的回调函数时是否有安全保护措施**。
 
@@ -536,13 +536,13 @@ static ATOMIC_NOTIFIER_HEAD(netlink_chain);
 
 int netlink_register_notifier(struct notifier_block *nb)
 {
-        return atomic_notifier_chain_register(&netlink_chain, nb);
+    return atomic_notifier_chain_register(&netlink_chain, nb);
 }
 EXPORT_SYMBOL(netlink_register_notifier);
 
 int netlink_unregister_notifier(struct notifier_block *nb)
 {
-        return atomic_notifier_chain_unregister(&netlink_chain, nb);
+    return atomic_notifier_chain_unregister(&netlink_chain, nb);
 }
 EXPORT_SYMBOL(netlink_unregister_notifier);
 ```
