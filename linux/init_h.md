@@ -130,7 +130,7 @@ flowchart LR
 
   `#define __init		__section(".init.text") __cold  __latent_entropy __noinitretpoline __nocfi`
 
-  ``__init` 用于标记函数，这个放在 `.init.text` section, 标记为初始化的函数，仅仅只是能在初始化的期间使用，在模块装载后，会将初始化函数扔掉。这样做可以将初始化函数占用的内存释放出来。
+  `__init` 用于标记函数，这个放在 `.init.text` section, 标记为初始化的函数，仅仅只是能在初始化的期间使用，在模块装载后，会将初始化函数扔掉。这样做可以将初始化函数占用的内存释放出来。
 
   `__cold` 是告诉编译器这个函数很可能不被执行到。
 
