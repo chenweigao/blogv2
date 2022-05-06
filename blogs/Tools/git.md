@@ -5,6 +5,7 @@ tag:
  - git
 category:
  -  Tools
+
 ---
 
 # Git
@@ -15,12 +16,12 @@ category:
 
 添加一条规则：
 
-::: tip
+::: tip SwitchHosts Rule
 方案名：GitHub（可以自行命名）
 
 类型：远程
 
-URL 地址：https://cdn.jsdelivr.net/gh/ineo6/hosts/hosts
+URL 地址：<https://cdn.jsdelivr.net/gh/ineo6/hosts/hosts>
 
 自动更新：1个小时
 :::
@@ -44,6 +45,93 @@ ssh key:
 ```bash
 ssh-keygen
 ```
+
+## repo
+
+### Workflow Usage
+
+ repo 的工作流可以参考这个文档(注意有中文版，可以切换语言查看)[^1]，其流程大概可以总结为以下步骤：
+
+```bash
+repo start
+git add .
+git commit .
+repo upload
+```
+
+其中几个 repo 专有的命令如下表格所示[^2]：
+
+| command     | description                             | example |
+| ----------- | --------------------------------------- | ------- |
+| repo init   | Initializes a new client.               |         |
+| repo sync   | Syncs the client to the repositories.   |         |
+| repo start  | Starts a new branch.                    |         |
+| repo status | Shows the status of the current branch. |         |
+| repo upload | Uploads changes to the review server.   |         |
+
+以下是使用的例子（简单的 workflow, 后文会详细研究每一个命令）：
+
+```bash
+repo sync PROJECT0 PROJECT1 ... PROJECTN
+repo start BRANCH_NAME .
+repo status .
+```
+
+如果我们要给特定的项目创建分支，则：
+
+```bash
+repo start BRANCH_NAME PROJECT_NAME
+```
+
+切换分支还是使用 `checkout` 命令，但是查看分支可以使用
+
+```bash
+git branch
+repo branches
+```
+
+如果要查看修改，则使用：
+
+```bash
+repo diff
+
+# or
+cd ~/WORKING_DIRECTORY/PROJECT
+git diff --cached
+```
+
+修改完后，我们同步最新改动并提交我们的改动：
+
+```bash
+repo sync
+repo upload
+```
+
+### repo init
+
+我们需要一个 xml 文件来制定 init 的，一般而言这个 xml 文件在远程，可以使用 `-u` 参数进行指定，官方对此的使用说明如下：
+
+```bash
+repo init -u url [options]
+```
+
+在当前目录中安装 Repo。这样会创建一个 `.repo/` 目录，其中包含存放 Repo 源代码和标准 Android 清单文件的 Git 代码库。
+
+如果我们要重新 init, 则删除这个 `.repo/` 目录即可。
+
+需要注意的是，这个 `.repo/` 目录是影响到所有得子目录的，这个和 git 的原理类似。
+
+选项：
+
+- `-u`: 指定从中检索清单代码库的网址。常见清单位于 `https://android.googlesource.com/platform/manifest`。
+- `-m`: 选择代码库中的清单文件。如果未选择清单名称，则默认为 `default.xml`。
+- `-b`：指定修订版本，即特定的 manifest-branch。
+
+:::tip 
+
+**注意**：对于所有剩余的 Repo 命令，当前的工作目录必须是 `.repo/` 的父目录或该父目录的子目录。
+
+:::
 
 ## Git Reset
 
@@ -418,3 +506,8 @@ git push origin --delete serverfix
 ```
 
 上述操作只是删除了远程服务器上的分支指针，Git会保留数据一段时间知道下一次触发垃圾回收。
+
+## Reference
+
+[^1]: [Source Control Workflow](https://source.android.com/setup/create/coding-tasks)
+[^2 ]: [Repo 命令参考资料](https://source.android.com/setup/develop/repo#init)
