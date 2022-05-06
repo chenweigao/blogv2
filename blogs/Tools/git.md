@@ -6,6 +6,7 @@ tag:
 category:
  -  Tools
 
+
 ---
 
 # Git
@@ -171,6 +172,18 @@ git fetch --all && git rest --hard origin/master
 ```bash
 git checkout .
 ```
+
+
+
+### 删除新增文件
+
+```bash
+git clean -xdff
+```
+
+注意这个是把新增的未保存到缓冲区的文件给删除掉
+
+如果是改动过的，就继续使用 `git checkout – .` 就可以了。
 
 ## Git Config
 
