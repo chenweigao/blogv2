@@ -360,6 +360,13 @@ clean:
         rm test $(objects)
 ```
 
+## Problems
+
+还有几个问题需要解决的，在这列举出来：
+1. 全局跨文件夹如何引用？
+2. 变量的应用
+3. 操作符
+
 ## Reference
 
 [^1]: [跟我一起写Makefile](https://seisman.github.io/how-to-write-makefile/index.html)
