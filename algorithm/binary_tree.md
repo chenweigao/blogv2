@@ -29,7 +29,40 @@ def dfs(root: Optional[TreeNode], res):
 
 #### 迭代法
 
-@todo
+```python
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        stack = []
+        res = []
+        while stack or root:
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            res.append(root.val)
+            root = root.right
+        return res
+```
+
+这种方法理解起来并不是很直观，我们需要加深对“中序遍历：左 -- 根 -- 右” 的理解，就是说我们先遍历左子树，然后遍历完之后再走到右子树。
+
+我们可以举例说：
+
+```mermaid
+flowchart TD
+    root((1)) --> node2((2))
+    root((1)) --> node3((3))
+    node2((2)) --> node4((4))
+    node2((2)) --> node5((5))
+    node3((3)) --> node6((6))
+    node3((3)) --> nodenull((N))
+```
+
+上述二叉树的中序遍历结果是 [4, 2, 5, 1, 6, 3]
+
+我们第一趟的时候，栈内元素是 [1, 2, 4], 然后 root 指向了 Null, 这时候我们给结果里面增加元素，到 root.right 不是 Null 了，再继续找。
+
+同样的，我们可以根据中序遍历的应用题目 [面试题 04.06. 后继者](https://leetcode.cn/problems/successor-lcci/) 来加深印象。
 
 ### 二叉树的层次遍历
 
@@ -532,3 +565,52 @@ class Solution:
         depth(root)
         return self.res - 1
 ```
+
+### 面试题 04.06. 后继者
+
+[面试题 04.06. 后继者](https://leetcode.cn/problems/successor-lcci/)
+
+> 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
+>
+> 如果指定节点没有对应的“下一个”节点，则返回`null`。
+
+#### 中序遍历
+
+我们可以使用中序遍历的方法来求解这个问题，并且中序遍历过程中，维护上一个访问的节点。
+
+中序遍历部分，可以直接套用迭代的中序遍历模板。
+
+```python
+class Solution:
+    def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> TreeNode:
+        pre, cur = None, root
+
+        stack = []
+
+        while stack or cur:
+            while cur:
+                stack.append(cur)
+                cur = cur.left
+
+            cur = stack.pop()
+            if pre == p:
+                return cur
+            
+            pre = cur
+            cur = cur.right
+
+        return None
+```
+
+在实现这个代码的时候，有几点我没有理解透彻，导致写错：
+
+1. `pre, cur = None, root` 初始值的赋值需要好好体会
+2. `stack.append(cur)` 这边是 `cur` 入栈，入栈以后再遍历左边
+3. `cur = stack.pop()` 出栈的步骤不要忘记
+
+#### BST 特性解法
+
+这道题目除了可以根据中序遍历来求解外，也可以根据 BST 的特点进行求解。
+
+@todo 
+
