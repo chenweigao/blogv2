@@ -835,3 +835,53 @@ class Solution:
    1. 如果 b 壶全被倒空了。那么这时候有两种情况：第一种是把全部的 b 都倒进去了，但是没有倒满（$b + a$）；第二种情况是到进去了，此时杯子的容量不够了($x$)。
    2. 如果 b 壶没有被倒空。那么此时 b 壶中应该是有剩下的水的，什么时候会剩下呢？如果 $a + b$ 的容量小于 a 壶的容量 $x$ 时候，肯定会有部分的水剩下在了 b 壶里面。那么剩下了多少呢？我们知道 a 壶可以倒入 $x - a$ 容量的水，那么剩下的水就是 b 壶现有的水减去 a 壶可以倒入的水 $b - (x -a)$。
 2. *将 a 壶倒入 b 壶*：和上面的分析同理。
+
+### LC433 基因变化
+
+> 给你两个基因序列 start 和 end ，以及一个基因库 bank ，请你找出并返回能够使 start 变化为 end 所需的最少变化次数。如果无法完成此基因变化，返回 -1 。
+>
+> 来源：力扣（LeetCode）
+> 链接：https://leetcode.cn/problems/minimum-genetic-mutation
+> 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+这个题目描述比较长，可以参考一下原题目的描述，在此归纳一下这个题目的一些重点：
+
+1. 最终的变化序列要在基因库 bank 里面，并且每一次的变化也要在基因库 bank 里面才算是合法的变化
+2. 要求解 start –> end 的最小变化
+
+对于这道题目，我们的解法如下：
+
+```python
+class Solution:
+    def minMutation(self, start: str, end: str, bank: List[str]) -> int:
+        if start == end:
+            return 0
+        if end not in bank:
+            return -1
+        bank = set(bank)
+        q = collections.deque([(start, 0)])
+        while q:
+            gen, step = q.popleft()
+            for i, ch in enumerate(gen):
+                for y in "ACGT":
+                    if ch != y:
+                        new_gen = gen[:i] + y + gen[i + 1:]
+                        if new_gen in bank:
+                            if new_gen == end:
+                                return step + 1
+                            bank.remove(new_gen)
+                            q.append((new_gen, step + 1))
+        return -1
+```
+
+上述代码有几个关键点我们需要注意的，现在逐一说明：
+
+1. 题目要求是求最小变化，**为什么 BFS 求解出来的答案是最小变化**？
+
+   对于广度优先搜索而言，我们找到的第一个叶子节点就是最短的。假设有两个同层的节点都能指向 end, 因为他们两个是同层，所以最终的结果也是一样的。
+
+2.  有段时间没有刷 leetcode 了，犯了一些错误。
+
+   - `gen, step = q.popleft()` 注意是 `popleft()`, 不要写成 `pop()`
+   - `new_gen = gen[:i] + y + gen[i + 1:]` 这个按照 i 的思路很好，我是没有想到的，多多理解！之前我的想法是定义一个全局的 `i`, 等遍历完以后再恢复，明显是没有这种方式巧妙的。
+
