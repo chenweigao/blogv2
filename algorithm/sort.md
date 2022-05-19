@@ -39,6 +39,7 @@ res.sort(key=lambda x: (x[0], x[1]))
 ```python
 from functools import cmp_to_key
 ```
+
 :::
 
 对于这个比较函数，还可以再研究一下：
@@ -63,6 +64,8 @@ def test01(self):
 ```
 
 可以看到 `x - y` 比较的结果是使得其升序排列了。
+
+还有一个 leetcode 的例子是 `cmp_to_key` 的应用，[953. 验证外星语词典](https://leetcode.cn/problems/verifying-an-alien-dictionary/)，具体可以参考后面的实例章节。
 
 ## Sort
 
@@ -90,7 +93,7 @@ another example:
 
 ### Quick Sort
 
-- Worst-case running time $O(n^2)​$ :
+- Worst-case running time $O(n^2)$ :
   - input sorted or reverse sorted, partition around min or max element.
   - one side of partition has no elements.
   - $T(n) = T(0) + T(n–1) + cn$
@@ -138,61 +141,61 @@ std::sort(numbers.begin(), numbers.end(), greater());
 
 1. 基本实现：
 
-    ```cpp
-    //引用实现
-    swap(int &x, int &y){
-    ​    int temp;
-    ​    temp = x;
-    ​    x= y;
-    ​    y =x;
-    }
-    swap(x, y);
-
-    //指针实现
-    swap(int *x, int *y){
-    ​       int temp;
-    ​       temp = *x;
-    ​       *x = *y;
-    ​       *y = temp;
-    }
-    swap(&x, &y);
-    ```
+   ```cpp
+   //引用实现
+   swap(int &x, int &y){
+   ​    int temp;
+   ​    temp = x;
+   ​    x= y;
+   ​    y =x;
+   }
+   swap(x, y);
+   
+   //指针实现
+   swap(int *x, int *y){
+   ​       int temp;
+   ​       temp = *x;
+   ​       *x = *y;
+   ​       *y = temp;
+   }
+   swap(&x, &y);
+   ```
 
 2. 异或实现：
 
-    ```cpp
-    void swap(int &x, int &y){
-    ​    x ^= y;
-    ​    y ^= x;
-    ​    x ^= y;
-    }
-    swap(x, y);
-
-    void swap(int *x, int *y){
-    ​    *x ^= *y;
-    ​    *y ^= *x;
-    ​    *x ^= *y;
-    }
-    swap(&x, &y);
-    ```
+   ```cpp
+   void swap(int &x, int &y){
+   ​    x ^= y;
+   ​    y ^= x;
+   ​    x ^= y;
+   }
+   swap(x, y);
+   
+   void swap(int *x, int *y){
+   ​    *x ^= *y;
+   ​    *y ^= *x;
+   ​    *x ^= *y;
+   }
+   swap(&x, &y);
+   ```
 
 3. 加减操作：
 
-    ```cpp
-    void swap(int &x, int &y){
-    ​    x = x + y;
-    ​    y = x - y;
-    ​    x = x - y;
-    }
-    swap(x, y);
-
-    void swap(int *x, int *y){
-    ​    *x = *x + *y;
-    ​    *y = *x - *y;
-    ​    *x = *x - *y;
-    }
-    swap(&x, &y);
-    ```
+   ```cpp
+   void swap(int &x, int &y){
+   ​    x = x + y;
+   ​    y = x - y;
+   ​    x = x - y;
+   }
+   swap(x, y);
+   
+   void swap(int *x, int *y){
+   ​    *x = *x + *y;
+   ​    *y = *x - *y;
+   ​    *x = *x - *y;
+   }
+   swap(&x, &y);
+   ```
 
 4. 宏定义：
 
@@ -207,9 +210,9 @@ std::sort(numbers.begin(), numbers.end(), greater());
 ### LC179 最大数
 
 > Given a list of non negative integers, arrange them such that they form the largest number.
-> 
+>
 > 给定一组非负整数 nums，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。
-> 
+>
 > Input: [10,2]
 >
 > Output: "210"
@@ -220,7 +223,7 @@ std::sort(numbers.begin(), numbers.end(), greater());
 
 10 和 2 的大小关系（或者说前后顺序），可以根据 10 + 2 = 102 和 2 + 10 = 210 的大小来判断。
 
-#### 冒泡排序 C
+#### 冒泡排序 C 解法
 
 这是百度百科冒泡排序算法的参考：
 
@@ -283,13 +286,13 @@ class Solution:
 
 - `[4,42]`: 需要比较 442 和 424, 所以我们需要把 4 放在 42 的前面拼接成最大值 442, 此时我们可以知道，如果对 4 和 42 进行排序的话，那么必须满足：
 
-    $$ 4 > 42 $$
+  $$ 4 > 42 $$
 
-    在这个例子中，442 - 424 > 0
+  在这个例子中，442 - 424 > 0
 
 - `[4,45]`: 需要比较 445 和 454, 我们需要把 45 放在 4 的前面拼接成最大值 454.
 
-    在这个例子中，445 - 454 < 0
+  在这个例子中，445 - 454 < 0
 
 所以说，我们定义一个比较函数，这个比较函数实现上述比较关系的结果：
 
@@ -319,5 +322,50 @@ class Solution:
 
         nums = sorted(map(str, nums), key=cmp_to_key(compare))
         return '0' if nums[0] == '0' else ''.join(nums)
+```
+
+### LC953 验证外星语词典
+
+[953. 验证外星语词典](https://leetcode.cn/problems/verifying-an-alien-dictionary/)
+
+> 某种外星语也使用英文小写字母，但可能顺序 order 不同。字母表的顺序（order）是一些小写字母的排列。
+>
+> 给定一组用外星语书写的单词 words，以及其字母表的顺序 order，只有当给定的单词在这种外星语中按字典序排列时，返回 true；否则，返回 false。
+>
+>  
+>
+> 示例 1：
+>
+> 输入：words = ["hello","leetcode"], order = "hlabcdefgijkmnopqrstuvwxyz"
+>
+> 输出：true
+>
+> 解释：在该语言的字母表中，'h' 位于 'l' 之前，所以单词序列是按字典序排列的。
+>
+> 来源：力扣（LeetCode）
+> 链接：https://leetcode.cn/problems/verifying-an-alien-dictionary
+> 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+我们使用 python 的 `cmp_to_key` 的解法如下：
+
+```python
+class Solution:
+    def isAlienSorted(self, words: List[str], order: str) -> bool:
+        dic = {v: i for i, v in enumerate(order)}
+
+        def cmp(s1, s2):
+            i = 0
+            while i < len(s1) and i < len(s2):
+                if dic[s1[i]] > dic[s2[i]]:
+                    return -1
+                elif dic[s1[i]] < dic[s2[i]]:
+                    return 1
+                else:
+                    i += 1
+
+            return 1 if i < len(s1) else -1
+
+        words_sorted = sorted(words, key=cmp_to_key(cmp))
+        return words_sorted == words
 ```
 
