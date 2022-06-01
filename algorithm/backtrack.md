@@ -439,3 +439,84 @@ class Solution:
 
 
 
+### LC473 火柴拼正方形
+
+题目链接见：[473. 火柴拼正方形](https://leetcode.cn/problems/matchsticks-to-square/)
+
+这道题目需要注意以下几点：
+
+1. 火柴可以拼接成正方形的条件是，所有火柴的和必须是 4 的倍数
+2. 火柴数量小于 4 只的话非法
+
+这两个条件可以作为我们的剪枝条件，我们给出这个题目的求解：
+
+```python
+class Solution:
+    def makesquare(self, matchsticks: List[int]) -> bool:
+        if len(matchsticks) < 4 or sum(matchsticks) % 4 != 0:
+            return False
+        
+        target = sum(matchsticks) // 4
+        # 从大到小排序保证回溯的次数比较少
+        matchsticks.sort(reverse=True)
+        # 把每一个 bucket 都放满 target
+        bucket = [0] * 4
+        def backtrack(index: int):
+            if index >= len(matchsticks):
+                return True
+            
+            for i in range(4):
+                if bucket[i] + matchsticks[index] > target:
+                    continue
+                bucket[i] += matchsticks[index]
+                if backtrack(index + 1):
+                    return True
+                bucket[i] -= matchsticks[index]
+            return False
+
+        return backtrack(0)
+
+```
+
+对于上述解法的，需要有以下注意的点：
+
+1. 我们把火柴数量从大到小排列，这样做的好处可以避免过多的回溯
+2. 我们给了四个桶 bucket, 每一个桶中最终的数量都是等于正方形的边长
+3. 第 16 行，如果当前的火柴加上当前的桶的和超过了 target, 我们则继续遍历其他的桶
+4. 剩下的就是回溯的基本步骤
+
+除此之外，我们还能给出一个暴力的 DFS 解法，这个解法也是有助于我们理解这个题目的：
+
+```python
+class Solution:
+    def makesquare(self, matchsticks: List[int]) -> bool:
+        if sum(matchsticks) % 4 != 0 or len(matchsticks) < 4:
+            return False
+
+        # 每个边长可以计算出来
+        target = sum(matchsticks) // 4
+
+        matchsticks.sort(reverse=True)
+
+        self.res = False
+
+        @lru_cache(None)
+        def dfs(a, b, c, d, i):
+            if i == len(matchsticks) and a == b == c == d == target:
+                self.res = True
+                return
+
+            if a + matchsticks[i] <= target:
+                dfs(a + matchsticks[i], b, c, d, i + 1)
+            if b + matchsticks[i] <= target:
+                dfs(a, b + matchsticks[i], c, d, i + 1)
+            if c + matchsticks[i] <= target:
+                dfs(a, b, c + matchsticks[i], d, i + 1)
+            if d + matchsticks[i] <= target:
+                dfs(a, b, c, d + matchsticks[i], i + 1)
+
+        dfs(0, 0, 0, 0, 0)
+        return self.res
+```
+
+但是总体而言，这个解法是没有回溯的解法优雅的。
