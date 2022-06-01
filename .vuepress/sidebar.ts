@@ -1,16 +1,31 @@
-import { defineSidebarConfig } from "vuepress-theme-hope";
+import { sidebar } from "vuepress-theme-hope";
 
-export default defineSidebarConfig([
-  "",
-  "home",
-  "slide",
-  {
-    text: "如何使用",
-    icon: "creative",
-    prefix: "guide/",
-    link: "guide/",
-    children: "structure",
-  },
+export const zhSidebarConfig = sidebar({
+  "/algorithm/data_struct/": "structure",
+  "/algorithm/": "structure",
+  "/python/": "structure",
+  "/others/tools/": "structure",
+  "/others/tmp/": "structure",
+  "/linux/": "structure"
+});
+
+  // "",
+  // "home",
+  // "slide",
+  // {
+  //   text: "如何使用",
+  //   icon: "creative",
+  //   prefix: "guide/",
+  //   link: "guide/",
+  //   children: "structure",
+  // },
+  
+  // "/algorithm/data_struct/": "structure",
+  // "/algorithm/": "structure",
+  // "/python/": "structure",
+  // "/others/tools/": "structure",
+  // "/others/tmp/": "structure",
+  // "/linux/": "structure"
   // {
   //   text: "文章",
   //   icon: "note",
@@ -43,4 +58,4 @@ export default defineSidebarConfig([
   //     },
   //   ],
   // },
-]);
+// ]);
