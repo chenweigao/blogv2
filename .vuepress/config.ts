@@ -1,6 +1,7 @@
 import { defineUserConfig } from "vuepress";
 import { hopeTheme } from "vuepress-theme-hope";
-import themeConfig from "./themeConfig";
+import { zhNavbarConfig } from "./navbar";
+import { mysidebar } from "./sidebar";
 import theme from "./theme";
 
 export default defineUserConfig({
@@ -33,7 +34,5 @@ export default defineUserConfig({
     },
   },
 
-  theme,
-
-});
-
+  theme
+})

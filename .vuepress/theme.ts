@@ -1,18 +1,20 @@
 import { hopeTheme } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
-import { zhSidebarConfig } from "./sidebar";
-
-const hostname =
-    process.env.HOSTNAME || "https://vueblog.weigao.cc";
+import { mysidebar } from "./sidebar";
 
 export default hopeTheme(
     {
-        hostname,
+        hostname: "https://vueblog.weigao.cc",
 
         author: {
             name: "Someone",
             url: "https://vueblog.weigao.cc",
         },
+
+
+        navbar: zhNavbarConfig,
+
+        sidebar: mysidebar,
 
 
         iconPrefix: "iconfont icon-",
@@ -21,7 +23,7 @@ export default hopeTheme(
 
         repo: "https://github.com/chenweigao",
 
-        docsDir: "demo/src",
+        // docsDir: "demo/src",
 
         footer: "2017-2022",
 
@@ -71,25 +73,26 @@ export default hopeTheme(
             },
         },
 
-        plugins: {
-            blog: {
-                autoExcerpt: true,
-            },
+        fullscreen: true,
 
+        plugins: {
+            blog: true,
             // 你也可以使用 Waline
-            comment: {
-                type: "giscus",
-                repo: "chenweigao/gitalk",
-                repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
-                category: "Announcements",
-                categoryId: "DIC_kwDOB3xgIM4COUME",
-            },
+            // comment: {
+            //     type: "giscus",
+            //     repo: "chenweigao/gitalk",
+            //     repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
+            //     category: "Announcements",
+            //     categoryId: "DIC_kwDOB3xgIM4COUME",
+            // },
 
             mdEnhance: {
-                enableAll: true,
-                presentation: {
-                    plugins: ["highlight", "math", "search", "notes", "zoom"],
-                },
+                tex: true,
+                // 启用下角标功能
+                sub: true,
+                // 启用上角标
+                sup: true,
+                // mermaid: true,
             },
 
         },

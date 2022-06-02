@@ -1,6 +1,6 @@
 import { sidebar } from "vuepress-theme-hope";
 
-export const zhSidebarConfig = sidebar({
+export const mysidebar = sidebar({
   "/algorithm/data_struct/": "structure",
   "/algorithm/": "structure",
   "/python/": "structure",
