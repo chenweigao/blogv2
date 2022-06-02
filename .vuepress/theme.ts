@@ -23,7 +23,7 @@ export default hopeTheme(
 
         repo: "https://github.com/chenweigao",
 
-        // docsDir: "demo/src",
+        // docsDir: "/",
 
         footer: "2017-2022",
 
@@ -92,7 +92,7 @@ export default hopeTheme(
                 sub: true,
                 // 启用上角标
                 sup: true,
-                // mermaid: true,
+                mermaid: true
             },
 
         },
