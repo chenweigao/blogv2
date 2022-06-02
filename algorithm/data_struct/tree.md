@@ -200,10 +200,129 @@ class Solution:
 
 @todo
 
+### 删除二叉搜索树中的节点
+
+#### LC450 删除二叉搜索树中的节点
+
+这个解法一是我一年前（2021）的解法，如下所示，写的还是比较清晰的：
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def get_successor(self, root):
+        """获取root的后继节点
+        1. 定位到 root 右子树
+        2. 寻找右子树中最靠左的节点
+        """
+        root = root.right
+        while root.left:
+            root = root.left
+        return root
+
+    def get_precursor(self, root):
+        """获取root的前驱节点
+        1. 定位到 root左子树
+        2. 寻找左子树中最靠右的节点
+        """
+        root = root.left
+        while root.right:
+            root = root.right
+        return root
+
+    def deleteNode(self, root: TreeNode, key: int) -> TreeNode:
+        if not root:
+            return None
+
+        if key == root.val:
+            # 删除
+            # 待删除的接地那没有子节点
+            if not root.left and not root.right:
+                root = None
+            # 如果要删除的节点只有左节点
+            elif root.left and not root.right:
+                root = root.left
+            # 只有右节点同理
+            elif root.right and not root.left:
+                root = root.right
+
+            # 如果左右节点都有，从左子树中找到最大的节点，或者右子树中找到最小的节点来替换自己
+            else:
+                # 找到后继节点
+                succeeded = self.get_successor(root)
+                root.val = succeeded.val
+                root.right = self.deleteNode(root.right, succeeded.val)
+
+        elif root.val > key:
+            # 比 key 大，找左边的
+            root.left = self.deleteNode(root.left, key)
+        else:
+            root.right = self.deleteNode(root.right, key)
+
+        return root
+```
+
+需要分析一下，先看如下的函数，要寻找某个节点右子树中最左边的那个节点：
+
+```python
+    def get_successor(self, root):
+        """获取root的后继节点
+        1. 定位到 root 右子树
+        2. 寻找右子树中最靠左的节点
+        """
+        root = root.right
+        while root.left:
+            root = root.left
+        return root
+```
+
+1. 定位到 root 的右子树（右节点）
+2. 右子树的最坐标节点找到，找到后返回
+
+这个思路十分巧妙，应当加以学习。
+
+我们在主流程中（遇到 root == key, 并且左右子树都存在的情况），我们的方法是：
+
+1. 首先找到 root 右子树的最左边的那个节点，这个节点将来就是用来替换 root 的，这么做的原因在于，替换掉以后，这个节点的左子树都比它小，右子树都比他大
+2. 我们找到以后把找到的最左边节点的值赋值给 root, 然后递归调用 root 的右子树，删除找到的最左边节点这个节点。在这里为什么递归会起作用呢？这是因为我们在递归到最左边子树的时候，这时候的这个节点必然是没有左子树的，所以符合我们上面讨论的只有右边节点这个递归条件，我们就可以解决了。
 
 
 
+来看看一年后的解法是怎么写的：
 
+```python
+class Solution:
+    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+        if not root:
+            return root
 
+        if root.val == key:
+            # if not root.left and not root.right:
+            #     root = None
+            # elif not root.left and root.right:
+            #     root = root.right
+            # elif not root.right and root.left:
+            #     root = root.left
+            if not root.left or not root.right:
+                root = root.left if root.left else root.right
+            else:
+                successor = root.right
+                while successor.left:
+                    successor = successor.left
+                root.val = successor.val
+                root.right = self.deleteNode(root.right, successor.val)
 
+        elif root.val > key:
+            root.left = self.deleteNode(root.left, key)
+        else:
+            root.right = self.deleteNode(root.right, key)
+
+        return root
+```
+
+注意到我们简化了一长串的 `if-elif-else`, 只是做了逻辑上面的优化，令代码更加优雅。
 
