@@ -77,22 +77,18 @@ export default hopeTheme(
 
         plugins: {
             blog: true,
+            
             // 你也可以使用 Waline
-            // comment: {
-            //     type: "giscus",
-            //     repo: "chenweigao/gitalk",
-            //     repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
-            //     category: "Announcements",
-            //     categoryId: "DIC_kwDOB3xgIM4COUME",
-            // },
+            comment: {
+                type: "giscus",
+                repo: "chenweigao/gitalk",
+                repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
+                category: "Announcements",
+                categoryId: "DIC_kwDOB3xgIM4COUME",
+            },
 
             mdEnhance: {
-                tex: true,
-                // 启用下角标功能
-                sub: true,
-                // 启用上角标
-                sup: true,
-                mermaid: true
+                enableAll: true
             },
 
         },
