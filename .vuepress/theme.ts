@@ -1,6 +1,7 @@
 import { hopeTheme } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
 import { mysidebar } from "./sidebar";
+import { searchPlugin } from "@vuepress/plugin-search";
 
 export default hopeTheme(
     {
@@ -77,10 +78,10 @@ export default hopeTheme(
 
         plugins: {
             blog: true,
-            
+
             // 你也可以使用 Waline
             comment: {
-                type: "giscus",
+                provider: "Giscus",
                 repo: "chenweigao/gitalk",
                 repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
                 category: "Announcements",
@@ -89,8 +90,8 @@ export default hopeTheme(
 
             mdEnhance: {
                 enableAll: true
-            },
+            }
+        }
 
-        },
     }
 );      
