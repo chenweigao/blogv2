@@ -12,7 +12,7 @@
 2. 简单介绍 cache 的基本概念，包括 cache line 各个字段的解析
 3. 介绍 cache 的 hit, miss 发生的原因、造成的影响以及可能的解决方案；包括两个重要的算法和通用的处理 cache miss 的方法
 4. 介绍 cache 的几种映射方式和置换策略
-5. 写 cache 相关的技术点
+5. 写 cache 相关的技术点，Write miss 相关介绍
 6. cache 一致性监听协议 MESI(x)
 7. 其他的相关知识
 
