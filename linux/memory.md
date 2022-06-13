@@ -1,6 +1,8 @@
 # Memory Hierarchy - Cache
 
-## Introduction
+## Abstract
+
+### Introduction
 
 程序员总希望存储是无限的，我们通过一系列的技术手段让程序员产生这种错觉。
 
@@ -8,10 +10,10 @@
 
 1. 介绍空间局部性原理和时间局部性原理
 2. 简单介绍 cache 的基本概念，包括 cache line 各个字段的解析
-3. 介绍 cache 的 hit, miss 造成的影响以及可能的解决方案
+3. 介绍 cache 的 hit, miss 发生的原因、造成的影响以及可能的解决方案；包括两个重要的算法和通用的处理 cache miss 的方法
 4. 介绍 cache 的几种映射方式和置换策略
 5. 写 cache 相关的技术点
-6. cache 一致性问题
+6. cache 一致性监听协议 MESI(x)
 7. 其他的相关知识
 
 ### Key Word
@@ -22,14 +24,15 @@
 | principle of locality | 局部性原理   |          |
 | temporal locality     | 时间局部性   |          |
 | spatial locality      | 空间局部性   |          |
-
-
+| Locality of reference | 访问局部性   |          |
 
 ### temporal locality & spatial locality
 
-时间局部性：以 loop 为例
+总体而言，可以归纳为访问局部性，其含义是计算机科学领域的应用程序在访问内存的时候，倾向于访问内存中较为靠近的值。
 
-空间局部性：指令是按照顺序执行的；还有一个典型的例子就是数组。
+时间局部性：以 loop 为例, 被引用过一次的存储器位置在未来会被多次引用
+
+空间局部性：指令是按照顺序执行的；如果一个存储器的位置被引用，那么将来他附近的位置也会被引用，典型的例子就是数组。
 
 - 存储层次结构如何利用时间局部性和空间局部性？
 
@@ -38,6 +41,8 @@
   接近处理器的存储是比较小和比较快的，除了成本考虑之外，接近处理器的存储比较小的话，其命中率也更高。
 
 - 理解 hit rate, miss rate, hit time, miss penalty
+
+局部性是计算机系统中的一种可预测的行为，系统的这种强访问局部性，可以被用来处理内核的指令流水线中的性能优化，如缓存、分支预测、内存预读取等。
 
 ## Cache Abstract
 
@@ -123,7 +128,7 @@ cache miss：读取时间 XX 或者 XXX 个 cycle
 
 #### 使用较大的 block
 
-较大的 blocks 利用空间局部性原理来降低 miss rate, 通常而言，增加块的大小会降低 miss rate, 但是其存在一个阈值，如果 block 的大小称为缓存很大的一部分，最终 miss rate 反而会上升，这是因为缓存中可以保存的块的数量变少，导致了很多竞争。
+较大的 blocks 利用空间局部性原理来降低 miss rate, 通常而言，增加块的大小会降低 miss rate, 但是其存在一个阈值，如果 block 的大小成为缓存很大的一部分，最终 miss rate 反而会上升，这是因为缓存中可以保存的块的数量变少，导致了很多竞争。
 
 除此之外，使用较大的 blocks 会造成 cache 未命中的时候的代价变大，主要是体现在 cache 加载的时候(fetch the block), 这个过程分为两个部分：**the latency to the first word and the transfer**
 **time for the rest of the block.** 比较好理解，就用英文表述了。通常而言，这个 transfer time 是随着 block 的增加而增加的。
@@ -150,7 +155,7 @@ cache miss：读取时间 XX 或者 XXX 个 cycle
 - 缓存未命中的处理会导致流水线 stall, 此时需要保存所有寄存器的状态
 - 缓存未命中（处理指令未命中、处理数据未命中）会导致整个处理器暂停，冻结临时寄存器和程序员可见寄存器的内容，同时等待内存。（注意一下，乱序执行的处理器此时还可以允许执行指令）
 
-处理缓存 miss 的步骤大概可以总结如下（主要研究指定 miss）：
+处理缓存 miss 的步骤大概可以总结如下（主要研究指令 miss）：
 
 1. 发送 PC 值到内存
 
@@ -168,9 +173,9 @@ cache miss：读取时间 XX 或者 XXX 个 cycle
 
 映射方式主要由以下几种：
 
-1. 全关联 cachem, full-associative cache
+1. 全相联 cachem, full-associative cache
 2. 直接映射 cache, direct-mapped cache
-3. 组关联 cache, set-associative cache
+3. 组相联 cache, set-associative cache
 
 ### full-associative
 
@@ -178,15 +183,26 @@ cache miss：读取时间 XX 或者 XXX 个 cycle
 
 但是这种方式有个优点就是内存中的每个 line(注意到内存中是块存储的，为了方便理解这里也说得 line) 可以映射到任意的 cache line 中，从这个角度看，full-associate 效率更好，但是其查找过于复杂。
 
+🧡🧡 言外之意在于，优秀的查找算法前提下，这种方式还是可以应用的。
+
 ### direct-mapped
 
 主要的思想是把内存分为 N 个page, 每一个 page 的大小和 cache 相同，page 中的 line0 只能映射到 cache 中的 line0, 以此类推。
 
 ### set-associative
 
-组关联 direvt-mapped 的方式是处理器上比较常用的，但是在某些特定的情况下会存在很大的缺陷，所以现代的商用处理器都是用 set-associative cache 来解决这个问题，这也是我们这节要研究的。
+direvt-mapped 的方式是处理器上比较常用的，但是在某些特定的情况下会存在很大的缺陷，所以现代的商用处理器都是用 set-associative cache 来解决这个问题，这也是我们这节要研究的。
 
-set-associative 将 cache 分成了多个 way, direvt-mapped == 1 way set-associative， 使用多少个 cache way 也是一种权衡的结果。
+set-associative 将 cache 分成了多个 way, `direvt-mapped == 1 way set-associative`， 使用多少个 cache way 也是一种权衡的结果。
+
+举例，以下是四路组相联的结构（一路是直接映射）：
+
+| set  | tag  | data | tag  | data | tag  | data | tag  | data |
+| :--: | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+|  0   |      |      |      |      |      |      |      |      |
+|  1   |      |      |      |      |      |      |      |      |
+
+
 
 ## 置换策略
 
@@ -319,11 +335,11 @@ M 和 E 需要重点理解一下，很明显这四个状态是互斥的，也就
 - 状态位 E 的时候，这行数据是 clean 的，并且数据是这个 cache 独有的
 - 状态位 S 的时候，这行数据是 clean 的，cache 可以从其他 cache 处同步数据，也可以从内存处同步，协议对此没有做任何要求。
 
-在 MESI 协议中，cache 控制器是可以监听 snoop 其他的 cache 的读写操作。
+在 MESI 协议中，**cache 控制器**是可以监听 snoop 其他的 cache 的读写操作。
 
 ### Other MESI
 
-AMD 演化了 MOESI 协议，多了一个 O 状态，这个状态是 S 和 M 状态的一种合体，表示本 cache line 中的数据和内存中的数据不一致，不过其他的核可以有这份数据的复制，复制了这份数据的核的这行 cache 的状态位 S.
+AMD 演化了 MOESI 协议，多了一个 O 状态，这个状态是 S 和 M 状态的一种合体，表示本 cache line 中的数据和内存中的数据不一致，不过其他的核可以有这份数据的复制，复制了这份数据的核的这行 cache 的状态为 S.
 
 Intel I7 演化了 MESIF 协议，多的 F 状态表示 Forward, 其含义是可以把数据直接传给其他内核的 cache, 而 shared 则不能。
 
