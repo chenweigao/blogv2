@@ -368,6 +368,47 @@ class Solution:
         return res
 ```
 
+### LC719 找出第 K 小的数对距离
+
+[719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
+
+我们的解法如下：
+
+```python
+class Solution:
+    def smallestDistancePair(self, nums: List[int], k: int) -> int:
+        # 这道题目为什么可以使用二分？
+        def count(mid: int) -> int:
+            # 这个函数求解，有多少对数字之间的距离小于等于 mid
+            # 已知 num, 并且 abs(num - x) <= mid, 由于我们枚举右边界去寻找左边界，则一定存在 num(右边界) > x
+            # 所以 num - x <= mid --> num - mid <= x, 我们需要找到 x 的位置, 范围是 0 ~ j
+            # 找到了左边界以后，所有满足的数字对的个数就是 j - i
+            res = 0
+            for j, num in enumerate(nums):
+                i = bisect_left(nums, num - mid, 0, j)
+                res += j - i
+            return res
+
+        # return bisect_left(range(nums[-1] - nums[0]), k, key=count)
+        nums.sort()
+        left, right = 0, max(nums) - min(nums)
+        while left <= right:
+            mid = left + (right - left) // 2
+            if count(mid) >= k:
+                right = mid - 1
+            else:
+                left = mid + 1
+        return left
+```
+
+注释里面给出了一些思考的点，主要体现在以下方面：
+
+1. 对数组 `nums` 进行排序
+2. 我们假设存在一个 `mid`, 这个 `mid` 是我们找到的两个数之间的距离的最大值，我们找到符合条件的数字 `x`, 规定右边界，寻找左边界
+3. 根据一个右边界，找到所有的左边界，然后统计符合条件的数量，这个数量作为二分查找的条件
+
+总结来说，这个题目的难点在于想到可以使用二分查找求解。
+
 ## 参考文献
 
 [^1]: [二分查找 python 代码](https://github.com/chenweigao/_code/blob/master/data_struct/binary_search.py)
