@@ -172,13 +172,38 @@ VPT 的这两个字段的含义说明如下：
 
 > Value prediction has the potential to break through the performance limitations imposed by true data dependencies.
 
+然后提出了仅预测 load value 是最高效的方式，特别是在硬件预算不高的情况下（虽然说预测所有指令类型的值是可以做到的）。
+
+📌📌📌 todo，需要研究一下原文的 3 和 4 引用，搞清楚 load value 具体的意义。
+
+
+
+在此先引用一下一篇论文中的解释[^6]，但是不一定是准确的：
+
+> The LVPT is used to predict the value being loaded from memory by associating the load instruction with the value previously loaded by that instruction.
+
+🤔🤔🤔 这句话阐述了一个观点：load value 指的是指令从内存中加载出来的值。
+
+
+
+> While predicting values of all instruction types is possible, prior work has shown that predicting just load values is most effective with a modest hardware budget.
+
 然后概述使用了比较多的篇幅来说明提升 VP 的预测精度需要硬件帮助，因此本文提出了一种：
 
 >  In this paper, we **analyzed four state-of-the-art load value predictors**, and found that they complement each other.
 
-基于上述的 load value, 作者提出了一个新的复合预测期。
+基于上述的 load value, 作者提出了一个新的复合预测器。
 
 > Based on that finding, we evaluated a **new composite predictor** that combines all four component predictors. 
+
+#### Summary
+
+这块做一个简单的总结，从总体上对这篇文章有一个了解。
+
+1. 本文使用了 4 个先进的预测器，并且提出了一种 Smart Training 的方法对这四种预测器进行有机的结合（后文 Smart Training 中进行详细的研究）
+2. 增加 AM(Accuracy Monitor) 技术，这个技术通过屏蔽produce mis-prediction 的预测器，来减少错误预测带来的损失。AM 可以分为两种：M-AM 和 PC-AM
+3. 使用 Heterogeneous Predictor Tables 技术，也可以称作动态融合预测器表，将资源从性能不佳的预测器虫偶更新分配到性能更好的预测器
+4. 深入分析比较了这种融合的方式对于预测准确度的提升，并和最先进的模型进行了对比
 
 ### Introduction
 
@@ -249,6 +274,28 @@ LVP uses a PC-indexed, tagged prediction table. 其结构如下：
 
 目前的理解：使用标量构建置信度，然后再计算出对应的 FPC 矢量。
 
+### Effective Load Value Prediction
+
+#### Smart Training
+
+Smart Training 目的在于合理地对 4 中预测器进行组合，其工作方式如下：
+
+1. 如果没有预测发生，所有的预测器都用做最小化获得置信预测的最小时间；
+2. 如果一个或者多个预测发生了，那么我们只训练以下的预测器：
+   1. mispredicted
+   2. 参考 heuristic 中拥有最小代价的，简而言之，就是按照顺序对预测器进行训练。
+
+📌📌📌 todo：深入研究这个策略，其前置条件是什么，策略是什么，什么条件下对应使用什么策略。
+
+#### Accuracy Monitor
+
+可以分为两种：
+
+1. M-AM
+2. PC-AM
+
+#### Heterogeneous Predictor Tables
+
 ## Words
 
 | Words              | 含义               |      | Words       | 含义       |
@@ -269,6 +316,4 @@ LVP uses a PC-indexed, tagged prediction table. 其结构如下：
 [^3]: M. H. Lipasti and J. P. Shen, "Exceeding the dataflow limit via value prediction," Proceedings of the 29th Annual IEEE/ACM International Symposium on Microarchitecture. MICRO 29, 1996, pp. 226-237, doi: 10.1109/MICRO.1996.566464.
 [^4]: R. Sheikh and D. Hower, "Efficient Load Value Prediction Using Multiple Predictors and Filters," 2019 IEEE International Symposium on High Performance Computer Architecture (HPCA), 2019, pp. 454-465, doi: 10.1109/HPCA.2019.00057.
 [^5]: Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. In Proceedings of the seventh international conference on Architectural support for programming languages and operating systems (ASPLOS VII). Association for Computing Machinery, New York, NY, USA, 138–147. https://doi.org/10.1145/237090.237173
-
-
-
+[^6]:[Value Locality and Load Value Prediction](https://course.ece.cmu.edu/~ece740/f10/lib/exe/fetch.php?media=valuelocalityandloadvalueprediction.pdf)
