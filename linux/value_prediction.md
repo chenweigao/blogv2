@@ -16,6 +16,8 @@ MICRO Test of Time Award[^2] 是一个十分具有分量的奖项，收录了微
 
 ### Taxonomy of Speculative Execution
 
+投机执行的分类：
+
 ```mermaid
 flowchart TD
 	0(Speculative Execution)
@@ -46,18 +48,18 @@ flowchart TD
 
 对于推测存储位置存在两种 flavor:
 
-1. those that speculate on a specific attribute of the storage location
-2. those that speculate on the address of the storage location
+1. those that speculate on a specific attribute of the storage location：根据存储位置的特定属性进行推测
+2. those that speculate on the address of the storage location：根据存储位置的地址进行推测
 
 ### Value Locality
 
 > previously-seen value recurring repeatedly within a storage location.
 
-以前看的的值在存储位置中重复出现。
+以前看到的值在存储位置中重复出现。
 
 > Although the concept is general and can be applied to any storage location within a computer system, we have limited our current study to examine only the value locality of general-purpose or floating point registers immediately following instructions that write to those registers.
 
-目前限制了这个 Value Locality 的范围在通用寄存器或者浮点寄存器紧跟着写到这些寄存器指令之后的场景。
+目前限制了这个 Value Locality 的范围在通用寄存器或者浮点寄存器的值局部性，这些寄存器紧跟紧跟在写入指令之后。
 
 不过哪怕是寄存器，以 32-bit 举例，也可能会存在超过 2^32 的值，我们要怎么才能做到预测下一个可能出现的值呢？
 
@@ -176,13 +178,13 @@ VPT 的这两个字段的含义说明如下：
 
 📌📌📌 todo，需要研究一下原文的 3 和 4 引用，搞清楚 load value 具体的意义。
 
-
+目前自己理解的 load value 的含义为：load 指令取值，这个值来自于内存中。
 
 在此先引用一下一篇论文中的解释[^6]，但是不一定是准确的：
 
 > The LVPT is used to predict the value being loaded from memory by associating the load instruction with the value previously loaded by that instruction.
 
-🤔🤔🤔 这句话阐述了一个观点：load value 指的是指令从内存中加载出来的值。
+🤔🤔🤔 这句话阐述了一个观点：load value 指的是指令从内存中加载出来的值，load 指令中有访存的操作，这时候就是从内存中取出来要使用的值。
 
 
 
