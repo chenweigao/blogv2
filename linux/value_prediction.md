@@ -37,7 +37,7 @@ flowchart TD
 
 - 对于 Data Speculation 而言，我们分类：预测是否与数据的**位置**或者**值**有关。
 
-- 对于 binary vs mutil-valued 而言，binary 表示的是预测的两种结果，0-1 或者 token vs not-token(branch 中表示 branch 的方向)，mutil-valued 表示的是 brach 的目标，这个目标可能是存在于程序地址的任何空间中的。
+- 对于 binary vs multi-valued 而言，binary 表示的是预测的两种结果，0-1 或者 token vs not-token(branch 中表示 branch 的方向)，mutil-valued 表示的是 brach 的目标，这个目标可能是存在于程序地址的任何空间中的。
 
 ### Data Speculation
 
@@ -59,7 +59,7 @@ flowchart TD
 
 > Although the concept is general and can be applied to any storage location within a computer system, we have limited our current study to examine only the value locality of general-purpose or floating point registers immediately following instructions that write to those registers.
 
-目前限制了这个 Value Locality 的范围在通用寄存器或者浮点寄存器的值局部性，这些寄存器紧跟紧跟在写入指令之后。
+目前限制了这个 Value Locality 的范围在通用寄存器或者浮点寄存器的值局部性，这些寄存器紧跟在写入指令之后。
 
 不过哪怕是寄存器，以 32-bit 举例，也可能会存在超过 2^32 的值，我们要怎么才能做到预测下一个可能出现的值呢？
 
@@ -156,7 +156,7 @@ VPT 的这两个字段的含义说明如下：
 
   包括 32-bit 或者 64 bit 的值，这些值由 LRU 策略维护（that are maintained with an LRU policy）；当第一次产生指令结果或者预测不正确的时候，这个字段被替换掉。
 
-  需要注意的是，VPT 的替换策略收到 CT 预测历史的影响，以免用了不那么有用的值替换掉有用的值。
+  需要注意的是，VPT 的替换策略受到 CT 预测历史的影响，以免用了不那么有用的值替换掉有用的值。
 
 ### Verifying Predictions
 
@@ -198,13 +198,13 @@ VPT 的这两个字段的含义说明如下：
 
 > Based on that finding, we evaluated a **new composite predictor** that combines all four component predictors. 
 
-#### Summary
+### Summary
 
 这块做一个简单的总结，从总体上对这篇文章有一个了解。
 
 1. 本文使用了 4 个先进的预测器，并且提出了一种 Smart Training 的方法对这四种预测器进行有机的结合（后文 Smart Training 中进行详细的研究）
-2. 增加 AM(Accuracy Monitor) 技术，这个技术通过屏蔽produce mis-prediction 的预测器，来减少错误预测带来的损失。AM 可以分为两种：M-AM 和 PC-AM
-3. 使用 Heterogeneous Predictor Tables 技术，也可以称作动态融合预测器表，将资源从性能不佳的预测器虫偶更新分配到性能更好的预测器
+2. 增加 AM(Accuracy Monitor) 技术，这个技术通过屏蔽 produce mis-prediction 的预测器，来减少错误预测带来的损失。AM 可以分为两种：M-AM 和 PC-AM
+3. 使用 Heterogeneous Predictor Tables 技术，也可以称作动态融合预测器表，将资源从性能不佳的预测器重新分配到性能更好的预测器
 4. 深入分析比较了这种融合的方式对于预测准确度的提升，并和最先进的模型进行了对比
 
 ### Introduction
@@ -217,7 +217,7 @@ ILP 指的是 Instruction Level Parallelism, 指令级并行。
 
 这个技术可以再研究一下。
 
-### Predictors
+### 4 Predictors
 
 本文使用了 4 个先进的预测器，并对他们进行了融合，融合过后的组合预测器性能得到了很大的提升，这 4 个预测器如下表所示：
 
@@ -233,6 +233,10 @@ ILP 指的是 Instruction Level Parallelism, 指令级并行。
 2. CVP
 3. SAP
 4. CAP
+
+> All four components train inparallel.
+
+注意到其并行性。
 
 #### LVP
 
@@ -266,19 +270,44 @@ LVP uses a PC-indexed, tagged prediction table. 其结构如下：
 
 这个预测器如果遇到了 tag/value 匹配的话，我们就增加置信值，否则不匹配的话，置信值归零。
 
+#### CVP
 
+**77bits: tag(14-bit) + virtual address(49-bit) + saturating confidence counter(2-bit)**
+saturating confidence counter: 饱和置信计数器。
+
+#### CVP
+
+**81bits: tag(14-bit) + value(64 bit) + counter(3-bit)**
+
+> CVP is inspired by branch prediction, which has long observed that branch behavior is correlated with the path history leading to the branch.
+
+其灵感来源于分支预测，分支的行为往往与导致分支行为的路径历史有关，对于 VP, 这个结论也同样适用。
+
+当 load 执行的时候，CVP 适用表中最长历史、最高置信的字段。
+
+#### CAP
+
+**67bits:tag(14-bit) + virtual address(49-bit) + confidence(2-bit) + load size(2-bit)**
+
+CAP 预测器在 4 个预测器中拥有最小的置信阈值。
+
+CAP 预测器的工作方式如下：
+
+1. load 完成的时候，更新 table
+2. 新的 tag, value 和 size 和已知的 entry 匹配，则增加置信值
+3. 其他情况，置信值置 0
 
 ### Value Prediction
 
-#### Strategies
+#### FPC Strategies
 
 使用一个 forward probabilistic counter(FPC) 可以减少数字的比特，这个在其他论文中提到了。
 
 目前的理解：使用标量构建置信度，然后再计算出对应的 FPC 矢量。
 
-### Effective Load Value Prediction
+### Smart Training
 
-#### Smart Training
+使用 Smart Training  的时候，我们在训练和预测时候使用的预测器的数量是减少的，figure 7 阐述了这个结论。
 
 Smart Training 目的在于合理地对 4 中预测器进行组合，其工作方式如下：
 
@@ -289,12 +318,48 @@ Smart Training 目的在于合理地对 4 中预测器进行组合，其工作�
 
 📌📌📌 todo：深入研究这个策略，其前置条件是什么，策略是什么，什么条件下对应使用什么策略。
 
-#### Accuracy Monitor
+### Accuracy Monitor(AM)
+
+#### AM
 
 可以分为两种：
 
 1. M-AM
 2. PC-AM
+
+AM 的概念介绍如下：
+
+> In a composite predictor, we can also throttle an entire component predictor when it is producing a high misprediction rate overall. We studied two different throttling mechanisms, which we call Accuracy Monitors (AM).
+
+AM 是一种机制，其保证了当整个组合预测器产生了较高的总体误预测率时，我们可以对其进行限制。可以翻译为一种“节流机制”。
+
+#### AM Q&A
+
+Q：AM 使能的时间节点是哪个？
+
+A：在 fetch 阶段，原文是 At prediction time (Fetch)，在这个阶段 AM 与预测器同时查找。
+
+Q: AM 通过什么样的方式使能的？
+
+A：AM 会产生一个预测值，并且 AM 是与预测器关联的，AM 可以指示该预测器的预测不可靠，依据这个我们可以对预测器的预测结果进行压缩(squash).
+
+Q: M-AM 和 PC-AM 有何不同？
+
+A: 先说相同点，两者都是衡量的可信指标；M-AM 是 epoch 维度，而 PC-AM 是指令维度。
+
+#### M-AM
+
+M-AM 跟踪每个组件执行期间的错误预测率，这个预测错误率有一个计算的方法，以每一个 epoch 为单位，大概 100W 个指令。
+
+#### PC-AM
+
+不同于 M-AM，PC-AM 跟踪每一个 PC 的预测错误率，精度更高。
+
+PC-AM 包括几个字段：tag + counters.
+
+PC-AM 中的 narrow counter 的增加策略是，每一次触发了流水线的 flush, PC-AM 的 counter 就增加。
+
+PC-AM 追踪每一个 PC 以便于实施更有针对性的沉默。
 
 #### Heterogeneous Predictor Tables
 
@@ -318,4 +383,4 @@ Smart Training 目的在于合理地对 4 中预测器进行组合，其工作�
 [^3]: M. H. Lipasti and J. P. Shen, "Exceeding the dataflow limit via value prediction," Proceedings of the 29th Annual IEEE/ACM International Symposium on Microarchitecture. MICRO 29, 1996, pp. 226-237, doi: 10.1109/MICRO.1996.566464.
 [^4]: R. Sheikh and D. Hower, "Efficient Load Value Prediction Using Multiple Predictors and Filters," 2019 IEEE International Symposium on High Performance Computer Architecture (HPCA), 2019, pp. 454-465, doi: 10.1109/HPCA.2019.00057.
 [^5]: Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. In Proceedings of the seventh international conference on Architectural support for programming languages and operating systems (ASPLOS VII). Association for Computing Machinery, New York, NY, USA, 138–147. https://doi.org/10.1145/237090.237173
-[^6]:[Value Locality and Load Value Prediction](https://course.ece.cmu.edu/~ece740/f10/lib/exe/fetch.php?media=valuelocalityandloadvalueprediction.pdf)
+[^6]: [Value Locality and Load Value Prediction](https://course.ece.cmu.edu/~ece740/f10/lib/exe/fetch.php?media=valuelocalityandloadvalueprediction.pdf)
