@@ -363,6 +363,18 @@ PC-AM 追踪每一个 PC 以便于实施更有针对性的沉默。
 
 #### Heterogeneous Predictor Tables
 
+
+
+### Discuss
+
+Q：这个机制最终还是没有保证 commit 步骤，前面的准确率是如何保证的？
+
+A：📌📌 
+
+Q：值预测器的原理是什么，简要说明。
+
+A：
+
 ## Words
 
 | Words              | 含义               |      | Words       | 含义       |
