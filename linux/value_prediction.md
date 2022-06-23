@@ -375,6 +375,120 @@ Q：值预测器的原理是什么，简要说明。
 
 A：
 
+
+
+## ASPLOS 96(LVP)
+
+### Abstract
+
+本部分主要研究文章 *Value locality and load value prediction*[^6] ,  主要是涉及到这篇文章中的 LVP 预测器。
+
+> Our work extends this to predict entire 32- and 64-bit register values based on previously-seen values. We find that, just as condition bits are fairly predictable on a per-static-branch basis, **full register values being loaded from memory are frequently predictable as well.**
+
+这篇文章的主要工作就是预测 32 或者 64 位寄存器的值。
+
+> In this paper, we introduce value locality, a concept related to redundant computation, and demonstrate a technique--Load Value Prediction, or LVP--for predicting the results of load instructions at dispatch by exploiting the affinity between load instruction addresses and the values the loads produce.
+
+上述介绍了 LVP， 通过 load 指令地址和 load 产生的值之间的亲和性来预测 load 指令的结果。 
+
+作者阐述了 LVP 具有两个优点：
+
+1. indexed by instruction address. 这个优点导致的结果是，我们可以在流水线很早期的时候，对值进行查找(value lookups can occur very early in the pipeline)
+
+2. 具有投机性质，依赖 verification 的机制来保证正确性。
+
+   ❌❌ 并没有看懂这个是何种优点？作者对比了其他人的研究结果， 那些人的研究是在 pipline 的后段才使用 table indece, 并且要求这个预测是正确的。
+
+### Value Locality
+
+这篇文章也阐述了值局部性的原理，为了加深理解，我们对此也进行研究。
+
+> In this paper, we introduce the concept of value locality, which we define as the likelihood of a previously-seen value recurring repeatedly within a storage location.
+
+作者将值局部性定义为了以前在某个存储位置出现过的值还有可能再次重复出现。
+
+> we have limited our current study to examine only the value locality of general-purpose or floating-point registers **immediately following memory loads that target those registers.**
+
+作者对预测的范围也进行了一个限制：仅仅预测通用的或浮点数寄存器。
+
+📌📌 深入思考，为什么要做这个限制？
+
+
+
+> As it turns out, if we narrow the scope of our prediction mechanism by considering each static load individually, the task becomes much easier, and we are able to accurately predict a significant fraction of register values being loaded from memory.
+
+为什么值局部性可以被我们所利用？作者缩小了预测的范围。
+
+
+
+接下来，作者从几个方面来论证，值局部性存在的一些原因：
+
+1. data redundancy, 值冗余。体现在一些例子比如稀疏矩阵、带空白的文本文件和电子表格中的空白单元；
+2. Error-checking, 错误检查，检查不长发生的条件经常会编译到 load 的常量；Checks for infrequently-occurring conditions often compile into loads of what are effectively run-time constants.
+3. Program constants, 这个比较好理解， 但是我理解不了。❌❌❌
+4. Computed branches, 
+5. Virtual function calls, 
+6. Glue code, 
+7. Addressability
+8. Call-subgraph identities
+9. Memory alias resolution
+10. Register spill code
+
+
+
+### LVPT
+
+作者通过对 loads value 进行分类达到减少预测错误率的目的，总共可以分为三类：
+
+1. LVPT 无法预测
+2. LVPT 可以预测
+3. LVPT 几乎可以预测（执行度高的话就进行预测）
+
+根据以上三类，将 loads 指令分为了三类：unpredictable, predictable, and constant loads.
+
+
+
+> The LVPT is indexed by the load instruction address and is not tagged, so both constructive and destructive interference can occur between loads that map to the same entry (the LVPT is direct-mapped).
+
+上面这段话说明了，LVPT 是直接映射的，并且没有 tag, 所以导致的结果是 both constructive and destructive interference 都可能映射到同一个 entry.
+
+
+
+我们接下来研究一下，预测之中的一些细节：
+
+首先是 LVPT, LCT, CVU 之间的使用，文章中使用 CVU(constant verification unit) 来存储 constant.
+
+### LCT & CVU
+
+尽管说 LVPT 将 loads 分为了三类，但是还是缺少一个验证的机制，所以说在 LCT 阶段，我们还是需要根据分类进行不同的决策：
+
+1. predictable: 将预测的值和从内存中检索出来的值进行比较。
+
+2. highly-predictable or constant loads: 使用 CVU 单元，CVU 单元可以避免访存操作，具体的做法是强制将 LVPT 中的 entry 与主存保持一致性来实现。
+
+   > we use the constant verification unit, or CVU, which allows us to avoid accessing the conventional memory system completely by forcing the LVPT entries that correspond to constant loads to remain coherent with main memory.
+
+   对于被 LCT 归类于 constants 的 entry 来说，数据的地址和 LVPT 的索引被放在 CVU 内部，但是这两个字段是分开的（独立的）、存于全相联的 table 中。这个 table 与主存保持一致性，策略是：
+
+   > This table is kept coherent with main memory by invalidating any entries where the data address matches a subsequent store instruction.
+
+​		上述话说明了保持一致的策略，目前我的理解是，table 使其中的某个字段非法化，也就是说，store 指令（💛💛 特别注意这个细节，是 store 指令）的执行可以使 CVU 中的字段非法化，因为访存会改变这个地址对应数据的值。但是如果没有怼这个地址发生过 load 指令的话，这个地址字段就是一直有效的，我们在预测的时候(constant load) 直接从这个 CVU 中取值，这里面的值是和主存中的值保持一致的。
+
+这个 CVU 里面的值是什么时候写进去的呢，我们在提到上文的 CVU 的组成时说到了，其字段的一部分是与 LVPT 想关联的，所以当 load 执行完成，验证到某个条目的预测是正确的时候，我们就把这个条目刷新到 CVU 中。
+
+这种措施的好处就是可以降低内存带宽的需求。
+
+### The Load Value Prediction Unit
+
+LVPT, LCT, CVU 之间是怎么合作的呢？
+
+load 指令 fetch 的时候，LVPT, LCT 表被同时索引了，一个负责分类，一个负责具体的预测；一旦预测的地址有了，EX1, cache 的访问和 CVU 的访问同时进行。当真实的 value 从 L1 cache 中返回的时候，将其与预测的值进行比较，此时，相关的推测指令（speculative instructions）有两个选择：
+
+- write back – 成功
+- reissue – 失败
+
+由于无法及时在 CVU 上面执行搜索以避免内存访问，因此 CVU 唯一可以阻止内存访问的时候是在 cache miss 或者 bank conflict 的时候。
+
 ## Words
 
 | Words              | 含义               |      | Words       | 含义       |
@@ -388,6 +502,8 @@ A：
 
 饱和计数器理解：对于 2-bit 计数器来说，0 or 3 就是到了饱和的状态，此时自增或者自减都是不会改变值的，所以就饱和了。
 
+
+
 ## Reference
 
 [^1]: [Championship Value Prediction (CVP)](https://www.microarch.org/cvp1/index.html)
@@ -395,4 +511,5 @@ A：
 [^3]: M. H. Lipasti and J. P. Shen, "Exceeding the dataflow limit via value prediction," Proceedings of the 29th Annual IEEE/ACM International Symposium on Microarchitecture. MICRO 29, 1996, pp. 226-237, doi: 10.1109/MICRO.1996.566464.
 [^4]: R. Sheikh and D. Hower, "Efficient Load Value Prediction Using Multiple Predictors and Filters," 2019 IEEE International Symposium on High Performance Computer Architecture (HPCA), 2019, pp. 454-465, doi: 10.1109/HPCA.2019.00057.
 [^5]: Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. In Proceedings of the seventh international conference on Architectural support for programming languages and operating systems (ASPLOS VII). Association for Computing Machinery, New York, NY, USA, 138–147. https://doi.org/10.1145/237090.237173
-[^6]: [Value Locality and Load Value Prediction](https://course.ece.cmu.edu/~ece740/f10/lib/exe/fetch.php?media=valuelocalityandloadvalueprediction.pdf)
+[^6]: [Value Locality and Load Value Prediction](https://course.ece.cmu.edu/~ece740/f10/lib/exe/fetch.php?media=valuelocalityandloadvalueprediction.pdf), *Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. SIGPLAN Not. 31, 9 (Sept. 1996), 138–147. https://doi.org/10.1145/248209.237173*
+
