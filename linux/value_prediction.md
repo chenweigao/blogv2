@@ -399,6 +399,8 @@ A：
 
    ❌❌ 并没有看懂这个是何种优点？作者对比了其他人的研究结果， 那些人的研究是在 pipline 的后段才使用 table indece, 并且要求这个预测是正确的。
 
+   总体来看这篇文章，作者确实使用了预测+验证的机制，并且是将值进行了分类。load 执行完成以后，我们对预测的值进行验证，验证过后更新 LVPT 和 LCT, 并且在需要的时候 reissue 指令。
+
 ### Value Locality
 
 这篇文章也阐述了值局部性的原理，为了加深理解，我们对此也进行研究。
@@ -446,6 +448,8 @@ A：
 
 根据以上三类，将 loads 指令分为了三类：unpredictable, predictable, and constant loads.
 
+对应的可能的 2-bit 计数器可以这么分类：*no prediction, incorrect prediction, correct prediction, or constant load.*
+
 
 
 > The LVPT is indexed by the load instruction address and is not tagged, so both constructive and destructive interference can occur between loads that map to the same entry (the LVPT is direct-mapped).
@@ -489,16 +493,115 @@ load 指令 fetch 的时候，LVPT, LCT 表被同时索引了，一个负责分�
 
 由于无法及时在 CVU 上面执行搜索以避免内存访问，因此 CVU 唯一可以阻止内存访问的时候是在 cache miss 或者 bank conflict 的时候。
 
+### Conclusion 
+
+> we demonstrate that load instructions, when examined on a per-instruction-address basis, exhibit significant amounts of value locality.
+
+❌❌❌ 如何理解 per-instruction-address basis?
+
+
+
+> we describe load value prediction, a microarchitectural technique for capturing and exploiting load value locality to reduce effective memory latency as well as bandwidth requirements.
+
+上面这段话讲述了 **load value prediction** 的重要意义，特别是在学术上的定义。
+
+
+
+## HPCA 14
+
+本章节研究文章 *Practical Data Value Speculation for Future High-end Processors*[^7], 简称 HPCA 14, 这篇文章主要是研究 CVP, 一种上下文有关的、Load value 的预测器。
+
+
+
+### Abstract
+
+> In this paper, we reconsider the concept of Value Prediction in the contemporary context and show its potential as a direction to improve current single thread performance.
+
+作者在当代语境(contemporary context) 下重新思考了 VP 的概念，并且发觉其作为提高单线程性能方向的一个潜力。
+
+
+
+> Said penalty can be as high as the cost of a branch misprediction, yet the benefit of an individual correct prediction is often very limited.
+
+错误惩罚可能和分支预测的错误惩罚一样高，但是收益却十分有限。
+
+> As a consequence, high coverage is mostly irrelevant in the presence of low accuracy.
+
+在精度极低的情况下，高覆盖率反而是没有必要的。
+
+基于以上两段话，预测的设计思路在于：提高预测的准确率，可以接受适当降低准确率；故此作者提出 FPC, 其定义如下：
+
+> The Forward Probabilistic Counters (FPC) scheme yields value misprediction rates well under 1%, at the cost of reasonably decreasing predictor coverage.
+
+FPC 的错误预测率远低于 1%，同时牺牲了预测覆盖率。
+
+使用 FPC 的好处如下：
+
+> Our experiments show that when FPC is used, no complex repair mechanism such as selective reissue is needed at execution time.
+
+使用 FPC 的话可以避免使用如 selective reissue 这种复杂机制。
+
+
+
+:::tip 随想
+
+FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction rate.
+
+:::
+
+
+
+下面这段话比较难以理解：
+
+> Prediction validation can even be delayed until commit time and be done in-order: Complex and power hungry logic needed for execution time validation is not required anymore.
+
+预测的验证可以在 commit 阶段完成？所以说简化了验证的步骤。
+
+:::warning
+
+❌❌❌ 但是这样的话，我们如何保证预测的正确性呢？
+
+:::
+
+结合下面这段话，看能否尝试理解：
+
+> As a result, prediction is performed in the in-order pipeline front-end, validation is performed in the in-order pipeline back-end while the out-of-order execution engine is only marginally modified.
+
+
+
+---
+
+第二个比较大的贡献是作者提出来了 Value TAGE predictor (VTAGE). 这个 VTAGE 的灵感来自于分支预测的技术 ITTAGE.
+
+> VTAGE is the first hardware value predictor to leverage a long **global branch history** and the **path history**.
+
+:::tip 随想
+
+上述这段话定义了 VTAG, 其基本属性是值预测器，但是利用了：
+
+- global branch history
+- path history
+
+:::
+
+得益于 FPC, VTAG 具有很高的预测精度。
+
+
+
+
+
 ## Words
 
-| Words              | 含义               |      | Words       | 含义       |
-| ------------------ | ------------------ | ---- | ----------- | ---------- |
-| impose             | 强制实行、强制推行 |      | Speculation | 推测、猜测 |
-| narrow             | 有限的、小的       |      | saturating  | 饱和       |
-| hysteresis         | 回差、滞后         |      | speculative | 投机性的   |
-| saturating counter | 饱和计数器         |      | govern      | 统治、管理 |
-| composite          | 组合、复合         |      | probed      | 探测       |
-| mitigate           | 使缓和、使减轻     |      | redundancy  | 冗余       |
+| Words              | 含义               |      | Words        | 含义             |
+| ------------------ | ------------------ | ---- | ------------ | ---------------- |
+| impose             | 强制实行、强制推行 |      | Speculation  | 推测、猜测       |
+| narrow             | 有限的、小的       |      | saturating   | 饱和             |
+| hysteresis         | 回差、滞后         |      | speculative  | 投机性的         |
+| saturating counter | 饱和计数器         |      | govern       | 统治、管理       |
+| composite          | 组合、复合         |      | probed       | 探测             |
+| mitigate           | 使缓和、使减轻     |      | redundancy   | 冗余             |
+| heterogeneous      | 异构               |      | contemporary | 当代的、同时期的 |
+| seamlessly         | 完美无缺           |      |              |                  |
 
 饱和计数器理解：对于 2-bit 计数器来说，0 or 3 就是到了饱和的状态，此时自增或者自减都是不会改变值的，所以就饱和了。
 
@@ -512,4 +615,4 @@ load 指令 fetch 的时候，LVPT, LCT 表被同时索引了，一个负责分�
 [^4]: R. Sheikh and D. Hower, "Efficient Load Value Prediction Using Multiple Predictors and Filters," 2019 IEEE International Symposium on High Performance Computer Architecture (HPCA), 2019, pp. 454-465, doi: 10.1109/HPCA.2019.00057.
 [^5]: Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. In Proceedings of the seventh international conference on Architectural support for programming languages and operating systems (ASPLOS VII). Association for Computing Machinery, New York, NY, USA, 138–147. https://doi.org/10.1145/237090.237173
 [^6]: [Value Locality and Load Value Prediction](https://course.ece.cmu.edu/~ece740/f10/lib/exe/fetch.php?media=valuelocalityandloadvalueprediction.pdf), *Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. SIGPLAN Not. 31, 9 (Sept. 1996), 138–147. https://doi.org/10.1145/248209.237173*
-
+[^7]: A. Perais and A. Seznec, "Practical data value speculation for future high-end processors", *High Performance Computer Architecture (HPCA) 2014 IEEE 20th International Symposium on*, Feb 2014.
