@@ -505,104 +505,6 @@ load 指令 fetch 的时候，LVPT, LCT 表被同时索引了，一个负责分�
 
 上面这段话讲述了 **load value prediction** 的重要意义，特别是在学术上的定义。
 
-
-
-## HPCA 14
-
-本章节研究文章 *Practical Data Value Speculation for Future High-end Processors*[^7], 简称 HPCA 14, 这篇文章主要是研究 CVP, 一种上下文有关的、Load value 的预测器。
-
-
-
-### Abstract
-
-> In this paper, we reconsider the concept of Value Prediction in the contemporary context and show its potential as a direction to improve current single thread performance.
-
-作者在当代语境(contemporary context) 下重新思考了 VP 的概念，并且发觉其作为提高单线程性能方向的一个潜力。
-
-
-
-> Said penalty can be as high as the cost of a branch misprediction, yet the benefit of an individual correct prediction is often very limited.
-
-错误惩罚可能和分支预测的错误惩罚一样高，但是收益却十分有限。
-
-> As a consequence, high coverage is mostly irrelevant in the presence of low accuracy.
-
-在精度极低的情况下，高覆盖率反而是没有必要的。
-
-基于以上两段话，预测的设计思路在于：提高预测的准确率，可以接受适当降低准确率；故此作者提出 FPC, 其定义如下：
-
-> The Forward Probabilistic Counters (FPC) scheme yields value misprediction rates well under 1%, at the cost of reasonably decreasing predictor coverage.
-
-FPC 的错误预测率远低于 1%，同时牺牲了预测覆盖率。
-
-使用 FPC 的好处如下：
-
-> Our experiments show that when FPC is used, no complex repair mechanism such as selective reissue is needed at execution time.
-
-使用 FPC 的话可以避免使用如 selective reissue 这种复杂机制。
-
-
-
-:::tip 随想
-
-FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction rate.
-
-:::
-
-
-
-下面这段话比较难以理解：
-
-> Prediction validation can even be delayed until commit time and be done in-order: Complex and power hungry logic needed for execution time validation is not required anymore.
-
-预测的验证可以在 commit 阶段完成？所以说简化了验证的步骤。
-
-:::warning
-
-❌❌❌ 但是这样的话，我们如何保证预测的正确性呢？
-
-:::
-
-结合下面这段话，看能否尝试理解：
-
-> As a result, prediction is performed in the in-order pipeline front-end, validation is performed in the in-order pipeline back-end while the out-of-order execution engine is only marginally modified.
-
-
-
----
-
-第二个比较大的贡献是作者提出来了 Value TAGE predictor (VTAGE). 这个 VTAGE 的灵感来自于分支预测的技术 ITTAGE.
-
-> VTAGE is the first hardware value predictor to leverage a long **global branch history** and the **path history**.
-
-:::tip 随想
-
-上述这段话定义了 VTAG, 其基本属性是值预测器，但是利用了：
-
-- global branch history
-- path history
-
-:::
-
-得益于 FPC, VTAG 具有很高的预测精度。
-
-
-
-### Related Work on VP
-
-我们有必要研究一下相关的工作，看能否从中获得一些心得体会。
-
-> Sazeides et al. refine the taxonomy of Value Prediction by categorizing predictors.
-
-上述作者将 predictors 分成了两类：
-
-1. Computational
-2. Context-based
-
-这两种方式是互补的因为它们擅长预测不同的指令（前文研究的 HPCA19 的文章也是使用了 4 个预测器，挖掘出来了互补的关系）。
-
-对于 Computational 预测器而言，🟢🟢🟢 典型的如 2-Delta Stride predictor 这种需要进行研究。
-
 ## Words
 
 | Words              | 含义               |      | Words         | 含义             |
@@ -628,4 +530,3 @@ FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction 
 [^4]: R. Sheikh and D. Hower, "Efficient Load Value Prediction Using Multiple Predictors and Filters," 2019 IEEE International Symposium on High Performance Computer Architecture (HPCA), 2019, pp. 454-465, doi: 10.1109/HPCA.2019.00057.
 [^5]: Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. In Proceedings of the seventh international conference on Architectural support for programming languages and operating systems (ASPLOS VII). Association for Computing Machinery, New York, NY, USA, 138–147. https://doi.org/10.1145/237090.237173
 [^6]: [Value Locality and Load Value Prediction](https://course.ece.cmu.edu/~ece740/f10/lib/exe/fetch.php?media=valuelocalityandloadvalueprediction.pdf), *Mikko H. Lipasti, Christopher B. Wilkerson, and John Paul Shen. 1996. Value locality and load value prediction. SIGPLAN Not. 31, 9 (Sept. 1996), 138–147. https://doi.org/10.1145/248209.237173*
-[^7]: A. Perais and A. Seznec, "Practical data value speculation for future high-end processors", *High Performance Computer Architecture (HPCA) 2014 IEEE 20th International Symposium on*, Feb 2014.
