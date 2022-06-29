@@ -1,6 +1,6 @@
 # HPCA 14
 
-本章节研究文章 *Practical Data Value Speculation for Future High-end Processors*[^7], 简称 HPCA 14, 这篇文章主要是研究 CVP, 一种上下文有关的、Load value 的预测器。
+本章节研究文章 *Practical Data Value Speculation for Future High-end Processors*[^1], 简称 HPCA 14, 这篇文章主要是研究 CVP, 一种上下文有关的、Load value 的预测器。
 
 
 
@@ -417,7 +417,7 @@ VTAGE 和 ITTAGE 不同的点在于，饱和计数器饱和的时候才使用预
 
 作者模拟了相当激进的 pipline.
 
-:::tips
+:::tip
 
 🧡🧡🧡
 
@@ -441,4 +441,8 @@ misprediction 时候的恢复有两种方式：
 2. 十分理想主义的 selective reissue(理想主义是作者对其的评价，不代表我本人观点)
 
 在上述两种情况下，如果指令的预测错误但是其在执行之前没有 issue 依赖指令，则不需要 recovery, 因为预测会被执行时的有效结果取代。
+
+## Reference
+
+[^1]: A. Perais and A. Seznec, "Practical data value speculation for future high-end processors", *High Performance Computer Architecture (HPCA) 2014 IEEE 20th International Symposium on*, Feb 2014.
 
