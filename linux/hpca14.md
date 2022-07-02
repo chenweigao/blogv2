@@ -6,15 +6,59 @@
 
 ## Abstract
 
+> Dedicating more silicon area to single thread performance will necessarily be considered as worthwhile in future – potentially heterogeneous – multicores. 
+>
+> In particular, Value prediction (VP) was proposed in the mid 90’s to enhance the performance of high-end uniprocessors by breaking true data dependencies.
+
+作者说在未来的多核架构中，将更多的硅面积用于提高单线程的性能是值得的。
+
+特别是 VP 的出现，可以打破真正的数据依赖来提高高端单处理器的性能。
+
+:::tip 💚💚 流水线并行 & 处理器并行
+
+- 流水线：提高指令的并行度；流水线聚焦于指令，所以是 uniprocessor
+- 多处理器：提高处理器的并行度
+
+:::
+
 > In this paper, we reconsider the concept of Value Prediction in the contemporary context and show its potential as a direction to improve current single thread performance.
+>
+> First, building on top of research carried out during the previous decade on confidence estimation, we show that every value predictor is amenable to very high prediction accuracy using very simple hardware. This clears the path to an implementation of VP without a complex selective reissue mechanism to absorb mispredictions. 
+>
+> Prediction is performed in the in-order pipeline frond-end and validation is performed in the in-order pipeline back-end, while the outof-order engine is only marginally modified.
 
 作者在当代语境(contemporary context) 下重新思考了 VP 的概念，并且发觉其作为提高单线程性能方向的一个潜力。
 
+首先作者阐述了简单的硬件就可以实现精确度较高的 VP, 也不用很复杂的 selective reissue 机制。
 
+:::tip 单线程流水线 vs 多线程流水线
+
+@todo 🔴🔴🔴 
+
+:::
+
+> Second, when predicting **back-to-back occurrences** of the same instruction, previous context-based value predictors relying on local value history exhibit a complex critical loop that should ideally be implemented in a single cycle. 
+>
+> To bypass this requirement, we introduce a new value predictor VTAGE *harnessing the global branch history*. VTAGE can seamlessly predict back-to-back occurrences, allowing predictions to *span over several cycles*. It achieves higher performance than previously proposed context-based predictors.
+
+其次，对于同一个指令的 back-to-back 出现，以前基础 local value history 的方法会显示出一个复杂的关键循环。为了解决这个问题，作者引入了一个新的预测器 VTAG, 利用全局分支历史，VTAG 可以无缝预测 back-to-back 的发生，其允许预测跨越几个周期。相比于以前的基于上下文的预测器，实现了更高的性能。
+
+:::warning 🧡🧡 一些理解
+
+1. VTAGE 利用了全局分支历史，是如何体现的？
+2. span over several cycles, 如何跨越几个 cycle?
+
+:::
+
+## Introduction
+
+> Gabbay et al. and Lipasti et al. independently proposed Value Prediction to speculatively ignore true data dependencies and therefore shorten critical paths in computations. 
+
+VP 可以缩短关键路径。
 
 > Said penalty can be as high as the cost of a branch misprediction, yet the benefit of an individual correct prediction is often very limited.
 
-错误惩罚可能和分支预测的错误惩罚一样高，但是收益却十分有限。
+错误惩罚可能和分支预测的错误惩罚一样高，所以单个正确预测的收益十分有限。
 
 > As a consequence, high coverage is mostly irrelevant in the presence of low accuracy.
 
@@ -34,11 +78,50 @@ FPC 的错误预测率远低于 1%，同时牺牲了预测覆盖率。
 
 
 
+本文的贡献主要由两点：
+
+> First, we present a simple yet efficient confidence estimation mechanism for value predictors. The Forward Probabilistic Counters (FPC) scheme yields value misprediction rates well under 1%, at the cost of reasonably decreasing predictor coverage. 
+>
+> All classical predictors are amenable to this level of accuracy. 
+>
+> FPC is very *simple to implement* and does not require substantial change in the counters update automaton. Our experiments show that when FPC is used, no complex repair mechanism such as selective reissue  is needed at execution time. Prediction validation can even be delayed until commit time and be done in-order: Complex and power hungry logic needed for execution time validation is not required anymore. As a result, prediction is performed in the in-order pipeline front-end, validation is performed in the in-order pipeline back-end while the out-of-order execution engine is only marginally modified.
+
+第一点是提出了 FPC, 一个新的计数器。
+
+- 实现简单，不需要对计数器更新自动机进行实质性更改
+- 在执行阶段不需要使用复杂的修复机制如 selective reissue
+- Validation 可以推迟到 commit 阶段并按顺序完成；这意味着复杂耗电的 execution 阶段的 valudation 不再需要了
+- out-of-order engine 只需做轻微修改
+
 :::tip 随想
 
 FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction rate.
 
 :::
+
+> Second, we introduce the Value TAGE predictor (VTAGE). This predictor is directly derived from research propositions on branch predictors [21] and more precisely from the indirect branch predictor ITTAGE. 
+>
+> VTAGE is the first hardware value predictor to leverage a long global branch history and the path history. Like all other value predictors, VTAGE is amenable to very high accuracy thanks to the FPC scheme. 
+>
+> VTAGE is shown to outperform previously proposed context-based predictors such as Finite Context Method and complements stride-based predictors.
+
+第二点是提出了 VTAGE 预测器。
+
+- VTAGE 是一个硬件 value predictor. 其利用了长期全局 branch history 和 path history.
+- 由于 FPC 机制，VTAGE 具有很高的精度
+
+:::tip 随想
+
+上述这段话定义了 VTAG, 其基本属性是值预测器，但是利用了：
+
+- global branch history
+- path history
+
+:::
+
+> Moreover, we point out that unlike two-level predictors (in particular, predictors based on local value histories), VTAGE can seamlessly predict back-to-back occurrences of instructions, that is, instructions inside tight loops. Practical implementations are then feasible.
+
+更加厉害的是，与两级预测器，特别是基于 local value history 的预测器不同的是，VTAGE 可以完美预测指令 back-to-back 的出现，即 tight loops.
 
 
 
@@ -58,26 +141,15 @@ FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction 
 
 > As a result, prediction is performed in the in-order pipeline front-end, validation is performed in the in-order pipeline back-end while the out-of-order execution engine is only marginally modified.
 
+上述也是原文中的摘录。
 
+## 	Questions
 
----
+🤷‍♂️🤷‍♂️🤷‍♂️ 从以上对于文章的阅读，我们需要从文章中找到以下问题的答案：
 
-第二个比较大的贡献是作者提出来了 Value TAGE predictor (VTAGE). 这个 VTAGE 的灵感来自于分支预测的技术 ITTAGE.
-
-> VTAGE is the first hardware value predictor to leverage a long **global branch history** and the **path history**.
-
-:::tip 随想
-
-上述这段话定义了 VTAG, 其基本属性是值预测器，但是利用了：
-
-- global branch history
-- path history
-
-:::
-
-得益于 FPC, VTAG 具有很高的预测精度。
-
-
+1. FPC 的实现原理是什么？
+2. VTAGE 如何利用 global branch history 和 path history? 其与上下文有关是如何体现的？
+3. VATGE 如何解决 tight lopp 的问题？
 
 ## Related Work on VP
 
@@ -87,8 +159,21 @@ FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction 
 
 上述作者将 predictors 分成了两类：
 
-1. Computational
+1. Computational，计算的
 2. Context-based
+
+```mermaid
+flowchart LR
+	Predictors --- Computational
+	Predictors --- Context-based
+	Computational --- 2d(2-D Stride Predictor)
+	Context-based --- VATGE
+	Context-based --- FCM
+	FCM --- Diff-FCM
+	FCM --- gDiff
+```
+
+
 
 这两种方式是互补的因为它们擅长预测不同的指令（前文研究的 HPCA19 的文章也是使用了 4 个预测器，挖掘出来了互补的关系）。
 
@@ -109,12 +194,24 @@ Zhou 实现了 gDiff 预测器，gDiff 计算了一个指令的结果和最后 n
 
 ## Motivation
 
+> We identify two factors that will complicate the adaptation and implementation of value predictors in future processor cores. 
+>
+> First, *the misprediction recovery penalty and/or hardware complexity*. Second *the back-to-back predictions for two occurrences of the same instruction which can be very complex to implement while being required to predict tight loops.*
+
 有两个因素可能使得预测器复杂化：
 
 1. Misprediction Recovery
 2. Back-to-back prediction
 
+> A tight loop is a loop that loops many times and the loop body has few instructions.
+
 ### Misprediction Recovery
+
+之前的很多研究都没有意识到 misprediction recovery 的复杂性，而只关注于准确率或者覆盖率，忽略了实际的加速效果。后续的很多研究也基本上忽略了与 misprediction recovery  相关的性能损失。
+
+> Moreover, despite quite high coverage and reasonable accuracy, one observation that can be made from these early studies is that the average performance gain per correct prediction is rather small.
+
+上述话说明了，单个正确预测的收益比较有限。
 
 衡量 misprediction 的 recovery 的消耗可以分为两个因素：
 
@@ -125,10 +222,28 @@ Zhou 实现了 gDiff 预测器，gDiff 计算了一个指令的结果和最后 n
 $$
 T_{recov} = P_{value} * N_{misp}
 $$
+
+> As we already pointed out, the total misprediction recovery cost can be minimized through two vehicles: Minimizing the individual misprediction penalty and/or minimizing the total number of mispredictions.
+
+从上述公式中我们可以得出结论，降低 cost 可以使用两种方式：
+
+- 降低单个预测错误惩罚
+- 最小化错误预测数量
+
+
+
+#### Value Misprediction Scenarios
+
 处理器中目前已有两种机制去管理 value misprediciton recovery:
 
 1. pipline squashing
 2. selective reissue
+
+不同之处如下：
+
+> They induce very different average misprediction penalties, but are also very different from a hardware complexity standpoint.
+
+这两者产生的平均错误预测惩罚不同，硬件复杂性也不同。
 
 💚💚 什么是 pipline squashing?
 
@@ -138,9 +253,14 @@ $$
 
 目前猜测的，需要继续研究。
 
+> Pipeline squashing is already implemented to recover from branch mispredictions. *On a branch misprediction, all the subsequent instructions in the pipeline are flushed* and instruction fetch is resumed at the branch target. This mechanism is also generally used on load/store dependency mispredictions.
+> Using pipeline squashing on a value misprediction is *straightforward*, but *costly as the minimum misprediction penalty* is the same as the minimum branch misprediction penalty. However, to limit the number of squashes due to VP,  **squashing can be avoided if the predicted result has not been used yet, that is, if no dependent instruction has been issued.**
+
 pipline squashing 可以被用于分支预测失败的 recovery 中，也可以用与 VP 失败的 recovery 中，两者的代价是一致的。需要注意的是，VP 的 squash 可以被避免的，只要预测的结果还没有被应用，也就是说，没有 dependent instruction 被 issued.
 
 ❌❌ selective reissue 不是很好理解，需要再理解一下。
+
+> Selective reissue is implemented in processors to recover in case where *instructions have been executed with incorrect operands*, in particular this is used to recover from L1 cache hit/miss mispredictions (i.e. load-dependent instructions are issued after predicting a L1 hit, but finally the load results in a L1 miss). When the execution of an instruction with an incorrect operand is detected, the instruction as well as all its dependent chain of instructions are canceled then replayed.
 
 
 
@@ -148,9 +268,28 @@ pipline squashing 可以被用于分支预测失败的 recovery 中，也可以�
 
 下面是对于两种机制的对比：
 
-1. 在实现的节点上，SR 必须是在 execution 的时候就实现了，其目的是为了限制错误预测的代价；而 PS 则可以在 execution 或者 commit 的时候实现。
-2. PS 在 execution 时间去 validate 预测必须重新设计 out-of-order engine, 除此之外，预测的 value 还必须在每个乱序的阶段传播，等等。综合来看，在 exec 阶段去验证比较复杂。
-3. 反之，在 commit 后进行 PS 可能会导致预测错误后代价较高，但是其实现机制较为简单，特别是对于 out-of-order 来说，不需要增加额外的复杂机制。
+1. 在实现的节点上，selective issue 必须是在 execution 的时候就实现了，其目的是为了限制错误预测的代价；而 pipeline squashing 则可以在 execution 或者 commit 的时候实现。
+2. pipeline squashing 在 execution 时间去 validate 预测必须重新设计 out-of-order engine, 除此之外，预测的 value 还必须在每个乱序的阶段传播，等等。综合来看，在 exec 阶段去验证比较复杂。
+3. 反之，在 commit 后进行 pipeline squashing 可能会导致预测错误后代价较高，但是其实现机制较为简单，特别是对于 out-of-order 来说，不需要增加额外的复杂机制。
+
+简单使用表格进行概括：
+
+|                    | Validation at Execution                                      | Validation at Commit                                         |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Pipeline Squashing | - Results in a minimum misprediction penalty <br />- Need to redesign the complete out-of-order engine<br />- 20 ~ 40 cycle penalty | - Results in a quite high average misprediction penalty <br />- Do not reduce complex mechanisms in the out-of-order execution engine<br />- 40 ~ 50 cycle penalty |
+| Selective Reissue  | - Must be implemented at execution time<br />- 5 ~ 7 cycle penalty | N/A                                                          |
+
+如果选择 validation at execution 的话：
+
+> However, validating predictions *at execution time* necessitates to *redesign the complete out-of-order engine*: The predicted values must be propagated through all the out-of-execution engine stages and the predicted results must be validated as soon as they are produced in this out-of- order execution engine.
+
+需要重新设计乱序引擎，预测的值需要在所有的 stage 传播并且预测的结果必须经过验证。
+
+> On the contrary, **pipeline squashing at commit** results in a quite high average misprediction penalty since it can delay prediction validation by a substantial number of cycles. Yet, it is much easier to implement for Value Prediction since it does not induce complex mechanisms in the out-of-order execution engine. 
+>
+> It essentially restrains the Value Prediction related hardware to the in-order pipeline front-end (prediction) and the in-order pipeline back-end (validation and training). Moreover, it allows not to checkpoint the rename table since the committed rename map contains all the necessary mappings to restart execution in a correct fashion.
+
+pipeline at commit 会导致较高的 misprediction penalty, 但是其优点在于不需要重新设计复杂的 out-of-order engine.
 
 
 
@@ -164,9 +303,31 @@ $T_{recov}$ 与错误预测的数量大致成正比，所以如果可以在牺�
 
 ### Back-to-back prediction
 
-> However, for most predictors, the outcomes of a few previous occurrences of the instruction are needed to perform a prediction for the current instance.
+> Unlike a branch prediction, a value prediction is needed rather late in the pipeline (at dispatch time).
 
-对于大多数的预测器而言，其预测是依赖于一些先前出现指令的结果的。
+不同于分支预测，值预测在 pipeline 中被需要的相当晚（在 dispatch 阶段）
+
+:::tip 📍📍📍 dispatch
+
+> The instruction dispatch unit controls when the decoded instructions are dispatched to the execution pipelines. It includes **Issue Queues** for storing instruction pending dispatch to execution pipelines[^2].
+
+从上面的描述我们可以看出，dispatch 阶段处于指令 decode 之后，execution 之前。
+
+在某些架构中，就是 issue.
+
+ Issue Queues 是用来保存将要被 execution 的指令。
+
+:::
+
+> Thus, at first glance, prediction latency does not seem to be a concern and long lookups in large tables and/or fairly complex computations could be tolerated. 
+
+基于上述我们分析的 VP 被需要的阶段，乍一看，预测的延迟似乎不是一个问题，我们可以容忍大表或者复杂计算。
+
+> However, for most predictors, **the outcomes of a few previous occurrences of the instruction are needed to perform a prediction for the current instance.**
+
+但是，对于大多数的预测器而言，当前实例的预测是依赖于指令先前出现指令的几次结果的。
+
+💚💚 这边有个细节，仔细看那段英文原文的话我们可以发现，其描述的主题对象一直是 instruction, 即指令先前的出现和当前预测之间的关系。
 
 > Consequently, for those predictors, either the critical operation must be made short enough to allow for the prediction of close (possibly back-to-back) occurrences (e.g. by using small tables) or the prediction of tight loops must be given up.
 
@@ -176,15 +337,15 @@ $T_{recov}$ 与错误预测的数量大致成正比，所以如果可以在牺�
 
 不幸的是，tight loop 这种情况在程序中很多。
 
+> Experiments conducted with the methodology we will introduce in Section 7 suggest that for a subset of the SPEC’00/’06 benchmark suites, there can be as much as 15.3% (3.4% a-mean) fetched instructions eligible for VP and for which **the previous occurrence was fetched in the previous cycle** (8-wide Fetch). We highlight such critical operations for each predictor in the subsequent paragraphs.
+
+上述文字主要描述了实验结果，重要的部分 highlight 出来。
 
 
-💚💚 
 
-本章节主要是对比 LVP, stride 和 FCM, 分别阐述这几个预测器的优缺点。
+*总结一下，本部分首先阐述了 VP 需要值的阶段较为靠后，所以是允许预测延迟的，但是对于 tight loop 类似的场景，会要求关键路径尽可能短（或者说延迟尽可能小）。作者在后面通过实验的结果阐述了 tight loop 场景在实际是普遍存在的。*
 
-💚💚 
-
-
+接下来主要是对比 LVP, stride 和 FCM, 分别阐述这几个预测器的优缺点。
 
 #### LVP
 
@@ -192,9 +353,9 @@ $T_{recov}$ 与错误预测的数量大致成正比，所以如果可以在牺�
 
 LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 的结果。
 
-> Thus, successive table lookups are independent and can last until Dispatch, meaning that large tables can be implemented.
+> Thus, successive table lookups are independent and can last until **Dispatch**, meaning that large tables can be implemented.
 
-❌❌ LVP 可以使用大表。
+因此，连续的表查找是独立的，可以持续到 dispatch 阶段，因此 LVP 是可以使用大表的。
 
 #### Stride
 
@@ -271,7 +432,7 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 ### Maximizing Value Predictor Accuracy Through Confidence
 
-> As we already pointed out, the total misprediction recovery cost can be minimized through two vehicles: Minimizing the *individual misprediction penalty* and/or minimizing the *total number of mispredictions.*
+> As we already pointed out, the total misprediction recovery cost can be minimized through two vehicles: **Minimizing the *individual misprediction penalty* and/or minimizing the *total number of mispredictions.***
 
 错误预测的恢复损耗从两个方面衡量。
 
@@ -281,29 +442,33 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 >
 > To increase accuracy, Burtscher et al. proposed the SAg confidence  stimation scheme to assign confidence to a history of outcomes rather than to a particular instruction. However, this entails a second lookup in the counter table using the outcome history retrieved in the predictor table with the PC of the instruction. A way to maximize accuracy without increasing complexity and latency would be preferable.
 
-当预测不是强制的时候，使用饱和计数器，最小化错误预测的数量，计算置信值并且只使用置信度很高的预测。举例了 3-bit 饱和计数器的合理使用可以达到 95% - 99% 的准确率，但是这个准确率还是不够，有些专家提出了 SAg 置信度估计方案，但是会增加复杂性现在需要一个准确度高的，但是不增加复杂性和时延的方法。
+当预测不是强制的时候，使用饱和计数器，最小化错误预测的数量，计算置信值并且只使用置信度很高的预测。举例了 3-bit 饱和计数器的合理使用可以达到 95% - 99% 的准确率，但是这个准确率还是不够，有些专家提出了 SAg 置信度估计方案，但是会增加复杂性。现在需要一个准确度高的，但是不增加复杂性和时延的方法。
 
 > We actually found that simply using **wider counters** (e.g. 6 or 7 bits) leads to much more accurate predictors while the prediction coverage is only reduced by a fraction. 
 >
 > Prediction is only used on saturated confidence counters and counters are reset on each misprediction. Interestingly, probabilistic 3-bit counters such as defined by Riley et al.  augmented with reset on misprediction achieve the same accuracy for substantially less storage and a marginal increase in complexity.
 
-作者发现使用 wider counters 可以提升很多的预测准确度，随之的代价是很小的精度损失。
+作者发现使用 wider counters 可以提升很多的预测准确度，随之的代价是很小的覆盖率损失。
+
+*这句话的意思是说，使用更多 bit 位的计数器，其预测精度会提高；但是作者说明的，覆盖率会降低，我猜测可能是因为使用了饱和计数器的缘故，目前预测仅在饱和计数器饱和的时候进行预测，那么就意味着，越晚饱和，那么预测的覆盖率就越低。*
 
 这个优点很多，具体怎么使用，要在后文研究。
 
-> We refer to these probabilistic counters as Forward Probabilistic Counters (FPC). In particular, each forward transition is only triggered with a certain probability. 
+> We refer to these probabilistic counters as Forward Probabilistic Counters (FPC). **In particular, each forward transition is only triggered with a certain probability.** 
 >
 > In this paper, we will consider 3-bit confidence counters using a probability vector $v = \{1, 1/16, 1/16, 1/16, 1/16, 1/32, 1/32\}$ for pipeline squashing at commit and $v = \{1, 1/8, 1/8, 1/8, 1/8, 1/16, 1/16\}$ for selective reissue, respectively mimicking 7-bit and 6-bit counters.
 >
 > This generally prevents all the considered VP schemes to slow down execution while minimizing the loss of coverage (as opposed to using lower probabilities). The used pseudo-random generator is a simple Linear Feedback Shift Register.
 
-使用了 FPC 计数器，并且提出了 3-bit 计数器，每一位存在一个指定的概率值，❌❌  指定了 7 位概率而不是 8 位，细节有待研究。
+使用了 FPC 计数器，并且提出了 3-bit 计数器，每一位存在一个指定的概率值。
 
-在 HPCA 19 的文章中，我们使用了这个 FPC.
+这个 FPC 翻译名称叫做前向概率计数器，是以固定的概率触发的，也就是说，这种计数器的优点在于，我只是使用了 3-bit, 就达到了 6-bit 或者 7-bit 的效果。由此，达到了我们上文提到的，准确率高但是不增加复杂性和时延。
+
+注意在 HPCA 19 的文章中，我们使用了这个 FPC.
 
 > Using FPC counters instead of full counters limits the overhead of confidence estimation. It also opens the opportunity to adapt the probabilities at run-time as suggested in and/or to individualize these probabilities depending on the criticality of the instructions.
 
-使用 FPC 计数器而不是完整计数器限制了执行度估计的开销，并且还提供了在运行时调整概率的机会，如根据重要指令个性化概率。
+使用 FPC 计数器而不是完整计数器限制了置信度估计的开销，并且还提供了在运行时调整概率的机会，如根据重要指令个性化概率。
 
 ### The Value TAgged GEometric Predictor
 
@@ -445,4 +610,8 @@ misprediction 时候的恢复有两种方式：
 ## Reference
 
 [^1]: A. Perais and A. Seznec, "Practical data value speculation for future high-end processors", *High Performance Computer Architecture (HPCA) 2014 IEEE 20th International Symposium on*, Feb 2014.
+
+[^2]: [ARM Cortex-A75 Core Technical Reference Manual r2p0](https://developer.arm.com/documentation/100403/0200/functional-description/technical-overview/components/instruction-dispatch?lang=en)
+
+
 
