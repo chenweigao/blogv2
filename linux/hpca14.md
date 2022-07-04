@@ -476,7 +476,7 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 第一段首先列举出来了 VTAGE 来源于分支预测的 ITTAGE, ITTAGE 来源于 TAGE.
 
-> As it uses branch history to predict, we expect VTAGE to perform much better than other predictors when instruction results are indeed depending on the control flow. 
+> As it uses branch history to predict, we expect VTAGE to perform much better than other predictors when instruction results are **indeed depending on the control flow**. 
 >
 > Nonetheless, VTAGE is also able to capture control-flow independent patterns as long as they are short enough with regard to the maximum history length used by the predictor. 
 >
@@ -484,7 +484,17 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 这一段的细节我们暂时不进行考究。
 
-> Fig. 2 describes a (1+N)-component VTAGE predictor. The main idea of the VTAGE scheme (exactly like the ITTAGE scheme) is to use several tables – components – storing predictions. Each table is indexed by a different number of bits of the global branch history, hashed with the PC of the instruction. The different lengths form a geometric series (i.e. VT1 is accessed with two bits of the history, VT2 with four, VT3 with eight and so on). 
+TAGE 使用了分支的历史进行预测，当指令的结果实际依赖于控制流的时候，我们希望 VTAGE 能比其他的预测器表现得更好。尽管如此，VTAGE 也能够捕获 control-flow independent patterns, 只要他们相对于预测器使用的最大历史长度足够短。
+
+:::warning ❌❌ 控制流
+
+需要理解文章中所说的控制流是什么意思？在什么情况下，指令的结果是取决于控制流的？
+
+:::
+
+> Fig. 2 describes a (1+N)-component VTAGE predictor. The main idea of the VTAGE scheme (exactly like the ITTAGE scheme) is to use several tables – components – storing predictions. Each table is indexed by a different number of bits of the global branch history, hashed with the PC of the instruction. 
+>
+> The different lengths form a geometric series (i.e. VT1 is accessed with two bits of the history, VT2 with four, VT3 with eight and so on). 
 >
 > These tables are backed up by a base predictor – a tagless LVP predictor – which is accessed using the instruction address only. 
 >
@@ -492,27 +502,41 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 上述文字在陈述 VTAGE 预测器是如何实现的，这段比较重要。
 
+图 2（本篇文章中没有给出）描述了一个 1+N 组件的 VTAGE 预测器。其方案的核心思想是使用一些表，也可以说是组件，去存储预测，每一个表都被全局分支历史的 bit 数量索引，被指令的 PC 所 hash.
+
+:::warning ❌❌❌ bits of global barnch history
+
+这里提到了全局预测历史的 bit 数量，在查阅资料以后，这个的意思可能是，在分支预测中，存在一个全局分支预测历史寄存器 Global History Register (GHR), 这个 GHR 可能由 10-bit 组成，可以用来表示最近 10 个分支的历史，而这 10-bit 可以用来索引 1024 个 PHT 的 entry, 每一个 entry 由 2-bit 组成，是一个饱和计数器，索引的方式是 PC 的后 10-bit 与 GHR 进行异或[^3]。
+
+🔴🔴 至于为什么是异或，还需要进行深入的思考。 
+
+:::
+
+不同的长度形成一个几何级数。
+
 VTAGE 主要是使用了很多 table, VT1, VT2, …, VTn, 分别代表的含义是：VT1 关联了 2-bit 的 global branch history, VT2 为 4-bit, VT3 为 8-bit, 以此类推，这就是等比级数或者几何级数。
 
 这些表由无标记 LVP 预测器备份，该预测器仅仅使用指令地址访问。
 
 第三段讲述了预测器具体的实现细节。
 
-> At prediction time, all components are searched in parallel to check for a tag match. The matching component accessed with the longest history is called the provider component as it will provide the prediction to the pipeline.
+> At **prediction time**, all components are searched in parallel to check for a tag match. The matching component accessed with the longest history is called the provider component as it will provide the prediction to the pipeline.
 
-在预测的时候，并行查找与 tag 匹配的条目，match 的组件并且与 longest history 联系的称作 provider component, 在流水线中提供预测。
+在预测的时候，并行查找与 tag 匹配的条目 match 的组件并且与 longest history 联系的称作 provider component, 在流水线中提供预测。
 
-> At update time, only the provider is updated. 
+这边的 longest history 的意思是说，bit 数最长的，也就是说，从大到小进行查找；比如说对于一个 Global History Register (GHR) 而言，假设其有 10 位，那么我的 VT1 有 2 位，VT2 是 4 位…假设 VT2 就是最后一个，那么我就从 VT2 开始查找，这就是 longest history.
+
+> At **update time**, only the provider is updated. 
 >
-> On either a correct or an incorrect prediction, $c^2$ and $u^3$ are updated. On a misprediction, $val$ is replaced if $c$ is equal to 0, and a new entry is allocated in a component using a longer history than the provider: All “upper” components are accessed to see if one of them has an entry that is not useful ($u$ is 0). 
+> On either a correct or an incorrect prediction, $c$ and $u$ are updated.  
 >
-> If none is found, the u counter of all matching entries in the upper components are reset, but no entry is allocated. Otherwise, a new entry is allocated in one of the components whose corresponding entry is not useful. The component is chosen randomly.
+> On a misprediction, $val$ is replaced if $c$ is equal to 0, and a new entry is allocated in a component *using a longer history than the provider*: All “upper” components are accessed to see if one of them has an entry that is not useful ($u$ is 0).  If none is found, the u counter of all matching entries in the upper components are reset, but no entry is allocated. Otherwise, a new entry is allocated in one of the components whose corresponding entry is not useful. The component is chosen randomly.
 
-在更新的时候，只更新 provider.
+在更新的时候，只更新 provider. (也就是说，只更新最长历史的那张表)
 
-无论预测是正确或者不正确，$c^2$ 和 $u^3$ 会被更新。❌❌
+无论预测是正确或者不正确，$c$ 和 $u$ 会被更新。其中 c 表示饱和计数器，u 表示是否有用，1:useful, 0: not useful.
 
-如果是 misprediction, $val$ 会被替换掉，如果 c 是 0 的话，并且新的条目会被分配，使用更长的 history.所有更上层的组件都被访问，去判断是否其中有一个 entry 是无用的，在这里 $u == 0$（二进制）是无用的，$u$ 是一个 useful bit, 其被 replacement policy 使用。
+如果是 misprediction, $val$ 会被替换掉，如果计数器 c 是 0 的话，并且新的条目会被分配，使用比 provider 更长的 history.  所有更上层的组件都被访问，去判断是否其中有一个 entry 是无用的，在这里 $u == 0$（二进制）是无用的，$u$ 是一个 useful bit, 其被 replacement policy 使用。
 
 如果没有找到任何一个，上层组件的 $u$ 计数器都被重置，意味着没有 entry 被分配。如果找到了的话，一个新的 entry 就被分配了，被分配的策略是：随机策略，选择一个组件的 entry 不是 useful 的。
 
@@ -612,6 +636,5 @@ misprediction 时候的恢复有两种方式：
 [^1]: A. Perais and A. Seznec, "Practical data value speculation for future high-end processors", *High Performance Computer Architecture (HPCA) 2014 IEEE 20th International Symposium on*, Feb 2014.
 
 [^2]: [ARM Cortex-A75 Core Technical Reference Manual r2p0](https://developer.arm.com/documentation/100403/0200/functional-description/technical-overview/components/instruction-dispatch?lang=en)
-
-
+[^3]: [Assignment 1: Understanding Branch Prediction](https://www.inf.ed.ac.uk/teaching/courses/car/Pracs/2017-18/Assignment1.pdf) 
 
