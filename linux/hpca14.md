@@ -22,12 +22,12 @@
 :::
 
 > In this paper, we reconsider the concept of Value Prediction in the contemporary context and show its potential as a direction to improve current single thread performance.
->
-> First, building on top of research carried out during the previous decade on confidence estimation, we show that every value predictor is amenable to very high prediction accuracy using very simple hardware. This clears the path to an implementation of VP without a complex selective reissue mechanism to absorb mispredictions. 
->
-> Prediction is performed in the in-order pipeline frond-end and validation is performed in the in-order pipeline back-end, while the outof-order engine is only marginally modified.
 
 作者在当代语境(contemporary context) 下重新思考了 VP 的概念，并且发觉其作为提高单线程性能方向的一个潜力。
+
+> First, building on top of research carried out during the previous decade on confidence estimation, we show that **every value predictor is amenable to very high prediction accuracy using very simple hardware.** This clears the path to an implementation of VP without a complex selective reissue mechanism to absorb mispredictions. 
+>
+> Prediction is performed in the in-order pipeline frond-end and validation is performed in the in-order pipeline back-end, while the outof-order engine is only marginally modified.
 
 首先作者阐述了简单的硬件就可以实现精确度较高的 VP, 也不用很复杂的 selective reissue 机制。
 
@@ -41,7 +41,7 @@
 >
 > To bypass this requirement, we introduce a new value predictor VTAGE *harnessing the global branch history*. VTAGE can seamlessly predict back-to-back occurrences, allowing predictions to *span over several cycles*. It achieves higher performance than previously proposed context-based predictors.
 
-其次，对于同一个指令的 back-to-back 出现，以前基础 local value history 的方法会显示出一个复杂的关键循环。为了解决这个问题，作者引入了一个新的预测器 VTAG, 利用全局分支历史，VTAG 可以无缝预测 back-to-back 的发生，其允许预测跨越几个周期。相比于以前的基于上下文的预测器，实现了更高的性能。
+其次，对于同一个指令的 back-to-back 出现，以前基于 local value history 的方法会显示出一个复杂的关键循环。为了解决这个问题，作者引入了一个新的预测器 VTAG, 利用全局分支历史，VTAG 可以无缝预测 back-to-back 的发生，其允许预测跨越几个周期。相比于以前的基于上下文的预测器，实现了更高的性能。
 
 :::warning 🧡🧡 一些理解
 
@@ -299,7 +299,35 @@ pipeline at commit 会导致较高的 misprediction penalty, 但是其优点在�
 
 $T_{recov}$ 与错误预测的数量大致成正比，所以如果可以在牺牲一些覆盖率的情况下提升精度，那么总的 VP 性能是可以得到提升的。
 
+#### Reissue 
 
+先来看论文中对于 reissue 的定义：
+
+> all instructions after the first-use are kept in the IQ until they are no longer speculative, and may re-issue from there with minimal delay in case of a misprediction.
+
+字面意思是所有第一次使用的指令都在 IQ(instruction queue) 中，直到他们不再投机，在 misprediction 的时候，可能会被 reissue, 其 delay 可以最小化。
+
+理解这句话，就是说 IQ 队列中会存放投机指令，如果指令不是投机的话，可能会不在 IQ 队列中了；因为指令是投机运行的，所以说如果预测失败的话，在 IQ 队列中的指令可以直接 issue 出去，此时不需要经过 fetch, decode 等步骤，缩短了指令的延迟时间。
+
+
+
+还有一种技术是 selective reissue:
+
+> Selective Reissue — only instructions dependent on the predicted value (either directly or indirectly) are kept in the IQ until the prediction is resolved.
+
+只有依赖于预测值的指令（无论是直接的还是间接的）会被保留在 IQ 中，直到这些预测被 resolved.
+
+
+
+从上面的分析，我们可以看出 reissue 和 selective reissue 的不同之处在于：selective reissue 只是存储了依赖于预测值的指令，而 reissue 是存储了所有的指令，但是直到该指令不投机的时候，才不存储（目前的理解）
+
+#### Refetch
+
+先看论文中对于 refetch 的定义：
+
+> Refetch — a value mispredict is treated like a branch mispredict. Instructions beginning with the first-use of the predicted value are squashed, and the fetch unit is responsible for getting them back in the machine.
+
+value 的 misprediction 可以看做分支预测的 misprediction, 使用预测值的指令将被全部清除掉，然后重新 fetch. 注意这边也使用了定语，开始于第一个使用预测值的指令。
 
 ### Back-to-back prediction
 
@@ -520,7 +548,7 @@ VTAGE 主要是使用了很多 table, VT1, VT2, …, VTn, 分别代表的含义�
 
 第三段讲述了预测器具体的实现细节。
 
-> At **prediction time**, all components are searched in parallel to check for a tag match. The matching component accessed with the longest history is called the provider component as it will provide the prediction to the pipeline.
+> At **prediction time**, all components are searched in parallel to check for a tag match. The matching component accessed with the longest history is called the *provider* component as it will provide the prediction to the pipeline.
 
 在预测的时候，并行查找与 tag 匹配的条目 match 的组件并且与 longest history 联系的称作 provider component, 在流水线中提供预测。
 
