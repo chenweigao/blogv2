@@ -1,25 +1,29 @@
 ---
 title: Coroutines
 Date: 2019-8-10
+
 ---
 
 因为 GIL（全局解释器锁）, python 只有一个 GIL, 运行时只有拿到这个锁才能执行，同一时间只有一个获得 GIL 的线程在跑，其他线程都在等待状态。
 
 相当于每个 CPU 在同一时间只能执行一个线程。
 
+本文还研究了 python 多进程的相关实现。
+
 <!-- more -->
+
 ## Q&A
 
 1. GIL 是多线程、多进程的吗？
-    某个线程想要执行，必须先拿到GIL，我们可以把GIL看作是“通行证”，并且在一个python进程中，GIL只有一个。拿不到通行证的线程，就不允许进入CPU执行。
-    
-    > 解释器被一个全局解释器锁保护着，它确保任何时候都只有一个Python线程执行
-    
-    - Python中同一时刻有且只有一个线程会执行
-    - Python中的多个线程由于GIL锁的存在无法利用多核CPU
-    - Python中的多线程不适合计算密集型的程序
+   某个线程想要执行，必须先拿到GIL，我们可以把GIL看作是“通行证”，并且在一个python进程中，GIL只有一个。拿不到通行证的线程，就不允许进入CPU执行。
 
-    > CPython 中使用多线程很容易，但它并不是真正的并发，多进程虽然是并发的，但开销却极大。
+   > 解释器被一个全局解释器锁保护着，它确保任何时候都只有一个Python线程执行
+
+   - Python中同一时刻有且只有一个线程会执行
+   - Python中的多个线程由于GIL锁的存在无法利用多核CPU
+   - Python中的多线程不适合计算密集型的程序
+
+   > CPython 中使用多线程很容易，但它并不是真正的并发，多进程虽然是并发的，但开销却极大。
 
 ## Why Coroutiones
 
@@ -58,7 +62,79 @@ IO 密集型涉及到网络、磁盘 IO 的任务都是 IO 密集型任务，这
 
 多线程有两个好处：CPU 并行，IO 并行，单核多线程无法使用多核 CPU，所以在 Python中不能使用多线程来使用多核。
 
-## 并发和并行
+## Python 多进程
 
-### 并发
+### 概述
 
+Python 多进程使用 `multiprocessing` 模块。
+
+### 基本使用
+
+这是一个基本的例子：
+
+```python
+import multiprocessing
+import time
+
+def task():
+    print('Sleeping for 0.5 seconds')
+    time.sleep(0.5)
+    print('Finished sleeping')
+
+if __name__ == "__main__": 
+    start_time = time.perf_counter()
+    processes = []
+
+    # Creates 10 processes then starts them
+    for i in range(10):
+        p = multiprocessing.Process(target = task)
+        p.start()
+        processes.append(p)
+    
+    # Joins all the processes 
+    for p in processes:
+        p.join()
+
+    finish_time = time.perf_counter()
+
+    print(f"Program finished in {finish_time-start_time} seconds")
+```
+
+
+
+对于可以迭代的对象，可以使用 `p.map`:
+
+```python
+def pattern_all_count_mp(self):
+    all_functions = find_all_functions()
+    p = mp.Pool(8)
+    p.map(self.count_function_pattern_distance_with_others_mp, all_functions)
+    p.close()
+    p.join()
+```
+
+在上面的函数中，我们传入了 list `all_functions`, 而函数 `count_function_pattern_distance_with_others_mp` 接收的是 `function` 对象。
+
+
+
+对于普通的函数调用，可以这么来写：
+
+```python
+def test07(self):
+    # 筛选 ed == 0 的阈值大于 10 的 pattern, len 长度为 6
+    threshold = 10
+    file_name = 'dis_count_ed_0_len6.txt'
+    p = multiprocessing.Pool(4)
+    p.apply_async(self.s.filter_data, args=(threshold, file_name, 6, ))
+    # self.s.filter_data(threshold, file_name, 6)
+    p.close()
+    p.join()
+```
+
+为了确保进程都关闭掉了，可以加上`try..finally` 结构，以确保最后的进程是正常结束了。
+
+### API
+
+`join`([*timeout*]), 
+
+一般这行代码会放在我们多进程完成以后的最后一句使用。
