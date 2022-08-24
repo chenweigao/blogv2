@@ -1,3 +1,12 @@
+---
+title: JAVA JVM 研究
+Date: 2022-08-24
+tag:
+ - jvm
+category:
+ - Cloud
+---
+
 # Java JVM 研究
 
 ## AOT & JIT
