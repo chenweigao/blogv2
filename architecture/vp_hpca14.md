@@ -1,4 +1,4 @@
-# HPCA 14
+# VP - HPCA 14
 
 本章节研究文章 *Practical Data Value Speculation for Future High-end Processors*[^1], 简称 HPCA 14, 这篇文章主要是研究 CVP, 一种上下文有关的、Load value 的预测器。
 

@@ -6,7 +6,8 @@ export const mysidebar = sidebar({
   "/python/": "structure",
   "/others/tools/": "structure",
   "/others/tmp/": "structure",
-  "/linux/": "structure"
+  "/linux/": "structure",
+  "/architecture/": "structure"
 });
 
   // "",
