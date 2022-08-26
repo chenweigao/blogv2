@@ -141,35 +141,6 @@ Idx Name          Size      VMA               LMA               File off  Algn
 
 
 
-同时还有一个 **readelf** 工具可以作为 objdump 的对照：
-
-```bash
-$ readelf -h SimpleSection.o                                                     
-
-ELF Header:
-  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
-  Class:                             ELF64
-  Data:                              2's complement, little endian
-  Version:                           1 (current)
-  OS/ABI:                            UNIX - System V
-  ABI Version:                       0
-  Type:                              REL (Relocatable file)
-  Machine:                           Advanced Micro Devices X86-64
-  Version:                           0x1
-  Entry point address:               0x0
-  Start of program headers:          0 (bytes into file)
-  Start of section headers:          1104 (bytes into file)
-  Flags:                             0x0
-  Size of this header:               64 (bytes)
-  Size of program headers:           0 (bytes)
-  Number of program headers:         0
-  Size of section headers:           64 (bytes)
-  Number of section headers:         13
-  Section header string table index: 12
-```
-
-
-
 我们使用 -s 参数将所有的内容以 16 进制的方式打印出来，-d 参数将所有包含指令的段反汇编，如下所示：
 
 ```bash
@@ -243,3 +214,76 @@ Contents of section .data:
 ```
 
 上述 `54000000` 涉及到了**字节序**的问题，这里的实际上存储的是 `0x54` 即十进制的 84.
+
+### readelf
+
+同时还有一个 **readelf** 工具可以作为 objdump 的对照：
+
+```bash
+$ readelf -h SimpleSection.o                                                     
+
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          1104 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         13
+  Section header string table index: 12
+```
+
+`readelf` 可以来详细查看 elf 文件，使用 -h 选项可以查看 elf 的文件头。
+
+上述的字段在 `/usr/include/elf.h` 都有定义，我们参考下表，对其做一个大概的认知。
+
+Linux Elf32_Ehdr 的结构体如下：
+
+```c
+typedef struct {
+    unsigned char e_ident[16];
+    Elf32_Half e_type;
+    Elf32_Half e_machine;
+    Elf32_Word e_version;
+    Elf32_Addr e_entry;
+    Elf32_Off e_phoff;
+    Elf32_Off e_shoff;
+    Elf32_Word e_flags;
+    Elf32_Half e_ehsize;
+    Elf32_Half e_phentsize;
+    Elf32_Half e_phnum;
+    Elf32_Half e_shentsize;
+    Elf32_Half e_shnum;
+    Elf32_Half e_shstrndx;
+} Elf32_Ehdr;
+```
+
+这些成员与 readelf 的打印的对应关系为：
+
+| 成员      | readelf output                                               |
+| --------- | ------------------------------------------------------------ |
+| e_ident   | Magic:                           7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00<br/>  Class:                             ELF64<br/>  Data:                              2's complement, little endian<br/>  Version:                         1 (current)<br/>  OS/ABI:                           UNIX - System V<br/>  ABI Version:                   0 |
+| e_type    | Type:                              REL (Relocatable file)<br />elf 文件类型 |
+| e_machine | Machine:                           Advanced Micro Devices X86-64<br />elf 文件的 CPU 平台属性；**相关常量以 EM 开头** |
+| e_version | Version:                           0x1<br />elf 版本号，一般为常量 1 |
+| e_entry   | Entry point address:               0x0<br />入口地址，ELF 程序入口的虚拟地址，操作系统在加载完进程后从这个地址开始指向进程的指令；可重定位文件没有入口地址，该值为 0 |
+| e_phoff   | Start of program headers:          0 (bytes into file)       |
+| e_shoff   | Start of section headers:          1104 (bytes into file)<br />段表在文件中的偏移，1104 表示从段表的低 1104 个字节开始 |
+
+对于 ELF 魔数，我们可以进行分析。
+
+| 7f 45 4c 46                             | 02                                                           | 01                                                     | 01       | 00 00 00 00 00 00 00 00 00 |
+| --------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ | -------- | -------------------------- |
+| 4字节的，ELF 文件通用的，ELF 文件的魔数 | ELF 文件类<br />0 无效文件<br />1 32 位 ELF 文件<br />2 64 位 ELF 文件 | 字节序<br />0 无效格式<br />1 小端格式<br />2 大端格式 | ELF 版本 |                            |
+
