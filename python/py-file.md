@@ -10,11 +10,24 @@
 
 :::
 
+## file exists
+
+可以使用如下的逻辑来判断我们的函数是否存在：
+
+```python
+if not os.path.exists(s.file_split):
+    logging.error("The file {} is not exists! please check your path!".format(s.file_split))
+    logging.debug("sys.path is {}".format(sys.path))
+    exit(1) # if in __main__
+```
+
+
+
 ## linecache
 
 [linecache](https://docs.python.org/3/library/linecache.html#module-linecache) 是 Python 3.10 自带的文件处理模块。
 
-### geline
+### linecache.getline()
 
 linecache 可以用来指定行号，然后读取这一行的元素。
 
@@ -24,10 +37,13 @@ linecache 可以用来指定行号，然后读取这一行的元素。
 'import sys\n'
 ```
 
+😂😂😂 需要注意的是，8 表示第 9 行元素，linecache 取值默认**从 0 开始**。
+
 这个函数会返回文件对应的这行结果，举例来说：
 
 ```python
 def get_line_content_by_line_num(self, line_num=None):
+    # 参数校验
     if not line_num and self._line_num == -1:
         print('give a line num!')
         return
@@ -51,7 +67,7 @@ def test01(self):
 
 需要注意的一个小细节是，`getline()`函数，而不是 `getlines()`, 这两个的功能是不一样的。
 
-### getlines
+### linecache.getlines()
 
 `getlines()` 可以用来获取这个文件的所有行，我们也可以根据这个函数来获取范围行的元素，如下所示：
 
@@ -73,15 +89,13 @@ with open(self.file, 'r') as f:
                 ops.append(next_line.split()[1])
 ```
 
- 目前得到文件中的连续行用该方法比较不错。
+ 目前得到文件中的连续行用该方法比较不错。比较 `linecache.getlines()` 更不容易出 bug, 但是为了方便起见，我们还是有限使用 `linecache.getlines()` 来取值。
 
 ## line after match xx
 
-代码找到匹配行开始往下数的第 xx 行，例子为第 4 行。
+代码找到匹配行开始往下数的第 xx 行**注意是单独的一行！**，例子为第 4 行(find the header then just take the next xx lines)。
 
-find the header then just take the next xx lines:
-
-### No.1
+### No.1 - itertools.islice
 
 ```python
 from itertools import islice
@@ -96,7 +110,7 @@ line to be extracted
 
 需要注意，这种方法可能会使得迭代以外终止，所以不是很好用，等以后加深理解了再研究吧！
 
-### No.2
+### No.2 - linecache.getline
 
 ```py
 from linecache import getline
@@ -108,7 +122,7 @@ with open("words.txt") as f:
 line to be extracted
 ```
 
-### No.3
+### No.3 - linecache.getline
 
 mutils lines, don't break.
 
@@ -124,11 +138,26 @@ line to be extracted
 other line to be extracted
 ```
 
-
+### About Index
 
 :::tip line 的编号从 1 开始
 
 我们在 python 的文件处理中，很多时候行号都是从 0 开始的，上面代码中使用了 `enumerate(f,1)` 来方便了我们的操作，值得借鉴！
+
+其原理可以大概解释如下：
+
+```python
+l = list(range(12, 99))
+for i, num in enumerate(l, 1):
+    print(i, num)
+    
+1 12
+2 13
+3 14
+4 15
+```
+
+只是把下标变成了从 `1` 开始，但是并没有跳过第一个元素哦。
 
 :::
 
@@ -150,7 +179,7 @@ other line to be extracted
 | w+   | 可读 可写         | 创建       | 是       |
 | a+   | 可读 可写         | 创建       | 否 追加  |
 
-### BCD `fopen()` 手册
+## BCD fopen() 手册
 
 > The argument mode points to a string beginning with one of the following sequences (Additional characters may follow these sequences.):
 
