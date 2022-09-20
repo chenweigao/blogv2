@@ -10,7 +10,7 @@
 
 :::
 
-## file exists
+## File exists
 
 可以使用如下的逻辑来判断我们的函数是否存在：
 
@@ -22,6 +22,29 @@ if not os.path.exists(s.file_split):
 ```
 
 
+
+## File path
+
+### windows
+
+在 windows 下面，python 的路径可以有以下的写法：
+
+1. 使用双下划线避免转码问题；
+2. 使用 `r'xxx'` 可以避免双下划线；这种做法的优点在于，可以直接复制文件的路径使用；
+3. `os.path` 模块的使用；
+
+### linux
+
+window 下的路径如果继续想在 linux 下面使用，可以使用两种方式：
+
+1. `os.step` 模块；这个保证了下划线是可以和操作系统匹配的
+
+2. `os.path` 模块；
+
+   ```python
+   import os
+   path = os.path.join('folder_name', 'file_name')
+   ```
 
 ## linecache
 
