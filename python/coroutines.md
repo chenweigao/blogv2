@@ -25,7 +25,9 @@ Date: 2019-8-10
 
    > CPython 中使用多线程很容易，但它并不是真正的并发，多进程虽然是并发的，但开销却极大。
 
-## Why Coroutiones
+## Abstract
+
+### Why Coroutiones
 
 - Python 的多线程不能利用多核CPU
 
@@ -33,17 +35,17 @@ Date: 2019-8-10
 
 相当于每个 CPU 在同一时间只能执行一个线程。
 
-## 计算密集和I/O 密集
+### 计算密集和I/O 密集
 
-### 计算密集型
+- 计算密集型也叫 CPU 密集型，主要特点是要进行大量的计算，消耗CPU资源，比如计算圆周率、对视频进行高清解码等等，全靠CPU的运算能力。这种计算密集型任务虽然也可以用多任务完成，但是任务越多，花在任务切换的时间就越多，CPU 执行任务的效率就越低，所以，要最高效地利用 CPU，计算密集型任务同时进行的数量应当等于 CPU 的核心数。计算密集型任务由于主要消耗 CPU 资源，因此，代码运行效率至关重要。Python 这样的脚本语言运行效率很低，完全不适合计算密集型任务。对于计算密集型任务，最好用 C 语言编写。
 
-也叫 CPU 密集型，主要特点是要进行大量的计算，消耗CPU资源，比如计算圆周率、对视频进行高清解码等等，全靠CPU的运算能力。这种计算密集型任务虽然也可以用多任务完成，但是任务越多，花在任务切换的时间就越多，CPU 执行任务的效率就越低，所以，要最高效地利用 CPU，计算密集型任务同时进行的数量应当等于 CPU 的核心数。
+- IO 密集型涉及到网络、磁盘 IO 的任务都是 IO 密集型任务，这类任务的特点就是 CPU 消耗很少，任务大部分时间都在等待 IO 操作完成。
 
-计算密集型任务由于主要消耗 CPU 资源，因此，代码运行效率至关重要。Python 这样的脚本语言运行效率很低，完全不适合计算密集型任务。对于计算密集型任务，最好用 C 语言编写。
+### 并发与并行
 
-### I/O 密集型
+并发 concurreny 指的是同一时刻只能有一个程序在运行；
 
-IO 密集型涉及到网络、磁盘 IO 的任务都是 IO 密集型任务，这类任务的特点就是 CPU 消耗很少，任务大部分时间都在等待 IO 操作完成。
+并行 parallelism 与并发的区别在于，其强调计算机确实能够在同一时刻做许多不同的事情。
 
 ## 协程上下文切换
 
@@ -62,11 +64,9 @@ IO 密集型涉及到网络、磁盘 IO 的任务都是 IO 密集型任务，这
 
 多线程有两个好处：CPU 并行，IO 并行，单核多线程无法使用多核 CPU，所以在 Python中不能使用多线程来使用多核。
 
-## Python 多进程
+## multiprocessing
 
-### 概述
-
-Python 多进程使用 `multiprocessing` 模块。
+Python 多进程可以使用 `multiprocessing` 模块。
 
 ### 基本使用
 
@@ -113,9 +113,9 @@ def pattern_all_count_mp(self):
     p.join()
 ```
 
-在上面的函数中，我们传入了 list `all_functions`, 而函数 `count_function_pattern_distance_with_others_mp` 接收的是 `function` 对象。
 
 
+在上面的函数中，我们传入了 list 的 `all_functions`, 这个迭代器，而函数 `count_function_pattern_distance_with_others_mp()` 接收的是 `function` 对象。
 
 对于普通的函数调用，可以这么来写：
 
@@ -138,3 +138,51 @@ def test07(self):
 `join`([*timeout*]), 
 
 一般这行代码会放在我们多进程完成以后的最后一句使用。
+
+## ProcessPoolExecutor
+
+除了 `multiprocessing` 模块之外，我们也可以使用 `ProcessPoolExecutor` 进行并行程序的执行。
+
+### 实例
+
+先举一个在项目中遇到的实例，用于说明 python 多进程程序的运行原理。
+
+- 我们有一个函数，其需要使用多进程进行运行：
+
+  ```python
+  class PatternAllSimilar:
+      def pattern_all(self, not_use=None):
+          #.. function code
+  ```
+
+  需要注意，因为笔者现在还不确定这个使用方式是不是可以不指定给多进行迭代的参数，所以定义了一个 `not_use` 参数，上层会进行传递，但是在函数中不会对其使用。
+
+- 现在可以使用多进程运行之：
+
+  ```python
+  if __name__ == '__main__':
+      logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+      s = PatternAllSimilar()
+      not_use = list(range(10))
+  
+      with ProcessPoolExecutor(max_workers=8) as pool:
+          for _ in pool.map(s.pattern_all, not_use):
+              pass
+      pool.shutdown(cancel_futures=True)
+  ```
+
+  笔者在调试这个多进程程序的时候，发现其一直不 work，表现在不进入多进程的程序中，程序一闪而过就执行完了，最后找了很多资料，发觉需要注意以下几点：
+
+  1. 如果有文件操作，确定指定了正确的文件路径；所以说我们在执行的时候可以使用下面的逻辑来检查文件和 `sys.path` 的正确性：
+
+     ```python
+     if not os.path.exists(s.file_split):
+         logging.error("The file {} is not exists! please check your path!".format(s.file_split))
+         logging.debug("sys.path is {}".format(sys.path))
+         exit(1) # if in __mian__
+     ```
+
+  2. 确保我们的多进程的相关执行在 `__main__` 函数中；
+
+  3. 使用 `with` 语句，并且最后对多进程进行关闭。
+
