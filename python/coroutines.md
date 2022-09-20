@@ -2,6 +2,7 @@
 title: Coroutines
 Date: 2019-8-10
 
+
 ---
 
 因为 GIL（全局解释器锁）, python 只有一个 GIL, 运行时只有拿到这个锁才能执行，同一时间只有一个获得 GIL 的线程在跑，其他线程都在等待状态。
@@ -155,7 +156,7 @@ def test07(self):
           #.. function code
   ```
 
-  需要注意，因为笔者现在还不确定这个使用方式是不是可以不指定给多进行迭代的参数，所以定义了一个 `not_use` 参数，上层会进行传递，但是在函数中不会对其使用。
+  需要注意，因为笔者现在还不确定这个使用方式是不是可以不指定给多进行迭代的参数（后文确定了，该接口是必须有这个的），所以定义了一个 `not_use` 参数，上层会进行传递，但是在函数中不会对其使用。
 
 - 现在可以使用多进程运行之：
 
@@ -177,7 +178,7 @@ def test07(self):
 
      ```python
      if not os.path.exists(s.file_split):
-         logging.error("The file {} is not exists! please check your path!".format(s.file_split))
+         logging.error("The file {} is not exists!!".format(s.file_split))
          logging.debug("sys.path is {}".format(sys.path))
          exit(1) # if in __mian__
      ```
@@ -186,3 +187,80 @@ def test07(self):
 
   3. 使用 `with` 语句，并且最后对多进程进行关闭。
 
+### About pool.map
+
+:::warning
+
+在深入使用了这个接口以后，我发现其并不能很好地适用于所有的并行场景。这种方法要求必须是一个迭代器传入给函数，然后函数负责单一一次的计算，所以说要使用这个接口来进行并行计算的话，是需要传入我们需要计算的迭代器对象的，这就意味着，要传入一个**很大的对象**，内存此时就不够了。
+
+所以说，这个方法由于上述限制，提升的性能十分有限。
+
+:::
+
+为了解决这个问题，笔者在尝试了很久之后，发现可以使用迭代器去生成大的数组，其中逻辑比较绕，代码如下：
+
+```python
+    def get_all_pattern_list(self, file=None):
+        if not file:
+            file = self.file_split
+        pattern_list = []
+        with open(file, 'r') as fs:
+            for idx in range(0, self.get_line_count(fs.name), self.pattern_len):
+                logging.debug('start to get line {} pattern'.format(idx))
+                lines = linecache.getlines(fs.name)[idx: idx + self.pattern_len]
+                try:
+                    ins = [_.split()[1] if _ else 'nop' for _ in lines]
+                    yield idx, ins
+                except IndexError:
+                    continue
+```
+
+上面函数的作用是读取文件中的每一行，然后从文件中得到一个 pattern, 最后使用 `yield` 的方式输出。
+
+在多进程的实现函数中，可以这么实现（实现函数每一次处理一个迭代器对象，`pattern_tup` 包括的内容为 `(line_number, pattern)`, 而上一个函数返回了所有的这些 `pattern_tup` 的集合：
+
+```python
+    def get_pattern_similar(self, pattern_tup):
+        line_number, p2 = pattern_tup
+        pattern_count = 0
+        with open(self.file_split, 'r') as fs:
+            for idx in range(0, self.get_line_count(fs.name), self.pattern_len):
+                logging.debug('start to get line {} pattern'.format(idx))
+                lines = linecache.getlines(fs.name)[idx: idx + self.pattern_len]
+                try:
+                    ins = [_.split()[1] if _ else 'nop' for _ in lines]
+                    ed = self.ed.edit_distance_faster(ins, p2)
+                    if ed <= self.threshold:
+                        pattern_count += 1
+                except IndexError:
+                    continue
+
+        return pattern_count, line_number, p2
+```
+
+最后就可以使用这个接口的方式来调用了：
+
+```python
+res = collections.defaultdict()
+start = time.time()
+with ProcessPoolExecutor(max_workers=worker_count) as pool:
+    with open(s.res_file, 'w+') as f:
+        for items in pool.map(s.get_pattern_similar, s.get_all_pattern_list(file=s.file_split)):
+            count, lineno, pattern = items
+            if lineno and pattern:
+                key = (lineno, ','.join(pattern))
+                res[key] = count
+                logging.info('pattern {} found a similar, now is {}'.format(key, res.get(key)))
+                line = '{};{};{}\n'.format(key[0], key[1], count)
+                f.writelines(line)
+```
+
+其核心代码为第 5 行，打开文件是为了将结果及时写入到文件中；
+
+我们再仔细看看第 5 行，加深理解：
+
+```python
+for items in pool.map(s.get_pattern_similar, s.get_all_pattern_list(file=s.file_split)):
+```
+
+`s.get_all_pattern_list(file=s.file_split)` 就是迭代器，也是我们接口中需要传入的 `not_use`, 至此也证明了这个接口中的可迭代对象是必不可少的。
