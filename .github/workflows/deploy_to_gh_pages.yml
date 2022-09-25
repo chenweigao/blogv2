@@ -6,14 +6,15 @@ on:
     branches:
       - hope_dev
 jobs:
-  build-and-deploy:
+  deploy-gh-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
-          ref: hope
+          submodules: true
           fetch-depth: 0
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
