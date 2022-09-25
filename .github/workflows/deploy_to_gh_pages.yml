@@ -30,16 +30,16 @@ jobs:
     - name: Install Deps
       run: pnpm install --frozen-lockfile
 
-      - name: Build Blog
-        env:
-          NODE_OPTIONS: --max_old_space_size=4096
-        run: pnpm run build:webpack
+    - name: Build Blog
+      env:
+        NODE_OPTIONS: --max_old_space_size=4096
+      run: pnpm run build:webpack
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: dist
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: dist
 
       # uses: jenkey2011/vuepress-deploy@master
       # env:
