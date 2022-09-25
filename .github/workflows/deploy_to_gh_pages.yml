@@ -62,6 +62,5 @@ jobs:
         with:
           target_branch: gh-pages
           build_dir: .
-          domain: vueblog.weigao.cc
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
