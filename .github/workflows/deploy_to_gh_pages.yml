@@ -26,28 +26,28 @@ jobs:
           node-version: 16
           cache: pnpm
 
-      - name: Install Deps
-        run: pnpm install --frozen-lockfile
+      # - name: Install Deps
+      #   run: pnpm install --frozen-lockfile
 
-      - name: Build Blog
-        env:
-          NODE_OPTIONS: --max_old_space_size=4096
-        run: pnpm docs:build
+      # - name: Build Blog
+      #   env:
+      #     NODE_OPTIONS: --max_old_space_size=4096
+      #   run: pnpm docs:build
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: dist
+        # uses: JamesIves/github-pages-deploy-action@v4
+        # with:
+        #   branch: gh-pages
+        #   folder: dist
 
-        # uses: jenkey2011/vuepress-deploy@master
-        # env:
-        #   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        #   TARGET_REPO: chenweigao/blogv2
-        #   TARGET_BRANCH: gh_pages
-        #   BUILD_SCRIPT: yarn install --frozen-lockfile && yarn build:webpack
-        #   BUILD_DIR: dist/
-        #   CNAME: vueblog.weigao.cc
+        uses: jenkey2011/vuepress-deploy@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          TARGET_REPO: chenweigao/blogv2
+          TARGET_BRANCH: gh_pages
+          BUILD_SCRIPT: pnpm install --frozen-lockfile && pnpm docs:build
+          BUILD_DIR: dist/
+          CNAME: vueblog.weigao.cc
 
       - name: Lint Markdown
         # You may pin to the exact commit or the version.
