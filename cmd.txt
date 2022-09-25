@@ -1,1 +1,2 @@
 pnpm i && pnpm up
+pnpm i -f
