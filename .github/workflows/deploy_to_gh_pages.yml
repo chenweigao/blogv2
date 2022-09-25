@@ -26,8 +26,8 @@ jobs:
           node-version: 16
           # cache: pnpm
 
-      # - name: Install Deps
-      #   run: pnpm install --frozen-lockfile
+      - name: Install Deps
+        run: pnpm install --frozen-lockfile
 
       # - name: Build Blog
       #   env:
@@ -45,7 +45,7 @@ jobs:
           TARGET_REPO: chenweigao/blogv2
           TARGET_BRANCH: gh_pages
           # BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
-          BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
+          BUILD_SCRIPT: yarn docs:build
           BUILD_DIR: dist/
           CNAME: vueblog.weigao.cc
 
