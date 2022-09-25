@@ -45,7 +45,7 @@ jobs:
           TARGET_REPO: chenweigao/blogv2
           TARGET_BRANCH: gh_pages
           # BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
-          BUILD_SCRIPT: npm run docs:build
+          BUILD_SCRIPT: npm i & npm run docs:build
           BUILD_DIR: dist/
           CNAME: vueblog.weigao.cc
 
