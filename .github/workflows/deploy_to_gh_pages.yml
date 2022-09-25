@@ -4,7 +4,7 @@ name: DEPLOY TO A:GH_PAGES
 on:
   push:
     branches:
-      - hope_dev
+      - hope
 jobs:
   deploy-gh-pages:
     runs-on: ubuntu-latest
