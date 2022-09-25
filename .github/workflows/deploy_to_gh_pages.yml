@@ -35,18 +35,19 @@ jobs:
         run: pnpm docs:build
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: dist
-        # uses: jenkey2011/vuepress-deploy@master
-        # env:
-        #   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        #   TARGET_REPO: chenweigao/blogv2
-        #   TARGET_BRANCH: gh_pages
-        #   BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
-        #   BUILD_DIR: dist/
-        #   CNAME: vueblog.weigao.cc
+        # uses: JamesIves/github-pages-deploy-action@v4
+        # with:
+        #   branch: gh-pages
+        #   folder: dist
+        uses: jenkey2011/vuepress-deploy@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          TARGET_REPO: chenweigao/blogv2
+          TARGET_BRANCH: gh_pages
+          # BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
+          BUILD_SCRIPT: npm run docs:build
+          BUILD_DIR: dist/
+          CNAME: vueblog.weigao.cc
 
       - name: Lint Markdown
         # You may pin to the exact commit or the version.
