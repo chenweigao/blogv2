@@ -39,7 +39,6 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
-          ssh-key: ${{ secrets.ACCESS_TOKEN }}
         # uses: jenkey2011/vuepress-deploy@master
         # env:
         #   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
