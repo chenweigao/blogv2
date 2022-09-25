@@ -34,20 +34,20 @@ jobs:
       #     NODE_OPTIONS: --max_old_space_size=4096
       #   run: pnpm docs:build
 
-      - name: Deploy
-        # uses: JamesIves/github-pages-deploy-action@v4
-        # with:
-        #   branch: gh-pages
-        #   folder: dist
+      # - name: Deploy
+      #   # uses: JamesIves/github-pages-deploy-action@v4
+      #   # with:
+      #   #   branch: gh-pages
+      #   #   folder: dist
 
-        uses: jenkey2011/vuepress-deploy@master
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          TARGET_REPO: chenweigao/blogv2
-          TARGET_BRANCH: gh_pages
-          # BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
-          BUILD_DIR: dist/
-          CNAME: vueblog.weigao.cc
+      #   uses: jenkey2011/vuepress-deploy@master
+      #   env:
+      #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      #     TARGET_REPO: chenweigao/blogv2
+      #     TARGET_BRANCH: gh_pages
+      #     BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
+      #     BUILD_DIR: dist/
+      #     CNAME: vueblog.weigao.cc
 
       - name: Lint Markdown
         # You may pin to the exact commit or the version.
@@ -56,3 +56,11 @@ jobs:
         with:
           # Name of Directory to scan with write-good [default is "."]
           directory: docs/ # optional, default is .
+
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: gh-pages
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
