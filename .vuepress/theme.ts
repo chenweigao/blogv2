@@ -1,7 +1,7 @@
 import { hopeTheme } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
 import { mysidebar } from "./sidebar";
-import { searchPlugin } from "@vuepress/plugin-search";
+// import { searchPlugin } from "@vuepress/plugin-search";
 
 export default hopeTheme(
     {
@@ -46,7 +46,7 @@ export default hopeTheme(
                 Facebook: "https://example.com",
                 Flipboard: "https://example.com",
                 Gitee: "https://example.com",
-                GitHub: "https://example.com",
+                GitHub: "https://github.com/chenweigao",
                 Gitlab: "https://example.com",
                 Gmail: "https://example.com",
                 Instagram: "https://example.com",
@@ -89,7 +89,18 @@ export default hopeTheme(
             },
 
             mdEnhance: {
-                enableAll: true
+                align: true,
+                codetabs: true,
+                demo: true,
+                flowchart: true,
+                footnote: true,
+                imageMark: true,
+                katex: true,
+                mermaid: true,
+                presentation: true,
+                sub: true,
+                sup: true,
+                vpre: true,
             }
         }
 

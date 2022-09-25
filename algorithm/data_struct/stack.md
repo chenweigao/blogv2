@@ -152,7 +152,7 @@ def nextGreaterElement(find_nums, nums):
 
 ！注意 S2 不为空时不要从 S1 中添加数据，类似于下图三的情况。
 
-![stcak_queue](/stack_queue.jpg)
+![stcak_queue](../image/stack_queue.jpg)
 
 代码实现如下，思路就是使用两个栈，一个做插入，一个做删除：
 

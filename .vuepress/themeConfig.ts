@@ -86,19 +86,11 @@ export default defineThemeConfig({
 
     // 你也可以使用 Waline
     comment: {
-      type: "giscus",
+      provider: "Giscus",
       repo: "chenweigao/gitalk",
       repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
       category: "Announcements",
       categoryId: "DIC_kwDOB3xgIM4COUME",
-    },
-
-    mdEnhance: {
-      enableAll: true,
-      presentation: {
-        plugins: ["highlight", "math", "search", "notes", "zoom"],
-      },
-    },
-
+    }
   },
 });

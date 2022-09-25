@@ -128,7 +128,7 @@ docker cp foo.war tomcat-docker-8.0:/foo.war
 
 portainer 是一个 web 的 docker 管理工具。
 
-![wsl](/docker/wsl.png)
+![wsl](../image/wsl.png)
 
 ```bash
 docker volume create portainer_data

@@ -3,7 +3,7 @@ import { hopeTheme } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
 import { mysidebar } from "./sidebar";
 import theme from "./theme";
-import { searchPlugin } from "@vuepress/plugin-search";
+// import { searchPlugin } from "@vuepress/plugin-search";
 
 export default defineUserConfig({
   base: "/",
@@ -38,13 +38,13 @@ export default defineUserConfig({
   theme,
 
   plugins: [
-    searchPlugin({
-      // 你的选项
-      locales: {
-        '/': {
-          placeholder: 'Search',
-        },
-      }
-    }),
+  //   searchPlugin({
+  //     // 你的选项
+  //     locales: {
+  //       '/': {
+  //         placeholder: 'Search',
+  //       },
+  //     }
+  //   }),
   ]
 })

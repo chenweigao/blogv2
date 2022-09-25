@@ -158,11 +158,11 @@ category:
 
 有下面的例子，可以分为四种问题，提出二分查找：
 
-![binary_search_1](/binary_search/binary_search_1.png)
+![binary_search_1](./image/binary_search_1.png)
 
 从一个新的角度区理解这个问题，该问题可以变为：**找出图中的蓝红边界，即求出未知数K**。
 
-![binary_search_2](/binary_search/binary_search_2.png)
+![binary_search_2](./image/binary_search_2.png)
 
 针对此问题，可以写出伪代码如下所示：
 
@@ -179,7 +179,7 @@ return l or r
 
 有了以上的伪代码，图1 中的问题答案分别为：
 
-![binary_search_3](/binary_search/binary_search_3.png)
+![binary_search_3](./image/binary_search_3.png)
 
 参考视频：<https://www.bilibili.com/video/BV1d54y1q7k7>
 

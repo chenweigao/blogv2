@@ -14,13 +14,38 @@
         "docs:dev": "vuepress dev .",
         "build:webpack": "vuepress-webpack build ."
     },
-    "devDependencies": {
-        "@vuepress/plugin-search": "^2.0.0-beta.46",
-        "sass-loader": "^13.0.0",
-        "vuepress": "^2.0.0-beta.46",
-        "vuepress-theme-hope": "^2.0.0-beta.77",
-        "vuepress-vite": "^2.0.0-beta.46",
-        "vuepress-webpack": "^2.0.0-beta.46"
+    "keywords": [
+        "vuepress",
+        "personal-blog"
+    ],
+    "dependencies": {
+        "@vuepress/cli": "2.0.0-beta.51",
+        "@vuepress/client": "2.0.0-beta.51",
+        "@vuepress/plugin-docsearch": "2.0.0-beta.51",
+        "@vuepress/plugin-search": "^1.9.7",
+        "highlight.js": "^11.6.0",
+        "sass-loader": "13.0.2",
+        "vue": "3.2.39",
+        "vuepress": "2.0.0-beta.51",
+        "vuepress-theme-hope": "2.0.0-beta.104",
+        "vuepress-vite": "2.0.0-beta.51",
+        "vuepress-webpack": "2.0.0-beta.51"
     },
-    "dependencies": {}
+    "devDependencies": {
+        "cross-env": "7.0.3",
+        "markdownlint-cli": "0.32.2",
+        "prettier": "2.7.1"
+    },
+    "packageManager": "pnpm@7.12.2",
+    "pnpm": {
+        "peerDependencyRules": {
+            "ignoreMissing": [
+                "@algolia/client-search",
+                "@types/react",
+                "react",
+                "react-dom",
+                "webpack"
+            ]
+        }
+    }
 }
