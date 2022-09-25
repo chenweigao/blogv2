@@ -45,8 +45,8 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           TARGET_REPO: chenweigao/blogv2
           TARGET_BRANCH: gh_pages
-          BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
-          BUILD_DIR: dist/
+          # BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
+          # BUILD_DIR: dist/
           CNAME: vueblog.weigao.cc
 
       - name: Lint Markdown

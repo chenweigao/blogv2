@@ -1,8 +1,8 @@
-import { defineThemeConfig } from "vuepress-theme-hope";
-import navbar from "./navbar";
-import sidebar from "./sidebar";
+import { defineThemeConfig, hopeTheme } from "vuepress-theme-hope";
+// import navbar from "./navbar";
+// import sidebar from "./sidebar";
 
-export default defineThemeConfig({
+export default hopeTheme({
 
   hostname: "https://vueblog.weigao.cc",
 
