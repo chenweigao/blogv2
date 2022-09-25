@@ -69,7 +69,7 @@ int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
     getpeername(unixfd, (SA *) &cli, &len);
     ```
 
-    ![value-result](/value-result.jpg)
+    ![value-result](../image/value-result.jpg)
 
     如图中所示，当函数被调用时，结构大小是一个 **值(value)** , 它告诉内核该结构的大小，这样内核在写该结构时不至于越界；当函数返回时，结构大小又是一个 **结果(result)** , 它告诉内核在该结构中究竟存储了多少信息。这种类型的参数称为 **value-result** 参数。
 
