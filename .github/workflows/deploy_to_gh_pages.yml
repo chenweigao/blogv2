@@ -26,28 +26,28 @@ jobs:
           node-version: 16
           cache: pnpm
 
-      # - name: Install Deps
-      #   run: pnpm install --frozen-lockfile
+      - name: Install Deps
+        run: pnpm install --frozen-lockfile
 
-      # - name: Build Blog
-      #   env:
-      #     NODE_OPTIONS: --max_old_space_size=4096
-      #   run: pnpm docs:build
+      - name: Build Blog
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+        run: pnpm docs:build
 
-      # - name: Deploy
-      #   # uses: JamesIves/github-pages-deploy-action@v4
-      #   # with:
-      #   #   branch: gh-pages
-      #   #   folder: dist
-
-      #   uses: jenkey2011/vuepress-deploy@master
-      #   env:
-      #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      #     TARGET_REPO: chenweigao/blogv2
-      #     TARGET_BRANCH: gh_pages
-      #     BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
-      #     BUILD_DIR: dist/
-      #     CNAME: vueblog.weigao.cc
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist
+          ssh-key: ${{ secrets.ACCESS_TOKEN }}
+        # uses: jenkey2011/vuepress-deploy@master
+        # env:
+        #   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        #   TARGET_REPO: chenweigao/blogv2
+        #   TARGET_BRANCH: gh_pages
+        #   BUILD_SCRIPT: yarn install --frozen-lockfile && yarn docs:build
+        #   BUILD_DIR: dist/
+        #   CNAME: vueblog.weigao.cc
 
       - name: Lint Markdown
         # You may pin to the exact commit or the version.
@@ -56,11 +56,3 @@ jobs:
         with:
           # Name of Directory to scan with write-good [default is "."]
           directory: docs/ # optional, default is .
-
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v3
-        with:
-          target_branch: gh-pages
-          build_dir: .
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
