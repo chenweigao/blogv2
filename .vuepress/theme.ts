@@ -1,7 +1,7 @@
 import { hopeTheme } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
 import { mysidebar } from "./sidebar";
-import { searchPlugin } from "@vuepress/plugin-search";
+// import { searchPlugin } from "@vuepress/plugin-search";
 
 export default hopeTheme(
     {
