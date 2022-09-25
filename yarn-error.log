@@ -1,0 +1,76 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js
+
+PATH: 
+  C:\Program Files\PowerShell\7;C:\Program Files (x86)\VMware\VMware Workstation\bin\;C:\Program Files\Eclipse Adoptium\jdk-17.0.1.12-hotspot\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\ProgramData\chocolatey\bin;C:\Program Files\Java\jdk-14.0.1\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Git\cmd;C:\Program Files\dotnet\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files\PowerShell\7\;C:\Users\Administrator\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\Administrator\AppData\Local\Programs\Python\Python39\;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;C:\Users\Administrator\AppData\Local\Yarn\bin;C:\Program Files\JetBrains\PyCharm Community Edition 2020.2\bin;;C:\Users\Administrator\AppData\Local\GitHubDesktop\bin;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Administrator\AppData\Local\Programs\Fiddler
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  16.13.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: ENOENT: no such file or directory, copyfile 'C:\Users\Administrator\AppData\Local\Yarn\Cache\v6\npm-glob-8.0.3-415c6eb2deed9e502c68fa44a272e6da6eeca42e-integrity\node_modules\glob\common.js' -> 'C:\Users\Administrator\Documents\_code\blogv2\node_modules\markdownlint-cli\node_modules\glob\common.js'
+
+npm manifest: 
+  {
+      "name": "blogv2-dev",
+      "version": "2.0.0",
+      "description": "Demo for vuepress-theme-reco@2.x.",
+      "repository": "git@github.com:chenweigao/blogv2.git",
+      "author": "weiggao <mail@weigao.cc>",
+      "license": "MIT",
+      "scripts": {
+          "dev": "vuepress dev .",
+          "start": "vuepress dev .",
+          "build": "vuepress build .",
+          "docs:build": "vuepress build .",
+          "docs:clean-dev": "vuepress dev . --clean-cache",
+          "docs:dev": "vuepress dev .",
+          "build:webpack": "vuepress-webpack build ."
+      },
+      "keywords": [
+          "vuepress",
+          "personal-blog"
+      ],
+      "dependencies": {
+          "@vuepress/cli": "2.0.0-beta.51",
+          "@vuepress/client": "2.0.0-beta.51",
+          "@vuepress/plugin-docsearch": "2.0.0-beta.51",
+          "@vuepress/plugin-search": "^1.9.7",
+          "highlight.js": "^11.6.0",
+          "sass-loader": "13.0.2",
+          "vue": "3.2.39",
+          "vuepress": "2.0.0-beta.51",
+          "vuepress-theme-hope": "2.0.0-beta.104",
+          "vuepress-vite": "2.0.0-beta.51",
+          "vuepress-webpack": "2.0.0-beta.51"
+      },
+      "devDependencies": {
+          "cross-env": "7.0.3",
+          "markdownlint-cli": "0.32.2",
+          "prettier": "2.7.1"
+      },
+      "packageManager": "pnpm@7.12.2",
+      "pnpm": {
+          "peerDependencyRules": {
+              "ignoreMissing": [
+                  "@algolia/client-search",
+                  "@types/react",
+                  "react",
+                  "react-dom",
+                  "webpack"
+              ]
+          }
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
