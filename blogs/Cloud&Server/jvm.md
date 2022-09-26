@@ -15,7 +15,7 @@ AOT 是提前编译技术，JIT 是即时编译技术。
 
 下图可以简单说明 AOT 和 JIT 的执行过程：
 
-![aot and jit](../image/aot%26jit.png)
+![aot and jit](../image/aot_jit.png)
 
 从上面的图中，可以学到以下几点：
 
