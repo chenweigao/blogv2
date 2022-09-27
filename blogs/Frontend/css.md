@@ -1,6 +1,6 @@
 ---
 title: CSS
-date: 2019-4-28
+date: 2019-04-28
 tag:
  - frontend
 category:

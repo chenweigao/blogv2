@@ -1,6 +1,6 @@
 ---
 title: Stack
-date: 2019-9-4
+date: 2019-09-04
 ---
 
 [[toc]]

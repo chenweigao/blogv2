@@ -1,6 +1,6 @@
 ---
 title: apt
-date: 2018-9-8
+date: 2018-09-08
 ---
 
 # apt source

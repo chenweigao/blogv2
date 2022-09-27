@@ -1,6 +1,6 @@
 ---
 title: Binary Search
-date: 2019-9-12
+date: 2019-09-12
 tag:
  - algorithm
  - binary_search

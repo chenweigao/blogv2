@@ -1,6 +1,6 @@
 ---
 title: Charts.js
-date: 2019-5-15
+date: 2019-05-15
 tag:
  - frontend
  - figures

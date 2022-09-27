@@ -1,6 +1,6 @@
 ---
 title: Splicer
-date: 2018-2-10
+date: 2018-02-10
 tag:
  - paper
  - CSI

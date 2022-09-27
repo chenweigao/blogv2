@@ -13,11 +13,10 @@ export default hopeTheme({
 
   iconPrefix: "iconfont icon-",
 
-  logo: "dojo-icon.svg",
+  logo: "excellence.png",
 
   repo: "https://github.com/chenweigao",
 
-  docsDir: "demo/src",
   // navbar
   // navbar: navbar,
 

@@ -1,6 +1,6 @@
 ---
 title: String
-date: 2019-9-3
+date: 2019-09-03
 tag:
  - algorithm
  - leetcode
@@ -17,7 +17,6 @@ category:
 
 ### C String
 
-
 ## Problems
 
 在算法中，字符串的操作和数组一样，都是很热门的考察点，这篇文章将总结一下常见的有关 string 的算法，方便查阅学习、总结。
@@ -30,8 +29,7 @@ category:
 
 言归正传，之前想法是，用 `and` 或者 `or` 操作来判断之类的思路，但是这种思路比较烂，正确的做法是：
 
-`s1 = 'abc', s2 = 'abcd'`, 则： `s2[:-1] == s1`, 直接搞定！
-
+`s1 = 'abc', s2 = 'abcd'` , 则： `s2[:-1] == s1` , 直接搞定！
 
 ### LC521 最长特殊序列1 -- 判断子序列
 
@@ -45,12 +43,11 @@ category:
 >
 > 例如，"abc" 是 "aebdc" 的子序列，因为删除 "aebdc" 中斜体加粗的字符可以得到 "abc" 。 "aebdc" 的子序列还包括 "aebdc" 、 "aeb" 和 "" (空字符串)。
 
-
 但是实际上是想太多了，可以分情况讨论：
 
 1. `aaa` and `bbbb`, 我们选择 `bbbb`, 因为其长度为 4, 所以肯定不是 `aaa` 的子序列；
 2. `aaa` and `aaaa` 也一样；
-3. `abc` and `abc`, 就是 3;
+3. `abc` and `abc`, 就是 3; 
 4. `abcd` and `abcd` 就是 4.
 
 合理理解题目非常重要。
@@ -64,7 +61,6 @@ class Solution:
             return -1
         return max(len(a), len(b))
 ```
-
 
 ### 查找字符串中第一个出现的不重复的元素（阿里）
 
@@ -113,10 +109,9 @@ public:
     }
 };
 
-
 ```
 
-如果使用 python 的话，使用 hash_map 容器 `collections.Counter()`:
+如果使用 python 的话，使用 hash_map 容器 `collections.Counter()` :
 
 ```py
 class Solution:
@@ -145,7 +140,7 @@ class Solution:
 
 ### 替换字符串中的空格
 
-> 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+> 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy. 则经过替换之后的字符串为We%20Are%20Happy。
 
 这道题目用python 实现比较简单：
 

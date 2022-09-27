@@ -1,6 +1,6 @@
 ---
 title: LaTeX 用法和语法总结
-date: 2020-3-10
+date: 2020-03-10
 tag:
  - paper
  - latex

@@ -1,6 +1,6 @@
 ---
 title: Flask
-date: 2018-8-10
+date: 2018-08-10
 tag:
  - web framework 
 category:

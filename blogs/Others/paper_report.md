@@ -1,6 +1,6 @@
 ---
 title: Paper Report
-date: 2020-5-15
+date: 2020-05-15
 tag:
  - paper
 category:

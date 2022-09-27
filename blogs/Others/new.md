@@ -1,7 +1,6 @@
 ---
 title: 2019 新年感悟
-date: 2019-1-1
-tag:
+sstag:
  - thoughts
 category:
  -  Others

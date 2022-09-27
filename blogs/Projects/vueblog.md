@@ -1,6 +1,6 @@
 ---
 title: Vuepress Blog Guide
-date: 2018-5-10
+date: 2018-05-10
 tag:
  - vue.js
  - blog

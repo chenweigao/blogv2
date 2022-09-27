@@ -1,6 +1,6 @@
 ---
 title: MongoDB Database
-date: 2018-8-8
+date: 2018-08-08
 tag:
  - database
 category:

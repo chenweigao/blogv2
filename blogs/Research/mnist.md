@@ -1,6 +1,6 @@
 ---
 title: MNIST 手写数字识别
-date: 2017-3-10
+date: 2017-03-10
 tag:
  - paper
  - deeplearning
