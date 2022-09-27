@@ -1,6 +1,6 @@
 ---
 title: Linked List
-Date: 2022-2-7
+date: 2022-2-7
 ---
 
 ## Linked List

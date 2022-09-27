@@ -1,13 +1,20 @@
 ---
-title: JAVA JVM 研究
-Date: 2022-08-24
+title: JIT & AOT 研究
+date: 2022-08-24
 tag:
  - jvm
+ - java
 category:
  - Cloud
+ - JAVA
+author: weigao
+# 此页面会出现在首页的文章板块中
+star: true
 ---
 
-# Java JVM 研究
+本文主要结合软硬件去研究 JVM 中的 JIT 和 AOT 技术。
+
+<!-- more -->
 
 ## AOT & JIT
 

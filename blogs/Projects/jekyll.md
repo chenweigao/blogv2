@@ -1,6 +1,6 @@
 ---
 title: Jekyll GitHub Pages Blog
-Date: 2017-11-10
+date: 2017-11-10
 tag:
  - blog
 category:
@@ -100,7 +100,7 @@ layout: article
 title:  "This is a test blog"
 tag:
   - blog
-modify_Date: 2017-01-01
+modify_date: 2017-01-01
 ---
 ## You will see me at [https://localhost:4000](https://localhost:4000)
 The head is **required** in every post

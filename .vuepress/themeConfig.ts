@@ -19,7 +19,7 @@ export default hopeTheme({
 
   docsDir: "demo/src",
   // navbar
-  navbar: navbar,
+  // navbar: navbar,
 
   // sidebar
   sidebar: {
@@ -77,20 +77,5 @@ export default hopeTheme({
     config: {
       "/guide/encrypt.html": ["1234"],
     },
-  },
-
-  plugins: {
-    blog: {
-      autoExcerpt: true,
-    },
-
-    // 你也可以使用 Waline
-    comment: {
-      provider: "Giscus",
-      repo: "chenweigao/gitalk",
-      repoId: "MDEwOlJlcG9zaXRvcnkxMjU1OTE1ODQ=",
-      category: "Announcements",
-      categoryId: "DIC_kwDOB3xgIM4COUME",
-    }
-  },
+  }
 });

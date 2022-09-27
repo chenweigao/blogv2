@@ -1,6 +1,6 @@
 ---
 title: Python ORM - peewee
-Date: 2019-09-14
+date: 2019-09-14
 category:
  - Database
 tag:

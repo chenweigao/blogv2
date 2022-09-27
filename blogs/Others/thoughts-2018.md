@@ -1,6 +1,6 @@
 ---
 title: 日常感悟
-Date: 2018-1-5
+date: 2018-1-5
 tag:
  - thoughts
 category:

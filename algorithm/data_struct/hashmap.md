@@ -1,6 +1,6 @@
 ---
 title: HashMap
-Date: 2022-2-7
+date: 2022-2-7
 ---
 
 ## HashMap

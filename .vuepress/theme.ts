@@ -9,7 +9,7 @@ export default hopeTheme(
 
         author: {
             name: "Someone",
-            url: "https://vueblog.weigao.cc",
+            url: "https://www.weigao.cc",
         },
 
 
@@ -66,6 +66,7 @@ export default hopeTheme(
                 Youtube: "https://example.com",
                 Zhihu: "https://example.com",
             },
+            roundAvatar: true
         },
 
         encrypt: {

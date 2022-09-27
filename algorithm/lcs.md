@@ -1,6 +1,6 @@
 ---
 title: LCS
-Date: 2019-9-4
+date: 2019-9-4
 tag:
  - algorithm
  - leetcode

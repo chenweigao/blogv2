@@ -1,6 +1,6 @@
 ---
 title: Itertools
-Date: 2022-09-27
+date: 2022-09-27
 category:
   - Python
 ---

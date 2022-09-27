@@ -1,6 +1,6 @@
 ---
 title: Vim 使用入门
-Date: 2020-05-14
+date: 2020-05-14
 tag:
  - vim
 category:

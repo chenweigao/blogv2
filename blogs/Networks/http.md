@@ -1,6 +1,6 @@
 ---
 title: HTTP and HTTP/2
-Date: 2019-11-11
+date: 2019-11-11
 tag:
  - http
 category:

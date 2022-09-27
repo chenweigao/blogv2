@@ -1,6 +1,6 @@
 ---
 title: OO & Class
-Date: 2021-9-5
+date: 2021-9-5
 ---
 
 ## Class

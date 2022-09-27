@@ -1,17 +1,19 @@
 ---
 title: The Zen of Python
-Date: 2017-1-1
+date: 2017-1-1
 tag:
  - python
 category:
- -  Others
+ - Others
+ - Python
 sticky: 1
+star: true
 sidebar: false
 ---
 
-> Zon of Python -- By Tim Peters
-> 
-> 翻译 -- weigao chen
+*Zon of Python* By Tim Peters
+
+translated by weigao chen
 <!-- more -->
 
 Beautiful is better than ugly.

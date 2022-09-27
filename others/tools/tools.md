@@ -1,6 +1,6 @@
 ---
 title: Some Tools
-Date: 2021-09-04
+date: 2021-09-04
 ---
 
 ## Tools

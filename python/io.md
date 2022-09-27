@@ -1,6 +1,6 @@
 ---
 title: I/O
-Date: 2019-8-20
+date: 2019-8-20
 ---
 
 ## New-Coder Input

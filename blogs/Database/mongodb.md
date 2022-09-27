@@ -1,6 +1,6 @@
 ---
 title: MongoDB Database
-Date: 2018-8-8
+date: 2018-8-8
 tag:
  - database
 category:
@@ -69,7 +69,7 @@ db.inventory.updateOne(
    { item: "paper" },
    {
      $set: { "size.uom": "cm", status: "P" },
-     $currentDate: { lastModified: true }
+     $currentdate: { lastModified: true }
    }
 )
 # created filed: 
@@ -192,7 +192,7 @@ sqlite> .mode column
 sqlite> SELECT * FROM COMPANY;
 ```
 
-upDate:
+update:
 
 ```bash
 sqlite> UPDATE COMPANY SET ADDRESS = 'Texas' WHERE ID = 6;

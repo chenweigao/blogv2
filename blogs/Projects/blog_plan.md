@@ -1,6 +1,6 @@
 ---
 title: Blog Update Plan
-Date: 2021-05-26
+date: 2021-05-26
 tag:
  - blog
 category:

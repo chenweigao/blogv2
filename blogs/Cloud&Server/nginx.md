@@ -1,6 +1,6 @@
 ---
 title: Nginx 基础总结
-Date: 2019-6-10
+date: 2019-6-10
 tag:
  - server
  - nginx

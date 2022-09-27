@@ -1,6 +1,6 @@
 ---
 title: ArrayTrack
-Date: 2017-10-10
+date: 2017-10-10
 tag:
  - paper
  - CSI

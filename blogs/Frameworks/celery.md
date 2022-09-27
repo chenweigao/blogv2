@@ -1,6 +1,6 @@
 ---
 title: Celery：分布式消息传输的异步任务队列
-Date: 2018-8-10
+date: 2018-8-10
 tag:
  - redis 
 category:
