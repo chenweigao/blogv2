@@ -5,11 +5,11 @@ tag:
  - jvm
  - java
 category:
- - Cloud
  - JAVA
 author: weigao
 # 此页面会出现在首页的文章板块中
 star: true
+
 ---
 
 本文主要结合软硬件去研究 JVM 中的 JIT 和 AOT 技术。
@@ -23,6 +23,12 @@ AOT 是提前编译技术，JIT 是即时编译技术。
 下图可以简单说明 AOT 和 JIT 的执行过程：
 
 ![aot and jit](../image/aot_jit.png)
+
+:::warning ❌❌❌
+
+注意，这是一个很新手入门的图，不是完全准确，后续随着理解的深入，需要将这个图替换掉
+
+:::
 
 从上面的图中，可以学到以下几点：
 
@@ -44,3 +50,107 @@ AOT 存在着一些挑战：
 主流的商用 JAVA 虚拟机都采取了解释器与编译器并存的运行架构，但是要注意并不是所有的 JAVA 虚拟机都是这样的。
 对于解释器而言，其优势在于：当程序需要快速启动和执行的时候，解释器可以先发挥作用，此时解释器直接解释执行 JAVA 字节码；这种方法的好处是可以省去编译的时间，立即运行。
 对于编译器而言，在程序启动后，可以把越来越多的代码编译成本地代码，减少解释器的中间消耗，获得更高的执行效率。
+
+## AOT 过程
+
+### JAVA 代码到 so
+
+我们思考一个问题，给定一段 JAVA 代码，如何将 JAVA 代码转化为二进制呢？[^1]（我们在分析 AOT 性能的时候会将二进制反汇编，分析这个反汇编文件中的指令）。
+
+其路径如下：
+
+```mermaid
+graph LR
+    A[JAVA Code] -->|javac| B(.class)
+    B --> |jaotc| D(.so)
+```
+
+例如我们有一个 class 名为 `**JaotCompilation`, 其经过的转化过程如下：
+
+首先使用 JAVA 编译器得到 `.class` 文件：
+
+```bash
+javac JaotCompilation.java
+```
+
+然后 pass 生成的 `JaotCompilation.class` 文件到 AOT 编译器中，可以使用的命令如下：
+
+```bash
+jaotc --output jaotCompilation.so JaotCompilation.class
+```
+
+然后就会在当下目录下生成 `jaotCompilation.so` 这个 .so 文件。
+
+### 使用 AOT 产物
+
+我们在上一步将 JAVA 代码转化成了 .so 文件，那么在实际中，是如何使用的呢？
+
+在 JVM 中有个选项，`-XX:AOTLibrary`, 传入 so 库的路径（绝对路径或者相对路径都可以）；如果要更省事的话，可以将 library 拷贝到 java home 的 lib 文件夹下面，此时只需要传递名字即可。
+
+```bash
+java -XX:AOTLibrary=./jaotCompilation.so JaotCompilation
+```
+
+执行这个命令之后，可以验证一下 so 是不是被正常加载了，可以增加 `-XX:+PrintAOT` 进行观察：
+
+```bash
+java -XX:+PrintAOT -XX:AOTLibrary=./jaotCompilation.so JaotCompilation
+```
+
+如果顺利的话，应该是可以看到已经加载的库；注意这是加载而不是被使用，可以指定 `-verbose` 选项看是否被实际调用了。
+
+> The AOT compiled library contains a **class fingerprint**, which must match the fingerprint of the **.class** file.
+
+上述文字的意思是说如果我们修改了 `JaotCompilation.java` 的代码的时候，如果没有使用 AOT 编译被修改的 .class 文件，会发生错误；因此在每一次修改代码的时候，我们都要对 AOT 进行重新编译。
+
+## AOT 编译选项
+
+我们可以给 AOT 的编译指定一些选项，将需要的选项写在文件中，然后使能。
+
+`complileCommands.txt`:
+
+```bash
+compileOnly java.lang.*
+```
+
+指定只需要编译的 scope, 然后把这个选项用进去：
+
+```bash
+jaotc --output javaBaseLang.so --module java.base --compile-commands compileCommands.txt
+```
+
+### warm-up which class
+
+我们可以用看一下哪些类实际上在 JVM 预热期间被调用了，命令如下：
+
+```bash
+java -XX:+UnlockDiagnosticVMOptions -XX:+LogTouchedMethods -XX:+PrintTouchedMethodsAtExit JaotCompilation
+```
+
+### single class
+
+可以只编译一个类，指定类名即可：
+
+```bash
+jaotc --output javaBaseString.so --class-name java.lang.String
+```
+
+### 分层编译
+
+默认情况下，始终使用 AOT 的代码，也就是说 so 库中包含的类不会进行 JIT 编译，如果我们想在库中包含 profiling 信息，则可以增加 `compile-for-tiered` 来实现我们的目的：
+
+```bash
+jaotc --output jaotCompilation.so --compile-for-tiered JaotCompilation.class
+```
+
+上述预编译的代码会被一直使用，直到字节码变成符合 JIT 编译的时候。
+
+
+
+
+
+
+
+
+
+[^1]: [https://www.baeldung.com/ahead-of-time-compilation](https://www.baeldung.com/ahead-of-time-compilation)
