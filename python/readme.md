@@ -1,5 +1,6 @@
 ---
 index: -1
+date: 2022-10-09
 
 ---
 
@@ -29,9 +30,64 @@ make install
 
 执行以上操作后，Python 会安装在 `/usr/local/bin` 目录中，Python 库安装在 `/usr/local/lib/pythonXX`，XX 为你使用的 Python 的版本号
 
-如果遇到了报错，如 opsnssl 版本不正确的话，需要参考这个解决方案[^2]
+### openssl install
+
+如果遇到了报错，如 opsnssl 版本不正确的话，需要参考这个解决方案[^2]；我们在此对其做一个简单的总结：
+
+1. 下载 openssl 的安装包，并解压
+2. 安装 openssl
+3. 配置 python 安装时 openssl 路径
+
+其对应的命令如下：
+
+```bash
+tar xz openssl-xxx.tar.gz
+cd openssl-xxx
+./config shared --prefix=/usr/local/
+sudo make
+sudo make install
+```
+
+注意到以上的步骤仅仅是一个示意和参考，其本质就是安装 openssl.
+
+而后创建文件夹并执行：
+
+```bash
+mkdir lib
+cp ./*.{so,so.1.0.0,a,pc} ./lib
+```
+
+需要注意 `so.1.0.0` 替换成自己 openssl 的版本号。
+
+如果安装 openssl  成功之后，我们可以进行 Python 的安装：
+
+```bash
+./configure --with-openssl=/usr/src/openssl-1.0.2o --enable-optimizations
+make
+make install
+```
+
+注意 `/usr/src/openssl-1.0.2o` 路径的替换。
+
+### venv
+
+我们此时就可以使用新版的 Python 来创建我们的虚环境了[^3]:
+
+```bash
+/usr/local/bin/python3.10 -m venv myvenv
+```
+
+然后启动虚环境：
+
+```bash
+source myvenv/bin/activate
+```
 
 
 
-[^1]: [菜鸟教程](https://www.runoob.com/python/python-install.html)
+
+
+[^1]: [菜鸟教程](https://www.runoob.com/python/python-install.html) 
 [^2]: [解决 openssl 版本过低安装失败的问题](https://stackoverflow.com/questions/53543477/building-python-3-7-1-ssl-module-failed)
+[^3]: [Virtual Environments and Packages](https://docs.python.org/3/tutorial/venv.html) 
+
