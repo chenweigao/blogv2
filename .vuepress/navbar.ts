@@ -24,6 +24,7 @@ export const zhNavbarConfig = navbar([
   { text: "Python", icon: "python", link: "/python/" },
   { text: "Linux", icon: "linux", link: "/linux/" },
   { text: "Arch", icon: "customize", link: "/architecture/" },
+  { text: "TimeLine", icon: "class", link: "/timeline/" },
   {
     text: "Others",
     icon: "wrap",
