@@ -331,6 +331,13 @@ int main(int argc, char **argv) {
 1. `parseIRFile` 加载 Module，然后遍历 Module 中的每一个 Function, 
 2. 然后可以打印出 Function 相关的一些信息。
 
+编译 `main.cpp` 和执行字节码的命令如下：
+
+```bash
+clang++ $(llvm-config --cxxflags --ldflags --libs) main.cpp -o main
+./main add.bc
+```
+
 
 
 
