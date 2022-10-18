@@ -1,20 +1,104 @@
-# Binary Tree
+---
+title: Binary Tree
+date: 2022-04-27
+category:
+  - Algorithm
+tag:
+  - binary tree
+---
 
-## 二叉树的遍历
+本文主要研究了：
 
-### 二叉树的前序遍历
+- 二叉树的三种遍历方式：递归和迭代实现
+- 二叉树相关的例题解析
 
-#### 递归法
+<!-- more-->
 
-@todo
+## 二叉树的前序遍历
 
-#### 迭代法
+### 递归法
 
-@todo
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        def preorder(node):
+            if not node:
+                return
+            res.append(node.val)
+            preorder(node.left)
+            preorder(node.right)
 
-### 二叉树的中序遍历
+        res = list()
+        preorder(root)
+        return res
+```
 
-#### 递归法
+上述就是递归实现的而阐述的前序遍历。除此之外，还有一种不是很 Python 的但是较为通用、方便理解的方法：
+
+```python
+class Solution:
+    # 前序遍历函数
+    def preOrder(self, root: TreeNode, res):
+        if root == None:
+            return
+        res.append(root.val)
+        self.preOrder(root.left, res)
+        self.preOrder(root.right, res)
+
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+        self.preOrder(root, res)
+        return res
+```
+
+其本质上就是把递归的结果收集 `res` 增加到了递归中去了。
+
+我们还有一种很 Python 的实现方式如下：
+
+```python
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+
+        return [root.val] + self.preorderTraversal(root.left) + self.preorderTraversal(root.right)
+```
+
+是不是很优雅？哈哈，值得深入去理解！
+
+### 迭代法
+
+前序遍历的迭代实现依赖于栈结构，具体而言不是很好理解的，需要多加理解才可以，其实现如下：
+
+```python
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        res = []
+        stack = []
+        while stack or root:
+            while root:
+                res.append(root.val)
+                stack.append(root.right)
+                root = root.left
+            root = stack.pop()
+
+        return res
+```
+
+从上述代码中可以看出来的规律如下：
+
+1. stack 中自始至终只加入了 `root.right`
+2. `root.left` 都是被遍历完毕了
+
+## 二叉树的中序遍历
+
+### 递归法
 
 二叉树的中序遍历递归解法参考如下：
 
@@ -27,7 +111,7 @@ def dfs(root: Optional[TreeNode], res):
     dfs(root.right, res)
 ```
 
-#### 迭代法
+### 迭代法
 
 ```python
 class Solution:
@@ -64,7 +148,7 @@ flowchart TD
 
 同样的，我们可以根据中序遍历的应用题目 [面试题 04.06. 后继者](https://leetcode.cn/problems/successor-lcci/) 来加深印象。
 
-### 二叉树的层次遍历
+## 二叉树的层次遍历
 
 [LC102 - Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
 
