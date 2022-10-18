@@ -122,7 +122,220 @@ star: true
 
 
 
+LLVM IR 语言目标是成为一种通用中间语言，全称是 Intermediate Representation, 连接着编译器前端和后端；LLVM IR 的存在使得设计一门新的编程语言只需要完成能够生成 LLVM IR 的编译器前端即可，然后就可以轻松使用 LLVM 的各种编译优化、JIT 支持、目标代码生成等功能。
+
+IR 有三种形式：
+
+1. 内存中的表示形式，如 BasicBlock, Instruction 这种 cpp 类
+2. bitcode 表示形式，这是一种序列化二进制的表示形式
+3. LLVM 汇编文件形式，这也是一种序列化的表示形式，与 bitcode 的区别是汇编文件是可读的、字符串的形式。
+
+### IR 内存模型
+
+内存中的 IR 模型其实就是对应 LLVM 实现中的 OO 模型，更直白的讲就是一些 cpp 的 class 的定义。
+
+如下图所示：
+
+![llvm_ir](../../.vuepress/public/llvm_ir.svg)
+
+这是一个简单的示意图，从上图中我们可以知道，存在着以下的模块：
+
+- Module 类：这个可以理解为一个完整的编译单元，一般来说，这个编译单元就是一个源码文件，如一个后缀为 cpp 的源文件；一般而言，一个程序会被编译成为一个 Module，多个 Module 之间是相互隔离的，无法获取对方的内容；可以使用 `M.dump()` 在屏幕上打印出所有的信息。
+- Function 类：这个类顾名思义就是对应一个函数单元，可以分为函数定义和函数声明；如图所示，在一个 Module 中，是由多个 func 组成的，Module 的主要组成部分是一个 function 的 list; Function 类有两个很实用的函数：`F.dump()` 可以打印出全部信息，`F.viewCfg()` 可以将ControlFlowGraph 按照dot 的方式存到文件里，使用第三方工具可以很舒服地观察它。
+- BasicBlock 类：这个类表示一个基本代码块，基本代码块的含义是一段没有控制流逻辑的基本流程，相当于程序流程图中的基本过程（矩形）；其中有多条指令，指令是串行执行的，一个 BasicBlock 会以跳转语句或者 ret 语句结束；每个 BasicBlock 中都有一个唯一的 label, 可以用来跳转目的地址等。
+- Instruction 类：指令类是 LLVM 中定义的基本操作，如加减乘除这种算数指令、函数调用指令、跳转指令、返回指令等；
+
+除此之外，还有基本类型 Value 和 User.
+
+- Value 类：是一个非常基础的基类。一个继承于 Value 的子类表示它的结果可以被其他地方使用；
+- User 类：一个继承于 User 的类表示它会使用一个或者多个 Value 对象；
+
+这两个基本类型会产生 use-def 和 def-use 两个链，前者表示某个 User 使用的 Value 列表，后者表示某个 Value 的 User 列表。
+
+- use-def
+
+  由于同一个函数实例可以在多个地方被调用，所以在 LLVM 中就可以查看一个函数被调用的指令列表：
+
+  ```c
+  Function *F = ...;
+  for (User *U : F->users()) {
+   if (Instruction *Inst = dyn_cast<Instruction>(U)) {
+      errs() << "F is used in instruction:\n";
+      errs() << *Inst << "\n";
+    }
+  }
+  ```
+
+  我们不难看出，遍历的函数的 `users()`.
+
+- def-user
+
+  对于指令和操作数而言，一个指令可以有一个或者多个操作数；可以对指令的操作数进行遍历：
+
+  ```c
+  Instruction *pi = ...;
+  for (Use &U : pi->operands()) {
+    Value *v = U.get();
+   // ...
+  }
+  ```
+
+  我们不难看出，遍历的是指令的 `operands()`.
+
+### 汇编形式的 IR
+
+前面第三点所提到的，是一个序列化的表示形式，不同于 bitcode, 其是可读的；如下例子：
+
+```c
+// add.cpp
+int add(int a, int b) {
+    return a + b;
+}
+```
+
+产生汇编形式的 IR:
+
+```bash
+clang add.cpp -emit-llvm -S -c -o add.ll
+```
+
+注意到如果要产生二进制码形式的 IR 的话，可以如下：
+
+```bash
+ clang add.cpp -emit-llvm -c -o add.bc
+```
+
+当然这个二进制的产物是没有可读性的。
+
+:::tip clang 安装
+
+使用命令安装 clang:
+
+```bash
+sudo apt-get install clang-format clang-tidy clang-tools clang clangd libc++-dev libc++1 libc++abi-dev libc++abi1 libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev llvm-runtime llvm python-clang
+```
+
+安装 clang 的时候，由于是依赖库的关系，llvm 也被安装了。
+
+:::
+
+部分的 IR 如下表示：
+
+```
+; ModuleID = 'add.cpp'
+source_filename = "add.cpp"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-pc-linux-gnu"
+
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local i32 @_Z3addii(i32 %0, i32 %1) #0 {
+  %3 = alloca i32, align 4
+  %4 = alloca i32, align 4
+  store i32 %0, i32* %3, align 4
+  store i32 %1, i32* %4, align 4
+  %5 = load i32, i32* %3, align 4
+  %6 = load i32, i32* %4, align 4
+  %7 = add nsw i32 %5, %6
+  ret i32 %7
+}
+
+attributes #0 = { noinline nounwind optnone uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+
+!llvm.module.flags = !{!0}
+!llvm.ident = !{!1}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{!"clang version 10.0.0-4ubuntu1 "}
+```
+
+从第 7 行开始就是 add 函数的汇编 IR. 我们简单观察就可以发现，其与源代码的一些对应关系。
+
+- ModuleID：用于编译器区分不用 module 的 ID
+- source_filename: 源文件名
+- target datalayout: 目标机器架构数据布局
+  - `e`: 内存存储模式为小端模式
+  - 其他更多的信心可以参考手册[^3]
+- target triple: 用于描述目标机器信息的一个元组
+
+我们看 IR 中存在两种符号：`@` 和 `%`, 分别表示全局标识符和局部标识符（局部变量）。
+
+其中局部标识符存在两种分配方式：
+
+1. 寄存器分配的局部变量：此类局部变量多采用 `%1 = some value` 的方式进行分配，一般是接受指令返回结果的局部变量
+2. 栈分配的局部变量：使用 `alloca` 指令在栈帧上分配的局部变量。如 `%2 = alloca i32`, `%2` 也是一个指针，访问或存储时必须使用 `load` or `store` 指令
+
+并且需要注意，局部标识符还存在两种命名方式：
+
+1. 未命名的局部标识符：多采用带前缀的无符号数字表示
+2. 命名的局部标识符：就是有名称，如 `%result` 这样的形式
+
+### IR 字节码解析
+
+还记得上一步中我们获得的 `add.bc` 文件吗？由于其时二进制的形式（也可以称之为字节码），所以我们没办法将其直接阅读，但是我们可以自己编写代码，使用 llvm 自带的一些解析函数，来打印出我们想要的信息。本程序参考知乎的文章《LLVM 概述——第一个 LLVM 项目》[^4]。
+
+首先看需要解析字节码的 `main.cpp` 文件：
+
+```cpp
+// 引入相关LLVM头文件
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IRReader/IRReader.h>
+#include <llvm/Support/SourceMgr.h>
+#include <llvm/Support/CommandLine.h>
+
+using namespace llvm;
+
+// LLVM上下文全局变量
+static ManagedStatic<LLVMContext> GlobalContext;
+
+// 命令行位置参数全局变量, 这个参数的含义是需要处理的LLVM IR字节码的文件名
+static cl::opt<std::string> InputFilename(cl::Positional, cl::desc("<filename>.bc"), cl::Required);
+
+int main(int argc, char **argv) {
+    // 诊断实例
+    SMDiagnostic Err;
+    // 格式化命令行参数,
+    cl::ParseCommandLineOptions(argc, argv);
+    // 读取并格式化LLVM IR字节码文件, 返回LLVM Module(Module是LLVM IR的顶级容器)
+    std::unique_ptr<Module> M = parseIRFile(InputFilename, Err, *GlobalContext);
+    // 错误处理
+    if (!M) {
+        Err.print(argv[0], errs());
+        return 1;
+    }
+    // 遍历Module中的每一个Function
+    for (Function &F:*M) {
+        // 过滤掉那些以llvm.开头的无关函数
+        if (!F.isIntrinsic()) {
+            // 打印函数返回类型
+            outs() << *(F.getReturnType());
+            // 打印函数名
+            outs() << ' ' << F.getName() << '(';
+            // 遍历函数的每一个参数
+            for (Function::arg_iterator it = F.arg_begin(), ie = F.arg_end(); it != ie; it++) {
+                // 打印参数类型
+                outs() << *(it->getType());
+                if (it != ie - 1) {
+                    outs() << ", ";
+                }
+            }
+            outs() << ")\n";
+        }
+    }
+}
+```
+
+这个解析用的程序中有以下的细节需要注意：
+
+1. `parseIRFile` 加载 Module，然后遍历 Module 中的每一个 Function, 
+2. 然后可以打印出 Function 相关的一些信息。
+
+
+
 
 
 [^1]:[栈式虚拟机和寄存器式虚拟机？](https://www.zhihu.com/question/35777031/answer/64575683)
 [^2]: [寄存器分配问题？ - RednaxelaFX的回答 - 知乎 ](https://www.zhihu.com/question/29355187/answer/51935409)
+[^3]: [llvm data-layout](https://llvm.org/docs/LangRef.html#data-layout)
+[^4]:[LLVM 概述——第一个 LLVM 项目](https://zhuanlan.zhihu.com/p/102270840)
