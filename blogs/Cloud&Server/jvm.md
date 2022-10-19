@@ -12,6 +12,7 @@ star: true
 
 
 
+
 ---
 
 本文主要结合软硬件去研究 JVM 中的 JIT 和 AOT 技术，主要针对 ART 虚拟机，提炼出 JAVA 虚拟机相关的基础知识和软硬件结合点。
@@ -24,7 +25,18 @@ AOT 是提前编译技术，JIT 是即时编译技术。
 
 下图可以简单说明 AOT 和 JIT 的执行过程：
 
-![aot and jit](../image/aot_jit.png)
+```mermaid
+graph TD
+    C(JAVA)-->|javac|D[(.CLASS)] -->|AOT|1[(.so File)]
+    1 ---> 2[Cache]
+    2 ---> C1[[C1 Complier]]
+    2 ---> C2[[C2 Complier]]
+    D --->|JIT| E[[Interpreter]] --> 01[(Binary Code)]
+    C1 --> 01
+    C2 --> 01
+```
+
+
 
 :::warning ❌❌❌
 
@@ -269,36 +281,24 @@ dex 文件和 class 文件存在很多区别，简单列举如下：
 
 对于压缩使能这个问题，在此需要解释一下，我们在看汇编的时候有一段这样的代码：
 
+```assembly
+// length() dex_method_idx=3308
+0x001bad20: b9400820	ldr w0, [x1, #8]
+0x001bad24: 53017c00	lsr w0, w0, #1
+0x001bad28: d65f03c0	ret
+```
+
+对应的源代码如下：
+
 ```java
-	/**
-    length() dex_method_idx=3308
-      0x001bad20: b9400820	ldr w0, [x1, #8]
-      0x001bad24: 53017c00	lsr w0, w0, #1
-      0x001bad28: d65f03c0	ret
-    **/
-    /**
-     * Returns the length of this string.
-     * The length is equal to the number of <a href="Character.html#unicode">Unicode
-     * code units</a> in the string.
-     *
-     * @return  the length of the sequence of characters represented by this
-     *          object.
-     */
-    public int length() {
-        // BEGIN Android-changed: Get length from count field rather than value array (see above).
-        /*
-        return value.length >> coder();
-        */
-        final boolean STRING_COMPRESSION_ENABLED = true;
-        if (STRING_COMPRESSION_ENABLED) {
-            // For the compression purposes (save the characters as 8-bit if all characters
-            // are ASCII), the least significant bit of "count" is used as the compression flag.
-            return (count >>> 1);
-        } else {
-            return count;
-        }
-        // END Android-changed: Get length from count field rather than value array (see above).
+public int length() {
+    final boolean STRING_COMPRESSION_ENABLED = true;
+    if (STRING_COMPRESSION_ENABLED) {
+        return (count >>> 1);
+    } else {
+        return count;
     }
+}
 ```
 
 这是一段计算字符串 `length` 的函数，我们可以看到，如果是使能了 `STRING_COMPRESSION_ENABLED` 的话，其 length 需要 `count` 无符号右移一位才行；查阅资料后表明这是因为最后一位是压缩的标志位。但是具体为什么要这么做，这么做的好处在哪，需要更加深入的研究。
@@ -307,15 +307,15 @@ dex 文件和 class 文件存在很多区别，简单列举如下：
 
 JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于堆中并给其分配一个内存地址，在堆中的 JAVA 对象主要包含三个部分[^2]（以表格形式给出）
 
-|          |               |                                                           |
+| 内存区域 | 英文名称      | 说明                                                      |
 | -------- | ------------- | --------------------------------------------------------- |
-| 对象头   | object header | 包括堆对象的布局、类型、GC 状态、同步状态和标识 hash code |
-| 实例数据 | instance data | 存放类的数据信息，父类的信息，对象字段属性信息            |
-| 对齐填充 | padding       | 为了字节对齐，不是必须的                                  |
+| 对象头   | Object Header | 包括堆对象的布局、类型、GC 状态、同步状态和标识 hash code |
+| 实例数据 | Instance Data | 存放类的数据信息，父类的信息，对象字段属性信息            |
+| 对齐填充 | Padding       | 为了字节对齐，不是必须的                                  |
 
 下面我们的研究将分别通过对象头、实例数据、对齐填充展开。
 
-### 对象头 object header
+### 对象头(Object Header)
 
 在 hotspot 术语表[^3]中可以找到 object header 的相关定义：
 
@@ -323,9 +323,18 @@ JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于
 
 上述文字先是描述了对象头结构中都包含了哪些信息，而后描述了其中包含了两个字；除此之外，如果是个 array 类型，还会跟随一个 `length` 字段。（*此时我们的问题已经解决了：JAVA 数组在 object header 中存储数组的长度信息*）
 
-对于对象头中包含的两个字：**mark word** 和 **klass pointer**, 我们将分别研究。
+对于对象头中包含的两个字：**Mark word** 和 **Klass pointer**, 我们将分别研究。
 
-#### mark word
+```mermaid
+graph LR
+    C{Object Header}--> D[Mark Word] -.- 1[[8 byte]]
+    C --> E[Klass Pointer] -.- 2[[4 byte]]
+    C --> F[length:optional] -.- 3[[4 byte]]
+```
+
+
+
+#### Mark Word
 
 > The first word of every object header. Usually a set of bitfields including synchronization state and identity hash code. May also be a pointer (with characteristic low bit encoding) to synchronization related information. During GC, may contain GC state bits.
 
@@ -354,7 +363,7 @@ JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于
 //  unused:21 size:35 -->| cms_free:1 unused:7 ------------------>| (COOPs && CMS free block)
 ```
 
-上述描述较为清晰，在此需要解释一下几个类型：
+上述描述较为清晰，在此需要解释一下几个类型（为什么会有不同的状态，这是因为 Mark Word 在不同的锁状态下存储的内容不同）：
 
 1. biased object, 类比于 biased_lock 意思是偏向锁
 2. CMS free object, 类比于轻量级锁
@@ -362,20 +371,20 @@ JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于
 
 @todo 表格 or 图片
 
-- lock: 表示锁标志位；11 的时候为 GC 状态，只有后 2 位的 lock 标志位有效
-- age: 分代年龄：表示对象被 GC 的次数，到达阈值以后，对象被转移到老年代；最大值是 15, 因为该标志位最大位数是 4 位
+- **lock**: 表示锁标志位；11 的时候为 GC 状态，只有后 2 位的 lock 标志位有效
+- **age**: 分代年龄：表示对象被 GC 的次数，到达阈值以后，对象被转移到老年代；最大值是 15, 因为该标志位最大位数是 4 位
 
-#### klass pointer
+#### Klass Pointer
 
 > The second word of every object header. Points to another object (a metaobject) which describes the layout and behavior of the original object. For Java objects, the "klass" contains a C++ style "vtable".
 
 类型指针，对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。
 
-### 实例数据 instance data
+### 实例数据(Instance Data)
 
 如果对象中有属性字段，则这里会有数据信息。
 
-### 对齐填充 padding
+### 对齐填充(Padding)
 
 对象可以有对齐数据也可以没有。
 
@@ -481,13 +490,15 @@ OFF  SZ   TYPE DESCRIPTION               VALUE
   8   4        (object header: class)    0xf800003f
  12   4        (array length)            5
  12   4        (alignment/padding gap)   
- 16  10   char [C.<elements>             N/A
+ 16  10  
+ char [C.<elements>             N/A
  26   6        (object alignment gap)    
 Instance size: 32 bytes
 Space losses: 4 bytes internal + 6 bytes external = 10 bytes total
 ```
 
 - 可以看到，新增了 array length 的类型描述字段，这个描述字段中的值为 array 的长度 5.
+- array 的字段位于 Mark Word 和 Kclass Pointer 之后，占 4 位
 
 
 
