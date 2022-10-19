@@ -11,6 +11,7 @@ author: weigao
 star: true
 
 
+
 ---
 
 本文主要结合软硬件去研究 JVM 中的 JIT 和 AOT 技术，主要针对 ART 虚拟机，提炼出 JAVA 虚拟机相关的基础知识和软硬件结合点。
@@ -256,8 +257,240 @@ dex 文件和 class 文件存在很多区别，简单列举如下：
 
 1. 一个 class 文件对应一个 Java 源码文件，而一个 Dex 文件可以对应多个 Java 源码文件；在 PC 平台上，每一个 Java 文件都对应生成一个同名的 class 文件，这些文件统一打包成 Jar 包；而在安卓平台上，这些 Java 源码会最终编译、合并到一个名为 classes.dex 的文件中去。
 2. PC 平台上 class 文件的字节序是 Big Endian, 而安卓平台的 Dex 文件的字节序是 Little Endian, 其原因是 ARM CPU 可能也采用的是 Little Endian.
-3. Dex 文件新定义了 **LEB128** 的数据类型，其全称为 Little Endian Based 128, 用于表示 32 比特位长度的数据。
+3. Dex 文件新定义了 LEB128 的数据类型，其全称为 Little Endian Based 128, 用于表示 32 比特位长度的数据。
+
+
+
+## JAVA 内存布局
+
+我们需要研究一下 JAVA 的内存布局情况。主要带着问题：🟥🟧🟨 JAVA 数组中是如何存储到数组的长度属性的？压缩又是怎么使能的？
+
+### length()
+
+对于压缩使能这个问题，在此需要解释一下，我们在看汇编的时候有一段这样的代码：
+
+```java
+	/**
+    length() dex_method_idx=3308
+      0x001bad20: b9400820	ldr w0, [x1, #8]
+      0x001bad24: 53017c00	lsr w0, w0, #1
+      0x001bad28: d65f03c0	ret
+    **/
+    /**
+     * Returns the length of this string.
+     * The length is equal to the number of <a href="Character.html#unicode">Unicode
+     * code units</a> in the string.
+     *
+     * @return  the length of the sequence of characters represented by this
+     *          object.
+     */
+    public int length() {
+        // BEGIN Android-changed: Get length from count field rather than value array (see above).
+        /*
+        return value.length >> coder();
+        */
+        final boolean STRING_COMPRESSION_ENABLED = true;
+        if (STRING_COMPRESSION_ENABLED) {
+            // For the compression purposes (save the characters as 8-bit if all characters
+            // are ASCII), the least significant bit of "count" is used as the compression flag.
+            return (count >>> 1);
+        } else {
+            return count;
+        }
+        // END Android-changed: Get length from count field rather than value array (see above).
+    }
+```
+
+这是一段计算字符串 `length` 的函数，我们可以看到，如果是使能了 `STRING_COMPRESSION_ENABLED` 的话，其 length 需要 `count` 无符号右移一位才行；查阅资料后表明这是因为最后一位是压缩的标志位。但是具体为什么要这么做，这么做的好处在哪，需要更加深入的研究。
+
+### JAVA 对象内存构成
+
+JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于堆中并给其分配一个内存地址，在堆中的 JAVA 对象主要包含三个部分[^2]（以表格形式给出）
+
+|          |               |                                                           |
+| -------- | ------------- | --------------------------------------------------------- |
+| 对象头   | object header | 包括堆对象的布局、类型、GC 状态、同步状态和标识 hash code |
+| 实例数据 | instance data | 存放类的数据信息，父类的信息，对象字段属性信息            |
+| 对齐填充 | padding       | 为了字节对齐，不是必须的                                  |
+
+下面我们的研究将分别通过对象头、实例数据、对齐填充展开。
+
+### 对象头 object header
+
+在 hotspot 术语表[^3]中可以找到 object header 的相关定义：
+
+> Common structure at the beginning of every GC-managed heap object. (Every oop points to an object header.) Includes fundamental information about the heap object's layout, type, GC state, synchronization state, and identity hash code. Consists of **two words**. In arrays it is immediately followed by a **length field**. Note that both Java objects and VM-internal objects have a common object header format.
+
+上述文字先是描述了对象头结构中都包含了哪些信息，而后描述了其中包含了两个字；除此之外，如果是个 array 类型，还会跟随一个 `length` 字段。（*此时我们的问题已经解决了：JAVA 数组在 object header 中存储数组的长度信息*）
+
+对于对象头中包含的两个字：**mark word** 和 **klass pointer**, 我们将分别研究。
+
+#### mark word
+
+> The first word of every object header. Usually a set of bitfields including synchronization state and identity hash code. May also be a pointer (with characteristic low bit encoding) to synchronization related information. During GC, may contain GC state bits.
+
+用于存储对象自身的运行时数据，在 32 位 JVM 中长度是 32bit, 64 位 JVM 中长度是 64bit, 对应路径 `/openjdk/hotspot/src/share/vm/oops`, 对应代码 `markOop.hpp`, 其构成可以从注释中获得（google 搜索文件名即可搜到）：
+
+```c++
+// Bit-format of an object header (most significant first, big endian layout below):
+//
+//  32 bits:
+//  --------
+//             hash:25 ------------>| age:4    biased_lock:1 lock:2 (normal object)
+//             JavaThread*:23 epoch:2 age:4    biased_lock:1 lock:2 (biased object)
+//             size:32 ------------------------------------------>| (CMS free block)
+//             PromotedObject*:29 ---------->| promo_bits:3 ----->| (CMS promoted object)
+//
+//  64 bits:
+//  --------
+//  unused:25 hash:31 -->| unused:1   age:4    biased_lock:1 lock:2 (normal object)
+//  JavaThread*:54 epoch:2 unused:1   age:4    biased_lock:1 lock:2 (biased object)
+//  PromotedObject*:61 --------------------->| promo_bits:3 ----->| (CMS promoted object)
+//  size:64 ----------------------------------------------------->| (CMS free block)
+//
+//  unused:25 hash:31 -->| cms_free:1 age:4    biased_lock:1 lock:2 (COOPs && normal object)
+//  JavaThread*:54 epoch:2 cms_free:1 age:4    biased_lock:1 lock:2 (COOPs && biased object)
+//  narrowOop:32 unused:24 cms_free:1 unused:4 promo_bits:3 ----->| (COOPs && CMS promoted object)
+//  unused:21 size:35 -->| cms_free:1 unused:7 ------------------>| (COOPs && CMS free block)
+```
+
+上述描述较为清晰，在此需要解释一下几个类型：
+
+1. biased object, 类比于 biased_lock 意思是偏向锁
+2. CMS free object, 类比于轻量级锁
+3. CMS promoted object, 类比于重量级锁
+
+@todo 表格 or 图片
+
+- lock: 表示锁标志位；11 的时候为 GC 状态，只有后 2 位的 lock 标志位有效
+- age: 分代年龄：表示对象被 GC 的次数，到达阈值以后，对象被转移到老年代；最大值是 15, 因为该标志位最大位数是 4 位
+
+#### klass pointer
+
+> The second word of every object header. Points to another object (a metaobject) which describes the layout and behavior of the original object. For Java objects, the "klass" contains a C++ style "vtable".
+
+类型指针，对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。
+
+### 实例数据 instance data
+
+如果对象中有属性字段，则这里会有数据信息。
+
+### 对齐填充 padding
+
+对象可以有对齐数据也可以没有。
+
+:::tip 😋😋😋 关于对齐填充与 cache line 的关系
+
+对齐填充的目的是为了将对象的大小对齐到 8N 个字节，以此来补齐对象头和实例数据占用内存之后的剩余空间的大小；
+
+这么做的好处在于，确保对象的字段可以出现在同一个 cache line 之中；如果不进行对齐的话，可能会出现跨 cache line 存储的情况出现；导致此对象读取的时候需要读两个 cache line, 或者更新的时候污染两个 cache line.
+
+:::
+
+### 实战 demo
+
+#### 基本构成研究
+
+本章节通过一个实战的 demo 来展示 JAVA 对象在内存中的布局情况。
+
+首先增加 `openjdk.jol.core` 包到项目中；
+
+我们编写一个简单的类 `A.class` 来观察一下这个类的内存分布：
+
+```java
+public class A {
+}
+```
+
+然后在 main 函数中如下写：
+
+```java
+import java_object.A;
+import org.openjdk.jol.info.ClassLayout;
+
+public class Main {
+    public static void main(String[] args) {
+        A a = new A();
+        System.out.println(ClassLayout.parseInstance(a).toPrintable());
+    }
+}
+```
+
+此时就可以在控制台看到 A class 内存布局的打印，如下所示：
+
+```
+java_object.A object internals:
+OFF  SZ   TYPE DESCRIPTION               VALUE
+  0   8        (object header: mark)     0x0000000000000001 (non-biasable; age: 0)
+  8   4        (object header: class)    0xf800c041
+ 12   4        (object alignment gap)    
+Instance size: 16 bytes
+Space losses: 0 bytes internal + 4 bytes external = 4 bytes total
+```
+
+- OFF: 偏移地址，单位字节
+- SZ: SIZE, 大小
+- TYPE DESCRIPTION: 类型描述；我们可以看到，这个类的内存布局只有一个 object header
+- VALUE: 内存中当前存储的值
+
+OK，了解了基本构成以后，我们现在可以做一些更加深入的研究。
+
+#### 数组的内存布局
+
+为了更加清晰直观的说明本章开头提出的那个问题，我们在类中构造一个数组，以此来观察有数组元素的类的内存布局是什么样子的。
+
+```java
+// A.class
+public class A {
+    char[] arrayA = {'a', 'c', 'e'};
+}
+```
+
+然后打印出来的内存布局如下所示(main 函数未做修改)：
+
+```
+java_object.A object internals:
+OFF  SZ     TYPE DESCRIPTION               VALUE
+  0   8          (object header: mark)     0x0000000000000001 (non-biasable; age: 0)
+  8   4          (object header: class)    0xf800c041
+ 12   4   char[] A.arrayA                  [a, c, e]
+Instance size: 16 bytes
+Space losses: 0 bytes internal + 0 bytes external = 0 bytes total
+```
+
+可以看到，数组 `arrayA` 被当做 class A 的内部元素保存起来了，并没有产生引用或者是 header, 我们直接使用一个对象数组，来看看有什么变化。修改 main 函数如下：
+
+```java
+import org.openjdk.jol.info.ClassLayout;
+
+public class Main {
+    public static void main(String[] args) {
+//        A a = new A();
+        char[] arrayB = {'b', 'e', 'd', 'f', 'g'};
+        System.out.println(ClassLayout.parseInstance(arrayB).toPrintable());
+    }
+}
+```
+
+对应的输出如下：
+
+```
+[C object internals:
+OFF  SZ   TYPE DESCRIPTION               VALUE
+  0   8        (object header: mark)     0x0000000000000001 (non-biasable; age: 0)
+  8   4        (object header: class)    0xf800003f
+ 12   4        (array length)            5
+ 12   4        (alignment/padding gap)   
+ 16  10   char [C.<elements>             N/A
+ 26   6        (object alignment gap)    
+Instance size: 32 bytes
+Space losses: 4 bytes internal + 6 bytes external = 10 bytes total
+```
+
+- 可以看到，新增了 array length 的类型描述字段，这个描述字段中的值为 array 的长度 5.
 
 
 
 [^1]: [https://www.baeldung.com/ahead-of-time-compilation](https://www.baeldung.com/ahead-of-time-compilation)
+[^2]: [java 内存对象布局](https://www.cnblogs.com/jajian/p/13681781.html)
+[^3]: [HotSpot Glossary of Terms](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html)
