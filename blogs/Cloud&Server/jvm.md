@@ -65,6 +65,12 @@ AOT 存在着一些挑战：
 对于解释器而言，其优势在于：当程序需要快速启动和执行的时候，解释器可以先发挥作用，此时解释器直接解释执行 JAVA 字节码；这种方法的好处是可以省去编译的时间，立即运行。
 对于编译器而言，在程序启动后，可以把越来越多的代码编译成本地代码，减少解释器的中间消耗，获得更高的执行效率。
 
+如何判断 JVM 是用的解释器模式、编译器模式或者混合模式呢？我们可以求助于 `java -version` 来帮助解答这个问题。下面是运行该命令后的输出：
+
+![image-20221019222303732](../../.vuepress/public/image-20221019222303732.png)
+
+再提一下，sharing 表示 class data sharing. Server 编译器也叫 C2 编译器，与之对应的 Clinet 叫做 C1 编译器。
+
 ## AOT 过程
 
 ### JAVA 代码到 so
@@ -170,60 +176,58 @@ jaotc --output jaotCompilation.so --compile-for-tiered JaotCompilation.class
 在开始研究之前，我们使用一个简单的 JAVA 程序，如下所示：
 
 ```java
-public class Sample{
-    public String  m1; //声明两个String类型的成员变量m1和m2
-    public String  m2;
+import java.io.Serializable;
+public class Foo implements Serializable {
+    public void bar() {
+        int i = 31;
+        if (i > 0) {
+            int j = 42;
+        }
+    }
 }
 ```
 
 如上文我们研究的，可以分别使用 `javac` 和 `jaotc` 生成 `.class` 和 `.so` 文件，此处不再赘述。
 
-对于生成的 class 文件，可以使用 `javap` 命令来进行解析，如下所示：
+对于生成的 class 文件，可以使用 `javap` 命令来进行解析(注意传入的 Class 名称，提前生成好 Class 文件)，如下所示：
 
 ```bash
-javap -verbose Sample
+javap -verbose Foo
 ```
 
-上述命令可以对我们的 `Sample.class` 文件进行解析，解析的输出如下所示：
+上述命令可以对我们的 `Sample.class` 文件进行解析，解析的输出如下所示(基于 Java 19 分析出的结果，可能和其他版本略有不同)：
 
 ```bash
-Classfile /srv/workspace/c00574183/java_art/Sample.class
-  Last modified Oct 9, 2022; size 233 bytes
-  MD5 checksum 85a5eb7e4a88b673fa930ca5a7a2e858
-  Compiled from "Sample.java"
-public class Sample
+Classfile /mnt/c/Users/Administrator/Documents/_code/wsl2/jvm_demo/class/Foo.class
+  Last modified Oct 19, 2022; size 303 bytes
+  SHA-256 checksum 5a29b77322e4ee4fc0b22ee7030de4231135616732d86e3e7a8dfc3d8246b879
+  Compiled from "Foo.java"
+public class Foo implements java.io.Serializable
   minor version: 0
-  major version: 52
+  major version: 63
   flags: (0x0021) ACC_PUBLIC, ACC_SUPER
-  this_class: #2                          // Sample
-  super_class: #3                         // java/lang/Object
-  interfaces: 0, fields: 2, methods: 1, attributes: 1
+  this_class: #7                          // Foo
+  super_class: #2                         // java/lang/Object
+  interfaces: 1, fields: 0, methods: 2, attributes: 1
 Constant pool:
-   #1 = Methodref          #3.#13         // java/lang/Object."<init>":()V
-   #2 = Class              #14            // Sample
-   #3 = Class              #15            // java/lang/Object
-   #4 = Utf8               m1
-   #5 = Utf8               Ljava/lang/String;
-   #6 = Utf8               m2
-   #7 = Utf8               <init>
-   #8 = Utf8               ()V
-   #9 = Utf8               Code
-  #10 = Utf8               LineNumberTable
-  #11 = Utf8               SourceFile
-  #12 = Utf8               Sample.java
-  #13 = NameAndType        #7:#8          // "<init>":()V
-  #14 = Utf8               Sample
-  #15 = Utf8               java/lang/Object
+   #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
+   #2 = Class              #4             // java/lang/Object
+   #3 = NameAndType        #5:#6          // "<init>":()V
+   #4 = Utf8               java/lang/Object
+   #5 = Utf8               <init>
+   #6 = Utf8               ()V
+   #7 = Class              #8             // Foo
+   #8 = Utf8               Foo
+   #9 = Class              #10            // java/io/Serializable
+  #10 = Utf8               java/io/Serializable
+  #11 = Utf8               Code
+  #12 = Utf8               LineNumberTable
+  #13 = Utf8               bar
+  #14 = Utf8               StackMapTable
+  #15 = Utf8               SourceFile
+  #16 = Utf8               Foo.java
 {
-  public java.lang.String m1;
-    descriptor: Ljava/lang/String;
-    flags: (0x0001) ACC_PUBLIC
-
-  public java.lang.String m2;
-    descriptor: Ljava/lang/String;
-    flags: (0x0001) ACC_PUBLIC
-
-  public Sample();
+  public Foo();
     descriptor: ()V
     flags: (0x0001) ACC_PUBLIC
     Code:
@@ -232,15 +236,73 @@ Constant pool:
          1: invokespecial #1                  // Method java/lang/Object."<init>":()V
          4: return
       LineNumberTable:
-        line 1: 0
+        line 2: 0
+
+  public void bar();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=3, args_size=1
+         0: bipush        31
+         2: istore_1
+         3: iload_1
+         4: ifle          10
+         7: bipush        42
+         9: istore_2
+        10: return
+      LineNumberTable:
+        line 4: 0
+        line 5: 3
+        line 6: 7
+        line 8: 10
+      StackMapTable: number_of_entries = 1
+        frame_type = 252 /* append */
+          offset_delta = 10
+          locals = [ int ]
 }
-SourceFile: "Sample.java"
+SourceFile: "Foo.java"
 ```
+
+上面的解析结果可以分为几个部分：
+
+1. 类声明
+
+2. 源文件名
+
+3. Class 文件结构信息
+
+4. 常量池
+
+5. 方法元数据（30行）
+
+   1. 注意到有些方法元数据中会出现 StackMapTable；分支控制流的方法会带有 StackMapTable，记录每个基本块开头处操作数栈的类型状态
+
+6. 字节码（46行，Code 开始的部分 2 行严格来说属于方法元数据）
+
+   
 
 上图中的结果需要注意的几点在于：
 
 1. Constant Pool: 常量池；
 2. xx
+
+#### class 文件就是字节码么？
+
+不是。除了字节码以外，class 文件还记录了很多信息（上文已经提及了 class 文件的具体构成）：
+
+- 结构信息
+  - Class 文件格式版本号
+  - 各部分的数量与大小
+- 元数据
+  - 类、继承的超类、实现的接口声明信息
+  - 常量池
+  - ...
+- 方法信息
+  - 字节码
+  - 异常处理器表
+  - ...
+
+字节码只代表程序逻辑，只是 class 文件众多组成部分其中之一。
 
 ### Constant Pool
 
@@ -254,6 +316,29 @@ cp_info { // u1表示该域对应一个字节长度，u 表示 unsigned
 ```
 
 `tag` 字段用于表示该常量的类型，`info` 数组是常量的具体内容。
+
+### JVM 基本结构
+
+了解 class 文件是怎么解析的，需要首先了解一下 JVM 的基本结构：
+
+![image-20221019220125896](../../.vuepress/public/image-20221019220125896.png)
+
+:::tip JAVA 虚拟机
+
+在这需要说明以下，什么才算做 java 虚拟机？通过 JCK 测试的，实现 JVM 规范的就可以。
+
+:::
+
+我们说的一般的 JVM 都是基于栈结构的，所以自然会有一个方法调用栈，每个 Java 线程都拥有一个 Java 方法调用栈，该栈与其他线程不共享；每次方法被调用的时候都会在调用栈上面分配一个栈帧，方法的一次调用结束（包括抛出异常）后对应的栈帧都会被自动撤销。
+
+每一个 Java 栈帧都包括：
+
+- 局部变量区
+- 操作数栈
+- 指向方法已解析的常量池的引用
+- 其他一些 VM 内部实现需要的数据
+
+这个栈帧的设计比较巧妙，比如说前后两个栈帧之间可以共享一部分数据用来传递参数（局部变量区栈帧 slot 的复用，这又是一个很大的话题了）
 
 
 
@@ -315,6 +400,10 @@ JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于
 
 下面我们的研究将分别通过对象头、实例数据、对齐填充展开。
 
+下图可以比较清晰的说明 Java 的内存构成：
+
+@todo
+
 ### 对象头(Object Header)
 
 在 hotspot 术语表[^3]中可以找到 object header 的相关定义：
@@ -327,7 +416,7 @@ JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于
 
 ```mermaid
 graph LR
-    C{Object Header}--> D[Mark Word] -.- 1[[8 byte]]
+    C((Object Header))--> D[Mark Word] -.- 1[[8 byte]]
     C --> E[Klass Pointer] -.- 2[[4 byte]]
     C --> F[length:optional] -.- 3[[4 byte]]
 ```
