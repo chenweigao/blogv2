@@ -9,6 +9,7 @@ category:
 author: weigao
 # 此页面会出现在首页的文章板块中
 star: true
+
 ---
 
 
@@ -318,11 +319,69 @@ clang++ $(llvm-config --cxxflags --ldflags --libs) main.cpp -o main
 ./main add.bc
 ```
 
+## JNI
+
+### 概述
+
+JNI 的全称是 Java Native Interface, 通过 JNI 技术，可以做到以下几点：
+
+1. Java 程序中可以调用 Native 语言写的函数；一般是 C/C++ 编写的函数；
+2. Native 程序中的函数可以调用 JAVA 层的函数；也就是说 在 C/C++ 中可以调用 JAVA 层的函数；
+
+仔细思考一下，如果引用了 JNI, 是不是就破坏了 JAVA 的平台无关性呢？其实不尽然，引入 JNI 有以下的好处：
+
+1. JAVA 虚拟机是由 Native 语言写的，并不是平台无关的，而 JNI 层可以对 JAVA 层屏蔽平台之间的差异，有助于实现 JAVA 本身平台无关的特性；
+2. 很多程序都用 Native 语言写的，用 JNI 就可以直接使用了，避免了重复造轮子。
+
+### JAVA 调用 Native 的函数
+
+这个问题是萦绕在初学 JNI 的时候一个很大的问题，到底 Java 是如何调用 Native 的函数的呢？首先先看 Java 世界、JNI 世界和 Native 世界之间的关系：
+
+```mermaid
+graph TD
+	C(JAVA 世界)--> D(JNI 层) --> E(Native 世界)
+	C1(MediaScanner) --> D1(libmedia_jni.so) --> E1(libmedia.so)
+```
+
+除此之外，为了方便理解，再图上增加了一个 `MediaScanner` 实例进行说明。
+
+- `MediaScanner` 类中的一些功能需要由 Native 层来实现
+- JNI 层对应 `media_jni` 库，库的名字是 `media`, `jni` 表示的是这个一个 JNI 库
+- Native 的 `libmedia.so` 完成了实际的功能
+
+```java
+ // media / java / android / media / MediaScanner.java
+public class MediaScanner
+{
+    static {
+        // 加载对应的 JNI 库
+        // 在实际加载动态库的时候会将其拓展称为 libmedia_jni.so
+        System.loadLibrary("media_jni");
+        // 调用 native_init() 函数
+        native_init();
+    }
+    
+    // ..
+    
+    // native 函数的声明；被 native 标识的函数表示它将由 JNI 层完成
+    private native void processDirectory(String path, MediaScannerClient client);
+    
+    // ..
+}
+```
+
+1. 在调用 native 函数之前，需要进行 JNI 库的加载；关于加载 JNI 库的时机，通用的做法是在类的 `static` 语句中加载，加载的方法是调用 `System.loadLibrary` 方法，需要注意 JNI 库的加载必须是在 native 函数调用之前；
+2. JAVA 程序员调用 JNI 中的函数还需要使用 native 关键字声明函数。
+
+从上我们可以看出，JNI 的使用对于 JAVA 程序员是非常友好的。
+
+### JNI 层分析
 
 
 
 
-[^1]:[栈式虚拟机和寄存器式虚拟机？](https://www.zhihu.com/question/35777031/answer/64575683)
+
+[^1]: [栈式虚拟机和寄存器式虚拟机？](https://www.zhihu.com/question/35777031/answer/64575683)
 [^2]: [寄存器分配问题？ - RednaxelaFX的回答 - 知乎 ](https://www.zhihu.com/question/29355187/answer/51935409)
 [^3]: [llvm data-layout](https://llvm.org/docs/LangRef.html#data-layout)
-[^4]:[LLVM 概述——第一个 LLVM 项目](https://zhuanlan.zhihu.com/p/102270840)
+[^4]: [LLVM 概述——第一个 LLVM 项目](https://zhuanlan.zhihu.com/p/102270840)
