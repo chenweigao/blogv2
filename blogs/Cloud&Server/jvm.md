@@ -13,11 +13,25 @@ star: true
 
 
 
+
 ---
 
 本文主要结合软硬件去研究 JVM 中的 JIT 和 AOT 技术，主要针对 ART 虚拟机，提炼出 JAVA 虚拟机相关的基础知识和软硬件结合点。
 
 <!-- more -->
+
+## Art 概述
+
+常见的几个 JAVA 虚拟机：
+
+- HotSpot: 比较流行、广泛
+- Dalvik VM: 运行在安卓上，没有完全遵守 JAVA 虚拟机规范
+- Art VM: 安卓 5.0 以后把 Dalvik 虚拟机替换成了 Art
+
+思考为什么 Dalvik VM 没有遵守 JAVA 虚拟机规范呢？这是因为 JAVA 程序有跨平台的需求，但是安卓的平台是较为固定的，设备目标明确。对比于 HotSpot, 主要是有两点区别：
+
+1. 不直接运行 class 文件，执行的是编译后的 dex 字节码文件
+2. 结构基于寄存器指令结构，而不是 JVM 的栈指令集结构
 
 ## AOT & JIT
 
@@ -348,6 +362,16 @@ cp_info { // u1表示该域对应一个字节长度，u 表示 unsigned
 
 DEX 文件格式一般是 Android 平台上和传统的 class 文件对应的 java 字节码文件，其针对移动设备做了一些定制化处理。
 
+在我们开始之前，首先研究一下 Dex 文件是如何生成的，可以用下图来加以概述：
+
+```mermaid
+graph LR
+    C(Java Code)--> |javac| D(Java Bytecode) --> |dx| E(Dalvik Bytecode) --> |dexopt| F(Optimized Dalvik Bytecode)
+    C1(.java)--> |javac| D1(.class) --> |dx| E1(.dex) --> |dexopt| F1(.odex)
+```
+
+
+
 ### Dex vs class
 
 dex 文件和 class 文件存在很多区别，简单列举如下：
@@ -402,7 +426,15 @@ JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于
 
 下图可以比较清晰的说明 Java 的内存构成：
 
-@todo
+![jvm_mem](../../.vuepress/public/jvm_mem.svg)
+
+JAVA 的内存对象布局分为两种：第一种是普通的 JAVA 对象实例，第二种是 JAVA 数组实例，数组实例中会存储 length 元素。
+
+对于这几个内存区域具体的大小，我们以 32 HotSpot 中的 `java.lang.Integer` 存储为例，其在内存中的布局大小如下图所示：
+
+![jvm_mem2](../../.vuepress/public/jvm_mem2.svg)
+
+对象头固定大小为 8 个字节，接下来就会存储对象中的实际数据，后面的 padding 视情况而定。
 
 ### 对象头(Object Header)
 
@@ -468,6 +500,8 @@ graph LR
 > The second word of every object header. Points to another object (a metaobject) which describes the layout and behavior of the original object. For Java objects, the "klass" contains a C++ style "vtable".
 
 类型指针，对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。
+
+也叫类元数据指针，
 
 ### 实例数据(Instance Data)
 
@@ -594,3 +628,4 @@ Space losses: 4 bytes internal + 6 bytes external = 10 bytes total
 [^1]: [https://www.baeldung.com/ahead-of-time-compilation](https://www.baeldung.com/ahead-of-time-compilation)
 [^2]: [java 内存对象布局](https://www.cnblogs.com/jajian/p/13681781.html)
 [^3]: [HotSpot Glossary of Terms](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html)
+
