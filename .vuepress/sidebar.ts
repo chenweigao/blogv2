@@ -7,7 +7,8 @@ export const mysidebar = sidebar({
   "/others/tools/": "structure",
   "/others/tmp/": "structure",
   "/linux/": "structure",
-  "/architecture/": "structure"
+  "/java/": "structure",
+  "/architecture/": "structure",
 });
 
   // "",

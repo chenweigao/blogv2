@@ -23,7 +23,8 @@ export const zhNavbarConfig = navbar([
   },
   { text: "Python", icon: "python", link: "/python/" },
   { text: "Linux", icon: "linux", link: "/linux/" },
-  { text: "Arch", icon: "customize", link: "/architecture/" },
+  { text: "Arch", icon: "process", link: "/architecture/" },
+  { text: "Java", icon: "java", link: "/java/" },
   { text: "TimeLine", icon: "class", link: "/timeline/" },
   {
     text: "Others",
