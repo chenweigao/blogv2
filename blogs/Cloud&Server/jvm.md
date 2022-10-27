@@ -14,6 +14,7 @@ star: true
 
 
 
+
 ---
 
 本文主要结合软硬件去研究 JVM 中的 JIT 和 AOT 技术，主要针对 ART 虚拟机，提炼出 JAVA 虚拟机相关的基础知识和软硬件结合点。
@@ -370,7 +371,7 @@ graph LR
     C1(.java)--> |javac| D1(.class) --> |dx| E1(.dex) --> |dexopt| F1(.odex)
 ```
 
-
+在 Dalvik 或者 ART 中，class 文件是不能被直接解释执行的，需要经过 dx 将 class 文件进行翻译、重构、解释、压缩等处理，生成 .dex 文件。
 
 ### Dex vs class
 
@@ -378,7 +379,24 @@ dex 文件和 class 文件存在很多区别，简单列举如下：
 
 1. 一个 class 文件对应一个 Java 源码文件，而一个 Dex 文件可以对应多个 Java 源码文件；在 PC 平台上，每一个 Java 文件都对应生成一个同名的 class 文件，这些文件统一打包成 Jar 包；而在安卓平台上，这些 Java 源码会最终编译、合并到一个名为 classes.dex 的文件中去。
 2. PC 平台上 class 文件的字节序是 Big Endian, 而安卓平台的 Dex 文件的字节序是 Little Endian, 其原因是 ARM CPU 可能也采用的是 Little Endian.
-3. Dex 文件新定义了 LEB128 的数据类型，其全称为 Little Endian Based 128, 用于表示 32 比特位长度的数据。
+3. Dex 文件新定义了 **LEB128** 的数据类型，其全称为 Little Endian Based 128, 用于表示 32 比特位长度的数据。
+
+### Dex 文件格式
+
+我们想要得到 dex 文件的话，只需要把一个任意的 APK 文件解压缩，就可以得到若干个 dex 文件。
+
+使用 010 editor 可以对这个 dex 文件进行解析，就可以观察文件的结构信息。
+
+| Name                                       | Value            | Start   | Size   | Comment                  |
+| ------------------------------------------ | ---------------- | ------- | ------ | ------------------------ |
+| struct  header_item dex_header             | 0h               | 0h      | 70h    | Dex file header          |
+| struct string_id_list dex_string_ids       | 66454 strings    | 70h     | 40E58h | String ID list           |
+| struct type_id_list dex_type_ids           | 9994 types       | 40EC8h  | 9C28h  | Type ID list             |
+| struct proto_id_list dex_proto_ids         | 14661 prototypes | 4AAF0h  | 2AF3Ch | Method prototype ID list |
+| struct field_id_list dex_field_ids         | 50403 fields     | 75A2Ch  | 62718h | Field ID list            |
+| struct method_id_list dex_method_ids       | 65503 methods    | D8144h  | 7FEF8h | Method ID list           |
+| struct class_def_item_list  dex_class_defs | 7957 classes     | 15803Ch | 3E2A0h | Class definitions list   |
+| struct map_list_type dex_map_list          | 18 items         | 8ADDB0h | DCh    | Map list                 |
 
 
 
