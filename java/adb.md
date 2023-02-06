@@ -1,10 +1,11 @@
 ---
-title: Android ADB Command
+title: Adb Command
 date: 2023-01-12
 tag:
  - adb
 category:
  - Android
+
 
 ---
 
@@ -111,6 +112,23 @@ adb wait-for-device
 ```
 
 经过实测，后面的命令会等到设备重启完成之后再执行。
+
+### 写 SN
+
+1、执行命令进入fastboot：adb reboot bootloader
+2、fastboot getvar nve:SN@12345678  @后面为想要修改成为的SN编号
+
+3、fastboot reboot 重启 
+
+4、查看单板SN号是否修改成功：adb devices
+
+写完之后进行验证：
+
+```bash
+adb devices
+fastboot devices
+adb shell "getprop ro.serialno"
+```
 
 ## Push Path
 
