@@ -1,2 +1,3 @@
 pnpm i && pnpm up
 pnpm i -f
+pnpm up -i

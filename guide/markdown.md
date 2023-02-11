@@ -134,7 +134,7 @@ const a = 1;
 
 ### 代码块
 
-:::: code-group
+:::: code tabs
 
 ::: code-group-item yarn
 
@@ -144,7 +144,7 @@ yarn add -D vuepress-theme-hope
 
 :::
 
-::: code-group-item npm:active
+::: code tabs-item npm:active
 
 ```bash
 npm i -D vuepress-theme-hope

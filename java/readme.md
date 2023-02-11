@@ -1,5 +1,7 @@
 ---
 index: -1
+title: Java and JVM
+description: 主要是研究 Java 和 JVM 相关的技术
 ---
 # Java and JVM(and Andriod)
 

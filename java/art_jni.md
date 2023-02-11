@@ -1,18 +1,16 @@
 ---
-title: Art JNI
+title: ART JNI
 date: 2022-10-27
 tag:
  - jvm
  - java
 category:
  - JAVA
-
 ---
 
 
 
 本篇文章主要是研究 ART 虚拟机中的 native 方法相关的处理流程，凡是涉及到 native 相关的，都会在本篇文章中进行收录。
-
 1. JNI 原理、基础知识
 2. Java native 函数的定义、使用以及编译
 3. JNI 层的实现
@@ -321,120 +319,7 @@ bool Runtime::Start() {
 }
 ```
 
-接下来的过程就是涉及到 JVM 进程的启动等知识了，关于这个会在章节专门进行研究。
-
-
-
-### Intrinsics Path
-
-#### INTRINSICS_LIST
-
-在 `art/runtime/intrinsics_list.h` 中有如下两个宏定义：
-
-- SIGNATURE_POLYMORPHIC_INTRINSICS_LIST
-
-```cpp
-#define SIGNATURE_POLYMORPHIC_INTRINSICS_LIST(V) \
-  V(MethodHandleInvokeExact, kPolymorphic, kNeedsEnvironment, kAllSideEffects, kCanThrow, "Ljava/lang/invoke/MethodHandle;", "invokeExact", "([Ljava/lang/Object;)Ljava/lang/Object;") \
-  // .. more code
-```
-
-- INTRINSICS_LIST
-
-```cpp
-#define INTRINSICS_LIST(V) \
-  V(DoubleDoubleToRawLongBits, kStatic, kNeedsEnvironment, kNoSideEffects, kNoThrow, "Ljava/lang/Double;", "doubleToRawLongBits", "(D)J") \
-  // ...
-  V(StringGetCharsNoCheck, kVirtual, kNeedsEnvironment, kReadSideEffects, kCanThrow, "Ljava/lang/String;", "getCharsNoCheck", "(II[CI)V") \
-```
-
-#### path –> oat
-
-对于第二个宏 INTRINSICS_LIST，其用法我们可以在 `art/dex2oat/driver/compiler_driver.cc` 中看到：
-
-```cpp
-// Add classes which contain intrinsics methods to the list of image classes.
-static void AddClassesContainingIntrinsics(/* out */ HashSet<std::string>* image_classes) {
-#define ADD_INTRINSIC_OWNER_CLASS(_, __, ___, ____, _____, ClassName, ______, _______) \
-  image_classes->insert(ClassName);
-
-  INTRINSICS_LIST(ADD_INTRINSIC_OWNER_CLASS)
-#undef ADD_INTRINSIC_OWNER_CLASS
-}
-```
-
-`AddClassesContainingIntrinsics` 被 `CompilerDriver::LoadImageClasses` 调用：
-
-```cpp
-// Make a list of descriptors for classes to include in the image
-void CompilerDriver::LoadImageClasses(TimingLogger* timings,
-                                      /*inout*/ HashSet<std::string>* image_classes) {
-  // ...
-
-  if (GetCompilerOptions().IsBootImage()) {
-    AddClassesContainingIntrinsics(image_classes);
-
-    // All intrinsics must be in the primary boot image, so we don't need to setup
-    // the intrinsics for any other compilation, as those compilations will pick up
-    // a boot image that have the ArtMethod already set with the intrinsics flag.
-    InitializeIntrinsics();
-  }
-
-  // ...
-}
-```
-
-`CompilerDriver::LoadImageClasses` 被 `CompilerDriver::PreCompile` 调用：
-
-```cpp
-void CompilerDriver::PreCompile(jobject class_loader,
-                                const std::vector<const DexFile*>& dex_files,
-                                TimingLogger* timings,
-                                /*inout*/ HashSet<std::string>* image_classes,
-                                /*out*/ VerificationResults* verification_results) {
-  CheckThreadPools();
-
-  VLOG(compiler) << "Before precompile " << GetMemoryUsageString(false);
-
-  // Precompile:
-  // 1) Load image classes.
-  // 2) Resolve all classes.
-  // 3) For deterministic boot image, resolve strings for const-string instructions.
-  // 4) Attempt to verify all classes.
-  // 5) Attempt to initialize image classes, and trivially initialized classes.
-  // 6) Update the set of image classes.
-  // 7) For deterministic boot image, initialize bitstrings for type checking.
-
-  LoadImageClasses(timings, image_classes);
-  VLOG(compiler) << "LoadImageClasses: " << GetMemoryUsageString(false);
-  // ...
-}
-```
-
-`PreCompile` 在 `art/dex2oat/dex2oat.cc` 文件中被 `CompileDexFiles()` 函数调用：
-
-```cpp
-// Create the class loader, use it to compile, and return.
-jobject CompileDexFiles(const std::vector<const DexFile*>& dex_files) {
-    // ..
-    driver_->InitializeThreadPools();
-    driver_->PreCompile(class_loader,
-                        dex_files,
-                        timings_,
-                        &compiler_options_->image_classes_,
-                        verification_results_.get());
-    // ..
-    return class_loader;
-}
-```
-
-最终调用到 `Dex2oat` 中，而 `Dex2oat` 在 main 中被调用；关于 dex2oat 的用法我们在文章《Art dex2oat》中进行研究；
-
-可以看到，这个宏最后被 dex2oat 流程所用到了；**简而言之，宏 INTRINSICS_LIST 定义的这些 native 函数最终被编进了 oat 文件中使用。**
-
-
-
-
+接下来的过程就是涉及到 JVM 进程的启动等知识了。
 
 
 

@@ -1,5 +1,5 @@
 ---
-index: -1
+title: Linux and C
 ---
 
 

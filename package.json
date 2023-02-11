@@ -1,51 +1,52 @@
 {
-    "name": "blogv2-dev",
-    "version": "2.0.0",
-    "description": "Demo for vuepress-theme-reco@2.x.",
-    "repository": "git@github.com:chenweigao/blogv2.git",
-    "author": "weiggao <mail@weigao.cc>",
-    "license": "MIT",
-    "scripts": {
-        "dev": "vuepress dev .",
-        "start": "vuepress dev .",
-        "build": "vuepress build .",
-        "docs:build": "vuepress build .",
-        "docs:clean-dev": "vuepress dev . --clean-cache",
-        "docs:dev": "vuepress dev .",
-        "build:webpack": "vuepress-webpack build ."
-    },
-    "keywords": [
-        "vuepress",
-        "personal-blog"
-    ],
-    "dependencies": {
-        "@vuepress/cli": "2.0.0-beta.51",
-        "@vuepress/client": "2.0.0-beta.51",
-        "highlight.js": "^11.6.0",
-        "sass-loader": "13.0.2",
-        "vue": "3.2.39",
-        "vuepress": "2.0.0-beta.51",
-        "vuepress-theme-hope": "2.0.0-beta.104",
-        "vuepress-vite": "2.0.0-beta.51",
-        "vuepress-webpack": "2.0.0-beta.51",
-        "vuepress-plugin-full-text-search2": "^0.4.0"
-    },
-    "devDependencies": {
-        "cross-env": "7.0.3",
-        "markdownlint-cli": "0.32.2",
-        "prettier": "2.7.1",
-        "vuepress-plugin-full-text-search2": "^0.4.0"
-    },
-    "packageManager": "pnpm@7.12.2",
-    "pnpm": {
-        "peerDependencyRules": {
-            "ignoreMissing": [
-                "@algolia/client-search",
-                "@types/react",
-                "react",
-                "react-dom",
-                "webpack"
-            ]
-        }
+  "name": "blogv2-dev",
+  "version": "2.0.0",
+  "description": "Demo for vuepress-theme-reco@2.x.",
+  "repository": "git@github.com:chenweigao/blogv2.git",
+  "author": "weiggao <mail@weigao.cc>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vuepress dev .",
+    "start": "vuepress dev .",
+    "build": "vuepress build .",
+    "docs:build": "vuepress build .",
+    "docs:clean-dev": "vuepress dev . --clean-cache",
+    "docs:dev": "vuepress dev .",
+    "build:webpack": "vuepress-webpack build ."
+  },
+  "keywords": [
+    "vuepress",
+    "personal-blog"
+  ],
+  "dependencies": {
+    "@vuepress/cli": "2.0.0-beta.60",
+    "@vuepress/client": "2.0.0-beta.60",
+    "highlight.js": "^11.7.0",
+    "sass-loader": "13.2.0",
+    "vue": "^3.2.47",
+    "vuepress": "2.0.0-beta.60",
+    "vuepress-plugin-full-text-search2": "0.4.0",
+    "vuepress-theme-hope": "2.0.0-beta.173",
+    "vuepress-vite": "2.0.0-beta.60",
+    "vuepress-webpack": "2.0.0-beta.60"
+  },
+  "devDependencies": {
+    "cross-env": "7.0.3",
+    "markdownlint-cli": "0.33.0",
+    "prettier": "2.8.3",
+    "vuepress-plugin-full-text-search2": "0.4.0",
+    "vuepress-plugin-search-pro": "2.0.0-beta.173"
+  },
+  "packageManager": "pnpm@7.12.2",
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search",
+        "@types/react",
+        "react",
+        "react-dom",
+        "webpack"
+      ]
     }
+  }
 }
