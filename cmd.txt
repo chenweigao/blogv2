@@ -1,3 +1,9 @@
 pnpm i && pnpm up
 pnpm i -f
 pnpm up -i
+
+如果想要更新依赖：
+
+npm dlx vp-update
+
+这行命令可以自动搜索需要的依赖并进行更新。
