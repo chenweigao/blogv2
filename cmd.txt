@@ -7,5 +7,3 @@ pnpm up -i
 npm dlx vp-update
 
 这行命令可以自动搜索需要的依赖并进行更新。
-
-cmd = "sed -i -E s/\"" + pattern + "\"/\"" + replace_pattern + "\"/g " + "`grep \"" + key_name + "\" -rl --include=*.c "  + path + "`"
