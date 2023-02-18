@@ -1,5 +1,8 @@
 ---
 title: Data Struct
+icon: lightbulb
+dir:
+  order: 1
 ---
 
 这个章节主要介绍一些数据结构的基本概念及其应用，主要包括：
