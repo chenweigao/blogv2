@@ -4,23 +4,7 @@ export const zhNavbarConfig = navbar([
   "/",
   "/home",
   { text: "Blog", icon: "linter", link: "/category/" },
-  {
-    text: "Algorithm",
-    icon: "bit",
-    prefix: "/algorithm/",
-    children: [
-      {
-        text: "Data Struct",
-        icon: "stack",
-        link: "data_struct/"
-      },
-      {
-        text: "Algorithm",
-        icon: "bit",
-        link: ""
-      },
-    ]
-  },
+  { text: "Algorithm", icon: "stack", link: "/algorithm/" },
   { text: "Python", icon: "python", link: "/python/" },
   { text: "Linux", icon: "linux", link: "/linux/" },
   { text: "Arch", icon: "process", link: "/architecture/" },
