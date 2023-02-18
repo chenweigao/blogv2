@@ -7,6 +7,7 @@ category:
  - Android
 
 
+
 ---
 
 ## Base
@@ -157,6 +158,24 @@ adb wait-for-device
 adb remount
 adb push com.android.art.apex /system/apex/
 adb reboot
+```
+
+如果增加上设备序列号的推送程序则如下：
+
+```bash
+set /p serial_no=<./serial_no.txt
+echo serial_no is %serial_no%
+
+adb -s %serial_no% remount
+adb -s %serial_no%  push .\lib64\libart.so /system/apex/com.android.art.debug/lib64/libart.so
+adb -s %serial_no%  push .\lib\libart.so /system/apex/com.android.art.debug/lib/libart.so
+adb -s %serial_no%  reboot
+
+adb -s %serial_no% wait-for-device
+
+adb -s %serial_no% shell "getprop ro.serialno"
+
+pause
 ```
 
 
