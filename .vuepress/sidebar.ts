@@ -1,7 +1,6 @@
 import { sidebar } from "vuepress-theme-hope";
 
 export const mysidebar = sidebar({
-  "/algorithm/data_struct/": "structure",
   "/algorithm/": "structure",
   "/python/": "structure",
   "/others/tools/": "structure",
