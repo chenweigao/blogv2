@@ -1,16 +1,26 @@
-# Python File
+---
+title: Python File
+date: 2021-02-23
+tag:
+ - python
+ - file
+category:
+ - Python
+---
 
-## Abstract
+
 
 本文主要研究 Python 文件操作。
 
-::: tip 打开大文件
+::: tip 打开大文件的工具
 
 很多时候，自带的工具打开大文件是很慢的，我们可以使用 `EmEditor` 工具，免费版还是很好用的。
 
 :::
 
-## File exists
+## File API
+
+### exists
 
 可以使用如下的逻辑来判断我们的函数是否存在：
 
@@ -19,6 +29,16 @@ if not os.path.exists(s.file_split):
     logging.error("The file {} is not exists! please check your path!".format(s.file_split))
     logging.debug("sys.path is {}".format(sys.path))
     exit(1) # if in __main__
+```
+
+### listdir
+
+很多时候我们需要遍历一个文件夹下面的所有文件，可以这样实现：
+
+```python
+file_dir = r''
+for anr_file in os.listdir(file_dir):
+    parse_anr(anr_file)
 ```
 
 
@@ -33,7 +53,7 @@ if not os.path.exists(s.file_split):
 2. 使用 `r'xxx'` 可以避免双下划线；这种做法的优点在于，可以直接复制文件的路径使用；
 3. `os.path` 模块的使用；
 
-### linux
+### Linux
 
 window 下的路径如果继续想在 linux 下面使用，可以使用两种方式：
 
@@ -52,7 +72,7 @@ window 下的路径如果继续想在 linux 下面使用，可以使用两种方
 
 ### linecache.getline()
 
-linecache 可以用来指定行号，然后读取这一行的元素。
+`linecache` 可以用来指定行号，然后读取这一行的元素。
 
 ```python
 >>> import linecache
@@ -60,7 +80,7 @@ linecache 可以用来指定行号，然后读取这一行的元素。
 'import sys\n'
 ```
 
-😂😂😂 需要注意的是，8 表示第 9 行元素，linecache 取值默认**从 0 开始**。
+😂😂😂 需要注意的是，8 表示第 9 行元素，`linecache` 取值默认**从 0 开始**。
 
 这个函数会返回文件对应的这行结果，举例来说：
 
@@ -163,7 +183,7 @@ other line to be extracted
 
 ### About Index
 
-:::tip line 的编号从 1 开始
+:::warning line 的编号从 1 开始
 
 我们在 python 的文件处理中，很多时候行号都是从 0 开始的，上面代码中使用了 `enumerate(f,1)` 来方便了我们的操作，值得借鉴！
 
@@ -186,11 +206,6 @@ for i, num in enumerate(l, 1):
 
 
 
-## Q&A
-
-1. `a` 是可访问可修改的吗？
-   不是。`a`表示在文件后追加写，append。`a+` 既可以追加到文件中，也可以读取文件中的内容，而 `a` 是不可以读操作的。
-
 ## File Rights
 
 | 模式 | 操作              | 文件不存在 | 是否覆盖 |
@@ -201,6 +216,11 @@ for i, num in enumerate(l, 1):
 | r+   | 可读 可写         | 报错       | 是       |
 | w+   | 可读 可写         | 创建       | 是       |
 | a+   | 可读 可写         | 创建       | 否 追加  |
+
+- `a` 是可访问可修改的吗？
+  不是。`a`表示在文件后追加写，append。`a+` 既可以追加到文件中，也可以读取文件中的内容，而 `a` 是不可以读操作的。
+
+
 
 ## BCD fopen() 手册
 
