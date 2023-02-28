@@ -1,4 +1,4 @@
-# Basic Knowledge
+# I2C, I3C
 
 [[toc]]
 

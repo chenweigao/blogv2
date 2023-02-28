@@ -1,4 +1,4 @@
-# init.h
+# init.h in Thermal
 
 ## Abstract
 
