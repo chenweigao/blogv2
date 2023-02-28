@@ -37,7 +37,11 @@ export default defineUserConfig({
   },
 
   theme,
-
+  markdown: {
+    code: {
+      lineNumbers: 10
+    }
+  },
   plugins: [
     searchProPlugin({
       // 索引全部内容
