@@ -1,6 +1,5 @@
 ---
 title: Data Struct
-icon: lightbulb
 dir:
   order: 1
 ---
