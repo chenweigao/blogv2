@@ -5,12 +5,21 @@ tag:
  - script
 category:
  -  Tools
+
 ---
 
 ## Basic
 
+### 重命名文件夹
 
-@todo
+如果想按照日期来重命名文件夹的话，可以使用如下的方式：
+
+```powershell
+for /f %%a in ('powershell -Command "Get-Date -format yyyyMMdd_HHmm_ss"') do set datetime=%%a
+move anr\anr anr\anr_%datetime%
+```
+
+注意使用 `move`， 使用 `ren` 会失败。
 
 ## Usage: Android
 
