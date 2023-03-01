@@ -66,6 +66,31 @@ adb install abc.apk # 第一次安装。如果手机上已经有此app,则会报
 adb uninstall com.example.appname
 ```
 
+### 获取 APP Activity
+
+1. 手动打开 APP
+
+2. 使用 adb 命令：
+
+   ```bash
+   adb shell dumpsys window | grep mCurrentFocus
+   
+   # or
+   dumpsys window | grep mCurrentFocus
+   ```
+
+3. 此时可以看到输入类似于下面：
+
+   *mCurrentFocus=Window{a4d3e62 u0 **com.example.myapplication/com.example.myapplication.MainActivity**}*
+
+   其中以 `com.xxx` 那一段就是 APP 的 Activity.
+
+   :::tip
+
+   该方法需要知道 APP 的包名，使用方法是：`pm list package -3` 列出所有应用，其中 `-3` 表示列举出第三方应用。
+
+   :::
+
 ### 启动 APP
 
 ```bash
@@ -74,13 +99,58 @@ adb shell am start -n com.package.name/com.package.name.MainActivity
 adb shell am start -n com.package.name/.MainActivity
 ```
 
-- 启动抖音
+举例：启动抖音
 
-  ```bash
-  adb shell am start -n com.ss.android.ugc.aweme/com.ss.android.ugc.aweme.splash.SplashActivity
-  ```
+```bash
+adb shell am start -n com.ss.android.ugc.aweme/com.ss.android.ugc.aweme.splash.SplashActivity
+```
 
-  
+### 关闭 APP
+
+```bash
+adb shell am force-stop com.some.package
+```
+
+:::warning
+
+`force-stop` 后面跟着的是 APP 的包名，而 `start` 后面是 APP 的 activity.
+
+:::
+
+### 获取 Pid
+
+很多时候，我们需要获取到 APP 进程对应的 PID，当我们知道 APP 的包名的时候，一切都变得非常简单：
+
+```bash
+adb shell pidof package_name
+```
+
+:::details bat script example
+
+这是一个关于如何获取 PID 的 bat script 例子：
+
+```powershell
+@echo off
+set /p serial_no=<./serial_no.txt
+echo serial_no is %serial_no%
+
+set PACKAGE_NAME=com.example.myapplication
+
+for /f "tokens=*" %%a in ('adb -s %serial_no% shell  pidof %PACKAGE_NAME%') do set PID=%%a
+
+if "%PID%"=="" (
+  echo Error: %PACKAGE_NAME% is not running
+  exit /b 1
+)
+
+echo PID of %PACKAGE_NAME% is %PID%
+```
+
+:::
+
+
+
+
 
 ## Tap and Slide
 
