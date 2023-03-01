@@ -8,6 +8,7 @@ category:
 
 
 
+
 ---
 
 ## Base
@@ -230,7 +231,9 @@ adb push com.android.art.apex /system/apex/
 adb reboot
 ```
 
-如果增加上设备序列号的推送程序则如下：
+
+
+:::details 增加上设备序列号的推送程序
 
 ```bash
 set /p serial_no=<./serial_no.txt
@@ -248,7 +251,7 @@ adb -s %serial_no% shell "getprop ro.serialno"
 pause
 ```
 
-
+:::
 
  
 
