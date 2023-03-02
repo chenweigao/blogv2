@@ -1,10 +1,14 @@
-# Memory Hierarchy - Cache
+# Cache
 
 ## Abstract
 
 ### Introduction
 
+:::note 哲学含义
+
 程序员总希望存储是无限的，我们通过一系列的技术手段让程序员产生这种错觉。
+
+:::
 
 本文主要研究存储层次结构中的 cache 环节，本文的行文构成包含如下：
 
@@ -30,9 +34,11 @@
 
 总体而言，可以归纳为访问局部性，其含义是计算机科学领域的应用程序在访问内存的时候，倾向于访问内存中较为靠近的值。
 
-时间局部性：以 loop 为例, 被引用过一次的存储器位置在未来会被多次引用
+**时间局部性**：以 loop 为例, 被引用过一次的存储器位置在未来会被多次引用
 
-空间局部性：指令是按照顺序执行的；如果一个存储器的位置被引用，那么将来他附近的位置也会被引用，典型的例子就是数组。
+**空间局部性**：指令是按照顺序执行的；如果一个存储器的位置被引用，那么将来他附近的位置也会被引用，典型的例子就是数组。
+
+🧡🧡 **QA**
 
 - 存储层次结构如何利用时间局部性和空间局部性？
 
@@ -65,7 +71,7 @@
 
 其中 block 表示 cache 中缓存的数据，tag 是该 cache line 对应的内存的地址，valid 表示该 cache line 中的数据是否有效。
 
-在此再解释一下 tag 和 valid 的作用[^1]：
+下面章节解释一下 tag 和 valid 的作用[^1]。
 
 ### tag
 
@@ -74,7 +80,7 @@
 > to a requested word? That is, how do we know whether a requested word is in the
 > cache or not?
 
-为了解决上述的问题，我们使用了 tag 这个字段，原始的对于 tag 的定义可以如下所示：
+为了解决上述的问题（我们要访问的内容是不是在 cache 里面），我们使用了 tag 这个字段，原始的对于 tag 的定义可以如下所示：
 
 > A field in a table used for a memory hierarchy that contains the address information required to identify whether the associated block in the hierarchy corresponds to a requested word.
 
@@ -88,7 +94,7 @@
 
 valid 的存在是因为我们还需要标识 cache 中的信息是否有效，比如说这边举了一个例子，说的是如果处理器刚刚启动的时候，缓存中的数据肯定是无效的，valid 字段就是起到这样一个作用。
 
-### data
+### 💯data
 
 剩下的是 data 或者 block 块，其实在实际的 cache 中，我们长这样（Intrinsity FastMATH data cache 为例）：
 
@@ -107,6 +113,18 @@ valid 的存在是因为我们还需要标识 cache 中的信息是否有效，�
 这个例子中的 5..2 bit 就是用作定位偏移得的。
 
 > Intrinsity FastMATH data cache  使用了数据 cache 和 指令 cache 分离的设计。
+
+#### more research
+
+上述的说明属于比较专业的说法，我们还可以使用较为简单的方式来进行理解（可能会缺少一些严谨性）
+
+访存地址可以被分为两部分：**块地址+块内位移**。其中块地址用于查找该块在 cache 中的位置，块内位移用于确定所访问的数据在块内的位置。
+
+:::note 分页 VS 分段
+
+上述的访存地址计算的方式是适用于*页虚拟存储器*， 对于段虚拟寄存器，可以用两个字来表示：段号+段内偏移。关于虚拟内存可以参考另外的一遍文章《Virtual Memory》
+
+:::
 
 ## hit & miss
 
