@@ -7,6 +7,7 @@ tag:
 category:
  - Python
 
+
 ---
 
 
@@ -55,6 +56,18 @@ for anr_file in os.listdir(file_dir):
 在这个地方进行一个对比，以便于引起注意。
 
 :::
+
+### Rename Folder
+
+如果想对文件进行重命名的话，可以使用 `os.rename()`, 下面这是一个例子：
+
+```python
+import os
+new_folder_name = r"anr/anr_{}".format(time.strftime("%Y%m%d_%H%M_%S"))
+os.rename(r"anr/anr", new_folder_name)
+```
+
+在这个例子中，我们使用了时间戳，命名后的文件类似于: *anr/anr_20230303_1115_14*。
 
 ## File path
 
@@ -233,9 +246,7 @@ for i, num in enumerate(l, 1):
 - `a` 是可访问可修改的吗？
   不是。`a`表示在文件后追加写，append。`a+` 既可以追加到文件中，也可以读取文件中的内容，而 `a` 是不可以读操作的。
 
-
-
-## BCD fopen() 手册
+:::details BCD fopen() 手册
 
 > The argument mode points to a string beginning with one of the following sequences (Additional characters may follow these sequences.):
 
@@ -250,3 +261,5 @@ for i, num in enumerate(l, 1):
 - `a` Open for **writing**.  The file is created if it does not exist.  The stream is positioned at the **end** of the file.  Subsequent writes to the file will always end up at the then current end of file, irrespective of any intervening fseek(3) or similar.
 
 - `a+`  Open for **reading and writing**.  The file is created if it does not exist.  The stream is positioned at the **end** of the file.  Subsequent writes to the file will always end up at the then current end of file, irrespective of any intervening fseek(3) or similar.
+
+:::
