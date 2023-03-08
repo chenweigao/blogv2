@@ -6,8 +6,6 @@ tag:
  - java
 category:
  - JAVA
-index: -2
-
 ---
 
 ## Abstract

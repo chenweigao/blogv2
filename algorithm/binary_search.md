@@ -212,7 +212,7 @@ function binary_search(A, n, T):
 
 二分查找有序序列中某个元素的位置，如果没找到，则返回其需要插入的位置(LC 035):
 
-@[code](../code/binarySearch.py)
+@[code](./code/binarySearch.py)
 
 ### bisect
 
@@ -249,7 +249,7 @@ round(2.6) # 3 四舍五入
 在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。
 请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
 
-@[code](../code/find_in_array.py)
+@[code](./code/find_in_array.py)
 
 :::tip
 注意到这里用到了 **先小(<)后大(>), 先左(l)后右** 的口诀。
@@ -259,7 +259,7 @@ round(2.6) # 3 四舍五入
 
 使用二分查找判断某个数是否完全平方数：
 
-@[code](../code/isPerfectSquare.py)
+@[code](./code/isPerfectSquare.py)
 
 ### 数字在排序数组中出现的次数
 
@@ -269,7 +269,7 @@ round(2.6) # 3 四舍五入
 
 这个题目对查找插入位置的概念进行了强化：
 
-@[code](../code/get_number_of_k.py)
+@[code](./code/get_number_of_k.py)
 
 ### Find Peak Element - 寻找峰值
 
@@ -283,7 +283,7 @@ round(2.6) # 3 四舍五入
 
 这道题目只要求返回一个峰值，所以可以从前往后遍历，遇到符合条件的返回即可，暴力解法和二分法的代码如下：
 
-@[code](../code/findPeakElement.py)
+@[code](./code/findPeakElement.py)
 
 ### LC875 爱吃香蕉的珂珂
 
@@ -301,9 +301,9 @@ round(2.6) # 3 四舍五入
 
 下面两种解法展示了不同边界条件下该如何处理：
 
-@[code{6-28}](../code/binary_search_koko_1.py)
+@[code{6-28}](./code/binary_search_koko_1.py)
 
-@[code{5-15}](../code/binary_search_koko_2.py)
+@[code{5-15}](./code/binary_search_koko_2.py)
 
 上述代码的两种解法都是可以的，区别在于边界条件的不同，可以参考比较，加以掌握。
 
