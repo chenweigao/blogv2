@@ -6,9 +6,6 @@ tag:
 category:
  - Android
 
-
-
-
 ---
 
 ## Base
@@ -28,6 +25,27 @@ adb shell input keyevent 26
 
 adb shell input keyevent 82
 ```
+
+:::tip keyevent 26
+
+keyevent 26 表示的是**按下电源按钮**，所以说如果我们手机屏幕状态是打开的话，会导致屏幕状态切换为开启状态，针对这个情况，我们可以在脚本中使用判断：
+
+```powershell
+for /f "tokens=*" %%a in ('adb -s %serial_no% shell "dumpsys deviceidle | grep mScreenOn"') do set screen_state=%%a
+
+if "%screen_state%" == "mScreenOn=true" (
+    echo %screen_state% is on
+	adb -s %serial_no% shell input keyevent 82
+) else (
+    echo %screen_state% is off
+	adb -s %serial_no% shell input keyevent 26
+	adb -s %serial_no% shell input keyevent 82
+)
+```
+
+如果屏幕状态是开启的话，我们就直接点解锁；否则的话，我们开启屏幕再解锁。
+
+
 
 ### 重启、关机
 
@@ -88,7 +106,9 @@ adb uninstall com.example.appname
 
    :::tip
 
-   该方法需要知道 APP 的包名，使用方法是：`pm list package -3` 列出所有应用，其中 `-3` 表示列举出第三方应用。
+   该方法如果想知道 APP 的包名，使用方法是：`pm list package -3` 列出所有应用，其中 `-3` 表示列举出第三方应用。
+
+   但是通常而言，我们打开该 APP 并执行命令，是能够从 Activity 的前半部分得到包名的。
 
    :::
 
@@ -149,9 +169,14 @@ echo PID of %PACKAGE_NAME% is %PID%
 
 :::
 
+### 获取 Tid
 
+我们在知道 Pid 和我们的线程名称的时候，可以很轻松地获取到线程的 Tid:
 
-
+```powershell
+set thread_name=HeapTaskDaemon
+for /f "tokens=3" %%a in ('adb -s %serial_no% shell "ps -T -p %PID% | grep %thread_name%"') do set tid=%%a
+```
 
 ## Tap and Slide
 

@@ -6,11 +6,12 @@ tag:
 category:
  -  Tools
 
+
 ---
 
 ## Basic
 
-### 重命名文件夹
+### 重命名(Move)文件夹
 
 如果想按照日期来重命名文件夹的话，可以使用如下的方式：
 
@@ -60,3 +61,38 @@ goto loop
 ### 在 bat 中使用 Python 脚本
 
 @todo
+
+
+
+## for loop
+
+```powershell
+for /f "tokens=3" %%a in ('adb -s %serial_no% shell "ps -T -p %pid% | grep HeapTaskDaemon"') do set tid=%%a
+```
+
+在上面的命令中，我们使用了 `for` 循环来检验命令输出，并设置给变量。`token=3` 表示的含义是：以空格分隔的第 3 个变量。
+
+如果我们需要使用多个变量，那么可以这么写：
+
+```powershell
+for /f "tokens=3,4 delims=," %%a in ('adb -s %serial_no% shell "ps -T -p %pid% | grep HeapTaskDaemon"') do (
+    set tid=%%a
+    set tmp=%%b
+)
+```
+
+在这个例子中，我们设置了两个变量，并且使用了分隔符，默认的分隔符是空格，可以加以注意。
+
+## timeout
+
+如果我们想防止脚本被意外的按键终结，可以增加以下的 `timeout` 命令：
+
+```powershell
+timeout /nobreak /t 5 > nul
+```
+
+如果说需要按任意按键跳过的，则可以如下实现：
+
+```powershell
+TIMEOUT /T 90
+```
