@@ -37,11 +37,11 @@ Breadth-First Search，缩写为 BFS，又称为宽度优先搜索，是一种�
 
 这是一道迷宫搜索问题，可以使用 DFS 搜索，这样可以熟悉 DFS 的步骤。实现代码如下所示：
 
-@[code](../code/dfs.py)
+@[code](./code/dfs.py)
 
 但是不幸的是，上述的解法会导致超时，所以我们要配合缓存，来求解这个问题：
 
-@[code](../code/329.py)
+@[code](./code/329.py)
 
 ### LC841 钥匙和房间
 

@@ -99,7 +99,7 @@ b 指令的一些变体[^2]
 
 和 0 比较（Compare），如果结果为零（Zero）就转移（只能跳到后面的指令）;
 
-```assembly
+```
 CBZ Rn, label
 ```
 
@@ -109,13 +109,13 @@ CBZ Rn, label
 
 同样的，还有不为 0 的时候跳转：
 
-```assembly
+```
 CBNZ Rn, label
 ```
 
 ### tbnz
 
-```assembly
+```
 TBNZ X1, #3, label
 ```
 
@@ -123,7 +123,7 @@ TBNZ X1, #3, label
 
 还有用法如下：
 
-```assembly
+```
 tbnz w16, #0, #+0xc (addr 0x1baecc)
 ```
 
@@ -133,7 +133,7 @@ tbnz w16, #0, #+0xc (addr 0x1baecc)
 
 `sxtw` 指令的使用方法如下：
 
-```assembly
+```
 sxtw x7, w6
 ```
 
@@ -158,31 +158,31 @@ ARM 使用加载存储模型进行内存访问，这意味着只有加载/存储
 
 - 将寄存器 x1 的值作为地址，取该内存地址的值放入寄存器 x0 中：`x0 <- [x1]`
 
-  ```assembly
+  ```
   ldr x0, [x1]
   ```
 
 - 将栈内存 [sp + 0x8] 处的值读取到 w8 寄存器中
 
-  ```assembly
+  ```
   ldr w8, [sp, #0x8]
   ```
 
 - 将寄存器 x1 的值加上 4 作为内存地址, 取该内存地址的值放入寄存器 x0 中, 然后将寄存器 x1 的值加上 4 放入寄存器 x1 中: `x0 <- [x1 + 4]; x1 <- x1 + 4`
 
-  ```assembly
+  ```
   ldr x0, [x1, #4]!
   ```
 
 - 将寄存器 x1 的值作为内存地址，取内该存地址的值放入寄存器 x0 中, 再将寄存器 x1 的值加上 4 放入寄存器 x1 中
 
-  ```assembly
+  ```
   ldr x0, [x1], #4
   ```
 
 - 将寄存器 x1 和寄存器 x2 的值相加作为地址，取该内存地址的值放入寄存器 x0 中
 
-  ```assembly
+  ```
   ldr x0, [x1, x2]
   ```
 
@@ -191,7 +191,7 @@ ARM 使用加载存储模型进行内存访问，这意味着只有加载/存储
 
 和 `ldr` 一样，只不过，`ldur` 后面的立即数是负数。
 
-```assembly
+```
 ldur w16, [x5, #-8]
 ```
 
@@ -199,7 +199,7 @@ ldur w16, [x5, #-8]
 
 举例来说：
 
-```assembly
+```
 ldp	x20, x19, [sp, #0x150] 
 ```
 
@@ -209,7 +209,7 @@ ldp	x20, x19, [sp, #0x150]
 
 和下文中的 `strb` 的含义一样，将内存中的值读入寄存器中，并且只读取一个字节，也就是说把取到的数据放在目的寄存器的低 8 位，然后将高 24 位填充位 0。
 
-```assembly
+```
 ldrb w2, [x5, x2]
 ```
 
@@ -221,7 +221,7 @@ ldrb w2, [x5, x2]
 
 `ldrh` 和 `ldrb` 一样，不同之处在于 `ldrh` 会读入半个字长，就是 4 位。
 
-```assembly
+```
 ldrh w2, [x5, x2, lsl #1]
 ```
 
@@ -229,7 +229,7 @@ ldrh w2, [x5, x2, lsl #1]
 
 ### adrp
 
- ```assembly
+ ```
 adrp x23, #-0x3ed000 (addr -0x234000)
  ```
 
@@ -249,7 +249,7 @@ adrp 一般用于获得地址，就我个人的理解而言，adrp 将当前 PC 
 
 (store register) 将寄存器中的值写入到内存中，如：
 
-```assembly
+```
 str w9, [sp, #0x8] 
 ```
 
@@ -259,7 +259,7 @@ str w9, [sp, #0x8]
 
 (store register byte) 将寄存器中的值写入到内存中（只存储一个字节），如：
 
-```assembly
+```
 strb w8, [sp, #7] 
 ```
 
@@ -273,7 +273,7 @@ strb w8, [sp, #7]
 
 举例说明：
 
-```assembly
+```
 ubfx	x10, x3, #3, #29
 ```
 
@@ -281,7 +281,7 @@ ubfx	x10, x3, #3, #29
 
 UBFX 指令一般有两种用法：
 
-```assembly
+```
 UBFX Wd, Wn, #lsb, #width ; 32-bit
 UBFX Xd, Xn, #lsb, #width ; 64-bit
 ```
@@ -294,7 +294,7 @@ UBFX Xd, Xn, #lsb, #width ; 64-bit
 
 指令如下：
 
-```ass
+```
 d2ffffe9 	mov	x9, #-281474976710656
 ```
 
@@ -312,20 +312,20 @@ d2ffffe9 	mov	x9, #-281474976710656
 
 `lsl` 为逻辑左移指令。
 
-```assembly
+```
 lsl	w9, w11, w9
 ```
 
 左移指令分两种，可以给定寄存器或者立即数进行移位：
 
-```ass
+```
 LSL <Wd>, <Wn>, #<shift> ; 32-bit
 LSL <Xd>, <Xn>, #<shift> ; 64-bit
 ```
 
 or
 
-```assembly
+```
 LSL <Wd>, <Wn>, <Wm> ; 32-bit
 LSL <Xd>, <Xn>, <Xm> ; 64-bit
 ```

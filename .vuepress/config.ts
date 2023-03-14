@@ -1,5 +1,5 @@
 import { defineUserConfig } from "vuepress";
-import { hopeTheme } from "vuepress-theme-hope";
+import { hopeTheme, removePrismPlugin, usePrismPlugin } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
 import { mysidebar } from "./sidebar";
 import theme from "./theme";

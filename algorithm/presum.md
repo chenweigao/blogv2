@@ -112,7 +112,7 @@ class Solution:
 
 特别的，如果是 C++/C 实现，可以如下所示：
 
-```c++
+```cpp
 for (int start = 0; start < n; start++)
 {
     for (int length = 1; start + length <= n; length += 2)

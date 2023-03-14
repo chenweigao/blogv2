@@ -2,7 +2,6 @@ import { hopeTheme } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
 import { mysidebar } from "./sidebar";
 // import { searchPlugin } from "@vuepress/plugin-search";
-
 export default hopeTheme(
     {
         hostname: "https://vueblog.weigao.cc",
@@ -79,7 +78,10 @@ export default hopeTheme(
 
         plugins: {
             blog: true,
-
+            prismjs: {
+                light: "vs",
+                dark: "material-dark"
+            },
             // 你也可以使用 Waline
             comment: {
                 provider: "Giscus",
@@ -103,7 +105,7 @@ export default hopeTheme(
                 sup: true,
                 vPre: true,
                 gfm: true,
-            }
+            },
         }
 
     }

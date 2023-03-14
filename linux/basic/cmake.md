@@ -423,7 +423,7 @@ add_subdirectory(subbinary)
 
 其更加稳妥的用法如下：
 
-```CMAKE
+```cpp
 if(EXISTS ${PRJ_TOP_DIR}/src)
   add_subdirectory(src)
 endif()

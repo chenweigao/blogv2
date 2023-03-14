@@ -408,7 +408,7 @@ dex 文件和 class 文件存在很多区别，简单列举如下：
 
 对于压缩使能这个问题，在此需要解释一下，我们在看汇编的时候有一段这样的代码：
 
-```assembly
+```
 // length() dex_method_idx=3308
 0x001bad20: b9400820	ldr w0, [x1, #8]
 0x001bad24: 53017c00	lsr w0, w0, #1
@@ -479,7 +479,7 @@ graph LR
 
 用于存储对象自身的运行时数据，在 32 位 JVM 中长度是 32bit, 64 位 JVM 中长度是 64bit, 对应路径 `/openjdk/hotspot/src/share/vm/oops`, 对应代码 `markOop.hpp`, 其构成可以从注释中获得（google 搜索文件名即可搜到）：
 
-```c++
+```cpp
 // Bit-format of an object header (most significant first, big endian layout below):
 //
 //  32 bits:
