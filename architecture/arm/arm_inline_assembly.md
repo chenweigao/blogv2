@@ -4,6 +4,7 @@ date: 2022-12-03
 category:
  -  Arm
 
+
 ---
 
 ## __asm
@@ -103,6 +104,54 @@ __asm ("ADD R0, %[input_i], %[input_j]"
   #endif
 ```
 
+### __builtin_prefetch()
+
+`__builtin_prefetch()` 接口的使用，我们列举几个 art 的例子，看一下大佬门是怎么使用预取，保证提前量，或者将预取的功效发挥到最大的：
+
+```cpp
+while (mark_stack_pos_ != 0 && prefetch_fifo.size() < kFifoSize) {
+    mirror::Object* const mark_stack_obj = mark_stack_[--mark_stack_pos_].AsMirrorPtr();
+    DCHECK(mark_stack_obj != nullptr);
+    __builtin_prefetch(mark_stack_obj);
+    prefetch_fifo.push_back(mark_stack_obj);
+}
+if (UNLIKELY(prefetch_fifo.empty())) {
+    break;
+}
+obj = prefetch_fifo.front();
+prefetch_fifo.pop_front();
+```
+
+上述代码的预取位置在 `push_back` 前面，因为堆栈操作需要一定的时延，所以说利用这个时延在堆栈之前进行预取。
+
+其次就是利用 fifo 数据结构，但是在实践中使用该方法，并无太大的增益。
+
+### prefetch in for loop
+
+```cpp
+uint8_t* begin = reinterpret_cast<uint8_t*>(new_run) + headerSizes[idx];
+for (size_t i = 0; i < num_of_bytes; i += kPrefetchStride) {
+    __builtin_prefetch(begin + i);
+}
+```
+
+如果需要保证提前量，可以如下例子：
+
+```cpp
+  size_t bytes_freed = 0;
+  for (size_t i = 0; i < num_ptrs; i++) {
+    mirror::Object* ptr = ptrs[i];
+    const size_t look_ahead = 8;
+    if (kPrefetchDuringDlMallocFreeList && i + look_ahead < num_ptrs) {
+      // The head of chunk for the allocation is sizeof(size_t) behind the allocation.
+      __builtin_prefetch(reinterpret_cast<char*>(ptrs[i + look_ahead]) - sizeof(size_t));
+    }
+    bytes_freed += AllocationSizeNonvirtual(ptr, nullptr);
+  }
+```
+
+
+
 ### mrs pmu
 
 下面这个是读取 PMU 寄存器中的数据的示例：
@@ -130,8 +179,8 @@ static inline uint64_t arch_counter_get_cntpct() {
 下面这个是嵌入 `memecpy` 的例子：
 
 ```cpp
-#if defined(__aarch64__)
-  if (obj_size == 24) { // copy len 16
+#if defined(__aarch64__) && defined(xxx)
+  if () { // copy len 16
     __asm__ __volatile__(
     "ldp x5, x4 ,[%[src], #8]\n\t"
     "stp x5, x4 ,[%[dst], #8]\n\t"
@@ -139,7 +188,7 @@ static inline uint64_t arch_counter_get_cntpct() {
     : [src] "r" (from_ref), [dst] "r" (to_ref)
     : "x4", "x5"
     );
-  } else if (obj_size == 32) { // copy length 24
+  } else if () { // copy length 24
     __asm__ __volatile__(
     "ldp x5, x4 ,[%[src], #8]\n\t"
     "ldr x6 ,[%[src], #24]\n\t"
@@ -149,7 +198,7 @@ static inline uint64_t arch_counter_get_cntpct() {
     : [src] "r" (from_ref), [dst] "r" (to_ref)
     : "x4", "x5", "x6"
     );
-  } else if (obj_size == 40) { // copy length 32
+  } else if () { // copy length 32
     __asm__ __volatile__(
     "ldp x5, x4 ,[%[src], #8]\n\t"
     "ldp x7, x6 ,[%[src], #24]\n\t"
@@ -160,13 +209,20 @@ static inline uint64_t arch_counter_get_cntpct() {
     : "x4", "x5", "x6", "x7"
     );
   } else {
-    memcpy(reinterpret_cast<uint8_t*>(to_ref) + kObjectHeaderSize,
-          reinterpret_cast<const uint8_t*>(from_ref) + kObjectHeaderSize,
-          obj_size - kObjectHeaderSize);
+    memcpy(xxx);
   }
+#else
+	// some code
+#endif
 ```
 
 例子比较长，但是可以供参考，这是比较完备的举例。
+
+
+
+
+
+
 
 
 
