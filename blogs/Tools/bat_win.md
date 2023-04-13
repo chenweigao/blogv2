@@ -7,6 +7,7 @@ category:
  -  Tools
 
 
+
 ---
 
 ## Basic
@@ -82,6 +83,17 @@ for /f "tokens=3,4 delims=," %%a in ('adb -s %serial_no% shell "ps -T -p %pid% |
 ```
 
 在这个例子中，我们设置了两个变量，并且使用了分隔符，默认的分隔符是空格，可以加以注意。
+
+如果想使用普通的 foor-loop, 则可以如下所示：
+
+```powershell
+@echo off
+for /l %%i in (1,1,5) do (
+    echo %%i
+)
+```
+
+
 
 ## timeout
 
