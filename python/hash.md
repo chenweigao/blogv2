@@ -42,6 +42,28 @@ class Solution:
 
 具体的[完整示例](https://github.com/chenweigao/_code/blob/master/LeetCode/LC1512_Number_of_good_pairs.py)可以参考 GitHub。
 
+## Cache result: pickle
+
+pickle 模块可以把我们只需要一次生成的中间结果缓存起来，比如说 dict, list 都可以进行缓存，下一次直接从这个文件中假造，避免了进一步的分析工作。
+
+```python {6,12-13}
+import pickle
+
+file_name = './output/xxx.pkl'
+try:
+    with open(file_name, 'rb') as f:
+        self.all_data = pickle.load(f)
+    except FileNotFoundError:
+        for trace_file in os.listdir(self.traces_dir):
+            print('start to parse file ', trace_file)
+            file_path = os.path.join(self.traces_dir, trace_file)
+            self.parse_trace_file(file_path)
+            with open(file_name, 'wb') as f:
+                pickle.dump(self.all_data, f)
+```
+
+
+
 ## collections.Counter()
 
 这是 python 官方库的实现方式，使用前需要先导入 `collections` 依赖。
@@ -128,7 +150,7 @@ d.move_to_end('b', last=True)
 
    `OrderedDict([('a', None), ('c', None), ('d', None), ('e', None), ('b', None)])` --> `OrderedDict([('c', None), ('d', None), ('e', None), ('b', None)])`
 
-### 按照 dict value 排序后返回字典
+### Sort by dict value
 
 使用如下的方式按照 value 排序：
 
