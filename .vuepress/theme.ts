@@ -105,6 +105,8 @@ export default hopeTheme(
                 sup: true,
                 vPre: true,
                 gfm: true,
+                card: true,
+                tabs: true,
             },
         }
 
