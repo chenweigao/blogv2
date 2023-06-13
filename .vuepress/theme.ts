@@ -79,7 +79,7 @@ export default hopeTheme(
         plugins: {
             blog: true,
             prismjs: {
-                light: "coy",
+                light: "ghcolors", // ghcolors, coy
                 dark: "material-dark"
             },
             // 你也可以使用 Waline
