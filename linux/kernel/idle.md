@@ -5,89 +5,35 @@ author: weigao
 category:
  -  Kernel
 
+
 ---
 
 ## Abstract
 
-首先对于 Idle 是什么，我知之甚少，所以采用提出疑惑、回答问题的方式先进行行文，进行入门。
+本文主要研究 kernel 中的 idle 机制以及代码实现。
 
+## Function Flow
 
-### cpuidle_idle_call
+我们先对大体上的函数调用栈进行一个简单的示意图总结：
 
-> `cpuidle_idle_call` is a function in the Linux kernel that is responsible for **putting the CPU into an idle state** when there is no work to do. The function is part of the CPU idle subsystem, which is designed to reduce power consumption by putting the CPU into low-power states when it is not in use.
->
-> When the `cpuidle_idle_call` function is called, the CPU idle governor selects the most appropriate idle state based on the current system workload and the capabilities of the CPU. The CPU is then put into the selected idle state, which reduces its power consumption while still allowing it to quickly resume normal operation when needed.
->
-> The `cpuidle_idle_call` function is called by the kernel scheduler when there is no work to do, and it is one of the key components of the Linux kernel's power management system. By efficiently managing CPU power consumption, the kernel can reduce energy usage and extend the battery life of mobile devices.
-
-`cpuidle_idle_call` 是 idle 流程的主要函数，其主要的目的是让 CPU 进入 idle state, 目的是节省功耗。
-
-### Idle States
-
-> CPU idle states are low-power states that a CPU can enter when it is not actively processing tasks. These states are designed to reduce energy consumption and extend battery life on mobile devices. The exact set of idle states and their power-saving capabilities may vary depending on the CPU architecture and operating system. Here are some **common CPU idle states**:
->
-> 1. **C0 (Active State)**: The CPU is fully active and executing instructions.
-> 2. **C1 (Halt State)**: The CPU is not executing any instructions, but it is still powered on and can respond to interrupts.
-> 3. **C2 (Sleep State)**: The CPU is in a low-power state and is not executing any instructions. It can be quickly woken up by an interrupt.
-> 4. **C3 (Deep Sleep State)**: The CPU is in a deeper low-power state than C2 and consumes even less power. It takes longer to wake up from this state.
-> 5. **C4 (Deepest Sleep State)**: The CPU is in the lowest power state and consumes the least amount of power. It takes the longest time to wake up from this state.
->
-> The CPU idle governor is responsible for selecting the most appropriate idle state based on the current workload and system requirements. The governor takes into account factors such as the current CPU utilization, the available idle states, and the time it takes to wake up from each state. By efficiently managing CPU power consumption, the system can reduce energy usage and extend battery life.
-
-从上面我们知道，Idle 一共有 5 个状态，分别是 C0 ~ C4，在此就不进行额外翻译了。
-
-对于是选择进入 C0 还是 C4, 有以下的解答：
-
-> The CPU idle governor is responsible for selecting the most appropriate idle state based on the current system workload and CPU capabilities. The governor takes into account factors such as the current CPU utilization, the available idle states, and the time it takes to wake up from each state. If the workload is light and there is no immediate processing required, the CPU idle governor may select a deeper sleep state, such as C4, to conserve power. On the other hand, if there is a heavier workload or an immediate processing requirement, the governor may select a shallower sleep state, such as C0, to ensure quick response times.
-
-换言之，就是取决于当前的 workload. 当然这是最主要的原因，还有一些原因与体系结构和操作系统有关。
-
-### CPU idle governor
-
-> The CPU idle governor is a component of the **Linux kernel's power management system** that is responsible for **selecting the most appropriate idle state** for the CPU based on the current workload and system requirements. The CPU idle governor plays a critical role in optimizing energy efficiency and reducing power consumption.
->
-> There are several idle governors available in the Linux kernel, including the menu governor, ladder governor, and utilization governor. Each governor has its own algorithm for selecting idle states and can be configured to optimize for performance or power consumption.
->
-> Here are some key features and functions of the CPU idle governor:
->
-> 1. Workload Estimation: The CPU idle governor estimates the current CPU workload to determine if the system can enter an idle state without impacting performance. The governor may use various metrics, such as CPU utilization, task queue length, or I/O activity, to estimate the workload.
-> 2. Idle State Selection: Based on the workload estimation, the CPU idle governor selects the most appropriate idle state for the CPU. The governor considers factors such as the available idle states, their power-saving capabilities, and the time it takes to wake up from each state.
-> 3. Power Management Policy: The CPU idle governor can be configured to optimize for performance or power consumption. In performance mode, the governor selects shallower idle states to ensure quick response times. In power-saving mode, the governor selects deeper idle states to conserve power.
-> 4. Governor Switching: The CPU idle governor can switch between different idle governors based on system requirements. For example, the system may use the menu governor when the workload is light and switch to the utilization governor when the workload is heavy.
-> 5. Debugging and Profiling: The CPU idle governor provides tools for debugging and profiling power management, including the `cpuidle-info` and `powertop` utilities. These tools can provide insight into CPU idle state transitions, power consumption, and system performance.
->
-> Overall, the CPU idle governor is a critical component of the Linux kernel's power management system. By efficiently managing CPU power consumption and selecting the appropriate idle state, the governor can reduce energy usage and extend battery life on mobile devices.
-
-### tickless
-
-> In the context of operating systems, "tickless" refers to a power management feature that allows the system to reduce power consumption by dynamically adjusting the frequency of timer interrupts.
-
-About "tick" interrupt:
-
-> Traditionally, operating systems use a periodic timer interrupt, often called the "tick," to keep track of time and to perform various tasks such as updating the system clock, scheduling tasks, and handling interrupts. These timer interrupts are generated at a fixed frequency, regardless of whether there is any work to be done, which can consume a significant amount of power.
-
-### WFI
-
-WFI 是英文 Wait for Interrupt 的缩写，意为等待中断。WFI 指令是 ARM 处理器提供的一种指令，用于将处理器置于等待状态，直到下一个中断事件发生后才会继续执行。
-
-Arm64 提供了 WFI 指令，使得 CPU 一旦执行该指令就进入低功耗状态，该状态会关闭 CPU 时钟，从而降低动态功耗。
-
-如果我们想实现一个简单的 idle 的话，需要以下的流程即可[^1]：
-
-```c
-while (1) {
-	if (condition)
-		break;
-}
+```mermaid
+flowchart TD
+    A[secondary_start_kernel] --> B(cpu_startup_entry)
+    B --> C(do_idle)
+    C --> D(local_irq_disable)
+    C --> D2(arch_cpu_idle_enter)
+    C --> D3(cpuidle_idle_call)
+    D3 --> E1(cpuidle_select)
+    D3 --> E2(call_cpuidle)
+    E2 --> E21(cpuidle_enter)
+    D3 --> E3(cpuidle_reflect)
+    E21 --> F(cpuidle_enter_state)
+    F --> G(...)
 ```
 
-在上述代码中，我们的 CPU 空转一直等待某个条件成立；这是最简单的实现方法。
+cpuidle_enter_state() 之后的流程可以参考 tick_broadcast_oneshot_control() 的分析。
 
-而 Arm64 提供的 WFI 指令可以帮助系统降低功耗。此外，操作系统还可以通过 WFI 指令实现快速唤醒，以保证系统的响应速度和实时性。
-
-## Code Analysis
-
-### cpu_startup_entry
+## cpu_startup_entry
 
 笔者在实际的业务场景中抓取过 idle 函数的调用栈，大概如下所示：
 
@@ -131,7 +77,7 @@ void cpu_startup_entry(enum cpuhp_state state)
 
 也就是说，idle 线程执行的时候，是一直在运行这个 `do_idle()` 的。
 
-### do_idle
+## do_idle
 
 `do_idle()` 会执行 CPU idle 的主要操作。
 
@@ -141,8 +87,6 @@ void cpu_startup_entry(enum cpuhp_state state)
 - `tick_nohz_idle_enter()`: 后续研究
 
 - 如果系统当前不需要调度（`while (!need_resched())`），执行后续的动作
-  - 
-
   - local_irq_disable()，关闭 irq 中断
 
   - arch_cpu_idle_enter()，arch 相关的 cpuidle enter，ARM64 中没有实现
@@ -159,7 +103,7 @@ void cpu_startup_entry(enum cpuhp_state state)
 
 :::
 
-### local_irq_dis(en)able
+## local_irq_dis(en)able
 
 这个函数涉及到中断处理的相关操作，`local_irq_disable()` 会禁止本地中断的传递，在这个地方有 4 个相似的接口，可以加以区分便于使用：
 
@@ -176,7 +120,7 @@ void cpu_startup_entry(enum cpuhp_state state)
 
 实现禁止中断只需要使用一条汇编指令即可，在 arm64 中使用的是 `msr daifclr, #2` 来禁止中断。
 
-### cpuidle_idle_call
+## cpuidle_idle_call
 
 在外围对是否进入该函数有一个判断：
 
@@ -193,7 +137,276 @@ if (cpu_idle_force_poll || tick_check_broadcast_expired()) {
 
 `tick_check_broadcast_expired` 表示 tick 是否过期需要重新开始以免进入深度睡眠。
 
-### idle polling
+在进入 cpuidle_idle_call 之后，会有一段较长的逻辑：
+
+```c {5,11,30}
+static void cpuidle_idle_call(void)
+{
+	// ...
+
+	if (need_resched()) {
+		local_irq_enable();
+		return;
+	}
+
+
+	if (cpuidle_not_available(drv, dev)) {
+		tick_nohz_idle_stop_tick();
+
+		default_idle_call();
+		goto exit_idle;
+	}
+
+
+	if (idle_should_enter_s2idle() || dev->forced_idle_latency_limit_ns) {
+		// ...
+		call_cpuidle(drv, dev, next_state);
+	} else {
+		next_state = cpuidle_select(drv, dev, &stop_tick);
+
+		if (stop_tick || tick_nohz_tick_stopped())
+			tick_nohz_idle_stop_tick();
+		else
+			tick_nohz_idle_retain_tick();
+
+		entered_state = call_cpuidle(drv, dev, next_state);
+
+		cpuidle_reflect(dev, entered_state);
+	}
+
+exit_idle:
+	__current_set_polling();
+	// ...
+}
+```
+
+ 我们去除了一些复杂细节，专注于我们的主体流程研究。
+
+cpuidle_idle_call 函数刚开始，先是两个判断：
+
+1. need_resched(): 是否有任务过来需要调度？
+2. cpuidle_not_available(drv, dev): 驱动是否支持？
+
+这两个判断的结果比较明显，分支预测准确的概览也较大。
+
+接下来的流程就是进行判断，根据策略的不同走不同的分支，最终都会调用到函数 call_cpuidle.
+
+## call_cpuidle
+
+该函数的逻辑比较简单，就是一些特殊情况的判断，而后进行 **cpuidle_enter** 函数的调用：
+
+```c
+static int call_cpuidle(struct cpuidle_driver *drv, struct cpuidle_device *dev,
+		      int next_state)
+{
+	if (current_clr_polling_and_test()) {
+		// ...
+		return -EBUSY;
+	}
+
+	return cpuidle_enter(drv, dev, next_state);
+}
+```
+
+cpuidle_enter 的逻辑也是非常简单，进行一个判断：
+
+```c{6,8}
+int cpuidle_enter(struct cpuidle_driver *drv, struct cpuidle_device *dev,
+		  int index)
+{
+	// ...
+	if (cpuidle_state_is_coupled(drv, index))
+		ret = cpuidle_enter_state_coupled(dev, drv, index);
+	else
+		ret = cpuidle_enter_state(dev, drv, index);
+	
+    // ...
+	return ret;
+}
+```
+
+无论哪种情况，都是会进行 cpuidle_enter_state 函数的调用。
+
+## cpuidle_enter_state()
+
+ 函数位置：kernel/linux-5.10/drivers/cpuidle/cpuidle.c, 为了方便我们理解记忆，将该函数进行分解：
+
+```c{19}
+int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
+			int index)
+{
+    // ...
+	if (index < 0)
+		return index;
+
+	broadcast = !!(target_state->flags & CPUIDLE_FLAG_TIMER_STOP);
+
+	if (broadcast && tick_broadcast_enter()) {
+		// maybe return
+	}
+
+	if (target_state->flags & CPUIDLE_FLAG_TLB_FLUSHED)
+		leave_mm(dev->cpu);
+
+	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+		rcu_idle_enter();
+	entered_state = target_state->enter(dev, drv, index);
+	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+		rcu_idle_exit();
+
+	/* The cpu is no longer idle or about to enter idle. */
+	sched_idle_set_state(NULL);
+
+	if (broadcast) {
+		
+	}
+
+	if (!cpuidle_state_is_coupled(drv, index))
+		local_irq_enable();
+
+	if (entered_state >= 0) {
+		
+	} else {
+	}
+
+	return entered_state;
+}
+```
+
+这个函数核心的逻辑是进入给定 index 的 idle 状态 `target_state->enter(dev, drv, index);`,  然后将这个状态返回；但是在实际的实现中，因为涉及到中断、tick、配置等逻辑，所以比较复杂。
+
+下文是对代码中细节和原理的研究：
+
+### broadcast
+
+```c
+broadcast = !!(target_state->flags & CPUIDLE_FLAG_TIMER_STOP);
+```
+
+这行代码的作用是设置一个广播标志，判断是否需要停止定时器。其中，target_state  是一个指向 cpuidle_state 结构体的指针，该结构体描述了 CPU 的空闲状态，包括状态标识、所需的底层硬件支持、进入和退出该状态所需的操作等信息。
+
+具体来说，target_state->flags 是一个位掩码，用于描述该空闲状态标识的一些特定属性。&运算符将该位掩码与 CPUIDLE_FLAG_TIMER_STOP 逐位进行 AND 运算，结果非零则表示 target_state 的 flags 属性中存在 CPUIDLE_FLAG_TIMER_STOP 标志，即需要停止定时器。*!!* 运算符则将结果转换为布尔类型，确保在任何情况下返回的都是 0 或 1 的布尔值，而不是整型数值（双重否定表示肯定）。
+
+因此，这行代码最终会将广播标志设置为 true 或 false，表示需要或不需要停止定时器。在 CPU 进入空闲状态之前，内核会根据广播标志来决定是否向其他 CPU 广播空闲状态，并通知它们停止当前正在运行的定时器。
+
+简单来说，如果 local timer 关闭的话（进入更深层次的 idle 状态），就需要使用 broadcast.
+
+### CPUIDLE_FLAG_TLB_FLUSHED
+
+```c
+if (target_state->flags & CPUIDLE_FLAG_TLB_FLUSHED) {
+    leave_mm(dev->cpu);
+}
+```
+
+这段代码的作用是，**在CPU进入指定的空闲状态之前检查该状态是否需要刷新TLB**，并在必要时执行离开当前进程的操作。（从实测的数据来看，基本上没有刷新 TLB 的操作，这段逻辑很少被执行）
+
+其中，target_state 是一个指向 cpuidle_state 结构体的指针，描述了要进入的空闲状态，包括状态标识、所需的底层硬件支持和进入该状态所需的操作等信息。flags 字段表示该状态的一些特殊属性，如 CPUIDLE_FLAG_TLB_FLUSHED，表示在进入该状态前需要刷新 TLB（Translation Lookaside Buffer）。
+
+如果检测到目标状态需要刷新 TLB，则调用 `leave_mm(dev->cpu)` 函数执行离开当前进程的操作。该函数的作用是在该 CPU 上的所有进程中暂停当前进程，并切换到空闲进程，以便操作系统在进入空闲状态之前刷新 TLB 高速缓存。
+
+总之，这段代码的作用是确保在进入特定的空闲状态之前清除 TLB 以避免任何不必要的冲突，同时保证进程能够正确地切换。
+
+### sched_idle_set_state
+
+```c
+/* Take note of the planned idle state. */
+sched_idle_set_state(target_state);
+
+// 其实现如下：
+void sched_idle_set_state(struct cpuidle_state *idle_state)
+{
+	idle_set_state(this_rq(), idle_state);
+}
+```
+
+这段代码的作用是将当前 CPU 切换到指定的空闲状态，也就是进入一种较低功耗的状态以进行省电。注意到在我们的 cpuidle_enter_state 流程中，这个 sched_idle_set_state 函数被两次调用：
+
+```c
+/* Take note of the planned idle state. */
+sched_idle_set_state(target_state);
+
+// ...
+
+/* The cpu is no longer idle or about to enter idle. */
+sched_idle_set_state(NULL);
+```
+
+`sched_idle_set_state` 是一个内核函数，用于设置当前 CPU 的空闲状态，并让 CPU 进入相应的空闲状态。target_state 是一个指向 cpuidle_state 结构体的指针，描述了要进入的空闲状态，包括状态标识、所需的底层硬件支持和进入该状态所需的操作等信息。
+
+`this_rq()` 表示*当前 CPU 所在的 CPU 运行队列*（runqueue），它的返回值是一个指向 `struct rq` 结构体的指针，该结构体描述了 CPU 调度器的运作情况和统计信息。
+
+在调用该函数之前，内核通常会执行一些准备工作，如停止定时器、暂停当前进程、刷新 TLB 等。接着，调用该函数将当前 CPU 切换到目标状态，并执行目标状态所需的操作，如关闭某些设备、降低 CPU 主频等。
+
+整个过程是由内核负责管理和控制的，程序员无法直接控制。当系统需要重新唤醒 CPU 时，内核会根据 CPU 的中断或事件触发来驱动 CPU 从空闲状态中返回，并恢复相关的设备和资源。
+
+### rcu_idle_enter
+
+```c
+if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+    rcu_idle_enter();
+```
+
+这段代码用于判断当前进入空闲状态的目标状态是否需要进行**RCU（Read-Copy-Update）空闲处理**，如果需要，则调用 `rcu_idle_enter` 函数进行 RCU 空闲处理。
+
+在Linux内核中，RCU是一种无锁机制，用于在多个进程间共享数据。当一个进程需要修改共享数据时，该进程会先创建出一个新的副本，对其进行修改，然后将新副本加入到RCU保护区中。此时，其他进程仍然可以访问旧的副本，不会受到影响。当所有对旧副本的访问都结束后，RCU保护区才会被清空，新副本才会变成有效的数据。
+
+在进入空闲状态时，如果当前CPU正在进行RCU更新操作，就需要进行RCU空闲处理，即等待所有正在使用旧副本的进程完成访问后，再进行新副本的更新。这样一来，就可以避免数据的冲突和不一致性。
+
+rcu_idle_enter函数用于启动RCU空闲处理，并进入RCU空闲状态。该函数会将当前CPU所在的调度器的状态设置为RCU空闲状态，然后等待所有正在使用旧副本的进程访问完毕，直到RCU保护区被清空。在此期间，该CPU不会执行任何其他任务，以避免对正在访问旧副本的进程产生干扰。
+
+```c
+void rcu_idle_enter(void)
+{
+	lockdep_assert_irqs_disabled();
+	rcu_eqs_enter(false);
+}
+```
+
+`rcu_idle_enter` 函数是用于启动RCU空闲处理并进入RCU空闲状态的函数。
+
+其中，`lockdep_assert_irqs_disabled` 函数用于断言**当前中断已经被禁止**，在RCU空闲处理期间不会被重新打开。该函数会在执行时检查当前是否处于内核锁定状态，并通过锁依赖机制确保锁的正确性。如果当前存在锁冲突，则会抛出一个警告信息。
+
+`rcu_eqs_enter` 函数则用于进入RCU空闲状态并等待所有正在使用旧副本的进程访问完毕。其中，参数false表示*不需要检查是否处于内核软件调试状态*（KDB或KGDB）。在该函数中，会调用rcu_prepare_for_idle函数进行RCU更新准备工作，并将当前CPU所在的调度器状态设置为RCU空闲状态。然后，该函数会启动一个RCU处理线程，在其中等待所有正在使用旧副本的进程访问完毕并结束。❓❓ 待处理线程结束之后，该函数会将当前CPU所在调度器状态设置为正常运行状态，并返回。
+
+### enter
+
+```c
+entered_state = target_state->enter(dev, drv, index);
+```
+
+进入 state, 待深入研究。❌❌❌
+
+### rcu_idle_exit
+
+```c
+if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+    rcu_idle_exit();
+```
+
+这段代码用于判断目标状态是否为RCU空闲状态，并在不是RCU空闲状态时退出RCU空闲处理。
+
+如果目标状态的flags字段中包含CPUIDLE_FLAG_RCU_IDLE标志，说明此时需要进入RCU空闲状态，即需要等待所有正在访问旧副本的进程结束后再进行新副本的更新。此时，不需要退出RCU空闲处理，代码直接跳过。
+
+但如果目标状态的flags字段中不包含CPUIDLE_FLAG_RCU_IDLE标志，则代表当前并不需要进行RCU空闲处理。此时，需要通过rcu_idle_exit函数退出RCU空闲处理。该函数会将当前CPU所在的调度器状态设置为正常运行状态，并唤醒所有等待RCU更新的进程（如等待RCU更新的进程队列等）。这样一来，RCU更新操作就可以继续进行，而不会被阻塞在RCU空闲状态中。
+
+需要注意的是，只有在完成了RCU更新操作之后，才能调用rcu_idle_exit函数退出RCU空闲状态。否则，会引起数据访问冲突和不一致性，导致系统出现异常。因此，在使用该函数时，需要保证系统支持RCU机制，并遵循相关的使用原则和规范。
+
+### critical_timings
+
+```c
+stop_critical_timings();
+// ...
+start_critical_timings();
+```
+
+`stop_critical_timings` 用于停止内核关键代码段的性能计数和统计，以便进行性能分析和优化。该函数通常在内核调试、性能测试等场景下使用，以了解内核关键代码段的耗时和执行情况，从而进行优化。
+
+该函数会将内核当前的性能计数器（如TSC、APIC计数器等）停止，并记录下停止时的值，然后将所有的性能计数器状态都设置为暂停。这样一来，在停止之前和停止之后，所有关键代码段的执行时间就可以计算出来了。
+
+`start_critical_timings` 的作用正好相反，就不过多赘述了。
+
+## idle polling
 
 idle polling 是一个空闲轮询机制。
 
@@ -231,7 +444,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
 
 
 
-### tick_nohz_idle_stop_tick
+## tick_nohz_idle_stop_tick
 
 当出现需要处理的中断时，CPU 将从无操作系统状态恢复到正常运行状态，并执行 `tick_nohz_idle_stop_tick` 函数来重新启用时钟事件处理器。
 
@@ -247,9 +460,23 @@ tick_device_mode 有两种模式：TICKDEV_MODE_PERIODIC 和 TICKDEV_MODE_ONESHO
 
 :::
 
-### tick_broadcast_oneshot_control()
+## tick_broadcast_oneshot_control()
 
-该代码的作用是打开或者关闭本地定时器。当 CPU 要进入需要关闭 local timer 的 idle 状态的时候，会调用`tick_broadcast_enter()`函数，从而告诉 tick 广播层属于本 CPU 的本地定时事件设备就要停止掉了，需要广播层提供服务。相反的，如果要退出某种 idle 状态之后，会调用 `tick_broadcast_exit()` 函数，恢复本 CPU 的本地定时事件设备，停止针对本 CPU 的 tick 广播服务。
+在研究之前，我们先给出调用关系图：
+
+```mermaid
+flowchart TD
+    A[cpuidle_enter_state] --> B(tick_broadcast_enter)
+    A --> B2(tick_broadcast_exit)
+    B --> |para: TICK_BROADCAST_ENTER| C(tick_broadcast_oneshot_control)
+    B2 --> |para: TICK_BROADCAST_EXIT| C
+    C --> D(__tick_broadcast_oneshot_control)
+    D -->|if tick_broadcast_device.evtdev| E(___tick_broadcast_oneshot_control)
+```
+
+
+
+该函数代码的作用是打开或者关闭本地定时器。当 CPU 要进入需要关闭 local timer 的 idle 状态的时候，会调用`tick_broadcast_enter()`函数，从而告诉 tick 广播层属于本 CPU 的本地定时事件设备就要停止掉了，需要广播层提供服务。相反的，如果要退出某种 idle 状态之后，会调用 `tick_broadcast_exit()` 函数，恢复本 CPU 的本地定时事件设备，停止针对本 CPU 的 tick 广播服务。
 
 这两个函数的代码如下：
 
@@ -304,9 +531,14 @@ int __tick_broadcast_oneshot_control(enum tick_broadcast_state state)
 }
 ```
 
-该函数分为两个大的部分，`tick_oneshot_wakeup_control` 和 `___tick_broadcast_oneshot_control`，我们逐个进行分析。
+该函数分为两个大的部分:
 
-#### tick_oneshot_wakeup_control
+- `tick_oneshot_wakeup_control` 
+- `___tick_broadcast_oneshot_control`
+
+我们在后文进行分析。
+
+### tick_oneshot_wakeup_control
 
 ```c
 static int tick_oneshot_wakeup_control(enum tick_broadcast_state state,
@@ -339,7 +571,7 @@ static int tick_oneshot_wakeup_control(enum tick_broadcast_state state,
 }
 ```
 
-#### ___tick_broadcast_oneshot_control
+### ___tick_broadcast_oneshot_control
 
 这段代码很长，不在此进行全部列举。
 
@@ -360,14 +592,16 @@ out:
 }
 ```
 
-函数的整体框架如上所示，按照传入的 state 进行划分，我们在上文说过，state 可以分为 和 TICK_BROADCAST_EXIT。
+函数的整体框架如上所示，按照传入的 state 进行划分，我们在上文说过，state 可以分为 TICK_BROADCAST_ENTER 和 TICK_BROADCAST_EXIT。
 
 后续会使用到的两个设备变量分别为：`struct clock_event_device *bc, *dev = td->evtdev;`
 
-- bc: clock_event_device 结构体，`bc = tick_broadcast_device.evtdev;` 表示 tick 广播设备；
-- dev: clock_event_device 结构体，`*dev = td->evtdev`, td 来自于函数传参，是一个 tick 设备，这里指代的是待休眠(本) CPU 上面的 tick 设备。
+- bc: `clock_event_device` 结构体，`bc = tick_broadcast_device.evtdev;` 表示 tick *广播* 设备；
+- dev: `clock_event_device` 结构体，`*dev = td->evtdev`, td 来自于函数传参，是一个 tick 设备，这里指代的是待休眠(本) CPU 上面的 tick 设备。
 
-##### TICK_BROADCAST_ENTER
+下文我们先对传入的两个 state 进行研究。
+
+#### TICK_BROADCAST_ENTER
 
 该 state 表征的是当前 CPU 要进入 idle 状态。其步骤可以分解为以下的：
 
@@ -467,11 +701,11 @@ if (!cpumask_test_and_set_cpu(cpu, tick_broadcast_oneshot_mask)) {
 3. 在设置成功的前提下，调用 tick_broadcast_set_event, 设置 broadcast 事件；这个设置的前提是本 cpu 的 tick 事件早于广播的下一个事件（很好理解，否则我就用广播的事件时间就可以了）
 4. 在此判断是否支持 broadcase, 为何要再次判断呢？这就涉及到了 hrtimer broadcasts 机制的运行原理，需要进行更加详细的研究。
 
-##### TICK_BROADCAST_EXIT
+#### TICK_BROADCAST_EXIT
 
 
 
-### DEFINE_PER_CPU
+## DEFINE_PER_CPU
 
 `DEFINE_PER_CPU` 是一个宏，用于定义一种特殊的变量类型，称为 "per-cpu 变量"。这种变量在 Linux 内核中广泛使用，用于跨多个 CPU 核心共享数据时保证数据的一致性。
 
@@ -498,135 +732,7 @@ put_cpu_var(my_var, val+1);
 
 需要注意的是，per-cpu 变量仅适用于每个 CPU 核心独立使用的数据，并不适用于需要全局同步的数据结构。此外，需要注意内存分配和访问的开销，以避免影响系统的性能。
 
-### cpuidle_enter_state()
 
- 函数位置：kernel/linux-5.10/drivers/cpuidle/cpuidle.c
-
-```c
-int cpuidle_enter_state(struct cpuidle_device *dev, 
-            struct cpuidle_driver *drv, int index)
-```
-
-
-
-🟢🟢🟢
-
-```c
-broadcast = !!(target_state->flags & CPUIDLE_FLAG_TIMER_STOP);
-```
-
-这行代码的作用是设置一个广播标志，判断是否需要停止定时器。其中，target_state  是一个指向 cpuidle_state 结构体的指针，该结构体描述了 CPU 的空闲状态，包括状态标识、所需的底层硬件支持、进入和退出该状态所需的操作等信息。
-
-具体来说，target_state->flags 是一个位掩码，用于描述该空闲状态标识的一些特定属性。&运算符将该位掩码与 CPUIDLE_FLAG_TIMER_STOP 逐位进行 AND 运算，结果非零则表示 target_state 的 flags 属性中存在 CPUIDLE_FLAG_TIMER_STOP 标志，即需要停止定时器。*!!运算符则将结果转换为布尔类型*，确保在任何情况下返回的都是0或1的布尔值，而不是整型数值。
-
-因此，这行代码最终会将广播标志设置为true或false，表示需要或不需要停止定时器。在CPU进入空闲状态之前，内核会根据广播标志来决定是否向其他CPU广播空闲状态，并通知它们停止当前正在运行的定时器。
-
-简单来说，如果 local timer 关闭的话（进入更深层次的 idle 状态），就需要使用 broadcast.
-
-🟢🟢🟢
-
-```c
-if (target_state->flags & CPUIDLE_FLAG_TLB_FLUSHED) {
-    leave_mm(dev->cpu);
-}
-```
-
-这段代码的作用是，**在CPU进入指定的空闲状态之前检查该状态是否需要刷新TLB**，并在必要时执行离开当前进程的操作。（从实测的数据来看，基本上没有刷新 TLB 的操作，这段逻辑很少被执行）
-
-其中，target_state是一个指向cpuidle_state结构体的指针，描述了要进入的空闲状态，包括状态标识、所需的底层硬件支持和进入该状态所需的操作等信息。flags字段表示该状态的一些特殊属性，如CPUIDLE_FLAG_TLB_FLUSHED，表示在进入该状态前需要刷新TLB（Translation Lookaside Buffer）。
-
-如果检测到目标状态需要刷新TLB，则调用leave_mm(dev->cpu)函数执行离开当前进程的操作。该函数的作用是在该CPU上的所有进程中暂停当前进程，并切换到空闲进程，以便操作系统在进入空闲状态之前刷新TLB高速缓存。
-
-总之，这段代码的作用是确保在进入特定的空闲状态之前清除TLB以避免任何不必要的冲突，同时保证进程能够正确地切换。
-
-🟢🟢🟢
-
-```c
-/* Take note of the planned idle state. */
-sched_idle_set_state(target_state);
-
-// 其实现如下：
-void sched_idle_set_state(struct cpuidle_state *idle_state)
-{
-	idle_set_state(this_rq(), idle_state);
-}
-```
-
-这段代码的作用是将当前CPU切换到指定的空闲状态，也就是进入一种较低功耗的状态以进行省电。
-
-其中，`sched_idle_set_state` 是一个内核函数，用于设置当前CPU的空闲状态，并让CPU进入相应的空闲状态。target_state是一个指向cpuidle_state结构体的指针，描述了要进入的空闲状态，包括状态标识、所需的底层硬件支持和进入该状态所需的操作等信息。
-
-`this_rq()` 表示*当前CPU所在的CPU运行队列*（runqueue），它的返回值是一个指向struct rq结构体的指针，该结构体描述了CPU调度器的运作情况和统计信息。
-
-在调用该函数之前，内核通常会执行一些准备工作，如停止定时器、暂停当前进程、刷新TLB等。接着，调用该函数将当前CPU切换到目标状态，并执行目标状态所需的操作，如关闭某些设备、降低CPU主频等。
-
-整个过程是由内核负责管理和控制的，程序员无法直接控制。当系统需要重新唤醒CPU时，内核会根据CPU的中断或事件触发来驱动CPU从空闲状态中返回，并恢复相关的设备和资源。
-
-🟢🟢🟢
-
-```c
-if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-    rcu_idle_enter();
-```
-
-这段代码用于判断当前进入空闲状态的目标状态是否需要进行**RCU（Read-Copy-Update）空闲处理**，如果需要，则调用rcu_idle_enter函数进行RCU空闲处理。
-
-在Linux内核中，RCU是一种无锁机制，用于在多个进程间共享数据。当一个进程需要修改共享数据时，该进程会先创建出一个新的副本，对其进行修改，然后将新副本加入到RCU保护区中。此时，其他进程仍然可以访问旧的副本，不会受到影响。当所有对旧副本的访问都结束后，RCU保护区才会被清空，新副本才会变成有效的数据。
-
-在进入空闲状态时，如果当前CPU正在进行RCU更新操作，就需要进行RCU空闲处理，即等待所有正在使用旧副本的进程完成访问后，再进行新副本的更新。这样一来，就可以避免数据的冲突和不一致性。
-
-rcu_idle_enter函数用于启动RCU空闲处理，并进入RCU空闲状态。该函数会将当前CPU所在的调度器的状态设置为RCU空闲状态，然后等待所有正在使用旧副本的进程访问完毕，直到RCU保护区被清空。在此期间，该CPU不会执行任何其他任务，以避免对正在访问旧副本的进程产生干扰。
-
-```c
-void rcu_idle_enter(void)
-{
-	lockdep_assert_irqs_disabled();
-	rcu_eqs_enter(false);
-}
-```
-
-`rcu_idle_enter` 函数是用于启动RCU空闲处理并进入RCU空闲状态的函数。
-
-其中，`lockdep_assert_irqs_disabled` 函数用于断言**当前中断已经被禁止**，在RCU空闲处理期间不会被重新打开。该函数会在执行时检查当前是否处于内核锁定状态，并通过锁依赖机制确保锁的正确性。如果当前存在锁冲突，则会抛出一个警告信息。
-
-`rcu_eqs_enter` 函数则用于进入RCU空闲状态并等待所有正在使用旧副本的进程访问完毕。其中，参数false表示*不需要检查是否处于内核软件调试状态*（KDB或KGDB）。在该函数中，会调用rcu_prepare_for_idle函数进行RCU更新准备工作，并将当前CPU所在的调度器状态设置为RCU空闲状态。然后，该函数会启动一个RCU处理线程，在其中等待所有正在使用旧副本的进程访问完毕并结束。❓❓ 待处理线程结束之后，该函数会将当前CPU所在调度器状态设置为正常运行状态，并返回。
-
-🟢🟢🟢
-
-```c
-entered_state = target_state->enter(dev, drv, index);
-```
-
-进入 state, 待深入研究。❌❌❌
-
-🟢🟢🟢 对应于 `rcu_eqs_enter`
-
-```c
-if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-    rcu_idle_exit();
-```
-
-这段代码用于判断目标状态是否为RCU空闲状态，并在不是RCU空闲状态时退出RCU空闲处理。
-
-如果目标状态的flags字段中包含CPUIDLE_FLAG_RCU_IDLE标志，说明此时需要进入RCU空闲状态，即需要等待所有正在访问旧副本的进程结束后再进行新副本的更新。此时，不需要退出RCU空闲处理，代码直接跳过。
-
-但如果目标状态的flags字段中不包含CPUIDLE_FLAG_RCU_IDLE标志，则代表当前并不需要进行RCU空闲处理。此时，需要通过rcu_idle_exit函数退出RCU空闲处理。该函数会将当前CPU所在的调度器状态设置为正常运行状态，并唤醒所有等待RCU更新的进程（如等待RCU更新的进程队列等）。这样一来，RCU更新操作就可以继续进行，而不会被阻塞在RCU空闲状态中。
-
-需要注意的是，只有在完成了RCU更新操作之后，才能调用rcu_idle_exit函数退出RCU空闲状态。否则，会引起数据访问冲突和不一致性，导致系统出现异常。因此，在使用该函数时，需要保证系统支持RCU机制，并遵循相关的使用原则和规范。
-
-🟢🟢🟢
-
-```c
-stop_critical_timings();
-// ...
-start_critical_timings();
-```
-
-`stop_critical_timings` 用于停止内核关键代码段的性能计数和统计，以便进行性能分析和优化。该函数通常在内核调试、性能测试等场景下使用，以了解内核关键代码段的耗时和执行情况，从而进行优化。
-
-该函数会将内核当前的性能计数器（如TSC、APIC计数器等）停止，并记录下停止时的值，然后将所有的性能计数器状态都设置为暂停。这样一来，在停止之前和停止之后，所有关键代码段的执行时间就可以计算出来了。
-
-`start_critical_timings` 的作用正好相反，就不过多赘述了。
 
 ## RCU
 
@@ -704,7 +810,7 @@ RCU 是一个非常有用的内核机制，可以大幅度提升多 CPU 系统�
 总的来说，这几个的关系大致如下图所示：
 
 ```mermaid
-flowchart LR
+flowchart TD
     A[Scheduler] -->|switch_to| B(Idle Process)
     B --> |cpuidle_idle_call| C{{idle core}}
     D{{idle governor}} -.-> |cpuidle_select| C
@@ -805,7 +911,80 @@ static inline int __cpuidle_set_driver(struct cpuidle_driver *drv)
 
 
 
+## Something Else
 
+### cpuidle_idle_call
+
+> `cpuidle_idle_call` is a function in the Linux kernel that is responsible for **putting the CPU into an idle state** when there is no work to do. The function is part of the CPU idle subsystem, which is designed to reduce power consumption by putting the CPU into low-power states when it is not in use.
+>
+> When the `cpuidle_idle_call` function is called, the CPU idle governor selects the most appropriate idle state based on the current system workload and the capabilities of the CPU. The CPU is then put into the selected idle state, which reduces its power consumption while still allowing it to quickly resume normal operation when needed.
+>
+> The `cpuidle_idle_call` function is called by the kernel scheduler when there is no work to do, and it is one of the key components of the Linux kernel's power management system. By efficiently managing CPU power consumption, the kernel can reduce energy usage and extend the battery life of mobile devices.
+
+`cpuidle_idle_call` 是 idle 流程的主要函数，其主要的目的是让 CPU 进入 idle state, 目的是节省功耗。
+
+### Idle States
+
+> CPU idle states are low-power states that a CPU can enter when it is not actively processing tasks. These states are designed to reduce energy consumption and extend battery life on mobile devices. The exact set of idle states and their power-saving capabilities may vary depending on the CPU architecture and operating system. Here are some **common CPU idle states**:
+>
+> 1. **C0 (Active State)**: The CPU is fully active and executing instructions.
+> 2. **C1 (Halt State)**: The CPU is not executing any instructions, but it is still powered on and can respond to interrupts.
+> 3. **C2 (Sleep State)**: The CPU is in a low-power state and is not executing any instructions. It can be quickly woken up by an interrupt.
+> 4. **C3 (Deep Sleep State)**: The CPU is in a deeper low-power state than C2 and consumes even less power. It takes longer to wake up from this state.
+> 5. **C4 (Deepest Sleep State)**: The CPU is in the lowest power state and consumes the least amount of power. It takes the longest time to wake up from this state.
+>
+> The CPU idle governor is responsible for selecting the most appropriate idle state based on the current workload and system requirements. The governor takes into account factors such as the current CPU utilization, the available idle states, and the time it takes to wake up from each state. By efficiently managing CPU power consumption, the system can reduce energy usage and extend battery life.
+
+从上面我们知道，Idle 一共有 5 个状态，分别是 C0 ~ C4，在此就不进行额外翻译了。
+
+对于是选择进入 C0 还是 C4, 有以下的解答：
+
+> The CPU idle governor is responsible for selecting the most appropriate idle state based on the current system workload and CPU capabilities. The governor takes into account factors such as the current CPU utilization, the available idle states, and the time it takes to wake up from each state. If the workload is light and there is no immediate processing required, the CPU idle governor may select a deeper sleep state, such as C4, to conserve power. On the other hand, if there is a heavier workload or an immediate processing requirement, the governor may select a shallower sleep state, such as C0, to ensure quick response times.
+
+换言之，就是取决于当前的 workload. 当然这是最主要的原因，还有一些原因与体系结构和操作系统有关。
+
+### CPU idle governor
+
+> The CPU idle governor is a component of the **Linux kernel's power management system** that is responsible for **selecting the most appropriate idle state** for the CPU based on the current workload and system requirements. The CPU idle governor plays a critical role in optimizing energy efficiency and reducing power consumption.
+>
+> There are several idle governors available in the Linux kernel, including the menu governor, ladder governor, and utilization governor. Each governor has its own algorithm for selecting idle states and can be configured to optimize for performance or power consumption.
+>
+> Here are some key features and functions of the CPU idle governor:
+>
+> 1. Workload Estimation: The CPU idle governor estimates the current CPU workload to determine if the system can enter an idle state without impacting performance. The governor may use various metrics, such as CPU utilization, task queue length, or I/O activity, to estimate the workload.
+> 2. Idle State Selection: Based on the workload estimation, the CPU idle governor selects the most appropriate idle state for the CPU. The governor considers factors such as the available idle states, their power-saving capabilities, and the time it takes to wake up from each state.
+> 3. Power Management Policy: The CPU idle governor can be configured to optimize for performance or power consumption. In performance mode, the governor selects shallower idle states to ensure quick response times. In power-saving mode, the governor selects deeper idle states to conserve power.
+> 4. Governor Switching: The CPU idle governor can switch between different idle governors based on system requirements. For example, the system may use the menu governor when the workload is light and switch to the utilization governor when the workload is heavy.
+> 5. Debugging and Profiling: The CPU idle governor provides tools for debugging and profiling power management, including the `cpuidle-info` and `powertop` utilities. These tools can provide insight into CPU idle state transitions, power consumption, and system performance.
+>
+> Overall, the CPU idle governor is a critical component of the Linux kernel's power management system. By efficiently managing CPU power consumption and selecting the appropriate idle state, the governor can reduce energy usage and extend battery life on mobile devices.
+
+### tickless
+
+> In the context of operating systems, "tickless" refers to a power management feature that allows the system to reduce power consumption by dynamically adjusting the frequency of timer interrupts.
+
+About "tick" interrupt:
+
+> Traditionally, operating systems use a periodic timer interrupt, often called the "tick," to keep track of time and to perform various tasks such as updating the system clock, scheduling tasks, and handling interrupts. These timer interrupts are generated at a fixed frequency, regardless of whether there is any work to be done, which can consume a significant amount of power.
+
+### WFI
+
+WFI 是英文 Wait for Interrupt 的缩写，意为等待中断。WFI 指令是 ARM 处理器提供的一种指令，用于将处理器置于等待状态，直到下一个中断事件发生后才会继续执行。
+
+Arm64 提供了 WFI 指令，使得 CPU 一旦执行该指令就进入低功耗状态，该状态会关闭 CPU 时钟，从而降低动态功耗。
+
+如果我们想实现一个简单的 idle 的话，需要以下的流程即可[^1]：
+
+```c
+while (1) {
+	if (condition)
+		break;
+}
+```
+
+在上述代码中，我们的 CPU 空转一直等待某个条件成立；这是最简单的实现方法。
+
+而 Arm64 提供的 WFI 指令可以帮助系统降低功耗。此外，操作系统还可以通过 WFI 指令实现快速唤醒，以保证系统的响应速度和实时性。
 
 ---
 
