@@ -1,5 +1,5 @@
 ---
-title: Binder Overview
+title: Binder Phases
 date: 2023-06-25
 tag:
  - kernel
@@ -34,6 +34,8 @@ category:
 为方便理解，我们引用下面的图来进行参考说明。
 
 ![binder phases](http://gityuan.com/images/binder/binder_start_service/binder_ipc_arch.jpg)
+
+
 
 ## Phase 1
 

@@ -1,12 +1,13 @@
 ---
-title: Simple understanding of IPC
+title: IPC Binder 之杂谈
+shortTitle: IPC
 date: 2023-06-19
 tag:
  - kernel
  - Android
+ - Binder
 category:
  - Android
-
 ---
 
 

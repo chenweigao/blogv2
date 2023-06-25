@@ -1,5 +1,5 @@
 ---
-title: Art GC - Part 1
+title: Art GC Overview
 date: 2022-11-28
 tag:
  - jvm
@@ -81,35 +81,41 @@ Art 中 Read Barrier 的作用是：在并发场景下，用来确保线程看�
 3. 基于第 2 点，在 GC 中，如果一个 object 持有另一个 object 的 reference, 则在回收该对象的时候，必须确定其引用的对象不会被意外回收（如果其引用的对象还在被使用的话）；
 4. 为了解决这个问题，ART 引入了 read barrier 机制；
 
-### colors in gc
+## Colors in GC
+
+### Overview
 
 GC 中的染色用来表征到堆中对象的状态：be terms used to refer to the current state of objects in the heap.
 
-- 🤍 White:  not reachable by the programmer, can be safely GC;
-- 🤎 Gray: objects that have been discovered by the GC algorithm as potentially reachable, but have not yet been fully processed;
-- 🖤Black: objects that have been fully processed by the GC algorithm and are guaranteed to be reachable by the program;
+⚪⚪⚪ White:  not reachable by the programmer, can be safely GC;
+
+🟤🟤🟤 Gray: objects that have been discovered by the GC algorithm as potentially reachable, but have not yet been fully processed;
+
+⚫⚫⚫ Black: objects that have been fully processed by the GC algorithm and are guaranteed to be reachable by the program;
 
 再 mark-and-sweap phase 中，heap 的初始状态都被假定为完全的 White,  GC 从 root 节点开始(set 数据结构) 并且将可达对象标记为 Gray, 然后遍历 Gray 对象，将其引用的对象也标记为 Gray (any objects they reference); 当一个对象和其本身引用的对象都被标记完成以后，将其标记为 Black.
 
 最后，任何留下来的 White 对象都将被垃圾回收。
 
+### CC GC colors
 
+在 CC GC 中，其实现相比于传统的染色算法更加复杂一些，我们重点先研究一下 Gray 对象：
 
-再 CC GC 中，其实现相比于传统的染色算法更加复杂一些，我们重点先研究一下 Gray 对象：
-
-> - Gray: marked in bitmap, and exists in mark stack
-> - Gray-dirty: marked in bitmap, rb_state is gray, corresponding card is dirty, and exists in mark stack
+> **Gray**: marked in bitmap, and exists in mark stack
+>
+> **Gray-dirty**: marked in bitmap, rb_state is gray, corresponding card is dirty, and exists in mark stack
 
 CC GC 中两者的区别在于：
 
-- Gray: bitmap 中 mark 了，并且 mark_stack 中也存在
-- Gray-dirty: 除了 Gray 的特征之外，rb_state 是 gary, 并且其卡表也是 dirty
+**Gray**: bitmap 中 mark 了，并且 mark_stack 中也存在；
+
+**Gray-dirty**: 除了 Gray 的特征之外，rb_state 是 gary, 并且其卡表也是 dirty.
 
 在此稍微说明一下 card 的概念：*refers to a small fixed-size portion of the heap.* 注意主体 heap.
 
 在 CC GC 中，有一件事情需要特别注意：除了 Gray 对象之外，其他所有的对象都不会存在于 mark_stack 中。
 
-## Phases
+## GC Phases
 
 ### Marking Phase
 
@@ -133,22 +139,24 @@ CC GC 中两者的区别在于：
 
 2. 但是 CC GC 中可能❓会发生一些操作，使得 Black 对象持有了 White 对象的引用，此时 CC GC 的处理是将 该 Black 对象状态转换为 Black-dirty;
 
-3. > Black-dirty: marked in bitmap, and corresponding card is dirty. 
+3. Black-dirty 和 Black-clean
+   
+   > Black-dirty: marked in bitmap, and corresponding card is dirty. 
    >
    > Black-clean: marked in bitmap, and corresponding card is clean/aged
+   
 
-4. 没有 black-clean 的对象指向 white object, 我的简单理解就是：都变成了 Black-dirty.
+​	没有 black-clean 的对象指向 white object, 我的简单理解就是：都变成了 Black-dirty.
 
->  After marking phase
->  1) There are no gray objects
->  2) All newly allocated objects are in from space
->  3) No white object can be reachable, directly or otherwise, from a black-clean object
+4. Marking Phase 过后
 
-在 Marking Phase 之后:
+   > After marking phase
+   >
+   > 1) There are no gray objects
+   > 2) All newly allocated objects are in from space
+   > 3) No white object can be reachable, directly or otherwise, from a black-clean object
 
-1. Gray objects 都没有了；
-2. 新分配的对象在 from-space; ❓ 这里存疑，还尚不清楚这里是否发生了翻转❌；通常而言，对象的分配也都是在 from-space 中的？ – 后面 Copying Phase 会解答疑问：简单而言，就是在 Marking Phase 中，对象是在 from-space 中分配的；
-3. White 对象没有再被 reachable 的了；合理，达到了染色标记的目的。
+   在 Marking Phase 之后：1. Gray objects 都没有了；2. 新分配的对象在 from-space; ❓ 这里存疑，还尚不清楚这里是否发生了翻转❌；通常而言，对象的分配也都是在 from-space 中的？ – 后面 Copying Phase 会解答疑问：简单而言，就是在 Marking Phase 中，对象是在 from-space 中分配的；3. White 对象没有再被 reachable 的了；合理，达到了染色标记的目的。
 
 ### Copying Phase
 

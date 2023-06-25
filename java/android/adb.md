@@ -1,5 +1,6 @@
 ---
-title: Adb Command
+title: Adb Command And Script
+shortTitle: Adb
 date: 2023-01-12
 tag:
  - adb
