@@ -32,10 +32,6 @@ export default hopeTheme({
 
   displayFooter: true,
 
-  pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
-
-  rtl: true,
-
   blog: {
     description: "someone..",
     intro: "/intro.html",

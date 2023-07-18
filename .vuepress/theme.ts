@@ -25,11 +25,9 @@ export default hopeTheme(
 
         // docsDir: "/",
 
-        footer: "2017-2022",
+        footer: "2017-2023",
 
         displayFooter: true,
-
-        pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
 
         blog: {
             description: "someone..",
