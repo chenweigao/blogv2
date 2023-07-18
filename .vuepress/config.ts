@@ -1,9 +1,5 @@
 import { defineUserConfig } from "vuepress";
-import { hopeTheme, removePrismPlugin, usePrismPlugin } from "vuepress-theme-hope";
-import { zhNavbarConfig } from "./navbar";
-import { mysidebar } from "./sidebar";
 import theme from "./theme";
-import fullTextSearchPlugin from "vuepress-plugin-full-text-search2";
 import { searchProPlugin } from "vuepress-plugin-search-pro";
 
 export default defineUserConfig({

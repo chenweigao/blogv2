@@ -1,6 +1,4 @@
-import { defineThemeConfig, hopeTheme } from "vuepress-theme-hope";
-// import navbar from "./navbar";
-// import sidebar from "./sidebar";
+import { hopeTheme } from "vuepress-theme-hope";
 
 export default hopeTheme({
 
@@ -36,6 +34,8 @@ export default hopeTheme({
 
   pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
 
+  rtl: true,
+
   blog: {
     description: "someone..",
     intro: "/intro.html",
@@ -45,12 +45,12 @@ export default hopeTheme({
       Dingding: "https://example.com",
       Discord: "https://example.com",
       Dribbble: "https://example.com",
-      Email: "https://example.com",
+      Email: "mail@weigao.cc",
       Evernote: "https://example.com",
       Facebook: "https://example.com",
       Flipboard: "https://example.com",
       Gitee: "https://example.com",
-      GitHub: "https://example.com",
+      GitHub: "https://github.com/chenweigao",
       Gitlab: "https://example.com",
       Gmail: "https://example.com",
       Instagram: "https://example.com",
