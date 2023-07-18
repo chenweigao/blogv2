@@ -96,7 +96,7 @@ another example:
 - Worst-case running time $O(n^2)$ :
   - input sorted or reverse sorted, partition around min or max element.
   - one side of partition has no elements.
-  - $T(n) = T(0) + T(n–1) + cn$
+  - $T(n) = T(0) + T(n-1) + cn$
 - Expected running time $O(nlgn)$
   - If we are really lucky, partition splits the array evenly $\frac{2}{n}$ : $T(n)=2T(n/2)+Θ(n)=Θ(nlgn)$
 

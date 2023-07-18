@@ -57,7 +57,7 @@ struct binder_alloc {
 
 在缓冲区初始化或者分配以后，内存中会多出如下几个数据结构：
 
-![binder_alloc](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2aae579325be40da8e163be807ffa309~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp?)
+![binder_alloc](../images/buffers.png)
 
 需要注意，其中 allocated_buffers 红黑树此时是一个空树。
 

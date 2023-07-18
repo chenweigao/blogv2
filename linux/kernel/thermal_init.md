@@ -1,10 +1,3 @@
----
-index: 2
-
----
-
-
-
 # Thermal Init
 
 ## Abstract

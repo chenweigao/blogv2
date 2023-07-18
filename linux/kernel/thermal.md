@@ -1,11 +1,3 @@
----
-index: 1
-
-
----
-
-
-
 # Thermal Overview
 
 ## Abstract
@@ -378,7 +370,7 @@ trip_point_temp_store(struct device *dev, struct device_attribute *attr,
 
 dts 的配置：
 
-@[code{1-13}](./code/thermal_zone.dts)
+@[code{1-13}](../code/thermal_zone.dts)
 
 上述代码为拷贝过来的，具体的理解，目前如下：
 

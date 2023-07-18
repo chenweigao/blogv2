@@ -1,7 +1,7 @@
 ---
 title: Tick in Idle
 shortTitle: Idle Tick
-date: 2023-6-25
+date: 2023-06-25
 author: weigao
 category:
  -  Kernel
