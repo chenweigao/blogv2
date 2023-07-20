@@ -1,11 +1,9 @@
-
 ---
 title: Linux Command
 date: 2023-07-19
 category:
  - Linux
  - Kernel
-
 ---
 
 
