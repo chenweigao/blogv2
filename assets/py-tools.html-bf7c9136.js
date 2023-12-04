@@ -1,0 +1,16 @@
+import{_ as n}from"./plugin-vue_export-helper-c27b6911.js";import{o as a,c as s,f as t}from"./app-22cda79c.js";const e={},p=t(`<h1 id="python-tools" tabindex="-1"><a class="header-anchor" href="#python-tools" aria-hidden="true">#</a> Python Tools</h1><h2 id="ipython" tabindex="-1"><a class="header-anchor" href="#ipython" aria-hidden="true">#</a> IPython</h2><div class="language-bash" data-ext="sh"><pre class="language-bash"><code>pip <span class="token function">install</span> jupyter
+jupyter notebook
+</code></pre></div><h2 id="timeit" tabindex="-1"><a class="header-anchor" href="#timeit" aria-hidden="true">#</a> %timeit</h2><p>In <code>IPython</code>, we could use <code>%timeit</code> to calculate the time consume of a command:</p><div class="language-python" data-ext="py"><pre class="language-python"><code>In <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">:</span> <span class="token operator">%</span>timeit <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
+
+In <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">:</span> <span class="token operator">%</span>timeit <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span>
+</code></pre></div><h2 id="personalized" tabindex="-1"><a class="header-anchor" href="#personalized" aria-hidden="true">#</a> Personalized</h2><div class="language-python" data-ext="py"><pre class="language-python"><code><span class="token keyword">import</span> sys
+sys<span class="token punctuation">.</span>ps1
+<span class="token string">&#39;&gt;&gt;&gt;&#39;</span>
+
+sys<span class="token punctuation">.</span>ps1 <span class="token operator">=</span> <span class="token string">&#39;cwg-python&gt;&gt;&#39;</span>
+</code></pre></div><p>这样就可以改变解释器前面的那个外观了，注意修改后退出不会保存修改的结果。</p><h3 id="file-server" tabindex="-1"><a class="header-anchor" href="#file-server" aria-hidden="true">#</a> File Server</h3><div class="language-python" data-ext="py"><pre class="language-python"><code>python <span class="token operator">-</span>m http<span class="token punctuation">.</span>server
+<span class="token comment">#default port: 8000</span>
+
+python <span class="token operator">-</span>m http<span class="token punctuation">.</span>server <span class="token number">80</span>
+<span class="token comment">#in port 80</span>
+</code></pre></div>`,11),o=[p];function c(l,r){return a(),s("div",null,o)}const d=n(e,[["render",c],["__file","py-tools.html.vue"]]);export{d as default};

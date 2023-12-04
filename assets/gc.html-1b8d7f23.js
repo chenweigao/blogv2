@@ -1,0 +1,1 @@
+import{_ as c}from"./plugin-vue_export-helper-c27b6911.js";import{o as t,c as a,a as e,b as o}from"./app-22cda79c.js";const r={},s=e("h1",{id:"gc",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#gc","aria-hidden":"true"},"#"),o(" GC")],-1),n=[s];function _(d,i){return t(),a("div",null,n)}const f=c(r,[["render",_],["__file","gc.html.vue"]]);export{f as default};

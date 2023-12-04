@@ -1,0 +1,5 @@
+
+User-agent:*
+Disallow:
+
+Sitemap: https://vueblog.weigao.cc/sitemap.xml
