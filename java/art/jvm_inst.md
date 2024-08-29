@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/f815b788-98c3-4b55-a714-7572a34cc568)![image](https://github.com/user-attachments/assets/acb6e49a-aba5-4639-85a0-e6ac28e6f90f)---
+---
 title: JVM Inst
 date: 2024-08-29
 tag:
