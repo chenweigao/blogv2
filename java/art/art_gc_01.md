@@ -176,7 +176,8 @@ CC GC 中两者的区别在于：
 
 ## GC Opt
 
-Top10 hotspot 收集：使用 simpleperf 采集热点场景 GC 线程的热点函数，归纳统计后得到 
+Top10 hotspot 收集：使用 simpleperf 采集热点场景 GC 线程的热点函数，归纳统计后得到
+
 观察：
 - Top 10 hotspot 主要分布在 markingPhase, copyingPhase, reclaimPhase; top 1 的是 copyphase 中 Process 函数，进一步分解为 Copy() 流程
 - 几乎所有热点函数都是关于 mirror:Objects* ref 及其引用的处理
@@ -193,11 +194,18 @@ copyingPhase 中的热点流程统计方法：
 
 copy 对象的大小分布（GC 中 copy 的算法是从 header 的 8bytes 开始）
 
-**函数功能：**
+**函数功能**
 - Copy() 函数调用了 memcpy() 函数将对象从 from_space 拷贝到 to_space；
 - Copy 时偏移为 objectHeaderSize大小 (8 bytes)
-**实验统计：** 统计了 4.25 亿次各个场景下 Copy() 函数拷贝对象的大小，16bytes, 24bytes, 32bytes 的占比达到了 50.2%
-**优化原理：** memcpy 函数针对较小 bytes 的拷贝未进行特殊优化
-**优化方法：** 使用 memcpy 汇编对上述三个 case 进行重写
-注：optimization prefetch 预取了一条 cacheline, 因此在该处无需进行 copy 的 load prefetch
+
+**实验统计** 
+统计了 4.25 亿次各个场景下 Copy() 函数拷贝对象的大小，16bytes, 24bytes, 32bytes 的占比达到了 50.2%
+
+**优化原理** 
+memcpy 函数针对较小 bytes 的拷贝未进行特殊优化
+
+**优化方法** 
+使用 memcpy 汇编对上述三个 case 进行重写
+
+_注：optimization prefetch 预取了一条 cacheline, 因此在该处无需进行 copy 的 load prefetch_
 
