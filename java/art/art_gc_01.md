@@ -1,4 +1,4 @@
----
+![image](https://github.com/user-attachments/assets/f3a70ee0-1abe-4499-9c24-eefabac516aa)---
 title: Art GC Overview
 date: 2022-11-28
 tag:
@@ -172,3 +172,32 @@ CC GC 中两者的区别在于：
    - 我们禁止 mutator 线程看到不可达的对象，其中会使用一些技术；@todo 到底是怎么实现的呢？
 2. 新分配的对象在 to-space 中；这个好理解，对比前面在 Marking Phase 中，我们只允许新分配的对象在 from-space 中；
 3. mark stack 中的对象 rb_state = Gray;  这是在 Copying Phase 中的一个限制
+
+
+## GC Opt
+
+Top10 hotspot 收集：使用 simpleperf 采集热点场景 GC 线程的热点函数，归纳统计后得到 
+观察：
+- Top 10 hotspot 主要分布在 markingPhase, copyingPhase, reclaimPhase; top 1 的是 copyphase 中 Process 函数，进一步分解为 Copy() 流程
+- 几乎所有热点函数都是关于 mirror:Objects* ref 及其引用的处理
+- 涉及到 gc_mark_stack_ 数据结构
+
+Optimization: 
+- Opt1: 对 top hotspot 使用的 ref  进行 software prefetch – pldl2strm
+- Opt2: 对 top 1 Process() 进行专项优化 -- memcpy
+
+copyingPhase 中的热点流程统计方法：
+统计方法：统计 Process() 所有子函数的执行时间(每一轮测试 loop 函数执行 100 万次，共执行 15 轮)
+统计结果：Copy() 子函数执行的平均时间占父函数总执行时间的 65.56%, 在中核上占 79.03%
+统计结论：Process() 函数的性能瓶颈主要在 Copy() 子函数中
+
+copy 对象的大小分布（GC 中 copy 的算法是从 header 的 8bytes 开始）
+
+**函数功能：**
+- Copy() 函数调用了 memcpy() 函数将对象从 from_space 拷贝到 to_space；
+- Copy 时偏移为 objectHeaderSize大小 (8 bytes)
+**实验统计：** 统计了 4.25 亿次各个场景下 Copy() 函数拷贝对象的大小，16bytes, 24bytes, 32bytes 的占比达到了 50.2%
+**优化原理：** memcpy 函数针对较小 bytes 的拷贝未进行特殊优化
+**优化方法：** 使用 memcpy 汇编对上述三个 case 进行重写
+注：optimization prefetch 预取了一条 cacheline, 因此在该处无需进行 copy 的 load prefetch
+
