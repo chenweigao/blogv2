@@ -10,6 +10,15 @@ category:
 
 ## Summary
 
+2024年9月9日更新：不要想那么多的模板，记住区间的开合关系即可，比如用左闭右开区间 [), 和 python 很像，则代码有几个注意点：
+
+1. left = 0, right = len(nums); 因为 right 取不到
+2. case 1: nums[mid] < target:  left  target mid right: 此时需要更新 mid = right, 因为取不到，不需要 right - 1
+3. case 2: nums[mid] > target:  left mid target right: 此时需要更新 mid = left + 1 不要重复取值
+
+参考 B 站：代码随想录，很清晰。
+
+
 ### 1. 二分搜索模板
 
 ### 1.1 基本的二分搜索算法
