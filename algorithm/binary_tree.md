@@ -148,6 +148,74 @@ flowchart TD
 
 同样的，我们可以根据中序遍历的应用题目 [面试题 04.06. 后继者](https://leetcode.cn/problems/successor-lcci/) 来加深印象。
 
+代码实现如下，用了比较巧妙的双指针方式。
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> TreeNode:
+        stack = []
+        pre = None
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            if pre and pre.val == p.val:
+                return root
+            pre = root
+            root = root.right
+        return None
+```
+
+类似的题目还有：530. 二叉搜索树的最小绝对差 https://leetcode.cn/problems/minimum-absolute-difference-in-bst/description/
+
+```python
+class Solution:
+    def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
+        result = float('inf')
+        pre = None
+        cur = root
+        stack = []
+        while cur or stack:
+            while cur:
+                stack.append(cur)
+                cur = cur.left
+            cur = stack.pop()
+            if pre:
+                result = min(result, abs(cur.val - pre.val))
+            pre = cur
+            cur = cur.right
+        return result
+```
+
+递归方法实现参考：
+
+```python
+class Solution:
+    def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
+        result = float('inf')
+        pre = None
+        def inorder(cur):
+            nonlocal result, pre
+            if not cur:
+                return
+            inorder(cur.left)
+            if pre:
+                result = min(result, abs(cur.val - pre.val))
+            pre = cur
+            inorder(cur.right)
+        inorder(root)
+        return result
+```
+
+
 ## 二叉树的层次遍历
 
 [LC102 - Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
