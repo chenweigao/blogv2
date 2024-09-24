@@ -418,23 +418,21 @@ class Solution:
 class Solution:
     def combine(self, n: int, k: int) -> List[List[int]]:
         res = []
-
-        nums = [i + 1 for i in range(n)]
-
-        def back_track(path: List, begin):
-            if len(path) == k:
-                res.append(path[:])
-                return
-
-            for i in range(begin, len(nums)):
-                if i > begin and nums[i] == nums[i - 1]:
-                    continue
-
-                path.append(nums[i])
-                back_track(path, i + 1)
-                path.pop()
-
-        back_track([], 0)
+        n_list = [i + 1 for i in range(n)]
+        tmp = []
+        # 组合问题，首先想到回溯
+        def backtracking(start_index):
+            # 终止条件
+            if len(tmp) == k:
+                res.append(tmp[:])
+                return 
+            for i in range(start_index, n):
+                # 注意这边放进去的是 i
+                tmp.append(n_list[i])
+                backtracking(i + 1)
+                tmp.pop()
+        
+        backtracking(0)
         return res
 ```
 
