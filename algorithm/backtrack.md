@@ -62,8 +62,7 @@ def back_track(path, choices):
 class Solution:
     def letterCombinations(self, digits: str) -> List[str]:
         if not digits:
-            return list()
-
+            return []
         dig2alph = {
             '2': 'abc',
             '3': 'def',
@@ -75,20 +74,24 @@ class Solution:
             '9': 'wxyz'
         }
 
-        def back_track(index):
+        result = []
+        combia = []
+        # 重点：回溯的时候如何确定回溯的参数？
+        def backtrack(index):
+            # 模板：给出终止条件
             if index == len(digits):
-                res.append(''.join(combination))
-            else:
-                digit = digits[index]
-                for ch in dig2alph[digit]:
-                    combination.append(ch)
-                    back_track(index + 1)
-                    combination.pop()
+                result.append(''.join(combia))
+                return
+            digit = digits[index]
+            for ch in dig2alph.get(digit):
+                combia.append(ch)
+                backtrack(index + 1)
+                # 这个回溯过程的理解：递归调用以后满足条件返回了
+                # 可以画一个树形结构来理解
+                combia.pop()
+        backtrack(0)
+        return result
 
-        combination = list()
-        res = list()
-        back_track(0)
-        return res
 ```
 
 ### LC22 括号生成
