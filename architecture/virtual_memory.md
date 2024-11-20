@@ -72,6 +72,10 @@ A, B 是两个独立的进程，所以虽然用户空间的地址范围相同，
 
 > 页表的本质其实就是一个物理内存页，一张页表 4K 大小；也就是说，这 4K == 图中 1024 个 entry * 每个 entry 4B 大小。
 
+更进一步，64 位系统使用 4 级页表的结构如下[^3]：
+
+![image](https://github.com/user-attachments/assets/9afb65e2-758a-4c23-8ab8-db04bbba5f8d)
+
 
 
 
@@ -261,4 +265,5 @@ Page Offset 用于确定页表中数据的具体位置，通常而言，其比 V
 
 [^1]: [知乎：操作系统中的多级页表到底是为了解决什么问题？](https://www.zhihu.com/question/63375062/answer/1403291487)
 [^2]: 操作系统中的多级页表到底是为了解决什么问题？ - bin的技术小屋的回答 - 知乎 https://www.zhihu.com/question/63375062/answer/3158720655
+[^3]: https://mp.weixin.qq.com/s/S0sc2aysc6aZ5kZCcpMVTw
 
