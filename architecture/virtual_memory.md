@@ -199,6 +199,13 @@ TLB 失效的原因可能是：
 3. hardware page table walkers
 4. huge pages(reduce page table size, increase TLB hit)
 
+### About TLB Walk
+
+(Intel) An instruction TLB miss first goes to the L2 TLB, which contains 1536 PTEs of 4 KiB page sizes and is 12-way set associative. It takes 8 clock cycles to load the L1 TLB from the L2 TLB, which leads to the 9-cycle miss penalty including the initial clock cycle to access the L1 TLB. If the L2 TLB misses, a hardware algorithm is used to **walk the page table** and update the TLB entry.
+
+Sections L.5 and L.6 of online Appendix L describe page table walkers and page structure caches. In the worst case, the page is not in memory, and the operating system gets the page from secondary storage. Because millions of instructions could execute during a **page fault**, the operating system will swap in another process if one is waiting to run. Otherwise, if there is no TLB exception, the instruction cache access continues.
+
+上面很好阐述了 page table walk 发生的时间节点。
 ## Page
 
 💚💚💚💚 @todo 这边附上图 5-28
