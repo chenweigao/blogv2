@@ -206,6 +206,18 @@ TLB 失效的原因可能是：
 Sections L.5 and L.6 of online Appendix L describe page table walkers and page structure caches. In the worst case, the page is not in memory, and the operating system gets the page from secondary storage. Because millions of instructions could execute during a **page fault**, the operating system will swap in another process if one is waiting to run. Otherwise, if there is no TLB exception, the instruction cache access continues.
 
 上面很好阐述了 page table walk 发生的时间节点。
+
+### TLB and L1 ICache
+
+![alt text](./pics/20241213105941.jpg)
+
+如图所示，解释一下 L1 ICache VIPT：
+1. 64 位虚拟地址在逻辑上被分为虚拟页号与页内偏移：virtual pagenumber & page offset
+2. 页内偏移的高位被发送到 L1 ICache 用作索引
+3. 如果 TLB 匹配命中，则将物理页号发送到 L1 缓存标记(L1 cache tag), 检查是否匹配
+4. 如果匹配，则是 L1 缓存命中
+5. L1 Miss 的话则使用物理地址尝试 L2 缓存
+
 ## Page
 
 💚💚💚💚 @todo 这边附上图 5-28

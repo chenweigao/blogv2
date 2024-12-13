@@ -7,3 +7,10 @@ pnpm up -i
 pnpm dlx vp-update
 
 这行命令可以自动搜索需要的依赖并进行更新。
+
+启动：
+pnpm run docs:dev
+
+npm i -g nrm
+nrm ls
+nrm use taobao 
