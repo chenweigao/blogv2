@@ -165,9 +165,9 @@
   },
   "active": "62babe5ea8a0872f",
   "lastOpenFiles": [
-    "pnpm-lock.yaml",
     "node_modules/@vuepress",
     "node_modules",
+    "pnpm-lock.yaml",
     "dist/sitemap.xsl",
     "dist/sitemap.xml",
     "dist/slimsearch.worker.js",

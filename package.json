@@ -39,7 +39,6 @@
     "vuepress-plugin-full-text-search2": "0.5.1",
     "vuepress-plugin-search-pro": "2.0.0-rc.59"
   },
-  "packageManager": "pnpm@7.12.2",
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [
