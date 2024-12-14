@@ -3,7 +3,7 @@ import theme from "./theme";
 import { viteBundler } from '@vuepress/bundler-vite'
 
 export default defineUserConfig({
-  base: "/",
+  base: "/blogv2/",
 
   dest: "./dist",
 
