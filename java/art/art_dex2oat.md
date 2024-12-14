@@ -72,5 +72,5 @@ int main(int argc, char** argv) {
 
 
 
-[^1]: [dex2oat介绍](https://huanle19891345.github.io/en/android/art/1%E7%B1%BB%E7%BC%96%E8%AF%91/dex2oat%E4%BB%8B%E7%BB%8D/)
+[1]: [dex2oat介绍](https://huanle19891345.github.io/en/android/art/1%E7%B1%BB%E7%BC%96%E8%AF%91/dex2oat%E4%BB%8B%E7%BB%8D/)
 

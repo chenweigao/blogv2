@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "architecture/virtual_memory.md",
+                "file": "architecture/memory.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "virtual_memory"
+              "title": "memory"
             }
           }
         ]
@@ -140,10 +140,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "architecture/virtual_memory.md"
+                "file": "architecture/memory.md"
               },
               "icon": "lucide-list",
-              "title": "virtual_memory 的大纲"
+              "title": "memory 的大纲"
             }
           }
         ],
@@ -165,8 +165,13 @@
   },
   "active": "62babe5ea8a0872f",
   "lastOpenFiles": [
+    "MWebLibrary/docs/17340781580636.md",
+    "MWebLibrary/mainlib.db",
+    "MWebLibrary/metadata",
+    "MWebLibrary/docs",
+    "MWebLibrary",
     "architecture/README.md",
-    "architecture/virtual_memory.md",
+    "architecture/memory.md",
     "2024-11-20.md",
     "home.md",
     "slide.md",

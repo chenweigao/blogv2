@@ -18,7 +18,7 @@ Art 的创建过程是一个很复杂的命题，所以我们单独开设一章�
 
 ### JNI_CreateJavaVM
 
-当我们选择了 ART 运行时，Zygote 进程在启动过程中，会调用 `libart.so` 里面的函数 `JNI_CreateVM` 来**创建一个 art 虚拟机**，这个函数的实现如下：
+当我们选择了 ART 运行时, Zygote 进程在启动过程中，会调用 `libart.so` 里面的函数 `JNI_CreateVM` 来**创建一个 art 虚拟机**，这个函数的实现如下：
 
 ```java
 // art/runtime/jni/java_vm_ext.cc
@@ -106,10 +106,7 @@ bool Runtime::Init(RuntimeArgumentMap&& runtime_options_in) {
 }
 ```
 
-由于这个函数 700 多行，所以就不在这边列举源码了。
-
-
-
+由于这个函数 700 多行，所以就不在这边列举源码了[^1]。
 
 
 [^1]: [Android运行时ART加载OAT文件的过程分析](https://blog.csdn.net/Luoshengyang/article/details/39307813)

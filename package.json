@@ -19,23 +19,25 @@
     "personal-blog"
   ],
   "dependencies": {
-    "@vuepress/cli": "2.0.0-beta.66",
-    "@vuepress/client": "2.0.0-beta.66",
-    "highlight.js": "^11.8.0",
+    "vuepress/cli": "2.0.0-rc.19",
+    "highlight.js": "^11.10.0",
     "sass-loader": "13.2.0",
-    "vue": "^3.3.4",
-    "vuepress": "2.0.0-beta.66",
-    "vuepress-plugin-full-text-search2": "0.4.0",
-    "vuepress-theme-hope": "2.0.0-beta.233",
-    "vuepress-vite": "2.0.0-beta.66",
-    "vuepress-webpack": "2.0.0-beta.66"
+    "vue": "^3.5.13",
+    "vuepress": "2.0.0-rc.19",
+    "vuepress-plugin-full-text-search2": "0.5.1",
+    "vuepress-theme-hope": "2.0.0-rc.63"
   },
   "devDependencies": {
+    "@vuepress/bundler-vite": "2.0.0-rc.19",
+    "@vuepress/plugin-slimsearch": "2.0.0-rc.61",
     "cross-env": "7.0.3",
+    "katex": "^0.16.15",
     "markdownlint-cli": "0.33.0",
+    "mermaid": "^11.4.1",
     "prettier": "2.8.3",
-    "vuepress-plugin-full-text-search2": "0.4.0",
-    "vuepress-plugin-search-pro": "2.0.0-beta.233"
+    "sass-embedded": "^1.83.0",
+    "vuepress-plugin-full-text-search2": "0.5.1",
+    "vuepress-plugin-search-pro": "2.0.0-rc.59"
   },
   "packageManager": "pnpm@7.12.2",
   "pnpm": {

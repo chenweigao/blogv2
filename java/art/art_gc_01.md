@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/f3a70ee0-1abe-4499-9c24-eefabac516aa)---
+---
 title: Art GC Overview
 date: 2022-11-28
 tag:
@@ -15,7 +15,8 @@ category:
 本篇主要研究 ConcurrentCopying GC 的技术细节。
 :::
 
-## Forwarding Ptr
+## 1. Forwarding Ptr
+
 
 在 art 虚拟机中，FW Ptr 是一个很重要的概念，通常在 "mark and sweep" phase 中使用。
 
@@ -33,7 +34,7 @@ category:
 4. 如果要发生对象的修改、更新或者拷贝，则都会使用新的 forwarding address;
 5. 最后就是 *from_space* 的释放等操作。
 
-## Read Barrier in Art GC
+## 2. Read Barrier in Art GC
 
 Art 中 Read Barrier 的作用是：在并发场景下，用来确保线程看到最新的对象的值。
 
@@ -56,9 +57,9 @@ Art 中 Read Barrier 的作用是：在并发场景下，用来确保线程看�
   - 如果一个线程读取到的对象的引用(reference to an object) 正在被 copy, read barrier 将等待对象拷贝完成，之后再进行引用的更新；
   - 上述等待的实现称作"thread suspension", 该技术允许 art gc 暂时地暂停线程（这个线程此时访问正在拷贝的对象的引用）
 
-## Concepts
+## 3. Concepts
 
-### reference of object
+### 3.1. reference of object
 
 ❓❓如何理解 reference of object?
 
@@ -81,9 +82,9 @@ Art 中 Read Barrier 的作用是：在并发场景下，用来确保线程看�
 3. 基于第 2 点，在 GC 中，如果一个 object 持有另一个 object 的 reference, 则在回收该对象的时候，必须确定其引用的对象不会被意外回收（如果其引用的对象还在被使用的话）；
 4. 为了解决这个问题，ART 引入了 read barrier 机制；
 
-## Colors in GC
+## 4. Colors in GC
 
-### Overview
+### 4.1. Overview
 
 GC 中的染色用来表征到堆中对象的状态：be terms used to refer to the current state of objects in the heap.
 
@@ -97,7 +98,7 @@ GC 中的染色用来表征到堆中对象的状态：be terms used to refer to 
 
 最后，任何留下来的 White 对象都将被垃圾回收。
 
-### CC GC colors
+### 4.2. CC GC colors
 
 在 CC GC 中，其实现相比于传统的染色算法更加复杂一些，我们重点先研究一下 Gray 对象：
 
@@ -115,9 +116,9 @@ CC GC 中两者的区别在于：
 
 在 CC GC 中，有一件事情需要特别注意：除了 Gray 对象之外，其他所有的对象都不会存在于 mark_stack 中。
 
-## GC Phases
+## 5. GC Phases
 
-### Marking Phase
+### 5.1. Marking Phase
 
 >  Before marking phase
 >  
@@ -158,7 +159,7 @@ CC GC 中两者的区别在于：
 
    在 Marking Phase 之后：1. Gray objects 都没有了；2. 新分配的对象在 from-space; ❓ 这里存疑，还尚不清楚这里是否发生了翻转❌；通常而言，对象的分配也都是在 from-space 中的？ – 后面 Copying Phase 会解答疑问：简单而言，就是在 Marking Phase 中，对象是在 from-space 中分配的；3. White 对象没有再被 reachable 的了；合理，达到了染色标记的目的。
 
-### Copying Phase
+### 5.2. Copying Phase
 
 > During copying phase
 >  1) Mutators cannot observe white and black-dirty objects
@@ -174,7 +175,7 @@ CC GC 中两者的区别在于：
 3. mark stack 中的对象 rb_state = Gray;  这是在 Copying Phase 中的一个限制
 
 
-## GC Opt
+## 6. GC Opt
 
 Top10 hotspot 收集：使用 simpleperf 采集热点场景 GC 线程的热点函数，归纳统计后得到
 
@@ -200,6 +201,8 @@ copy 对象的大小分布（GC 中 copy 的算法是从 header 的 8bytes 开�
 
 **实验统计** 
 统计了 4.25 亿次各个场景下 Copy() 函数拷贝对象的大小，16bytes, 24bytes, 32bytes 的占比达到了 50.2%
+
+![image](https://github.com/user-attachments/assets/f3a70ee0-1abe-4499-9c24-eefabac516aa)
 
 **优化原理** 
 memcpy 函数针对较小 bytes 的拷贝未进行特殊优化

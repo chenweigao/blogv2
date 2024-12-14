@@ -1,7 +1,6 @@
 import { hopeTheme } from "vuepress-theme-hope";
 import { zhNavbarConfig } from "./navbar";
 import { mysidebar } from "./sidebar";
-// import { searchPlugin } from "@vuepress/plugin-search";
 export default hopeTheme(
     {
         hostname: "https://vueblog.weigao.cc",
@@ -10,7 +9,8 @@ export default hopeTheme(
             name: "Someone",
             url: "https://www.weigao.cc",
         },
-
+        
+        pure:true,
 
         navbar: zhNavbarConfig,
 
@@ -62,8 +62,7 @@ export default hopeTheme(
                 Whatsapp: "https://example.com",
                 Youtube: "https://example.com",
                 Zhihu: "https://example.com",
-            },
-            roundAvatar: true
+            }
         },
 
         encrypt: {
@@ -76,9 +75,20 @@ export default hopeTheme(
 
         plugins: {
             blog: true,
-            prismjs: {
-                light: "coy", // ghcolors, coy
-                dark: "material-dark"
+            slimsearch: {
+                // 索引全部内容
+                indexContent: true,
+                // 为分类和标签添加索引
+                customFields: [
+                    {
+                        getter: (page) => page.frontmatter.category,
+                        formatter: "分类：$content",
+                    },
+                    {
+                        getter: (page) => page.frontmatter.tag,
+                        formatter: "标签：$content",
+                    },
+                ],
             },
             // 你也可以使用 Waline
             comment: {
@@ -88,25 +98,22 @@ export default hopeTheme(
                 category: "Announcements",
                 categoryId: "DIC_kwDOB3xgIM4COUME",
             },
-
-            mdEnhance: {
-                align: true,
-                codetabs: true,
-                demo: true,
-                flowchart: true,
-                footnote: true,
-                imgMark: true,
-                katex: true,
-                mermaid: true,
-                presentation: true,
-                sub: true,
-                sup: true,
-                vPre: true,
-                gfm: true,
-                card: true,
-                tabs: true,
+        },
+        markdown: {
+            highlighter: {
+                type: "shiki",
+                // langs: ['ts', 'json', 'md', 'bash', 'python', "cpp"],
+                themes: {
+                    light: 'github-light',
+                    dark: 'nord',
+                }
             },
-        }
+            mermaid: true,
+            footnote: true,
+            math: true,
+            spoiler: true,
+        },
+
 
     }
 );      
