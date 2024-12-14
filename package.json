@@ -19,7 +19,7 @@
     "personal-blog"
   ],
   "dependencies": {
-    "vuepress/cli": "2.0.0-rc.19",
+    "@vuepress/cli": "2.0.0-rc.19",
     "highlight.js": "^11.10.0",
     "sass-loader": "13.2.0",
     "vue": "^3.5.13",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.19",
-    "@vuepress/plugin-slimsearch": "2.0.0-rc.61",
+    "@vuepress/plugin-slimsearch": "2.0.0-rc.66",
     "cross-env": "7.0.3",
     "katex": "^0.16.15",
     "markdownlint-cli": "0.33.0",

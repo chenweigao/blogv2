@@ -9,8 +9,8 @@ export default hopeTheme(
             name: "Someone",
             url: "https://www.weigao.cc",
         },
-        
-        pure:true,
+
+        pure: true,
 
         navbar: zhNavbarConfig,
 
@@ -32,37 +32,37 @@ export default hopeTheme(
         blog: {
             description: "someone..",
             intro: "/intro.html",
-            medias: {
-                Baidu: "https://example.com",
-                Bitbucket: "https://example.com",
-                Dingding: "https://example.com",
-                Discord: "https://example.com",
-                Dribbble: "https://example.com",
-                Email: "https://example.com",
-                Evernote: "https://example.com",
-                Facebook: "https://example.com",
-                Flipboard: "https://example.com",
-                Gitee: "https://example.com",
-                GitHub: "https://github.com/chenweigao",
-                Gitlab: "https://example.com",
-                Gmail: "https://example.com",
-                Instagram: "https://example.com",
-                Lines: "https://example.com",
-                Linkedin: "https://example.com",
-                Pinterest: "https://example.com",
-                Pocket: "https://example.com",
-                QQ: "https://example.com",
-                Qzone: "https://example.com",
-                Reddit: "https://example.com",
-                Rss: "https://example.com",
-                Steam: "https://example.com",
-                Twitter: "https://example.com",
-                Wechat: "https://example.com",
-                Weibo: "https://example.com",
-                Whatsapp: "https://example.com",
-                Youtube: "https://example.com",
-                Zhihu: "https://example.com",
-            }
+            // medias: {
+            //     Baidu: "https://example.com",
+            //     Bitbucket: "https://example.com",
+            //     Dingding: "https://example.com",
+            //     Discord: "https://example.com",
+            //     Dribbble: "https://example.com",
+            //     Email: "https://example.com",
+            //     Evernote: "https://example.com",
+            //     Facebook: "https://example.com",
+            //     Flipboard: "https://example.com",
+            //     Gitee: "https://example.com",
+            //     GitHub: "https://github.com/chenweigao",
+            //     Gitlab: "https://example.com",
+            //     Gmail: "https://example.com",
+            //     Instagram: "https://example.com",
+            //     Lines: "https://example.com",
+            //     Linkedin: "https://example.com",
+            //     Pinterest: "https://example.com",
+            //     Pocket: "https://example.com",
+            //     QQ: "https://example.com",
+            //     Qzone: "https://example.com",
+            //     Reddit: "https://example.com",
+            //     Rss: "https://example.com",
+            //     Steam: "https://example.com",
+            //     Twitter: "https://example.com",
+            //     Wechat: "https://example.com",
+            //     Weibo: "https://example.com",
+            //     Whatsapp: "https://example.com",
+            //     Youtube: "https://example.com",
+            //     Zhihu: "https://example.com",
+            // }
         },
 
         encrypt: {
@@ -75,21 +75,6 @@ export default hopeTheme(
 
         plugins: {
             blog: true,
-            slimsearch: {
-                // 索引全部内容
-                indexContent: true,
-                // 为分类和标签添加索引
-                customFields: [
-                    {
-                        getter: (page) => page.frontmatter.category,
-                        formatter: "分类：$content",
-                    },
-                    {
-                        getter: (page) => page.frontmatter.tag,
-                        formatter: "标签：$content",
-                    },
-                ],
-            },
             // 你也可以使用 Waline
             comment: {
                 provider: "Giscus",
@@ -98,6 +83,10 @@ export default hopeTheme(
                 category: "Announcements",
                 categoryId: "DIC_kwDOB3xgIM4COUME",
             },
+            slimsearch: {
+                indexContent: true,
+                
+            }
         },
         markdown: {
             highlighter: {
