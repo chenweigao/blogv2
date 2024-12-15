@@ -3,7 +3,8 @@ home: true
 layout: BlogHome
 icon: home
 title: 博客主页
-# heroImage: /craftcms.svg
+# heroImage: /bg1.jpeg
+bgImage: /bg1.jpeg
 heroText: Someone Blog
 heroFullScreen: true
 tagline: wiki & blog
