@@ -4,10 +4,10 @@ layout: BlogHome
 icon: home
 title: 博客主页
 # heroImage: /bg1.jpeg
-bgImage: /bg1.jpeg
-heroText: Someone Blog
+bgImage: /goodluck.png
+heroText: Happy Work, Happy Life
 heroFullScreen: true
-tagline: wiki & blog
+# tagline: wiki & blog
 projects:
   - icon: project
     name: Vuepress Blog V2

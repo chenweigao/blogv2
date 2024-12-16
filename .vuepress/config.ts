@@ -27,7 +27,7 @@ export default defineUserConfig({
   locales: {
     "/": {
       lang: "zh-CN",
-      title: "WW",
+      title: "weigao",
       description: "blog & wiki",
     },
   },
