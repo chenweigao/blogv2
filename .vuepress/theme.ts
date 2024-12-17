@@ -101,6 +101,8 @@ export default hopeTheme(
             footnote: true,
             math: true,
             spoiler: true,
+            alert: true,
+            mark: true,
         },
 
 

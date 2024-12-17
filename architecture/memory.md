@@ -8,7 +8,7 @@ category:
 
 ## 1. Abstract
 
-本文主要讲述和理解虚拟内存（后文简称 VM， VA 等）的概念，行文可能较为跳跃，需要特别注意。
+本文主要讲述和理解虚拟内存（后文简称 VM， VA 等）、TLB 的概念，行文可能较为跳跃，需要特别注意。
 
 ## 2. Virtual Memory
 
@@ -16,22 +16,25 @@ category:
 
 > 什么是虚拟内存？
 > 
-> Virtual memory is a technique used by operating systems to enable programs to **use more memory than is physically available** in the system. When a program accesses memory, the address it uses is a virtual address, which is **translated by the hardware into a physical address** that corresponds to a location in physical memory. This translation process can be slow, especially if it has to be performed every time the program accesses memory.
+> Virtual memory is a technique used by operating systems to enable programs to **use more memory than is physically available** in the system. When a program accesses memory, the address it uses is a virtual address, which is **translated by the hardware into a physical address** that corresponds to a location in physical memory. This **translation process can be slow**, especially if it has to be performed every time the program accesses memory.
 
-1. 虚拟内存的存在使得程序可以使用比可用物理内存更多的存储空间（程序员想要无限多的存储空间）
-2. 虚拟地址是由物理地址转化而来的
-3. 这种转换过程一般会比较缓慢（引出后续 TLB）
+1. 虚拟内存的存在使得程序可以使用比可用物理内存更多的存储空间（程序员想要无限多的存储空间）*-- use more memory than is physically available*
+2. 虚拟地址是由物理地址转化而来的 *-- translated by the hardware into a physical address*
+3. 这种转换过程一般会比较缓慢（引出后续 TLB）*-- translation process can be slow*
 
 ### 2.2. 虚拟内存与进程
 
-关于虚拟内存与进程的关系，有一些新的理解：虚拟内存是保证进程之间隔离的重要机制之一。
+:::tip
 
-从目前得到的信息而言，内核使用**虚拟内存和进程控制块**来保证进程之间的隔离。
+虚拟内存是保证进程之间隔离的重要机制之一。
+
+:::
+
+内核使用**虚拟内存和进程控制块**来保证进程之间的隔离。
 
 对于虚拟内存而言，每个进程都有自己的地址空间，其中包含代码、数据和栈。这样，每个进程之间的内存空间都是相互隔离的，一个进程无法访问另一个进程的内存。
 
-那么，虚拟内存具体是如何实现进程之间的隔离的？
-虚拟内存为每个进程提供了单独的地址空间，以实现进程之间的隔离。这种隔离是把物理内存分成大小相等的**页**来实现的（从虚拟内存的角度看，页就是内存的最小单位）；当进程访问其虚拟地址空间中的某个页时，操作系统会加载虚拟页对应的物理页（MMU: 将虚拟地址转化为物理地址），在这个过程中，操作系统会检查当前进程是否有权限访问该页面。也就是说：一个进程无法访问其他进程的地址空间。 
+虚拟内存具体是如何实现进程之间的隔离的？虚拟内存为每个进程提供了**单独的地址空间**，以实现进程之间的隔离。这种隔离是把物理内存分成大小相等的**页**来实现的（从虚拟内存的角度看，页就是内存的最小单位）；当进程访问其虚拟地址空间中的某个页时，操作系统会加载虚拟页对应的物理页（MMU: 将虚拟地址转化为物理地址），在这个过程中，操作系统会检查当前进程是否有权限访问该页面。也就是说：一个进程无法访问其他进程的地址空间。 
 
 > *问题：两个进程的虚拟地址空间可能会是什么样子的？*
 >
@@ -49,9 +52,9 @@ category:
 
 
 
-### 2.3. 虚拟内存与页表
+### 2.3. 页表
 
-我们上面说，进程隔离的一个很重要的机制保证就是虚拟内存，那么从底层来看，是怎么实现的呢？答案是**页表**，笔者对页表的理解如下：
+我们上面说，进程隔离的一个很重要的机制保证就是虚拟内存，那么从底层来看，是怎么实现的呢？答案是**页表。
 
 1. 每个进程都拥有自己的页表；
    具体而言，Linux 为每个进程都维护一个 `task_struct` 结构体（进程描述符 PCB, 无论怎么称呼），task_struct -> mm_struct 结构体成员用来保存该进程的页表。
@@ -60,7 +63,7 @@ category:
 
 2. 每个进程（线程）绑定到自己的页表，页表不同意味着物理页不同（MMU 负责地址转换，不同的页表无法对应到一个物理页）
 
-对于一个进程而言，操作系统如何保证其访问权限？检查当前操作系统进程是否可以访问目标内存地址，具体到指令级别：验证当前指令是否允许访问特定内存地址；这个过程的实现是通过 MMU 来做的：CPU生成一个虚拟地址，虚拟地址经过 MMU 进行转换，将虚拟地址分解为**页号和页内偏移**，然后 MMU 查找页表，计算出最终的物理地址，查找时会检测非法或者权限。
+对于一个进程而言，操作系统如何保证其访问权限？检查当前操作系统进程是否可以访问目标内存地址，具体到指令级别：**验证当前指令是否允许访问特定内存地址；这个过程的实现是通过 MMU 来做的**：CPU生成一个虚拟地址，虚拟地址经过 MMU 进行转换，将虚拟地址分解为**页号和页内偏移**，然后 MMU 查找页表，计算出最终的物理地址，查找时会检测非法或者权限。
 
 对于 4K 页表，网络上有一个非常好的解释如下[^2]:
 
@@ -73,11 +76,13 @@ category:
 ![image](https://github.com/user-attachments/assets/9afb65e2-758a-4c23-8ab8-db04bbba5f8d)
 
 Linux 内存提供的**大页机制**，上图的 4 级页表中，每个 PTE entry 映射的物理页就是 4K，如果采用 PMD entry 直接映射物理页，则一次 Page Fault 可以直接分配并映射 2M 的大页，并且只需要一个 TLB entry 即可存储这 2M 内存的映射关系，**这样可以大幅提升内存分配与地址翻译的速度**。
-可以使用 perf 工具对比进程使用大页前后的 PageFault 次数的变化：
 
+:::note 
+可以使用 perf 工具对比进程使用大页前后的 PageFault 次数的变化：
+```bash
+perf stat -e page-faults -p <pid> --sleep 5
 ```
-perf stat -e page-faults -p-- sleep 5
-```
+:::
 
 ### 2.4. THP
 
@@ -104,7 +109,7 @@ flowchart LR
 	id1-2(地址空间超过主存)
 	id1-3(虚拟存储中的保护)
 	id1 --> id1-1 & id1-2 & id1-3
-	id1-3-1(多个应用程序访问物理地址)
+	id1-3-1(多个应用程序访问物理地址 - 页表)
 	id1-3-2(两个活跃进程共享主存)
 	id1-3 --> id1-3-1 & id1-3-2
 ```
@@ -148,8 +153,6 @@ flowchart LR
 
 5. **地址空间的保护：** 由于不同的进程使用各自的页表，每个进程的虚拟地址空间是相互隔离的。页表的切换确保了进程只能访问属于自己的地址空间，以及防止跨进程的内存访问，从而提供内存保护。
 
-
-
 不同的体系结构和操作系统对页表的处理可能有细微差别：
 
 ​	1.	x86 架构：页表基地址通过 CR3 寄存器加载，切换进程时修改 CR3，并触发 TLB 刷新。
@@ -157,8 +160,6 @@ flowchart LR
 ​	2.	ARM 架构：类似地，使用页表基地址寄存器（例如 TTBR0/TTBR1）切换页表。
 
 ​	3.	上下文标识符（ASID）：一些硬件支持 ASID，可以减少 TLB 刷新的开销。
-
-
 
 总结来说，进程切换时页表的处理步骤主要包括：
 
@@ -211,9 +212,9 @@ TLB 失效表明两种可能性之一：
 TLB 失效的原因可能是：
 
 1. 程序访问的地址近期没有被访问过，由于 TLB 空间的限制，这个 translation 可能就没有被存储在 TLB 中（page 在内存中）
-2. 操作系统 swap pages(page 没在内存中)
+2. 操作系统 swap pages (page 没在内存中)
 
-这两者就可以对应上述两点 TLB 失效的两种可能。
+ 这两者就可以对应上述两点 TLB 失效的两种可能。
 
 :::note 如何处理缺页失效或者 TLB 失效？
 
@@ -230,17 +231,11 @@ TLB 失效的原因可能是：
 1. multi-level TLBs (two-level page table structure in arm)
 2. TLB prefetching
 3. hardware page table walkers
-4. huge pages(reduce page table size, increase TLB hit)
+4. huge pages, THP, hugetext..(reduce page table size, increase TLB hit)
 
-### 3.3. About TLB Walk
 
-(Intel) An instruction TLB miss first goes to the L2 TLB, which contains 1536 PTEs of 4 KiB page sizes and is 12-way set associative. It takes 8 clock cycles to load the L1 TLB from the L2 TLB, which leads to the 9-cycle miss penalty including the initial clock cycle to access the L1 TLB. If the L2 TLB misses, a hardware algorithm is used to **walk the page table** and update the TLB entry.
 
-Sections L.5 and L.6 of online Appendix L describe page table walkers and page structure caches. In the worst case, the page is not in memory, and the operating system gets the page from secondary storage. Because millions of instructions could execute during a **page fault**, the operating system will swap in another process if one is waiting to run. Otherwise, if there is no TLB exception, the instruction cache access continues.
-
-上面很好阐述了 page table walk 发生的时间节点。
-
-### 3.4. TLB and L1 ICache
+### 3.3. TLB and L1 ICache(VIPT)
 
 ![alt text](./pics/20241213105941.jpg)
 
@@ -251,9 +246,20 @@ Sections L.5 and L.6 of online Appendix L describe page table walkers and page s
 4. 如果匹配，则是 L1 缓存命中
 5. L1 Miss 的话则使用物理地址尝试 L2 缓存
 
-## 4. Page
+### 3.4. TLB Walk vs. TLB Miss
 
-💚💚💚💚 @todo 这边附上图 5-28
+**ITLB Miss**：ITLB 中没有找到所需的地址映射；
+
+**ITLB Walk**：为解决 ITLB Miss 而触发的页表遍历过程；ITLB Walk 的触发必须是建立在 L1/L2... TLB Miss 的前提下，在 Intel 平台（8 代）由于是 L1 ITLB -> STLB 的架构，故发生 ITLB Walk 意味着在 STLB 也 Miss 然后触发了 Page Table Walk. 此时代价较大，需要多次内存访问页表，影响性能。
+
+> (Intel) An instruction TLB miss first goes to the L2 TLB, which contains 1536 PTEs of 4 KiB page sizes and is 12-way set associative. It takes 8 clock cycles to load the L1 TLB from the L2 TLB, which leads to the 9-cycle miss penalty including the initial clock cycle to access the L1 TLB. **If the L2 TLB misses**, a hardware algorithm is used to **walk the page table** and update the TLB entry.==**L2 TLB Miss 导致 page table walk**==
+>
+> Sections L.5 and L.6 of online Appendix L describe page table walkers and page structure caches. In the worst case, the page is not in memory, and the operating system gets the page from secondary storage. Because millions of instructions could execute during a **page fault**, the operating system will swap in another process if one is waiting to run. Otherwise, if there is no TLB exception, the instruction cache access continues.
+
+
+
+
+## 4. Page 进阶
 
 ### 4.1. 页面大小的权衡
 
@@ -286,24 +292,20 @@ Virtual Page Number (VPN) 是用于标识要访问的 page, 这个字段会用�
 
 VPN 的大小取决于虚拟地址空间的和虚拟存储系统使用的 page 大小；举例而言，一个系统有 32-bit 虚拟地址，4KB page, 则 VPN 的大小为 $2^{20}$ bit,  其需要在地址空间中表示 $2^{20}$ 个 page. 对于为什么需要 20 bit, 其计算方法就是 $32 - 12 = 20$, 其中 4KB 的 page 占用了 12 bit 的标识，剩下的 20 位就留给了 VPN.
 
-❤️❤️❤️ **VPN and TLB**
-
 VPN 和 TLB 之间的关系需要加以理解：
 
 > When a program accesses a virtual memory address, the processor extracts the virtual page number from the address and uses it as the index into the TLB cache. 
 
 从上面可知：VPN 用于索引 TLB, 即 VPN -> PPN(Physical Page Number).
 
-:::note 个人理解 TLB 和 VPN
 
-对于上面的解释，如果我们假定有 20 bit 用于 VPN,  那么 TLB 的 tag compare address + TLB index (这两个合起来就是 TLB entry) 的大小就为 20 bit.
-
-(not sure) TLB index 的大小取决于 TLB 的映射方式，或者说，取决于 TLB entires 的数量 (*The TLB contains **entries** that map virtual page numbers to physical page numbers, along with other metadata such as access permissions and cache coherency information.*)。
-
-当 TLB index 确定的时候，TLB tag compare address 的位数也就确定了。
-
-:::
-
+> [!info]
+>
+> 对于上面的解释，如果我们假定有 20 bit 用于 VPN,  那么 TLB 的 tag compare address + TLB index (这两个合起来就是 TLB entry) 的大小就为 20 bit.
+> 
+> (not sure) TLB index 的大小取决于 TLB 的映射方式，或者说，取决于 TLB entires 的数量 (*The TLB contains **entries** that map virtual page numbers to physical page numbers, along with other metadata such as access permissions and cache coherency information.*)。
+> 
+> 当 TLB index 确定的时候，TLB tag compare address 的位数也就确定了。
 
 
 #### 4.3.2. Page Offset
@@ -321,6 +323,9 @@ Page Offset 用于确定页表中数据的具体位置，通常而言，其比 V
 ### 4.5. TLB 和 cache 的映射方式？
 
 通常选用组相连，一些系统使用直接映射，看中其访问时间短并且实现简单。
+
+
+
 
 [^1]: [知乎：操作系统中的多级页表到底是为了解决什么问题？](https://www.zhihu.com/question/63375062/answer/1403291487)
 [^2]: 操作系统中的多级页表到底是为了解决什么问题？ - bin的技术小屋的回答 - 知乎 https://www.zhihu.com/question/63375062/answer/3158720655
