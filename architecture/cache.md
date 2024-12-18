@@ -6,9 +6,9 @@ category:
 
 ---
 
-## Abstract
+## 1. Abstract
 
-### Introduction
+### 1.1. Introduction
 
 :::note 哲学含义
 
@@ -26,7 +26,7 @@ category:
 6. cache 一致性监听协议 MESI(x)
 7. 其他的相关知识
 
-### Key Word
+### 1.2. Key Word
 
 | key word              | means        | comments |
 | --------------------- | ------------ | -------- |
@@ -36,7 +36,7 @@ category:
 | spatial locality      | 空间局部性   |          |
 | Locality of reference | 访问局部性   |          |
 
-### temporal locality & spatial locality
+### 1.3. temporal locality & spatial locality
 
 总体而言，可以归纳为访问局部性，其含义是计算机科学领域的应用程序在访问内存的时候，倾向于访问内存中较为靠近的值。
 
@@ -56,7 +56,7 @@ category:
 
 局部性是计算机系统中的一种可预测的行为，系统的这种强访问局部性，可以被用来处理内核的指令流水线中的性能优化，如缓存、分支预测、内存预读取等。
 
-## Cache Abstract
+## 2. Cache Abstract
 
 > Caching is perhaps the most important example of the big idea of **prediction**. It relies on the principle of locality to try to find the desired data in the higher levels of the memory hierarchy, and provides mechanisms to ensure that when the prediction is wrong it finds and uses the proper data from the lower levels of the memory hierarchy. The hit rates of the cache prediction on modern computers are often above 95%.
 
@@ -71,7 +71,7 @@ category:
 
 ![](https://documentation-service.arm.com/static/5ff5c9fd89a395015c28fc72?token=)
 
-### way & set
+### 2.1. way & set
 
 从上图中有一个疑问，way 和 set 的区别是什么？
 
@@ -160,7 +160,7 @@ category:
 
 
 
-## Cache line
+## 3. Cache line
 
 整个cache 空间被分成了 N 个 line，line 是 cache 交换的最小单位，每个 cache line 通常是 32 byte 或者 64 byte, 对于一个字节我们还需要更加注意，那就是 cache line 包含的内容：
 
@@ -192,7 +192,7 @@ category:
 
 下面章节解释一下 tag 和 valid 的作用[^1]。
 
-### tag
+### 3.1. tag
 
 > Because each cache location can contain the contents of a number of different
 > memory locations, how do we know whether the data in the cache corresponds
@@ -225,13 +225,13 @@ category:
 
 
 
-### valid
+### 3.2. valid
 
 > We also need a way to recognize that a cache block does not have valid information. For instance, when a processor starts up, the cache does not have good data, and the tag fields will be meaningless.
 
 valid 的存在是因为我们还需要标识 cache 中的信息是否有效，比如说这边举了一个例子，说的是如果处理器刚刚启动的时候，缓存中的数据肯定是无效的，valid 字段就是起到这样一个作用。
 
-### 💯data
+### 3.3. 💯data
 
 剩下的是 data 或者 block 块，其实在实际的 cache 中，我们长这样（Intrinsity FastMATH data cache 为例）：
 
@@ -263,7 +263,7 @@ valid 的存在是因为我们还需要标识 cache 中的信息是否有效，�
 
 :::
 
-## cache 映射方式
+## 4. cache 映射方式
 
 映射方式主要由以下几种：
 
@@ -271,7 +271,11 @@ valid 的存在是因为我们还需要标识 cache 中的信息是否有效，�
 2. 直接映射 cache, direct-mapped cache
 3. 组相联 cache, set-associative cache
 
-### full-associative
+- 如果一个块可以放在缓存中的任意位置，那么就是全相联的；
+- 如果每个块只能出现在缓冲中的一个位置，就说该缓存是直接映射的；映射的方式为 **（块地址）MOD （缓存中的块数）**；
+- 如果一个块可以放在缓存中由有限个位置组成的组（set）中，就说该缓存是组相联的；在组内，这个块可以放在任意位置；如果组中 n 个块，就叫做 n 路组相联。
+
+### 4.1. full-associative
 
 悲剧的被比较对象，性能很烂，我们现在不研究这个。
 
@@ -279,17 +283,17 @@ valid 的存在是因为我们还需要标识 cache 中的信息是否有效，�
 
 🧡🧡 言外之意在于，优秀的查找算法前提下，这种方式还是可以应用的。
 
-### direct-mapped
+### 4.2. direct-mapped
 
 主要的思想是把内存分为 N 个 page, 每一个 page 的大小和 cache 相同，page 中的 Line 0 只能映射到 cache 中的 Line 0, 以此类推。
 
 其示意图如下所示：
 
-![](https://documentation-service.arm.com/static/5ff5c9fd89a395015c28fc8e?token=)
+![direct-mapped](https://documentation-service.arm.com/static/5ff5c9fd89a395015c28fc8e?token=)
 
 直接映射意味着确定的映射方式，如图中的 0x00, 0x40, 0x80 都只能映射到 Line 0 中。
 
-### set-associative
+### 4.3. set-associative
 
 direvt-mapped 的方式是处理器上比较常用的，但是在某些特定的情况下会存在很大的缺陷，所以现代的商用处理器都是用 set-associative cache 来解决这个问题，这也是我们这节要研究的。
 
@@ -304,7 +308,7 @@ set-associative 将 cache 分成了多个 way, `direvt-mapped == 1 way set-assoc
 |  …   |       |       |      |       |       |      |       |       |      |       |       |
 |  n   |       |       |      |       |       |      |       |       |      |       |       |
 
-#### Arm docs: Set associative caches
+#### 4.3.1. Arm docs: Set associative caches
 
 > With this kind of cache organization, the cache is divided into a number of equally-sized pieces, called *ways*.[^3]
 
@@ -316,7 +320,7 @@ cache 被分割成为了一些相同大小的块，称作 ways.
 
 如上图所示，这是一个 2-way cache 的结构示意图；在上图中：Data from address `0x00` (or `0x40`, or `0x80`) might be found in line 0 of either (but not both) of the two cache ways.
 
-#### Arm docs: A real-life example
+#### 4.3.2. Arm docs: A real-life example
 
 ![A real-life example](https://documentation-service.arm.com/static/5ff5c9fd89a395015c28fc35?token=)
 
@@ -337,13 +341,13 @@ Figure: a 4-way set associative 32KB data cache, with an 8-word(1 word equals 16
 
 :::
 
-#### QA
+#### 4.3.3. QA
 
 1. 我们知道，cacheline 包括 tag, set index 和 offset bit, 其中 offset bit 用于定位数据在 cacheline 中具体的偏移，那么是如何仅根据一个 offset 就能确定具体的数据要取多少个 byte 呢？
 
    要解答这个问题，我们需要知道，在 ldr 或者其他访存类指令发出以后，CPU 是知道这次访问需要的数据大小的(byte); 我之前想不明白的是，是如何知道的呢？其实很简单，我们在指令上已经指定了需要访问的数据大小，如 `ldr x1, #234` 就是通过寄存器指定我们需要的访问是 16 字节。
 
-### Summary
+### 4.4. Summary
 
 三种方式的对比：
 
@@ -366,7 +370,7 @@ Figure: a 4-way set associative 32KB data cache, with an 8-word(1 word equals 16
 
 
 
-## hit & miss
+## 5. hit & miss
 
 cache hit(命中)：读取时间 X 个 cycle
 
@@ -374,7 +378,7 @@ cache miss：读取时间 XX 或者 XXX 个 cycle
 
 所以 hit 和 miss 有很大的性能差距。
 
-### Why cache miss?
+### 5.1. Why cache miss?
 
 有三种情况会导致 cache misss:
 
@@ -395,9 +399,9 @@ flowchart LR
 
 
 
-### Ways to lower miss rate
+### 5.2. Ways to lower miss rate
 
-#### 使用较大的 block
+#### 5.2.1. 使用较大的 block
 
 较大的 blocks 利用空间局部性原理来降低 miss rate, 通常而言，增加块的大小会降低 miss rate, 但是其存在一个阈值，如果 block 的大小成为缓存很大的一部分，最终 miss rate 反而会上升，这是因为缓存中可以保存的块的数量变少，导致了很多竞争。
 
@@ -405,7 +409,7 @@ flowchart LR
 
 🧡🧡🧡 我们可以获得一个启发：**如果我们可以设计方法降低较大的 block 的 transfer time, 那么我们就可以进一步改善缓存的性能。**
 
-### hide some transfer time
+### 5.3. hide some transfer time
 
 在使用较大的 block 的时候，我们采取一个**隐藏一些传输时间**的方法来减少未命中的惩罚。
 
@@ -414,7 +418,7 @@ flowchart LR
 
 ❌❌❌ 后续需要重点研究这两个算法。
 
-### Handling cache misses
+### 5.4. Handling cache misses
 
 - 缓存处理起来 hit 的工作相比于 miss 是微不足道的。
 - cache miss handing 需要处理器控制单元和单独的控制器合作完成，这个单独的控制器启动内存访问、填充缓存
@@ -435,7 +439,7 @@ flowchart LR
 
 4. 重启指令的执行，这将重新读取指令，这是在缓存中就可以找到该指令
 
-## 置换策略
+## 6. 置换策略
 
 1. 随机
 2. FIFO 先进先出
@@ -449,7 +453,7 @@ LRU 我们使用的最多，并且性能也最好。
 - 随着 cache 容量变大，两种替换策略的性能差异也逐渐缩小
 - 在虚拟存储中，使用 LRU 是因为失效代价很大，失效率的微小降低都显得十分重要；并且其失效相对不那么频繁发生，LRU 也可以由软件近似实现
 
-## Cache Write
+## 7. Cache Write
 
 所谓 cache 写，指的就是 cpu 修改了 cache 中的数据的时候，内存的数据也要随之改变。为了达到这个目的，cache 提供了几种写策略：
 
@@ -457,13 +461,13 @@ LRU 我们使用的最多，并且性能也最好。
 2. Write buffer
 3. Write back
 
-### Write through
+### 7.1. Write through
 
 核心策略：每次 CPU 修改了 cache 中的内容，cache 立即更新（cache 控制器）内存中的内容。
 
 这种方式会有大量写内存的操作，所以效率较低。
 
-### Write buffer
+### 7.2. Write buffer
 
 > A queue that holds data while the data are waiting to be written to memory.
 
@@ -473,7 +477,7 @@ Write buffer 中保存了准备写入内存的数据，处理器同时写入 cac
 
 这个之中还有一个矛盾在于，如果处理器生成写入的速率大于内存可以完成的写入速率，那么拿什么 write buffer 都不会起作用的。
 
-### Write back: dirty
+### 7.3. Write back: dirty
 
 核心策略：CPU 或者内核修改了 cache 中的内容的时候，cache 不会立即更新内存内容，而是等到这个 cache line 因为某种原因需要从 cache 中移除的时候，cache 才去更新内存中的内容。
 
@@ -495,7 +499,7 @@ cache 为了知道某个 line 的内容有没有被修改，于是增加了一�
 
 很多 write back 策略还包括着 write buffer 用于在 miss 的时候减少 miss 惩罚，是这么做的：修改后的块被移动到 write buffer 中，Assuming another miss does not occur immediately, this technique halves the miss penalty when a dirty block must be replaced.
 
-### Write miss
+### 7.4. Write miss
 
 Write miss 这个第一眼看过去似乎是比较奇特的，写也会 Miss 吗？当然会了，这里的写 miss 指的是没有写在缓存里面。
 
@@ -509,9 +513,9 @@ Write miss 这个第一眼看过去似乎是比较奇特的，写也会 Miss 吗
 
    更新内存中的 block, 但是不放入 cache 中。这种场景可能适用于计算机清零某一页的内容这样的情况，有些计算机是允许按页更改写入分配策略的。
 
-## cache 一致性
+## 8. cache 一致性
 
-### Example
+### 8.1. Example
 
 定义：主要体现在不同 core 的 cache 中数据不同。
 
@@ -535,7 +539,7 @@ core 0 和 core 1 中的 x 容易出现数据不一致的情况，比如 core 0 
 1. Wirte invalidate
 2. Write update
 
-### Write invalidate
+### 8.2. Write invalidate
 
 置无效，其核心思想为：当一个 core 修改了一份数据，其他 core 上如果有这份数据的复制，就置为无效。
 
@@ -543,15 +547,15 @@ core 0 和 core 1 中的 x 容易出现数据不一致的情况，比如 core 0 
 
 大部分处理器都使用这个操作。
 
-### Write update
+### 8.3. Write update
 
 写更新：当一个内核修改了一份数据，其他的地方如果有这份数据的赋值，就更新到最新值。
 
 其缺点是会产生频繁的更新动作。
 
-## cache 一致性协议
+## 9. cache 一致性协议
 
-### MESI
+### 9.1. MESI
 
 主要研究基于 Write invalidate 的一致性协议。比较经典的协议就是 MESI 协议。
 
@@ -574,7 +578,7 @@ M 和 E 需要重点理解一下，很明显这四个状态是互斥的，也就
 
 在 MESI 协议中，**cache 控制器**是可以监听 snoop 其他的 cache 的读写操作。
 
-### Other MESI
+### 9.2. Other MESI
 
 AMD 演化了 MOESI 协议，多了一个 O 状态，这个状态是 S 和 M 状态的一种合体，表示本 cache line 中的数据和内存中的数据不一致，不过其他的核可以有这份数据的复制，复制了这份数据的核的这行 cache 的状态为 S.
 
@@ -582,7 +586,7 @@ Intel I7 演化了 MESIF 协议，多的 F 状态表示 Forward, 其含义是可
 
 MESIX 统一都可以称为监听协议(snoop)，监听协议的缺点在于沟通成本很高，所以有一种集中管理的目录协议，可以后续研究。
 
-## 片内可寻址存储器
+## 10. 片内可寻址存储器
 
 通常而言，cache 对用户（程序员）是透明的，但是在 DSP 等性能要求很高的处理器中，处理器存储的一部分作为 cache, 另一部分作为可寻址寄存器，程序员可以直接访问这部分空间。
 
@@ -592,7 +596,7 @@ MESIX 统一都可以称为监听协议(snoop)，监听协议的缺点在于沟�
 
 为什么会是软件去做这件事呢？因为程序是可以知道 CPU 什么时候将要访问数据的，而 cache 不知道。但是这种方法对软件的编写难度造成了很大的挑战。
 
-## Bypass
+## 11. Bypass
 
 > In addition, some CPU instructions may be explicitly **designed to bypass the cache**. For example, some architectures have special **instructions** that allow the CPU to read or write data directly to main memory **without going through the cache**. These instructions are typically used for low-level system operations that require direct access to the main memory or for performance-critical applications where caching may introduce additional latency or overhead.
 
@@ -608,16 +612,16 @@ MESIX 统一都可以称为监听协议(snoop)，监听协议的缺点在于沟�
 
 
 
-## Others
+## 12. Others
 
-### 内存对齐 
+### 12.1. 内存对齐 
 
 为什么要内存对齐(memory memory)[^2]：
 
 1. 平台原因：不是所有的硬件平台都可以访问任意地址上的任意数据，某些平台只能在特定的地址处取某些特定类型的数据，否则抛出硬件异常。
 2. 性能原因：如果访问未对齐的内存，处理器需要两次访存操作；而对齐的内存只需要一次访存操作。
 
-## Reference
+## 13. Reference
 
 [^1]: Computer Organization and Design_ The Hardware Software Interface_ ARM Edition
 [^2]: [一文轻松理解内存对齐](https://cloud.tencent.com/developer/article/1727794)

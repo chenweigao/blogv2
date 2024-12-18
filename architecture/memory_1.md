@@ -1,14 +1,17 @@
 ---
-title: Memory Hierarchy
+title: Virtual Memory and Page
 date: 2022-08-25
 category:
  -  Arm
  -  Computer Architecture
+tag:
+  - TLB
+  - Page
 ---
 
 ## 1. Abstract
 
-本文主要讲述和理解虚拟内存（后文简称 VM， VA 等）、TLB 的概念，行文可能较为跳跃，需要特别注意。
+本文主要讲述和理解虚拟内存（后文简称 VM， VA 等）、Page, TLB 的概念，行文可能较为跳跃，需要特别注意。
 
 ## 2. Virtual Memory
 

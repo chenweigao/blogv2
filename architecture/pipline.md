@@ -5,7 +5,7 @@ category:
  -  Arm
 ---
 
-## Abstract
+## 1. Abstract
 
 本文主要研究流水线技术在计算机体系结构中的应用。流水线技术分为两个大的部分，本部分统一研究流水线的基础知识部分，总体而言可以分为以下几类：
 
@@ -13,7 +13,7 @@ category:
 2. interaction between pipelining and various aspects of instruction set design
 3. etc..
 
-### What is pipeline?
+### 1.1. What is pipeline?
 
 > Pipelining is an implementation technique whereby multiple instructions are overlapped
 > in execution;
@@ -47,7 +47,7 @@ $$
 
 流水线的主要作用还是降低指令的平均执行时间。另一方面，如果每个指令需要多个处理器时钟周期，那么流水线技术可以降低 CPI.
 
-## RISC V Instruction Set
+## 2. RISC V Instruction Set
 
 :::warning 🟢🟢 RISC V 和 ARM 的关系是什么？
 
@@ -77,7 +77,7 @@ $$
 
 以上简单的熟悉导致了流水线实现的显著简化。
 
-### The Classic Five-Stage Pipeline for a RISC Processor
+### 2.1. The Classic Five-Stage Pipeline for a RISC Processor
 
 下图简单给出了 RISC V 五个 stage 的具体细节：
 
@@ -147,7 +147,7 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 
 再说明了，寄存器中的数据可能不仅仅被严格相邻的两个指令使用。并且进行了举例。
 
-## The Major Hurdle of Pipelining—Pipeline Hazards
+## 3. The Major Hurdle of Pipelining—Pipeline Hazards
 
 > There are situations, called hazards, that prevent the next instruction in the instruction stream from executing during its designated clock cycle. Hazards reduce the performance from the ideal speedup gained by pipelining. There are three classes of hazards:
 >
@@ -162,19 +162,19 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 
 说了几个避免冒险的方式。
 
-### Performance of Pipelines With Stalls
+### 3.1. Performance of Pipelines With Stalls
 
 主要是讲述性能优化，暂不研究。
 
-### Data Hazards
+### 3.2. Data Hazards
 
 @todo
 
-### Branch Hazards
+### 3.3. Branch Hazards
 
 @todo
 
-### Reducing the Cost of Branches Through Prediction
+### 3.4. Reducing the Cost of Branches Through Prediction
 
 > As pipelines get deeper and the potential penalty of branches increases, using delayed branches and similar schemes becomes insufficient. 
 >
@@ -189,11 +189,11 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 1. 依赖编译时可用信息的低成本静态方案
 2. 基于程序行为的动态分支预测
 
-#### Static Branch Prediction
+#### 3.4.1. Static Branch Prediction
 
 @todo
 
-#### Dynamic Branch Prediction and Branch-Prediction Buffers
+#### 3.4.2. Dynamic Branch Prediction and Branch-Prediction Buffers
 
 > The simplest dynamic branch-prediction scheme is a branch-prediction buffer or branch history table. A branch-prediction buffer is a small memory indexed by the lower portion of the address of the branch instruction. The memory contains a bit that says whether the branch was recently taken or not. This scheme is the simplest sort of buffer; it has no tags and is useful only to reduce the branch delay when it is longer than the time to compute the possible target PCs.
 
@@ -211,13 +211,13 @@ buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确�
 
 
 
-## How Is Pipelining Implemented?
+## 4. How Is Pipelining Implemented?
 
 > Before we proceed to basic pipelining, we need to review a simple implementation of an unpipelined version of RISC V.
 
 先研究一个没有流水线版本的 RISC V.
 
-### A Simple Implementation of RISC V
+### 4.1. A Simple Implementation of RISC V
 
 > In this subsection, we focus on a pipeline for an integer subset of RISC V that consists of l*oad-store word, branch equal, and integer ALU* operations. 
 >
