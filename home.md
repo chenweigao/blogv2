@@ -1,6 +1,6 @@
 ---
 home: true
-icon: home
+icon: material-symbols:home-and-garden
 title: 项目主页
 heroImage: /apache.svg
 heroText: someone

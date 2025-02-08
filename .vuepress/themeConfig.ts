@@ -9,8 +9,6 @@ export default hopeTheme({
     url: "https://vueblog.weigao.cc",
   },
 
-  iconPrefix: "iconfont icon-",
-
   logo: "excellence.png",
 
   repo: "https://github.com/chenweigao",
@@ -19,14 +17,14 @@ export default hopeTheme({
   // navbar: navbar,
 
   // sidebar
-  sidebar: {
-    "/algorithm/data_struct/": "structure",
-    "/algorithm/": "structure",
-    "/python/": "structure",
-    "/others/tools/": "structure",
-    "/others/tmp/": "structure",
-    "/linux/": "structure"
-  },
+  // sidebar: {
+  //   "/algorithm/data_struct/": "structure",
+  //   "/algorithm/": "structure",
+  //   "/python/": "structure",
+  //   "/others/tools/": "structure",
+  //   "/others/tmp/": "structure",
+  //   "/linux/": "structure"
+  // },
 
   footer: "2017-2022",
 

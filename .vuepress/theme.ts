@@ -12,12 +12,11 @@ export default hopeTheme(
 
         pure: true,
 
+        focus: false,
+
         navbar: zhNavbarConfig,
 
         sidebar: mysidebar,
-
-
-        iconPrefix: "iconfont icon-",
 
         logo: "excellence.png",
 
@@ -85,7 +84,9 @@ export default hopeTheme(
             },
             slimsearch: {
                 indexContent: true,
-                
+            },
+            icon: {
+                assets: "iconify",
             }
         },
         markdown: {
@@ -95,7 +96,8 @@ export default hopeTheme(
                 themes: {
                     light: 'github-light',
                     dark: 'nord',
-                }
+                },
+                // lineNumbers: 15,
             },
             mermaid: true,
             footnote: true,

@@ -19,22 +19,22 @@
     "personal-blog"
   ],
   "dependencies": {
-    "highlight.js": "^11.10.0",
+    "highlight.js": "^11.11.1",
     "sass-loader": "13.2.0",
     "vue": "^3.5.13",
     "vuepress": "2.0.0-rc.19",
     "vuepress-plugin-full-text-search2": "0.5.1",
-    "vuepress-theme-hope": "2.0.0-rc.63"
+    "vuepress-theme-hope": "2.0.0-rc.71"
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.19",
-    "@vuepress/plugin-slimsearch": "2.0.0-rc.66",
+    "@vuepress/plugin-slimsearch": "2.0.0-rc.74",
     "cross-env": "7.0.3",
-    "katex": "^0.16.15",
+    "katex": "^0.16.21",
     "markdownlint-cli": "0.33.0",
     "mermaid": "^11.4.1",
     "prettier": "2.8.3",
-    "sass-embedded": "^1.83.0",
+    "sass-embedded": "^1.83.4",
     "vuepress-plugin-full-text-search2": "0.5.1",
     "vuepress-plugin-search-pro": "2.0.0-rc.59"
   },

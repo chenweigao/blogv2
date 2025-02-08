@@ -3,7 +3,6 @@ title: Cache
 date: 2022-08-24
 category:
  -  Arm
-
 ---
 
 ## 1. Abstract
@@ -28,13 +27,13 @@ category:
 
 ### 1.2. Key Word
 
-| key word              | means        | comments |
-| --------------------- | ------------ | -------- |
+| key word              | means  | comments |
+| --------------------- | ------ | -------- |
 | memory hierarchy      | 内存层次结构 |          |
-| principle of locality | 局部性原理   |          |
-| temporal locality     | 时间局部性   |          |
-| spatial locality      | 空间局部性   |          |
-| Locality of reference | 访问局部性   |          |
+| principle of locality | 局部性原理  |          |
+| temporal locality     | 时间局部性  |          |
+| spatial locality      | 空间局部性  |          |
+| Locality of reference | 访问局部性  |          |
 
 ### 1.3. temporal locality & spatial locality
 
@@ -47,9 +46,9 @@ category:
 🧡🧡 **QA**
 
 - 存储层次结构如何利用时间局部性和空间局部性？
-
+  
   主要是 2 个：将经常访问的数据放在距离处理器更近的地方，将多个连续的“块”移动到上层存储中来利用空间局部性。
-
+  
   接近处理器的存储是比较小和比较快的，除了成本考虑之外，接近处理器的存储比较小的话，其命中率也更高。
 
 - 理解 hit rate, miss rate, hit time, miss penalty
@@ -76,15 +75,15 @@ category:
 从上图中有一个疑问，way 和 set 的区别是什么？
 
 > In a cache, a "way" refers to a set of cache entries that have the same index but different tags. The number of ways in a cache is **determined by the cache's associativity**, which is the number of cache entries that can map to the same index. Each way contains a set of cache entries that are grouped together based on their index.
->
+> 
 > In contrast, a "set" in a cache refers to a group of cache entries that share the same index. A set can contain multiple cache entries, with each entry having a unique tag. The number of sets in a cache is determined by the cache size and block size.
 
 从上述文字也不是很好理解，再参考以下的引文：
 
 > Suppose we have a 4-way set-associative cache with 8 cache entries and a block size of 64 bytes. This means that the cache has 8 sets, each with 4 ways.
->
+> 
 > Here's an example of how the cache might be organized:
->
+> 
 > ```
 > Set 0:
 > Way 0: [Tag 0][Data][Control]
@@ -106,15 +105,13 @@ category:
 > Way 2: [Tag 30][Data][Control]
 > Way 3: [Tag 31][Data][Control]
 > ```
->
+> 
 > In this example, each set contains 4 ways, and each way contains a cache entry with a unique tag, data, and control bits. When the processor requests data from memory, the cache uses the memory address to determine the index and tag of the requested data. The cache then checks the corresponding set and looks for the requested data in each way of that set until it finds the data or determines that it is not in the cache.
-
-
 
 一个 way 多个 cacheline(通常而言)
 
 > To add the cache line to the previous text figure, we can modify it as follows:
->
+> 
 > ```
 > Set 0:
 > Way 0: 
@@ -126,39 +123,35 @@ category:
 
 上述的例子说明了：一个 way 是由很多个 cache entries 组成的（这点在下面的图中也可以得到印证）
 
-
-
 以下是一个例子：
 
 > here's an example to illustrate the relationship between cache size, way, and set:
->
+> 
 > Let's say we have a cache with a total size of 64 KB, a block size of 64 bytes, and a 4-way set-associative mapping.
->
+> 
 > To determine the number of sets in the cache, we can divide the cache size by the product of the block size and the associativity. In this case, we have:
->
+> 
 > Number of sets = cache size / (block size x associativity)
 > Number of sets = 64 KB / (64 bytes x 4)
 > Number of sets = 256
->
+> 
 > This means that the cache has 256 sets. Each set contains four ways, as specified by the 4-way set-associative mapping.
->
+> 
 > To determine the number of cache entries in the cache, we can multiply the number of sets by the number of ways. In this case, we have:
->
+> 
 > Number of cache entries = number of sets x number of ways
 > Number of cache entries = 256 x 4
 > Number of cache entries = 1024
->
+> 
 > This means that the cache has a total of 1024 cache entries. Each cache entry consists of a block of 64 bytes, as specified by the block size.
->
+> 
 > When the processor requests data from memory, the cache uses the memory address to determine the index and tag of the requested data. The cache then checks the corresponding set and looks for the requested data in each of the four ways of that set until it finds the data or determines that it is not in the cache.
->
+> 
 > Overall, this example illustrates how the cache size, block size, and associativity determine the number of sets, ways, and cache entries in a cache, and how these components work together to efficiently cache frequently accessed data and reduce the time spent waiting for data to be fetched from main memory.
 
 量化研究方法如下所描述：
 
 > The set associative organization has four sets with **two blocks** per set, called two-way set associative.
-
-
 
 ## 3. Cache line
 
@@ -167,8 +160,6 @@ category:
 参考 arm 官方的示意图：
 
 ![](https://documentation-service.arm.com/static/5ff5c9fd89a395015c28fc6c?token=)
-
-
 
 有些时候也会用 tag, valid, block 表示，其中 block 表示 cache 中缓存的数据，tag 是该 cache line 对应的内存的地址，valid 表示该 cache line 中的数据是否有效。
 
@@ -223,8 +214,6 @@ category:
 
 :::
 
-
-
 ### 3.2. valid
 
 > We also need a way to recognize that a cache block does not have valid information. For instance, when a processor starts up, the cache does not have good data, and the tag fields will be meaningless.
@@ -235,9 +224,9 @@ valid 的存在是因为我们还需要标识 cache 中的信息是否有效，�
 
 剩下的是 data 或者 block 块，其实在实际的 cache 中，我们长这样（Intrinsity FastMATH data cache 为例）：
 
-| valid | tag  | block 1 | block 2 | …    | block n |
-| ----- | ---- | ------- | ------- | ---- | ------- |
-| 8     | 18   | 32      | 32      | …    | 32      |
+| valid | tag | block 1 | block 2 | …   | block n |
+| ----- | --- | ------- | ------- | --- | ------- |
+| 8     | 18  | 32      | 32      | …   | 32      |
 
 在上述的例子中，block 有多个，实际构成了总的 data,  而每个 block 的定位是依靠地址中的某几个字节分配的偏移量决定的，比如我们一共有 16 个 block, 则地址字段需要分配 4 bit 用于表示偏移量，有些英文文档中称作 multiplexor，那么我们每个 cache line(entry) 中可以保存的总的数据量为：32 bit * 16。
 
@@ -250,8 +239,6 @@ valid 的存在是因为我们还需要标识 cache 中的信息是否有效，�
 这个例子中的 5..2 bit 就是用作定位偏移得的。
 
 > Intrinsity FastMATH data cache  使用了数据 cache 和 指令 cache 分离的设计。
-
-
 
 上述的说明属于比较专业的说法，我们还可以使用较为简单的方式来进行理解（可能会缺少一些严谨性）
 
@@ -270,7 +257,6 @@ valid 的存在是因为我们还需要标识 cache 中的信息是否有效，�
 1. 全相联 cachem, full-associative cache
 2. 直接映射 cache, direct-mapped cache
 3. 组相联 cache, set-associative cache
-
 - 如果一个块可以放在缓存中的任意位置，那么就是全相联的；
 - 如果每个块只能出现在缓冲中的一个位置，就说该缓存是直接映射的；映射的方式为 **（块地址）MOD （缓存中的块数）**；
 - 如果一个块可以放在缓存中由有限个位置组成的组（set）中，就说该缓存是组相联的；在组内，这个块可以放在任意位置；如果组中 n 个块，就叫做 n 路组相联。
@@ -301,12 +287,12 @@ set-associative 将 cache 分成了多个 way, `direvt-mapped == 1 way set-assoc
 
 举例，以下是四路组相联的结构（一路是直接映射）：
 
-| set  | tag   | data  |      | tag   | data  |      | tag   | data  |      | tag   | data  |
-| :--: | ----- | ----- | ---- | ----- | ----- | ---- | ----- | ----- | ---- | ----- | ----- |
-|  0   | way 0 | way 0 |      | way 1 | way 1 |      | way 2 | way 2 |      | way 3 | way 3 |
-|  1   |       |       |      |       |       |      |       |       |      |       |       |
-|  …   |       |       |      |       |       |      |       |       |      |       |       |
-|  n   |       |       |      |       |       |      |       |       |      |       |       |
+| set | tag   | data  |     | tag   | data  |     | tag   | data  |     | tag   | data  |
+|:---:| ----- | ----- | --- | ----- | ----- | --- | ----- | ----- | --- | ----- | ----- |
+| 0   | way 0 | way 0 |     | way 1 | way 1 |     | way 2 | way 2 |     | way 3 | way 3 |
+| 1   |       |       |     |       |       |     |       |       |     |       |       |
+| …   |       |       |     |       |       |     |       |       |     |       |       |
+| n   |       |       |     |       |       |     |       |       |     |       |       |
 
 #### 4.3.1. Arm docs: Set associative caches
 
@@ -327,6 +313,7 @@ cache 被分割成为了一些相同大小的块，称作 ways.
 Figure: a 4-way set associative 32KB data cache, with an 8-word(1 word equals 16 bits) cache line length. This kind of cache structure can be found on the Cortex-A7 or Cortex-A9 processors.
 
 - cache line 的大小是 32 bytes(8 word = 8 * 32 bits =32 bytes, 注意一个 word 在 arm 中是 32bits)
+
 - cache 总大小为 32KB
 
 - 连接方式是 4 路组相连
@@ -344,31 +331,29 @@ Figure: a 4-way set associative 32KB data cache, with an 8-word(1 word equals 16
 #### 4.3.3. QA
 
 1. 我们知道，cacheline 包括 tag, set index 和 offset bit, 其中 offset bit 用于定位数据在 cacheline 中具体的偏移，那么是如何仅根据一个 offset 就能确定具体的数据要取多少个 byte 呢？
-
+   
    要解答这个问题，我们需要知道，在 ldr 或者其他访存类指令发出以后，CPU 是知道这次访问需要的数据大小的(byte); 我之前想不明白的是，是如何知道的呢？其实很简单，我们在指令上已经指定了需要访问的数据大小，如 `ldr x1, #234` 就是通过寄存器指定我们需要的访问是 16 字节。
 
 ### 4.4. Summary
 
 三种方式的对比：
 
-|   机制   |         组的数量          |   每组中块的数量   |
-| :------: | :-----------------------: | :----------------: |
-|  全相联  |             1             |  cache 中块的数量  |
-| 直接映射 |     cache 中块的数量      |         1          |
-|  组相联  | cache 中块的数量 / 相联度 | 相联度（通常2~16） |
+| 机制   | 组的数量              | 每组中块的数量     |
+|:----:|:-----------------:|:-----------:|
+| 全相联  | 1                 | cache 中块的数量 |
+| 直接映射 | cache 中块的数量       | 1           |
+| 组相联  | cache 中块的数量 / 相联度 | 相联度（通常2~16） |
 
 增加相联度的好处通常是降低失效率，失效率的改进来自于减少对于同一位置的竞争而产生的失效。
 
 三种方式进行查找的对比：
 
-|   机制   |      定位方法      | 需要比较的次数 |
-| :------: | :----------------: | :------------: |
-|  全相联  | 查找所有cache 表项 |   cache 容量   |
-|          |    独立的查找表    |       0        |
-| 直接映射 |        索引        |       1        |
-|  组相联  | 索引组，组中的元素 |     相联度     |
-
-
+| 机制   | 定位方法         | 需要比较的次数  |
+|:----:|:------------:|:--------:|
+| 全相联  | 查找所有cache 表项 | cache 容量 |
+|      | 独立的查找表       | 0        |
+| 直接映射 | 索引           | 1        |
+| 组相联  | 索引组，组中的元素    | 相联度      |
 
 ## 5. hit & miss
 
@@ -388,16 +373,14 @@ cache miss：读取时间 XX 或者 XXX 个 cycle
 
 ```mermaid
 flowchart LR
-	1(3C)
-	1.1(Compulsory miss, 强制失效)
-	1.2(Capacity miss, 容量失效)
-	1.3(Conflict miss, 冲突失效)
-	1 --> 1.1 & 1.2 & 1.3
-	1.2.1(增加cache)
-	1.2 -.- 1.2.1
+    1(3C)
+    1.1(Compulsory miss, 强制失效)
+    1.2(Capacity miss, 容量失效)
+    1.3(Conflict miss, 冲突失效)
+    1 --> 1.1 & 1.2 & 1.3
+    1.2.1(增加cache)
+    1.2 -.- 1.2.1
 ```
-
-
 
 ### 5.2. Ways to lower miss rate
 
@@ -428,9 +411,9 @@ flowchart LR
 处理缓存 miss 的步骤大概可以总结如下（主要研究指令 miss）：
 
 1. 发送 PC 值到内存
-
+   
    Since the program counter is incremented in the first clock cycle of execution, the address of **the instruction that generates an instruction cache miss** is equal to the value of the program counter minus 4.
-
+   
    如何理解 the instruction that generates an instruction cache miss? 其实我们只要了解到，cache miss 以后，PC 寄存器向前走了，所以这时候我们需要向后走去找到这个 miss 的指令的地址，然后再去内存中找，就可以了！
 
 2. 控制主存执行读取，并等待内存完成访问
@@ -483,8 +466,8 @@ Write buffer 中保存了准备写入内存的数据，处理器同时写入 cac
 
 cache 为了知道某个 line 的内容有没有被修改，于是增加了一个新的标志位：**dirty**, 增加以后的 cache line 结构如下所示：
 
-| dirty | valid | tag  | block |
-| ----- | ----- | ---- | ----- |
+| dirty | valid | tag | block |
+| ----- | ----- | --- | ----- |
 
 具体的 dirty 的用法如下：
 
@@ -506,11 +489,11 @@ Write miss 这个第一眼看过去似乎是比较奇特的，写也会 Miss 吗
 考虑 write through 场景下的一个 write miss, 在 write through 中，有两种策略：
 
 1. write allocate
-
+   
    在缓存中分配一个 block, 然后用内存中的 block 覆盖之。
 
 2. no write allocate
-
+   
    更新内存中的 block, 但是不放入 cache 中。这种场景可能适用于计算机清零某一页的内容这样的情况，有些计算机是允许按页更改写入分配策略的。
 
 ## 8. cache 一致性
@@ -519,18 +502,18 @@ Write miss 这个第一眼看过去似乎是比较奇特的，写也会 Miss 吗
 
 定义：主要体现在不同 core 的 cache 中数据不同。
 
-	-----------------------------------------
-	|       多核处理器                       |
-	| -----------------   ----------------  |
-	| |     core 0     |  |     core 1    | |
-	| |  cache 0(x = 3)|  | cache 1(x = 5)| |
-	| ------------------  ----------------- |
-	|-------------------------------------- |
-	
-		------------------------------
-		|     memory (x = 3)          |
-		|                             |
-		-------------------------------
+    -----------------------------------------
+    |       多核处理器                       |
+    | -----------------   ----------------  |
+    | |     core 0     |  |     core 1    | |
+    | |  cache 0(x = 3)|  | cache 1(x = 5)| |
+    | ------------------  ----------------- |
+    |-------------------------------------- |
+    
+        ------------------------------
+        |     memory (x = 3)          |
+        |                             |
+        -------------------------------
 
 core 0 和 core 1 中的 x 容易出现数据不一致的情况，比如 core 0 将 x 进行了修改，但是 core 1 不知道 x 已经被修改了，还在使用旧值，这样就会导致数据不一致的问题。
 
@@ -563,12 +546,12 @@ core 0 和 core 1 中的 x 容易出现数据不一致的情况，比如 core 0 
 
 MESI 协议中有 2 bit 用于 cache line 的状态位，如下表：
 
-| 状态 | 全程      | 描述                                                         |
-| ---- | --------- | ------------------------------------------------------------ |
-| M    | Modified  | 这行数据被修改了，和内存中的数据不一致                       |
-| E    | Exclusive | 这行数据有效，数据和内存中一致，数据只存在于本 core 的 cache 中 |
-| S    | Shared    | 这行数据有效，数据和内存中一致，数据存在于很多 cache 中      |
-| I    | Invalid   | 这行数据无效                                                 |
+| 状态  | 全程        | 描述                                     |
+| --- | --------- | -------------------------------------- |
+| M   | Modified  | 这行数据被修改了，和内存中的数据不一致                    |
+| E   | Exclusive | 这行数据有效，数据和内存中一致，数据只存在于本 core 的 cache 中 |
+| S   | Shared    | 这行数据有效，数据和内存中一致，数据存在于很多 cache 中        |
+| I   | Invalid   | 这行数据无效                                 |
 
 M 和 E 需要重点理解一下，很明显这四个状态是互斥的，也就是说：
 
@@ -603,18 +586,16 @@ MESIX 统一都可以称为监听协议(snoop)，监听协议的缺点在于沟�
 在 ARM 中，无需访问 cache 直接获取数据的指令有：
 
 > the ARM architecture has several special instructions that allow the CPU to bypass the cache and access data directly from the main memory or peripheral devices. Here are a few examples:
->
+> 
 > 1. LDM/STM instructions: The Load Multiple (LDM) and Store Multiple (STM) instructions allow the CPU to load or store multiple registers directly to or from the main memory without going through the cache. These instructions are commonly used for low-level system operations such as interrupt handling and context switching.
 > 2. LDR/STR instructions with the "B" flag: The Load Register (LDR) and Store Register (STR) instructions have a "B" flag that allows the CPU to bypass the cache and access data directly from the main memory. This flag is typically used for performance-critical applications where caching may introduce additional latency or overhead.
 > 3. DMA instructions: The Direct Memory Access (DMA) instructions allow the CPU to bypass the cache and transfer data directly between the main memory and peripheral devices. These instructions are commonly used for high-speed data transfer operations such as video and audio processing.
->
+> 
 > Overall, the ARM architecture provides several special instructions that allow the CPU to bypass the cache and access data directly from the main memory or peripheral devices, depending on the specific requirements of the application or system.
-
-
 
 ## 12. Others
 
-### 12.1. 内存对齐 
+### 12.1. 内存对齐
 
 为什么要内存对齐(memory memory)[^2]：
 
@@ -624,9 +605,6 @@ MESIX 统一都可以称为监听协议(snoop)，监听协议的缺点在于沟�
 ## 13. Reference
 
 [^1]: Computer Organization and Design_ The Hardware Software Interface_ ARM Edition
-[^2]: [一文轻松理解内存对齐](https://cloud.tencent.com/developer/article/1727794)
+[一文轻松理解内存对齐](https://cloud.tencent.com/developer/article/1727794)
 
 [^3]: [Set associative caches](https://developer.arm.com/documentation/den0013/d/Caches/Cache-architecture/Set-associative-caches)
-
-
-

@@ -1,11 +1,11 @@
 ---
 home: true
 layout: BlogHome
-icon: home
+icon: material-symbols:book-2
 title: 博客主页
 # heroImage: /bg1.jpeg
 bgImage: /goodluck.png
-heroText: Happy Work, Happy Life
+heroText: try to be better
 heroFullScreen: true
 # tagline: wiki & blog
 projects:

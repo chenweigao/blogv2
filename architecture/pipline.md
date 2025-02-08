@@ -21,7 +21,7 @@ category:
 流水线的概念理解较为简单。
 
 > In a computer pipeline, each *step* in the pipeline completes a part of an instruction. 
->
+> 
 > Like the assembly line, different steps are completing different parts of different instructions
 > in parallel. Each of these steps is called a *pipe stage* or a *pipe segment*.
 > The stages are connected one to the next to form a pipe—instructions enter at one end, progress through the stages, and exit at the other end, just as cars would in an assembly line.
@@ -58,11 +58,11 @@ $$
 虽然阅读的这本书使用的是 RISC V 指令集，但是其他的 RISC 也是类似的。
 
 > All RISC architectures are characterized by a few key properties:
->
+> 
 > - All operations on data apply to data in registers and typically change the entire register (32 or 64 bits per register).
 > - The only operations that affect memory are load and store operations that move data from memory to a register or to memory from a register, respectively. Load and store operations that load or store less than a full register (e.g., a byte, 16 bits, or 32 bits) are often available.
 > - The instruction formats are few in number, with all instructions typically being one size. In RISC V, the register specifiers: `rs1`, `rs2`, and `rd` are always in the same place simplifying the control.
->
+> 
 > These simple properties lead to dramatic simplifications in the implementation of pipelining, which is why these instruction sets were designed this way.
 
 所有的 RISC 体系结构都具有以下的关键属性：
@@ -70,7 +70,7 @@ $$
 - 对数据的所有操作都适用于寄存器中的数据，并且通常会更改整个寄存器。
 
 - 影响存储的唯一操作是 load 和 store. load 是将数据从内存移动到寄存器，store 是将数据从寄存器移动到内存。load 或者 store 小于完整寄存器也是可以的。
-
+  
   ❌❌❌ 第一条和第二条似乎有点矛盾？
 
 - 指令格式的数量很少，所有指令通常都是一个尺寸。
@@ -83,10 +83,10 @@ $$
 
 ```mermaid
 flowchart LR
-	IF --> ID
-	ID --> EX
-	EX --> MEM
-	MEM --> WB
+    IF --> ID
+    ID --> EX
+    EX --> MEM
+    MEM --> WB
 ```
 
 - IF: instruction fetch
@@ -110,7 +110,7 @@ flowchart LR
 使用单独的指令和数据缓存。
 
 > The use of separate caches eliminates a conflict for a single memory that would arise between instruction fetch and data memory access. 
->
+> 
 > Notice that if our pipelined processor has a clock cycle that is equal to that of the unpipelined version, the memory system must deliver five times the bandwidth. This increased demand is one cost of higher performance.
 
 使用单独的缓存消除了指令获取数据访问之间可能存在的单个内存冲突。
@@ -118,7 +118,7 @@ flowchart LR
 但是需要注意，其代价是内存系统必须提供五倍的带宽（5 clock cycle 的情况下）。
 
 > Second, the register file is used in the two stages: one for reading in ID and one for writing in WB. These uses are distinct, so we simply show the register file in two places. *Hence, we need to perform two reads and one write every clock cycle.*
->
+> 
 > To handle reads and a write to the same register (and for another reason, which will become obvious shortly), we perform the register write in the first half of the clock cycle and the read in the second half.
 
 register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，这两种用法是不同的。
@@ -132,7 +132,7 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 上述描述暂时不是很关键。总的来说还是确保硬件资源如 PC, ALU 等不被同时使用。
 
 > Although it is critical to ensure that instructions in the pipeline do not attempt to use the hardware resources at the same time, we must also ensure that instructions in different stages of the pipeline do not interfere with one another. 
->
+> 
 > This separation is done by introducing pipeline registers between successive stages of the pipeline, so that at the end of a clock cycle all the results from a given stage are stored into a register that is used as the input to the next stage on the next clock cycle. Figure C.3 shows the pipeline drawn with these pipeline registers.
 
 虽然确保 pipeline 中的指令不会同时尝试使用硬件资源至关重要，但是我们还必须确保 pipeline 不同阶段的指令不会互相干扰。
@@ -140,7 +140,7 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 这种分离是通过在流水线的连续 stage 之间引入流水线寄存器来实现的，以便于在时钟周期结束时，给定 stage 的结果都存储到一个寄存器中，该寄存器用作下一个 clock cycle 的输入。
 
 > Although many figures will omit such registers for simplicity, they are required to make the pipeline operate properly and must be present.  Of course, similar registers would be needed even in a multicycle data path that had no pipelining (because only values in registers are preserved across clock boundaries). 
->
+> 
 > In the case of a pipelined processor, the pipeline registers also play the key role of carrying intermediate results from one stage to another where the source and destination may not be directly adjacent. For example, the register value to be stored during a store instruction is read during ID, but not actually used until MEM; it is passed through two pipeline registers to reach the data memory during the MEM stage. Likewise, the result of an ALU instruction is computed during EX, but not actually stored until WB; it arrives there by passing through two pipeline registers. It is sometimes useful to name the pipeline registers, and we follow the convention of naming them by the pipeline stages they connect, so the registers are called IF/ID, ID/EX, EX/MEM, and MEM/WB.
 
 先说明了流水线寄存器虽然在很多的图里面没有被画出来，但是其必不可少。
@@ -150,7 +150,7 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 ## 3. The Major Hurdle of Pipelining—Pipeline Hazards
 
 > There are situations, called hazards, that prevent the next instruction in the instruction stream from executing during its designated clock cycle. Hazards reduce the performance from the ideal speedup gained by pipelining. There are three classes of hazards:
->
+> 
 > 1. **Structural hazards** arise from resource conflicts when the hardware cannot support all possible combinations of instructions simultaneously in overlapped execution. In modern processors, structural hazards occur primarily in special purpose functional units that are less frequently used (such as floating point divide or other complex long running instructions). They are not a major performance factor, assuming programmers and compiler writers are aware of the lower throughput of these instructions. Instead of spending more time on this infrequent case, we focus on the two other hazards that are much more frequent.
 > 2. **Data hazards** arise when an instruction depends on the results of a previous instruction in a way that is exposed by the overlapping of instructions in the pipeline.
 > 3. **Control hazards** arise from the pipelining of branches and other instructions that change the PC.
@@ -177,7 +177,7 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 ### 3.4. Reducing the Cost of Branches Through Prediction
 
 > As pipelines get deeper and the potential penalty of branches increases, using delayed branches and similar schemes becomes insufficient. 
->
+> 
 > Instead, we need to turn to more aggressive means for predicting branches. Such schemes fall into two classes: low-cost static schemes that rely on information available at compile time and strategies that predict branches dynamically based on program behavior. We discuss both approaches here.
 
 随着流水线的加深，其潜在的惩罚增加，使用一些弱鸡的方法已经不再那么高效了。
@@ -209,8 +209,6 @@ register file 被两个 stages 用了：在 ID 中读取，在 WB 中写入，�
 
 buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确性。
 
-
-
 ## 4. How Is Pipelining Implemented?
 
 > Before we proceed to basic pipelining, we need to review a simple implementation of an unpipelined version of RISC V.
@@ -220,7 +218,7 @@ buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确�
 ### 4.1. A Simple Implementation of RISC V
 
 > In this subsection, we focus on a pipeline for an integer subset of RISC V that consists of l*oad-store word, branch equal, and integer ALU* operations. 
->
+> 
 > Later in this appendix we will incorporate the basic floating-point operations. Although we discuss only a subset of RISC V, the basic principles can be extended to handle all the instructions; for example, adding store involves some additional computing of the immediate field. We initially used a less aggressive implementation of a branch instruction. We show how to implement the more aggressive version at the end of this section.
 
 我们讨论 RISC V 的一个子集。
@@ -231,26 +229,26 @@ buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确�
 接下来说明 5 个 clock cycle 的分别构成：
 
 1. Instruction fetch cycle(IF)
-
+   
    ```
    IR <- Mem[PC];
    NPC <- PC + 4;
    ```
-
+   
    > Operation—Send out the PC and fetch the instruction from memory into the instruction register (IR); increment the PC by 4 to address the next sequential instruction. The IR is used to hold the instruction that will be needed on subsequent clock cycles; likewise, the register NPC is used to hold the next sequential PC.
 
 其操作是发送出去 PC 并将指令从内存中读取出来到**指令寄存器 IR**；将 PC 递增 4 以寻址下一个顺序指令。IR 用于保存后续时钟周期所需的指令，同样，寄存器 *NPC 用于保存下一个顺序 PC*.
 
 2. Instruction decode/register fetch cycle (ID)
-
+   
    ```
    A <- Regs[rs1];
    B <- Regs[rs2];
    Imm <- sign-extended immediate field of IR;
    ```
-
+   
    > Operation—Decode the instruction and access the register file to read the registers (`rs1` and `rs2` are the register specifiers). The outputs of the general-purpose registers are read into two temporary registers (A and B) for use in later clock cycles. The lower 16 bits of the IR are also sign extended and stored into the temporary register `Imm`, for use in the next cycle. 
-   >
+   > 
    > Decoding is done in parallel with reading registers, which is possible because these fields are at a fixed location in the RISC V instruction format. Because the immediate portion of a load and an ALU immediate is located in an identical place in every RISC V instruction, the sign-extended immediate is also calculated during this cycle in case it is needed in the next cycle. For stores, a separate sign-extension is needed, because the immediate field is split in two pieces.
 
 其操作是解码指令并访问 register file 以读取寄存器，通用寄存器的输出被读入两个临时寄存器 A 和 B, 以便于在后续的时钟周期中使用。IR 的低 16 bit也被扩展并存储到临时寄存器 `Imm` 中，供下一个 cycle 使用。
@@ -262,7 +260,7 @@ buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确�
 3. Execution/effective address cycle (EX)
 
 > The ALU operates on the operands prepared in the prior cycle, performing one of four functions depending on the RISC V instruction type:
->
+> 
 > - Memory reference:
 >   `ALU Output <- A + Imm;`
 >   Operation—The ALU adds the operands to form the effective address and places the result into the register ALU Output.
@@ -289,7 +287,7 @@ buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确�
 4. Memory access/branch completion cycle (MEM)
 
 > The PC is updated for all instructions: `PC <- NPC`;
->
+> 
 > - Memory reference:
 >   `LMD <- Mem[ALUOutput] or Mem[ALUOutput] <- B;`
 >   Operation—Access memory if needed. If the instruction is a load, data return from memory and are placed in the LMD (load memory data) register; if it is a store, then the data from the B register are written into memory. In either case, the address used is the one computed during the prior cycle and stored in the register ALU Output.
@@ -298,13 +296,13 @@ buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确�
 >   Operation—If the instruction branches, the PC is replaced with the branch destination
 >   address in the register ALU Output.
 
-​		
+​        
 
 5. Write-back cycle (WB)
 
 > - Register-register or Register-immediate ALU instruction:
 >   `Regs[rd] <- ALU Output;`
->
+> 
 > - Load instruction:
 >   `Regs[rd] <- LMD;`
 >   Operation—Write the result into the register file, whether it comes from the memory system (which is in LMD) or from the ALU (which is in ALU Output) with rd designating the register.
@@ -320,6 +318,3 @@ buffer 的性能取决于预测兴趣分支的频率和预测匹配时的准确�
 最后一步是写回操作；目标是写入寄存器堆中。
 
 🟢🟢 注意到上述是不考虑流水线的情况下的实现。
-
-
-

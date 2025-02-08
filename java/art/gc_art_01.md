@@ -1,5 +1,5 @@
 ---
-title: Art GC Overview
+title: Java GC - Concurrent Copying(Art)
 date: 2022-11-28
 tag:
  - jvm

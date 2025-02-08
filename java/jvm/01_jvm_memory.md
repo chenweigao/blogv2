@@ -1,5 +1,5 @@
 ---
-title: JVM Basic - Memory
+title: JVM Memory
 date: 2024-12-15
 tag:
  - jvm
@@ -9,10 +9,39 @@ category:
  - JVM
 ---
 
+JVM 的软件架构如下：
 
-JAVA 内存布局如下图所示：
+![img](../images/b9dcbe63-9bfa-4323-8f40-97c48ca6e7a4.png)JAVA 内存布局如下图所示：
 
 ![JVM MEM](../images/jvm_mem.webp)
+
+通过对典型应用的 JVM 内存进行拆解，如下：
+
+```shell
+Total: reserved=15538605KB, committed=14221757KB
+
+Java Heap (reserved=9601024KB, committed=9601024KB)
+Class (reserved=2095827KB, committed=1215827KB)    
+	Metadata (reserved=995328KB, committed=993536KB) 
+	## 每个类的元数据：类名、方法、字段描述    
+	
+	Class space (reserved=1048576KB, committed=170368KB) 
+	## 为类加载器存储的数据预留的空间
+Thread (reserved=43505KB, committed=10101KB) 
+## 包括线程栈和线程本地存储    
+	stack (reserved=43505KB, committed=10101KB) 
+	## 对每个线程分配的栈空间，大小可通过 -Xss 配置
+
+Code (reserved=977086KB, committed=573642KB) # 为 JIT 编译器预留的内存
+GC (reserved=495136KB, committed=495136KB) # 为 GC 预留的内存
+Compiler (reserved=734KB, committed=734KB)
+Internal (reserved=20654KB, committed=20654KB) #JVM 内部使用的内存，依赖于 JVM 的实现
+Other (reserved=733088KB, committed=733088KB) 
+## Native Memory Tracking, Arena Chunk, Logging, 
+## Arguments, Module,Synchronizer, Safepoint, Wisp, null
+```
+
+
 
 下面章节对这些区域进行逐一说明。
 
@@ -20,7 +49,7 @@ JAVA 内存布局如下图所示：
 
 JVM 在运行时的数据区大致如下图所示：
 
-![stack_jvm](../images/stack.webp)
+<img src="../images/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f.jpg" alt="1ccdb38e-07aa-41a5-9bfb-0d140fe7149f.jpg" style="display: block; margin: 0 auto; zoom: 50%;" />
 
 准确来说，栈区包括虚拟机栈、本地方法栈；PC 寄存器是很小的一块内存空间，指向当前线程所执行的字节码的行号，如果线程执行的是 Java 方法，则指向虚拟机字节码指令的地址；如果执行的是 native 方法，这个计数器通常为空。
 VM Stack 是线程私有，生命周期与线程相同。如章节 1.1 中的图片所示，VM Stack 中有若干的栈帧 (Stack Frame)，每一个 Stack Frame 都对应一个方法。通常大家说的虚拟机中的栈都会特指 VM Stack.
@@ -34,6 +63,8 @@ VM Stack 是线程私有，生命周期与线程相同。如章节 1.1 中的图
 本地方法栈主要是为虚拟机使用到的 Native 方法服务。
 
 ## 2. 堆
+
+<img src="../images/db26f870-7ab0-4c24-a328-e6c8f86ab699.png" alt="db26f870-7ab0-4c24-a328-e6c8f86ab699.png" style="display: block; margin: 0 auto; zoom:70%;" />
 
 ### 2.1. 对象创建与内存布局
 
@@ -49,7 +80,7 @@ CodeCache 内存主要存储 JVM 动态生成的代码。动态生成的代码�
 上章节提到的 NonProfiledHotCodeHeap 是属于 JIT 编译的产物，所以是 CodeCache 的一部分。
 code cache 会被分成三块区域，可以使用 `jcmd <pid> Compiler.codecache` 打印出各个区域的情况，如下图所示：
 
-![codecache](../images/codecache.jpg)
+<img src="../images/codecache.jpg" alt="codecache" style="display: block; margin: 0 auto; zoom: 25%;" />
 
 这三个区域的含义如下：
 1. non-nmethods, 也叫做 JVM internal (non-method) code，通常包括 compiler buffers 和 bytecode interpreter 等，这些代码通常永久保存在 codecache 中；itable/vtable stub 这些函数就保存在该区域。
@@ -63,8 +94,8 @@ JVM 的 THP 重排就是针对 non-profiled code heap 中的 non-profiled hot co
 
 浅堆和深堆通常是计算机科学中特别是在垃圾回收领域讨论的两个概念。它们通常用于分析对象在内存中的占用情况。
 
-1. **浅堆（Shallow Heap）**浅堆大小指的是一个**对象本身在堆内存中的大小**，不包括该对象引用的其他对象所占的内存。例如，一个 Java 对象的浅堆大小只计算该对象的数据字段和对象头（如类元数据引用、锁信息等）所占据的内存。
-2. **深堆（****Retained** **Heap）**深堆大小是指**对象本身以及从该对象可达的所有其他对象所占的内存之和**。这意味着它考虑了整个对象图的内存占用，是一个递归的大小计算。计算深堆大小通常用于了解某个对象及其相关对象链的整体内存使用情况。
+1. **浅堆（Shallow Heap）** 浅堆大小指的是一个**对象本身在堆内存中的大小**，不包括该对象引用的其他对象所占的内存。例如，一个 Java 对象的浅堆大小只计算该对象的数据字段和对象头（如类元数据引用、锁信息等）所占据的内存。
+2. **深堆（Retained Heap）** 深堆大小是指对象本身以及从该对象可达的所有其他对象所占的内存之和。这意味着它考虑了整个对象图的内存占用，是一个递归的大小计算。计算深堆大小通常用于了解某个对象及其相关对象链的整体内存使用情况。
 
 在性能分析中，浅堆和深堆的区别可以帮助开发者识别内存泄漏和优化内存使用。例如，通过分析一个应用程序中某个对象的深堆大小，开发者可以识别出由于复杂的对象引用导致的高内存消耗情况。
 

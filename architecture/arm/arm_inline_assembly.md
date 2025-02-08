@@ -1,10 +1,8 @@
 ---
-title: Arm In-line Assembly
+title: "ISA: Arm In-line Assembly"
 date: 2022-12-03
 category:
  -  Arm
-
-
 ---
 
 ## __asm
@@ -173,6 +171,32 @@ static inline uint64_t arch_counter_get_cntpct() {
 ```
 
 `CNTVCT_EL0` 寄存器为一个不需要开启用户态访问权限也能访问到的寄存器。
+
+### TSC
+
+这里引出了 TSC 的相关知识：
+
+**核心原理**
+
+- TSC 是一个 64 位寄存器（`IA32_TIME_STAMP_COUNTER`），直接集成在 CPU 中。
+- 每个 CPU 核独立拥有自己的 TSC，其值随处理器时钟周期递增。
+- 在传统的 **固定频率 CPU** 中，TSC 递增速率等于 CPU 主频（例如 3 GHz → 每纳秒增加 3 次）。
+- 现代 CPU（如 Intel Nehalem 后）支持 **恒定 TSC（Constant TSC）**，即使 CPU 因节能降频（如 C-states/P-states），TSC 仍以固定速率递增（基于标称基频）。
+
+**读取指令**：
+
+- x86：通过 `RDTSC` 或 `RDTSCP`（原子性更强）指令读取。
+- ARM：对应 `CNTVCT_EL0` 系统寄存器（需特权访问）。
+
+x86 读取的例子：
+
+```asm
+rdtsc          ; 将 TSC 低32位存入 EAX，高32位存入 EDX
+shl rdx, 32    ; RDX 左移32位
+or rax, rdx    ; RAX = 完整的64位 TSC 值
+```
+
+
 
 ### memcpy
 
