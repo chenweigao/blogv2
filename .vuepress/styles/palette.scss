@@ -1,20 +1,22 @@
-
-
 @font-face {
     font-family: 'DingTalk';
     src: url('/fonts/DingTalk-JinBuTi.woff2') format('woff2'),
-         url('/fonts/DingTalk-JinBuTi.woff') format('woff'),
-         url('/fonts/DingTalk-JinBuTi.ttf') format('truetype');
+        url('/fonts/DingTalk-JinBuTi.woff') format('woff'),
+        url('/fonts/DingTalk-JinBuTi.ttf') format('truetype');
     font-display: swap;
-  }
-  
-//   @font-face {
-//     font-family: 'alibabafont';
-//     src: url('/fonts/Alibaba_PuHuiTi_2.0_55_Regular_55_Regular.woff2') format('woff2'),
-//          url('/fonts/alimama_fangyuan_LWMavKt6Z00Z.woff') format('woff');
-//         //  url('/fonts/Alibaba_PuHuiTi_2.0_55_Regular_55_Regular.ttf') format('truetype');
-//     font-display: swap;
-//   }
+}
 
-$vp-font: 'Georgia, -apple-system, "Nimbus Roman No9 L", "PingFang SC", "Hiragino Sans GB", "Noto Serif SC", "Microsoft Yahei", "WenQuanYi Micro Hei", "ST Heiti", sans-serif';
+@font-face {
+    font-family: 'alibabafont';
+    // src: url('/fonts/SourceHanSerifCN-VF.otf.woff2') format('woff2'),
+    //  url('/fonts/alimama_fangyuan_LWMavKt6Z00Z.woff') format('woff');
+    src: url('/fonts/lmroman17-regular.otf') format('truetype');
+    font-display: swap;
+}
+
+body {
+    font-family: '”alibabafont“', serif;
+}
+
+// $vp-font: 'Georgia, -apple-system, "Nimbus Roman No9 L", "PingFang SC", "Hiragino Sans GB", "Noto Serif SC", "Microsoft Yahei", "WenQuanYi Micro Hei", "ST Heiti", sans-serif';
 $vp-font-heading: '"DingTalk", sans-serif';
