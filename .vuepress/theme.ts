@@ -105,6 +105,10 @@ export default hopeTheme(
             spoiler: true,
             alert: true,
             mark: true,
+            imgLazyload: true,
+            imgMark: true,
+            imgSize: true,
+            chartjs: true,
         },
 
 

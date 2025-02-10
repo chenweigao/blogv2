@@ -22,7 +22,7 @@ dependencies:
     version: 0.5.1(vuepress@2.0.0-rc.19)
   vuepress-theme-hope:
     specifier: 2.0.0-rc.71
-    version: 2.0.0-rc.71(@vuepress/plugin-slimsearch@2.0.0-rc.74)(katex@0.16.21)(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19)
+    version: 2.0.0-rc.71(@vuepress/plugin-slimsearch@2.0.0-rc.74)(chart.js@4.4.7)(katex@0.16.21)(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19)
 
 devDependencies:
   '@vuepress/bundler-vite':
@@ -31,6 +31,9 @@ devDependencies:
   '@vuepress/plugin-slimsearch':
     specifier: 2.0.0-rc.74
     version: 2.0.0-rc.74(vuepress@2.0.0-rc.19)
+  chart.js:
+    specifier: ^4.4.7
+    version: 4.4.7
   cross-env:
     specifier: 7.0.3
     version: 7.0.3
@@ -517,6 +520,9 @@ packages:
 
   /@jridgewell/sourcemap-codec@1.5.0:
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
+
+  /@kurkle/color@0.3.4:
+    resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
   /@lit-labs/ssr-dom-shim@1.3.0:
     resolution: {integrity: sha512-nQIWonJ6eFAvUUrSlwyHDm/aE8PBDu5kRpL0vHMg6K8fK3Diq1xdPjTnsJSwxABhaZ+5eBi1btQB5ShUTKo4nQ==}
@@ -2359,6 +2365,12 @@ packages:
   /character-entities-legacy@3.0.0:
     resolution: {integrity: sha512-RpPp0asT/6ufRm//AJVwpViZbGM/MkjQFxJccQRHmISF/22NBtsHqAWmL+/pmkPWoIUJdWyeVleTl1wydHATVQ==}
     dev: false
+
+  /chart.js@4.4.7:
+    resolution: {integrity: sha512-pwkcKfdzTMAU/+jNosKhNL2bHtJc/sSmYgVbuGTEDhzkrhmyihmP7vUc/5ZK9WopidMDHNe3Wm7jOd/WhuHWuw==}
+    engines: {pnpm: '>=8'}
+    dependencies:
+      '@kurkle/color': 0.3.4
 
   /cheerio-select@2.1.0:
     resolution: {integrity: sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g==}
@@ -4627,7 +4639,7 @@ packages:
       - typescript
     dev: false
 
-  /vuepress-plugin-md-enhance@2.0.0-rc.71(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19):
+  /vuepress-plugin-md-enhance@2.0.0-rc.71(chart.js@4.4.7)(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19):
     resolution: {integrity: sha512-0w5PAXUE4z9hFcM7ig/BlBn874JzX+7B59TPUWrehyeVfdldPPGA5m1v0+30+9jGotANk5cwfhqtI0KT7Lrn3Q==}
     engines: {node: '>=18.19.0', npm: '>=8', pnpm: '>=7', yarn: '>=2'}
     peerDependencies:
@@ -4682,6 +4694,7 @@ packages:
       '@vuepress/plugin-sass-palette': 2.0.0-rc.74(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19)
       '@vueuse/core': 12.5.0
       balloon-css: 1.2.0
+      chart.js: 4.4.7
       js-yaml: 4.1.0
       mermaid: 11.4.1
       sass-embedded: 1.83.4
@@ -4757,7 +4770,7 @@ packages:
       - typescript
     dev: false
 
-  /vuepress-theme-hope@2.0.0-rc.71(@vuepress/plugin-slimsearch@2.0.0-rc.74)(katex@0.16.21)(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19):
+  /vuepress-theme-hope@2.0.0-rc.71(@vuepress/plugin-slimsearch@2.0.0-rc.74)(chart.js@4.4.7)(katex@0.16.21)(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19):
     resolution: {integrity: sha512-tZbdXIYiYZHYLIhNdxWTHnbjCKhJWTFFkCqC73jBqBr9gqYyuzfQ/fSPWh/xaqwe/v33AUzJ2QHKao86m78mjg==}
     engines: {node: '>=18.19.0', npm: '>=8', pnpm: '>=7', yarn: '>=2'}
     peerDependencies:
@@ -4839,7 +4852,7 @@ packages:
       vue: 3.5.13
       vuepress: 2.0.0-rc.19(@vuepress/bundler-vite@2.0.0-rc.19)(vue@3.5.13)
       vuepress-plugin-components: 2.0.0-rc.71(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19)
-      vuepress-plugin-md-enhance: 2.0.0-rc.71(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19)
+      vuepress-plugin-md-enhance: 2.0.0-rc.71(chart.js@4.4.7)(markdown-it@14.1.0)(mermaid@11.4.1)(sass-embedded@1.83.4)(sass-loader@13.2.0)(vuepress@2.0.0-rc.19)
       vuepress-shared: 2.0.0-rc.71(vuepress@2.0.0-rc.19)
     transitivePeerDependencies:
       - '@vue/repl'
