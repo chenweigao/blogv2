@@ -11,7 +11,7 @@ category:
 
 ## 2. Introduction
 
-###  2.1. 研究背景
+### 2.1. 研究背景
 
 随着计算机硬件技术的快速发展，处理器（CPU）性能不断提升，但主存（DRAM）访问速度的进步相对较慢，导致“存储墙”问题（Memory Wall）。为了弥补 CPU 和内存之间的速度差异，现代计算机体系结构采用了分层存储结构（Memory Hierarchy），其中缓存（Cache）作为高速缓存存储器，减少了 CPU 直接访问主存的次数，提高了数据访问速度。
 
@@ -21,7 +21,7 @@ category:
 
 :::
 
-###  2.2. 研究目标
+### 2.2. 研究目标
 
 本文主要研究存储层次结构中的 cache 环节，主要研究内容包括：
 
@@ -46,7 +46,7 @@ category:
 
 ### 3.1. 局部性原理
 
-缓存的高效性主要依赖于**局部性原理Principle of Locality）**：
+缓存的高效性主要依赖于**局部性原理（Principle of Locality）**：
 
 - **时间局部性（Temporal Locality）**：如果某个数据被访问过，它很可能在不久的将来再次被访问。例如，循环中的指令通常会多次执行。以 loop 为例, 被引用过一次的存储器位置在未来会被多次引用。
 - **空间局部性（Spatial Locality）**：如果某个数据被访问，那么它周围的数据很可能在不久后也被访问。典型的例子就是数组。
@@ -70,10 +70,12 @@ category:
 现代计算机的存储层次结构通常包括：
 
 1. **寄存器（Registers）**：最快速但容量最小的存储器。
-2. **L1 缓存**（一级缓存）：直接集成在 CPU 内部，访问延迟极低。
-3. **L2/L3 缓存**（二/三级缓存）：容量更大，访问延迟相对较高。
+2. **L1 Cache**（一级缓存）：直接集成在 CPU 内部，访问延迟极低。
+3. **L2/L3 Cache**（二/三级缓存）：容量更大，访问延迟相对较高。
 4. **主存（Main Memory）**：通常为 DRAM，访问延迟较高。
 5. **磁盘存储（Disk Storage）**：如 SSD 或 HDD，速度远低于主存。
+
+层次结构可以用下图表示：
 
 ```mermaid
 graph TD;
@@ -84,19 +86,17 @@ graph TD;
   E --> F[磁盘存储 SSD/HDD]
 ```
 
-
-
 ## 4. **缓存架构**
 
 ### 4.1. 缓存行（Cache Line）
 
-缓存的存储单元被称为**缓存行（Cache Line）**，整个cache 空间被分成了 N 个 line，line 是 cache 交换的最小单位，每个 cache line 通常是 32 byte 或者 64 byte, 对于一个字节我们还需要更加注意，那就是 cache line 包含的内容：
+缓存的存储单元被称为**缓存行（Cache Line）**，整个cache 空间被分成了 N 个 line，line 是 cache 交换的最小单位，每个 cache line 通常是 32 byte 或者 64 byte,  cache line 包含的内容可以做如下划分：
 
-| **字段**       | **描述**                       |
-| -------------- | ------------------------------ |
+| **字段**         | **描述**          |
+| -------------- | --------------- |
 | **Tag**        | 用于标识缓存数据对应的主存地址 |
-| **Valid Bit**  | 指示缓存行是否包含有效数据     |
-| **Data Block** | 存储具体的数据                 |
+| **Valid Bit**  | 指示缓存行是否包含有效数据   |
+| **Data Block** | 存储具体的数据         |
 
 参考 arm 官方的示意图：
 
@@ -122,17 +122,21 @@ graph TD;
 
 通过对比这两者的不同，我们明白，不同的体系结构中的 cacheline 设计都是存在差异的。
 
-下面章节解释一下 tag 和 valid 的作用[^1]。
-
-
+后面章节会展开解释一下 tag 和 valid 的作用[^1]。
 
 ### 4.2. Cache 作用
 
-
-
 > Caching is perhaps the most important example of the big idea of **prediction**. It relies on the principle of locality to try to find the desired data in the higher levels of the memory hierarchy, and provides mechanisms to ensure that when the prediction is wrong it finds and uses the proper data from the lower levels of the memory hierarchy. The hit rates of the cache prediction on modern computers are often above 95%.
+> 
+> （翻译）缓存（Caching）或许是**预测（Prediction）** 这一重要概念最典型的应用。它依赖于**局部性原理（principle of locality）**，通过在**内存层次结构（memory hierarchy）** 的较高层级中查找所需数据，以加速数据访问。同时，缓存也提供了相应机制，以便在**预测失败** 时，能够从**内存层次结构的较低层级** 找到并使用正确的数据。在现代计算机中，**缓存预测的命中率（hit rate）通常高于 95%**。
 
-这句话从宏观维度总结了 cache 的一些作用：
+缓存的核心思想是基于**预测（Prediction）**，即假设某些数据很快会被再次访问，因此将其保留在访问速度更快的缓存中。计算机系统并不真正“知道”将来会访问哪些数据，而是通过**历史访问模式**进行推测，这种预测的成功与否直接影响了计算性能。
+
+缓存之所以能够有效运作，主要依赖于**局部性原理**，即程序访问数据时往往存在**时间局部性（Temporal Locality）** 和 **空间局部性（Spatial Locality）**。
+
+现代计算机的缓存命中率通常超过 **95%**，这意味着绝大多数的内存访问可以在 L1、L2 或 L3 缓存中完成，而无需访问主存（RAM）。这是至关重要的，访问 L1 缓存的延迟通常为 **1~5 个 CPU 周期**，而访问主存的延迟可能超过 **100~300 个 CPU 周期**。现代处理器进一步优化了缓存，例如采用**硬件预取（Hardware Prefetching）** 和 **分支预测（Branch Prediction）**，以减少缓存未命中的概率。
+
+总结来说，这句话从宏观维度总结了 cache 的一些作用：
 
 - 预测大思想的完美应用
 - 依赖了局部性原理
@@ -147,19 +151,19 @@ graph TD;
 
 ### 4.4. way & set
 
-way 和 set 的区别是什么？
+way 和 set 的区别是什么？本章将结合 ARM 官方的解释说明，展开这两个概念的具体细节。
 
 > In a cache, a "way" refers to a set of cache entries that have the same index but different tags. ==The number of ways in a cache is **determined by the cache's associativity**==, which is the number of cache entries that can map to the same index. Each way contains a set of cache entries that are grouped together based on their index.
->
+> 
 > （笔者翻译）在缓存（cache）中，**“way”（路）** 指的是一组具有**相同索引（index）** 但 **不同标记（tag）** 的缓存条目（cache entries）。缓存的相联度（associativity）决定了缓存的 way 数量，即**多少个缓存条目可以映射到相同的索引**。每个 way 包含一组按索引分组的缓存条目。
->
+> 
 > In contrast, a "set" in a cache refers to a group of cache entries that share the same index. A set can contain multiple cache entries, with each entry having a unique tag. The number of sets in a cache is determined by the cache size and block size.
->
+> 
 > （笔者翻译）相比之下，**“set”（集合）** 指的是**共享相同索引**的一组缓存条目。一个集合可以包含多个缓存条目，每个条目具有不同的**标记（tag）**。缓存中的集合数量由**缓存大小（cache size）和块大小（block size）** 决定。
 
 在缓存结构中，**way 和 set 是两个关键概念**，它们共同决定了缓存如何存储和查找数据。
 
--  **Way（路）**：在组相联（set-associative）缓存中，多个缓存条目可以映射到同一个索引，但它们有不同的标记（tag）。这些条目就组成了缓存的 **way**。**相联度（associativity）** 决定了缓存的 way 数。例如，**4 路组相联（4-way set-associative）** 说明**每个索引下有 4 个不同的缓存条目**可供存储数据。处理器访问数据时，会检查该索引下的所有 ways，查看是否有匹配的标记（tag）。
+- **Way（路）**：在组相联（set-associative）缓存中，多个缓存条目可以映射到同一个索引，但它们有不同的标记（tag）。这些条目就组成了缓存的 **way**。**相联度（associativity）** 决定了缓存的 way 数。例如，**4 路组相联（4-way set-associative）** 说明**每个索引下有 4 个不同的缓存条目**可供存储数据。处理器访问数据时，会检查该索引下的所有 ways，查看是否有匹配的标记（tag）。
 
 - **Set（集合）**：**一个 set 代表所有具有相同索引的缓存条目**，而每个条目都有不同的 tag。**一个 set 中的缓存条目数量** 由相联度（way 数）决定。例如，在 4 路组相联的缓存中，每个 set 包含 **4 个缓存条目**。**缓存的 set 数量** 由缓存大小和块大小计算得出，决定了缓存可以存储多少不同的索引地址。
 
@@ -213,48 +217,48 @@ way 和 set 的区别是什么？
 以下是引用 ARM 官方的一个例子：
 
 > *here's an example to illustrate the relationship between cache size, way, and set:*
->
+> 
 > （翻译，后文略）下面是一个示例，说明缓存大小、相联度（way）和集合（set）之间的关系：
->
+> 
 > Let's say we have a cache with a total size of 64 KB, a block size of 64 bytes, and a 4-way set-associative mapping.
->
+> 
 > 假设我们有一个总大小为 64 KB 的缓存，块大小（block size）为 64 字节，采用 4 路（4-way）组相联（set-associative）映射。
->
+> 
 > To determine the number of sets in the cache, we can divide the cache size by the product of the block size and the associativity. In this case, we have:
->
+> 
 > Number of sets = cache size / (block size x associativity)
 > Number of sets = 64 KB / (64 bytes x 4)
 > Number of sets = 256
->
+> 
 > This means that the cache has 256 sets. Each set contains four ways, as specified by the 4-way set-associative mapping.
->
+> 
 > 为了确定缓存中的**集合数（number of sets）**，我们可以将缓存大小除以**块大小与相联度的乘积**。
->
+> 
 > 在本例中：这意味着该缓存共有 256 个 sets, 由于采用 4 路组相联映射，每个集合中包含 4 个 way。
->
+> 
+> 计算方法是：缓存大小 64KB / 块大小 64bytes 得到总的块数量（下一段的缓存条目数），而 4 个块为一组，进而除以 4 得到有多少个组（set）。
+> 
 > To determine the number of cache entries in the cache, we can multiply the number of sets by the number of ways. In this case, we have:
->
+> 
 > Number of cache entries = number of sets x number of ways
 > Number of cache entries = 256 x 4
 > Number of cache entries = 1024
->
+> 
 > This means that the cache has a total of 1024 cache entries. Each cache entry consists of a block of 64 bytes, as specified by the block size.
->
+> 
 > 为了确定缓存中的**缓存条目数（cache entries）**，我们可以将集合数乘以相联度（way）。
->
+> 
 > 在本例中：这意味着该缓存共有 **1024 个缓存条目（cache entries）**。每个缓存条目包含 **一个 64 字节的块**，这由块大小决定。
->
+> 
 > When the processor requests data from memory, the cache uses the memory address to determine the index and tag of the requested data. The cache then checks the corresponding set and looks for the requested data in each of the four ways of that set until it finds the data or determines that it is not in the cache.
->
-> 当处理器从内存请求数据时，缓存会使用内存地址来确定数据所在的 索引（index）和 标记（tag）。然后，缓存会检查对应的集合，并在该集合的 4 个 way 中查找请求的数据，直到找到数据或确定该数据不在缓存中。
->
+> 
+> 当处理器从内存请求数据时，缓存会使用内存地址来确定数据所在的 **索引（index）**和 **标记（tag）**。然后，缓存会检查对应的集合，并在该集合的 4 个 way 中查找请求的数据，直到找到数据或确定该数据不在缓存中。
+> 
 > Overall, this example illustrates how the cache size, block size, and associativity determine the number of sets, ways, and cache entries in a cache, and how these components work together to efficiently cache frequently accessed data and reduce the time spent waiting for data to be fetched from main memory.
->
+> 
 > 总体而言，这个示例说明了**缓存大小、块大小和相联度**如何共同决定缓存的**集合数、way 数量以及缓存条目数**，以及这些组件如何协同工作，以高效缓存**经常访问的数据**，从而减少从主存加载数据所花费的时间。
 
-
-
-下面是一个示例，说明缓存大小、相联度（way）和集合（set）之间的关系。
+下面是上文中的示例展开，说明缓存大小、相联度（way）和集合（set）之间的关系。
 
 **缓存参数设定**：这里的缓存总大小为 **64 KB**，块大小为 **64 字节**，并且采用 **4 路组相联映射**。
 
@@ -282,7 +286,7 @@ $\text{集合数} = \frac{64 \text{ KB}}{64 \text{ bytes} \times 4} = 256$
 
 > The set associative organization has **four sets with two blocks per set**, called two-way set associative.
 
-***(笔者翻译）***“二路组相联”（two-way set associative）组织形式是缓存组织的一种方式。在这段文字中，描述了缓存的结构特征：它包含四个集合（sets），每个集合有两个块（blocks）。二路组相联缓存是介于直接映射缓存和全相联缓存之间的一种结构。
+***(笔者翻译）***“二路组相联”（two-way set associative）组织形式是缓存组织的一种方式。在这段文字中，描述了缓存的结构特征：它包含四个集合（sets），每个集合有两个块（blocks，就是 two-way）。二路组相联缓存是介于直接映射缓存和全相联缓存之间的一种结构。
 
 ### 4.5. tag
 
@@ -290,22 +294,52 @@ $\text{集合数} = \frac{64 \text{ KB}}{64 \text{ bytes} \times 4} = 256$
 > memory locations, how do we know whether the data in the cache corresponds
 > to a requested word? That is, how do we know whether a requested word is in the
 > cache or not?
+> 
+> （翻译）由于每个缓存位置可以包含多个不同内存位置的内容，我们如何知道缓存中的数据是否与请求的字匹配？也就是说，我们如何知道一个请求的字是否在缓存中？
 
 为了解决上述的问题（我们要访问的内容是不是在 cache 里面），我们使用了 tag 这个字段，原始的对于 tag 的定义可以如下所示：
 
 > A field in a table used for a memory hierarchy that contains the address information required to identify whether the associated block in the hierarchy corresponds to a requested word.
+> 
+> （翻译）一个字段用于存储器层次结构，该字段包含地址信息，用于识别层次结构中关联的块是否与请求的字相对应。
 
 其意思就是说对应了内存中的地址信息。
 
-（❌❌ 之前错误的理解）不过我们需要注意一个细节，那就是我们如果使用 direct-mapped（目前看来是这样的，这个以后再好好思考一下），那么这个 tag 就是不需要保存完整的地址信息的。
-
-✔️✔️ 对于上述说法的正确理解是：tag 所需要使用的位数大小是取决于微架构实际的设计的，和地址信息非强相关；为了更好理解，我们在此重复研究这张图片：
+tag 所需要使用的位数大小取决于微架构实际的设计，从设计原则来说，**Tag 存储的是地址的高位部分**，用于唯一标识缓存行对应的内存块，Index 和 Block Offset 已经覆盖了地址的低位部分：
 
 ![A real-life example](https://documentation-service.arm.com/static/5ff5c9fd89a395015c28fc35?token=)
 
 从图（很重要，所以在本文中出现多次）中我们可以看出，我们取了虚拟地址的 19 位用于 tag 的匹配；而我们图中有 256 条 cache line, 其计算方式是根据 cache 的总大小(32KB/4 set) 除以每条 cacheline 的大小(32byte) 得到的。
 
-:::tip tag 匹配时需要全量比较吗？
+我们简单来说：
+
+- **Tag**：高位部分，用于唯一标识缓存行对应的内存块。
+- **Index**：或者 set，中间部分，用于定位缓存中的特定行（即缓存行的索引）。
+- **Block Offset**：低位部分，用于定位缓存块内的具体字节。
+
+简化后的图示如下：
+
+```
+|--------- Tag ---------|---- Index ----|-- Block Offset --|
+```
+
+再举例说明 tag 位数的计算方式：
+
+假设：
+
+- 缓存总大小 = 32 KB
+- 块大小（Block Size）= 64 B
+- 地址位宽 = 32 位
+
+则：
+
+- **Block Offset** = $log₂(64) = 6$ 位（用于定位块内字节）。
+- **Index** = $log₂(32 KB / 64 B) = log₂(512) = 9$ 位（用于定位缓存行）。
+- **Tag** = 32 - 9 - 6 = **17 位**（剩余高位地址）。
+
+在这个例子中，由于 Cache 总大小、块带下、地址位宽共同决定了 tag 的设计为 17 位。
+
+:::tip **tag 匹配时需要全量比较吗？**
 
 注意我们无论使用什么映射方式，要确定要访问的内存是不是在 cache 中，均是通过比较 tag 的方式来实现的。
 
@@ -321,9 +355,14 @@ $\text{集合数} = \frac{64 \text{ KB}}{64 \text{ bytes} \times 4} = 256$
 
 valid 的存在是因为我们还需要标识 cache 中的信息是否有效，比如说这边举了一个例子，说的是如果处理器刚刚启动的时候，缓存中的数据肯定是无效的，valid 字段就是起到这样一个作用。
 
-### 4.7. 💯data
+在缓存系统中，需要一种机制（通常称为 **有效位 / Valid Bit**）来标识缓存块（Cache Block）中的数据是否有效。这是因为：
 
-剩下的是 data 或者 block 块，其实在实际的 cache 中，我们长这样（Intrinsity FastMATH data cache 为例）：
+- **初始化阶段**：处理器刚启动时，缓存中可能包含随机数据（如残留的旧数据或未初始化的状态），此时缓存块中的标签（Tag）和内容均不可信。
+- **缓存未命中**：当缓存未命中（Cache Miss）时，新加载的数据需要覆盖旧数据，但旧数据可能已被标记为无效。
+
+### 4.7. Data Block
+
+剩下的是 data 或者 block 块，其实在实际的 cache 中，长这样（Intrinsity FastMATH data cache 为例）：
 
 | valid | tag | block 1 | block 2 | …   | block n |
 | ----- | --- | ------- | ------- | --- | ------- |
@@ -398,8 +437,6 @@ Set 1:  | Way 0 | Way 1 |
 ...
 ```
 
-
-
 direvt-mapped 的方式是处理器上比较常用的，但是在某些特定的情况下会存在很大的缺陷，所以现代的商用处理器都是用 set-associative cache 来解决这个问题，这也是我们这节要研究的。
 
 set-associative 将 cache 分成了多个 way, `direvt-mapped == 1 way set-associative`， 使用多少个 cache way 也是一种权衡的结果。
@@ -441,11 +478,25 @@ Figure: a 4-way set associative 32KB data cache, with an 8-word(1 word equals 16
 
 ❤️ 有一点需要注意的是，图中出现了 4 个 way 叠加处理，每个 way 都是由 256 条 cacheline 组成的；图中并未体现出多个 set，只画了一个 set. 现在再体会一下这句话：A way is a subset of the cache entries in a set that have the same index but different tags.
 
-:::details Arm 原文参考
+#### Arm 原文参考
 
 > The cache line length is eight words (32 bytes) and you have 4-ways. 32KB divided by 4 (the number of ways), divided by 32 (the number of bytes in each line) gives you a figure of 256 lines in each way. This means that you require eight bits to index a line within a way (bits [12:5]). Here, you must use bits [4:2] of the address to select from the eight words within the line, though the number of bits which are required to index into the line depends on whether you are accessing a word, halfword, or byte. The remaining bits [31:13] in this case will be used as a tag.
 
-:::
+（翻译与理解）缓存行的长度为 **8 个字（words）**，即 **32 字节（bytes）**，并且缓存采用 **4 路（4-way）组相联（set-associative）** 结构。
+
+计算缓存的每个 **way** 需要多少条缓存行（cache lines）：
+
+$$\frac{32 \text{ KB}}{4 \text{ （way 数）} \times 32 \text{ （每行字节数）}} = 256 \text{ 行}$$
+
+这意味着，每个 way 共有 **256 行（lines）**，因此需要 **8 位（bits）** 来索引 way 内的缓存行，即 **地址的 [12:5] 位** 作为索引（index）。
+
+在 **缓存行内部（within a line）**，由于每行包含 **8 个字（words）**，我们需要使用地址的 **[4:2] 位** 来选择缓存行内的具体 word。具体来说，所需的索引位数取决于**访问的数据类型**：
+
+- **访问 word（4 字节）**：需要 **3 位（bits [4:2]）** 选择 8 个 word 之一。
+- **访问 halfword（2 字节）**：需要 **4 位（bits [4:1]）** 选择具体的 halfword。
+- **访问 byte（1 字节）**：需要 **5 位（bits [4:0]）** 选择具体的字节。
+
+剩余的地址位 **[31:13]** 作为 **标记（tag）**，用于区分不同的地址映射到相同索引的情况。
 
 #### 5.3.3. QA
 
@@ -487,8 +538,8 @@ cache miss：读取时间 XX 或者 XXX 个 cycle
 有三种情况会导致 cache misss:
 
 1. **强制未命中（Compulsory Miss）**：首次访问某数据，无法命中缓存。必须的 miss，如第一次访问程序或者数据时，这些程序或者数据没有在 cache 中。
-1. **容量未命中（Capacity Miss）**：缓存空间不足，导致数据被替换。cache 容量满了的时候，新数据到来，需要重新搬移，就 miss 了；或者还存在一种情况是 cache 无法包含程序执行期间所需的所有块。
-1. **冲突未命中（Conflict Miss）**：直接映射缓存中，不同数据块竞争同一缓存行。这种情况下，cache 可能还有空闲空间，但是这个地址对应的 cache line 已经被使用了，也会导致 cache miss.
+2. **容量未命中（Capacity Miss）**：缓存空间不足，导致数据被替换。cache 容量满了的时候，新数据到来，需要重新搬移，就 miss 了；或者还存在一种情况是 cache 无法包含程序执行期间所需的所有块。
+3. **冲突未命中（Conflict Miss）**：直接映射缓存中，不同数据块竞争同一缓存行。这种情况下，cache 可能还有空闲空间，但是这个地址对应的 cache line 已经被使用了，也会导致 cache miss.
 
 ```mermaid
 flowchart LR
@@ -502,8 +553,6 @@ flowchart LR
 ```
 
 ---
-
-
 
 ### 6.2. 减少 Miss: 使用较大的 block
 
@@ -546,9 +595,9 @@ flowchart LR
 
 **总结**
 
-​	•	**Early Start**：适用于顺序数据访问，使处理器可以尽早使用已到达的数据。
+​    •    **Early Start**：适用于顺序数据访问，使处理器可以尽早使用已到达的数据。
 
-​	•	**Critical Word First / Requested Word First**：适用于随机访问，使 CPU 能尽快拿到所需数据，减少缓存未命中惩罚。
+​    •    **Critical Word First / Requested Word First**：适用于随机访问，使 CPU 能尽快拿到所需数据，减少缓存未命中惩罚。
 
 两者的共同目标是 **减少缓存未命中带来的 CPU 停滞时间，提高系统吞吐量**。
 
@@ -577,11 +626,11 @@ flowchart LR
 
 当缓存满时，需替换某个数据块。常见策略包括：
 
-| **策略**                | **描述**                 |
-| ----------------------- | ------------------------ |
+| **策略**          | **描述**       |
+| --------------- | ------------ |
 | **LRU（最近最少使用）** | 替换最久未被访问的缓存行 |
-| **FIFO（先进先出）**    | 替换最早进入缓存的缓存行 |
-| **随机替换**            | 随机选择缓存行进行替换   |
+| **FIFO（先进先出）**  | 替换最早进入缓存的缓存行 |
+| **随机替换**        | 随机选择缓存行进行替换  |
 
 LRU 我们使用的最多，并且性能也最好。
 
@@ -726,13 +775,23 @@ MESIX 统一都可以称为监听协议(snoop)，监听协议的缺点在于沟�
 
 ## 11. 片内可寻址存储器
 
-通常而言，cache 对用户（程序员）是透明的，但是在 DSP 等性能要求很高的处理器中，处理器存储的一部分作为 cache, 另一部分作为可寻址寄存器，程序员可以直接访问这部分空间。
+在大多数处理器架构中，**缓存（cache）** 对程序员是透明的，处理器会自动管理缓存数据的加载和替换。然而，在 **DSP（数字信号处理器）** 等对性能要求极高的计算场景下，部分片内存储器不仅可以用作缓存，还可以作为**可寻址的存储单元**，允许程序员直接访问和管理数据。这部分可直接寻址的片内存储器，也被称为 **软件管理的 cache（Software-Managed Cache）**。
 
 这种在做法可以有效地控制 cache miss, 所以我们也称片内可寻址寄存器为：**软件管理的 cache**.
 
-片内可寻址寄存器的应用：一般而言，cache 是等到 CPU 要使用数据的时候，才从内存中去拿数据的，片内可寻址寄存器可以通过软件控制 DMA，将以后需要的数据提前搬到处理器内部，这就节省了很多 CPU 的等待时间。DMA 是专门负责数据搬移的模块。
+在片内可寻址存储器架构下，程序员可以**显式控制数据的加载和存放**，比如使用 **DMA（直接内存访问，Direct Memory Access）** 在数据真正被 CPU 访问之前，将其**提前预加载**到片内存储器中。这种方式可以避免 CPU 访问数据时发生缓存未命中（cache miss），减少等待时间。也可以提升计算效率，特别是在需要高吞吐量的数据处理任务中，如 DSP、图像处理和 AI 计算等。
 
-为什么会是软件去做这件事呢？因为程序是可以知道 CPU 什么时候将要访问数据的，而 cache 不知道。但是这种方法对软件的编写难度造成了很大的挑战。
+片内可寻址存储器的应用场景可能为：
+
+1. **高性能计算（HPC）与 DSP 处理**： DSP 处理器在实时音视频处理、信号处理等领域被广泛应用，需要对数据进行**高速存取**。例如，在 **视频编码** 过程中，算法可以通过 DMA 预加载即将处理的图像块，而不是等到 CPU 访问时再从 DRAM 取数据，从而减少延迟。
+2. **嵌入式系统和实时计算**：在嵌入式系统中，如 **汽车电子、工业控制和机器人**，任务具有严格的**实时性**要求。通过手动管理片内可寻址存储器，确保关键数据始终可用，避免因缓存未命中导致的**时间抖动**（Timing Jitter）。
+3. **人工智能与深度学习推理加速**：在 AI 计算中，神经网络的参数和输入数据量巨大，而数据访存开销通常是瓶颈。许多 AI 加速器（如 TPU、NPU）都采用**片内高带宽存储器**（如 SRAM）作为可寻址 cache，通过软件预取数据，提升推理速度。
+
+与传统缓存相比，**软件管理的 cache 需要程序员手动控制数据加载**，这带来了额外的编程复杂度。为什么会是软件去做这件事呢？因为程序是可以知道 CPU 什么时候将要访问数据的，而 cache 不知道。但是这种方法对软件的编写难度造成了很大的挑战。软件管理的原因大致有以下几点：
+
+1. **CPU 了解数据访问模式，而缓存硬件不了解**：缓存硬件的工作方式是被动的——**只有当 CPU 访问某个数据时，它才会尝试从主存加载到缓存**。然而，**程序员可以提前预知哪些数据将在未来被访问**，从而通过 DMA 手动将数据搬移到片内存储器，提高访问效率。
+2. **控制缓存替换策略，提高数据驻留时间**：在硬件管理的缓存中，数据的替换通常由**LRU（Least Recently Used）等策略**决定，程序员无法控制某些关键数据是否会被缓存淘汰。而在**软件管理的 cache** 中，程序员可以**确保关键数据不会被驱逐**，从而提高缓存命中率。
+3. 尽管软件管理的 cache 提供了更高的控制能力，但它也增加了软件开发的复杂性，程序员需要**精确预测数据访问模式**，否则可能会导致不必要的数据搬移，浪费带宽。并且需要额外的 DMA 控制代码，使程序更难维护和优化。
 
 ## 12. Bypass
 
@@ -763,4 +822,3 @@ MESIX 统一都可以称为监听协议(snoop)，监听协议的缺点在于沟�
 [一文轻松理解内存对齐](https://cloud.tencent.com/developer/article/1727794)
 
 [^2]: [Set associative caches](https://developer.arm.com/documentation/den0013/d/Caches/Cache-architecture/Set-associative-caches)
-

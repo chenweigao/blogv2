@@ -19,7 +19,6 @@ JAVA 内存布局如下图所示：
 
 ![JVM MEM](../images/jvm_mem.svg)
 
-
 通过对典型应用的 JVM 内存进行拆解，如下：
 
 ```shell
@@ -27,16 +26,16 @@ Total: reserved=15538605KB, committed=14221757KB
 
 Java Heap (reserved=9601024KB, committed=9601024KB)
 Class (reserved=2095827KB, committed=1215827KB)    
-	Metadata (reserved=995328KB, committed=993536KB) 
-	## 每个类的元数据：类名、方法、字段描述    
-	
-	Class space (reserved=1048576KB, committed=170368KB) 
-	## 为类加载器存储的数据预留的空间
-	
+    Metadata (reserved=995328KB, committed=993536KB) 
+    ## 每个类的元数据：类名、方法、字段描述    
+
+    Class space (reserved=1048576KB, committed=170368KB) 
+    ## 为类加载器存储的数据预留的空间
+
 Thread (reserved=43505KB, committed=10101KB) 
 ## 包括线程栈和线程本地存储    
-	stack (reserved=43505KB, committed=10101KB) 
-	## 对每个线程分配的栈空间，大小可通过 -Xss 配置
+    stack (reserved=43505KB, committed=10101KB) 
+    ## 对每个线程分配的栈空间，大小可通过 -Xss 配置
 
 Code (reserved=977086KB, committed=573642KB) # 为 JIT 编译器预留的内存
 GC (reserved=495136KB, committed=495136KB) # 为 GC 预留的内存
@@ -47,17 +46,11 @@ Other (reserved=733088KB, committed=733088KB)
 ## Arguments, Module,Synchronizer, Safepoint, Wisp, null
 ```
 
-
-
 *下面章节会对这些区域进行逐一说明。*
-
-
 
 JVM 在运行时的数据区大致如下图所示：
 
-
 ![jvm_run](./images/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f.jpg =400x)
-
 
 ## 2. 栈区
 
@@ -115,28 +108,27 @@ JVM 在执行某个类的时候，必须经过加载、连接、初始化，而�
 对于 JVM 在堆内存中的对象存储布局，通常可以划分为以下三个部分：
 
 1. **对象头（Header）**
-
+   
    对象头部分通常由以下两类信息组成：
-
+   
    - **Mark Word（标记字段）**：用于存储对象自身的运行时数据，例如哈希码（HashCode）、GC 分代年龄（Age）、锁状态（Lock）、偏向锁线程 ID（Thread ID）等信息。这部分是高度可变的，在不同阶段可能存储不同内容。
-
-     | 锁状态   | 25-32bit 内容                               |
-     | -------- | ------------------------------------------- |
-     | 无锁     | hashcode(25b) + 分代年龄(4b) + 偏向模式(1b) |
-     | 轻量级锁 | 指向栈中锁记录的指针                        |
-     | 重量级锁 | 指向 Monitor 的指针                         |
-     | GC 标记  | 空（用于垃圾回收标识）                      |
-
+     
+     | 锁状态   | 25-32bit 内容                         |
+     | ----- | ----------------------------------- |
+     | 无锁    | hashcode(25b) + 分代年龄(4b) + 偏向模式(1b) |
+     | 轻量级锁  | 指向栈中锁记录的指针                          |
+     | 重量级锁  | 指向 Monitor 的指针                      |
+     | GC 标记 | 空（用于垃圾回收标识）                         |
+   
    - **类型指针（Klass Pointer）**：指向对象所属类的 **类元数据（Class Metadata）**，通过该指针，JVM 可以确定当前对象是哪个类的实例，并能访问该类的相关信息，如方法表（Method Table）、字段布局等。如果 JVM 采用了 **压缩类指针（Compressed Class Pointers）** 技术，该指针可能会占用较少的空间。
+   2. **实例数据（Instance Data）**
+      
+      该部分存储的是程序代码中定义的所有 **实例字段（Instance Fields）**，包括从父类继承的字段和子类自身定义的字段。这些字段的实际存储顺序可能会影响对象的内存占用和访问效率，JVM 可能会根据字段类型（如 int、long、reference 等）进行 **字段对齐（Field Alignment）** 和 **字段重排序（Field Reordering）** 以优化访问性能。可以通过 JVM 参数 **-XX:FieldsAllocationStyle** 进行字段分配策略的调整。
 
- 2. **实例数据（Instance Data）**
-
-    该部分存储的是程序代码中定义的所有 **实例字段（Instance Fields）**，包括从父类继承的字段和子类自身定义的字段。这些字段的实际存储顺序可能会影响对象的内存占用和访问效率，JVM 可能会根据字段类型（如 int、long、reference 等）进行 **字段对齐（Field Alignment）** 和 **字段重排序（Field Reordering）** 以优化访问性能。可以通过 JVM 参数 **-XX:FieldsAllocationStyle** 进行字段分配策略的调整。
-
-3. **对齐填充（Padding）**
-
+2. **对齐填充（Padding）**
+   
    填充部分并不是所有对象都具备的，其主要目的是 **保证对象的整体大小是 8 字节的整数倍（在 64 位 JVM 上一般是 16 字节的整数倍）**，以符合 **CPU 内存对齐（Memory Alignment）** 规则，提高 CPU 访问速度。由于对象头的大小通常是 32 位（4 字节）或 64 位（8 字节），JVM 会对 **实例数据部分（Instance Data）** 进行适当的填充，使对象大小符合对齐要求。这一部分的填充内容没有实际意义，仅仅是为了满足对齐规则，避免 CPU 在读取对象数据时发生 **跨缓存行（Cache Line Crossing）** 导致的性能下降。
-
+   
    对象大小计算公式：$\text{对象大小} = \text{头信息} + \text{实例数据} + padding$
 
 综上所述，JVM 在创建对象时，会按照 **对象头 -> 实例数据 -> 填充** 的顺序进行内存布局，以确保高效的内存管理和对象访问性能。
@@ -150,10 +142,11 @@ code cache 会被分成三块区域，可以使用 `jcmd <pid> Compiler.codecach
 <img src="../images/codecache.jpg" alt="codecache" style="display: block; margin: 0 auto; zoom: 25%;" />
 
 这三个区域的含义如下：
+
 1. non-nmethods, 也叫做 JVM internal (non-method) code，通常包括 compiler buffers 和 bytecode interpreter 等，这些代码通常永久保存在 codecache 中；itable/vtable stub 这些函数就保存在该区域。
 2. profiled nmethods，表示被 profiled 但是 lightly optimized 的 code heap 区域，profiled nmethods 的生命周期较短；由 ProfiledCodeHeapSize 控制大小；
 3. non-profiled nmethods，被 fully optimized 的 C2 编译，生命周期较长；由 NonProfiledCodeHeapSize 控制大小；为了更高的性能优化，我们在 non-profiled 区再开辟了一块空间用于存储 non-profiled-hot-code, 这个 heap 区域一般比较小，由 NonProfiledHotCodeHeapSize 控制，该区域存储的 hotest code 能在 non-profile heap 中再进行冷热分离，提高性能。
-其内存布局如下图所示：
+   其内存布局如下图所示：
 
 JVM 的 THP 重排就是针对 non-profiled code heap 中的 non-profiled hot code heap 进行了重排。
 
@@ -171,17 +164,19 @@ JVM 的 THP 重排就是针对 non-profiled code heap 中的 non-profiled hot co
 ## 5. 堆外内存
 
 堆外内存有以下作用:
-  - **高性能计算**: 对于需要高速读写的数据，直接操作堆外内存能够避免 JVM 内部的某些开销。
-  - **网络传输**: 在网络编程中，特别是使用 NIO(非阻塞I/O)时，可以直接将数据从堆外内存发送到网络上或者从网络接收到堆外内存中，从而减少了复制数据的过程。
-  - **大数据处理**: 当处理非常大的数据集时，合理利用堆外内存可以帮助更好地控制内存使用情况。
+
+- **高性能计算**: 对于需要高速读写的数据，直接操作堆外内存能够避免 JVM 内部的某些开销。
+- **网络传输**: 在网络编程中，特别是使用 NIO(非阻塞I/O)时，可以直接将数据从堆外内存发送到网络上或者从网络接收到堆外内存中，从而减少了复制数据的过程。
+- **大数据处理**: 当处理非常大的数据集时，合理利用堆外内存可以帮助更好地控制内存使用情况。
 
 可以通过`ByteBuffer.allocateDirect()`方法来申请一块直接缓冲区，这块内存就是位于 JVM 堆外的。使用 Unsafe 类也可以直接操作内存地址，但这种方式比较底层，通常不推荐常规使用。
 
 其优缺点如下：
-  - 减少了垃圾收集的工作量，因为这部分内存不由GC管理。
-  - 与操作系统更紧密地集成，有时候能提供更好的性能表现。
-  - 管理不当容易造成内存泄漏问题，因为这些内存不会被自动回收。
-  - 分配和释放堆外内存可能会比普通的堆内存消耗更多时间。
+
+- 减少了垃圾收集的工作量，因为这部分内存不由GC管理。
+- 与操作系统更紧密地集成，有时候能提供更好的性能表现。
+- 管理不当容易造成内存泄漏问题，因为这些内存不会被自动回收。
+- 分配和释放堆外内存可能会比普通的堆内存消耗更多时间。
 
 监控堆外内存的使用情况非常重要，可以通过设置 JVM 参数如 `-XX:MaxDirectMemorySize` 来限制最大可使用的直接内存大小。使用工具如 VisualVM、JConsole 等可以帮助查看当前应用的堆外内存使用状况。如果发现有内存泄露的问题，可能需要深入代码检查是否有未正确释放的直接缓冲区。
 
@@ -189,10 +184,6 @@ JVM 的 THP 重排就是针对 non-profiled code heap 中的 non-profiled hot co
 
 总之，合理地利用 JVM 堆外内存可以在特定场景下显著改善应用程序的性能，但是也需要注意相关的管理和优化工作。
 
-
 ## 6. Reference
 
 - [苹果的堆内存管理与分析](https://developer.apple.com/cn/videos/play/wwdc2024/10173/?spm=ata.21736010.0.0.13622830DuCZPL)，可以作为目标。
-
-
-
