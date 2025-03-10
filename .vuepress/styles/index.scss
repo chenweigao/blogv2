@@ -1,4 +1,41 @@
-p, ul, ol {
-    line-height: 1.8;
-    overflow-wrap: break-word;
+// p, ul, ol {
+//     line-height: 1.8;
+//     overflow-wrap: break-word;
+// }
+
+:root {
+    --strong-text-color: #FF6B35;
+}
+
+.dark {
+    --strong-text-color: #FF6B35;
+}
+
+strong {
+    color: #FF6B35; // 设置文字颜色为黄色
+    font-weight: bold; // 确保加粗
+}
+
+:root {
+    --h1-color: #FF6B35;
+    --h2-color: #3498db;
+    --h3-color: #EE89B1;
+}
+
+.dark {
+    --h1-color: #ff8c66;
+    --h2-color: #5dade2;
+    --h3-color: #EE89B1;
+}
+
+h1 {
+    color: var(--h1-color);
+}
+
+h2 {
+    color: var(--h2-color);
+}
+
+h3 {
+    color: var(--h3-color);
 }
