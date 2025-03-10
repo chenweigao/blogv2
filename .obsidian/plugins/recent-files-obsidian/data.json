@@ -1,0 +1,76 @@
+{
+  "recentFiles": [
+    {
+      "basename": "numa_socket",
+      "path": "architecture/numa_socket.md"
+    },
+    {
+      "basename": "cache",
+      "path": "architecture/cache.md"
+    },
+    {
+      "basename": "memory_1",
+      "path": "architecture/memory_1.md"
+    },
+    {
+      "basename": "gpu_1",
+      "path": "architecture/gpu_1.md"
+    },
+    {
+      "basename": "image",
+      "path": "architecture/image.png"
+    },
+    {
+      "basename": "gc_art_01",
+      "path": "java/art/gc_art_01.md"
+    },
+    {
+      "basename": "gc_g1",
+      "path": "java/jvm/gc_g1.md"
+    },
+    {
+      "basename": "2025-03-05(星期三)",
+      "path": "journals/202503/2025-03-05(星期三).md"
+    },
+    {
+      "basename": "20250305-1209-JVM AI 参数调优思考",
+      "path": "notes/20250305-1209-JVM AI 参数调优思考.md"
+    },
+    {
+      "basename": "outliner-20250305120435",
+      "path": "notes/outliner-20250305120435.md"
+    },
+    {
+      "basename": "Inbox",
+      "path": "Inbox.md"
+    },
+    {
+      "basename": "tp-日记模板",
+      "path": "template/tp-日记模板.md"
+    },
+    {
+      "basename": "111",
+      "path": "notes/111.md"
+    },
+    {
+      "basename": "低功耗内存",
+      "path": "低功耗内存.md"
+    },
+    {
+      "basename": "tp2",
+      "path": "template/tp2.md"
+    },
+    {
+      "basename": "24-3 月总结",
+      "path": "24-3 月总结.md"
+    },
+    {
+      "basename": "欢迎",
+      "path": "欢迎.md"
+    }
+  ],
+  "omittedPaths": [],
+  "omittedTags": [],
+  "updateOn": "file-open",
+  "omitBookmarks": false
+}

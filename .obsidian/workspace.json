@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "4ae67e313cefbdd5",
+        "id": "bbc891f2b0e591ca",
         "type": "tabs",
         "children": [
           {
-            "id": "62babe5ea8a0872f",
+            "id": "0cb40a18a0c835a7",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "architecture/memory.md",
+                "file": "architecture/numa_socket.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "memory"
+              "title": "numa_socket"
             }
           }
         ]
@@ -40,7 +40,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "文件列表"
@@ -52,7 +53,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:#GC",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -72,13 +73,22 @@
               "icon": "lucide-bookmark",
               "title": "书签"
             }
+          },
+          {
+            "id": "7633fe33941d4b1a",
+            "type": "leaf",
+            "state": {
+              "type": "recent-files",
+              "state": {},
+              "icon": "clock",
+              "title": "Recent Files"
+            }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 229.5
   },
   "right": {
     "id": "f32917b31d21f23f",
@@ -94,7 +104,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "architecture/virtual_memory.md",
+                "file": "architecture/cache.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +114,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "virtual_memory 的反向链接列表"
+              "title": "cache 的反向链接列表"
             }
           },
           {
@@ -113,12 +123,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "architecture/virtual_memory.md",
+                "file": "architecture/cache.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "virtual_memory 的出链列表"
+              "title": "cache 的出链列表"
             }
           },
           {
@@ -128,7 +138,9 @@
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-tags",
               "title": "标签"
@@ -140,10 +152,23 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "architecture/memory.md"
+                "file": "architecture/numa_socket.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "memory 的大纲"
+              "title": "numa_socket 的大纲"
+            }
+          },
+          {
+            "id": "93f351f142c49611",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
             }
           }
         ],
@@ -160,13 +185,34 @@
       "canvas:新建白板": false,
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
-      "command-palette:打开命令面板": false
+      "command-palette:打开命令面板": false,
+      "obsidian-git:Open Git source control": false,
+      "outliner-md:New outliner file": false
     }
   },
-  "active": "62babe5ea8a0872f",
+  "active": "0cb40a18a0c835a7",
   "lastOpenFiles": [
-    "java/art/jvm_basic_memory.md",
+    "architecture/images/03-01-System_socket_die_core_HT.svg",
+    "architecture/images/未确认 162214.crdownload",
+    "architecture/images/03-02-NUMA_VM_local_acces_remote_access.svg",
+    "architecture/images/未确认 103183.crdownload",
+    "architecture/images/03-05-Broadwell_HCC_Architecture.svg",
+    "architecture/images/未确认 998819.crdownload",
+    "architecture/images/20250310102749.jpg",
+    "architecture/images/20250310102134.jpg",
+    "architecture/cache.md",
+    "2022-08-25.md",
+    "architecture/numa_socket.md",
+    "architecture/memory_1.md",
+    "architecture/gpu_1.md",
+    "architecture/image.png",
+    "java/art/gc_art_01.md",
+    "java/jvm/gc_g1.md",
+    "2022-08-24.md",
+    "architecture/pipline.md",
+    "2025-03-04.md",
     "java/images/codecache.jpg",
+    "java/art/jvm_basic_memory.md",
     "java/images/stack.webp",
     "java/images/jvm_mem.webp",
     "java/art/jvm_basic.md",
@@ -177,16 +223,8 @@
     "dist/timeline/index.html",
     "dist/timeline",
     "dist/star/index.html",
-    "dist/star",
-    "dist/article/index.html",
-    "dist/article",
     "dist/assets/tcp-B_MGbFxk.jpg",
     "dist/assets/el-BewLX4iy.png",
-    "dist/assets/cwnd-C-KKBbZH.jpg",
-    "dist/assets/value-result-DM-eFDxI.jpg",
-    "dist/assets/llvm_ir--SfsTexz.svg",
-    "dist/assets/wsl-DnR9Ka4J.png",
-    "dist/assets/jvm_mem2-Dup96IVN.svg",
     "MWebLibrary/docs/17340781580636.md",
     "architecture/README.md",
     "architecture/memory.md",
