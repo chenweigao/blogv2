@@ -3,29 +3,30 @@
 //     overflow-wrap: break-word;
 // }
 
-:root {
-    --strong-text-color: #FF6B35;
-}
+// :root {
+//     --strong-text-color: #541e24;
+// }
 
-.dark {
-    --strong-text-color: #FF6B35;
-}
+// .dark strong {
+//     color: #348AA7;
+// }
 
 strong {
-    color: #FF6B35; // 设置文字颜色为黄色
-    font-weight: bold; // 确保加粗
+    font-family: "Inter", "Noto Sans SC", Arial, sans-serif;
+    // color: var(--strong-text-color); // 设置文字颜色为黄色
+    // font-weight: bold; // 确保加粗
 }
 
 :root {
-    --h1-color: #FF6B35;
-    --h2-color: #3498db;
-    --h3-color: #EE89B1;
+    --h1-color: #ee3f4d;
+    --h2-color: #de1c31;
+    --h3-color: #c04851;
 }
 
 .dark {
-    --h1-color: #ff8c66;
-    --h2-color: #5dade2;
-    --h3-color: #EE89B1;
+    --h1-color: #ee3f4d;
+    --h2-color: #de1c31;
+    --h3-color: #c04851;
 }
 
 h1 {

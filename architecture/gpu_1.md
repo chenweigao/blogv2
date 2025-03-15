@@ -6,9 +6,9 @@ category:
   - AI
 ---
 
-## 量化研究方法
+## 1. 量化研究方法
 
-## 4.4 图形处理器
+## 2. 4.4 图形处理器
 
 CPU 程序员的挑战不只是在 GPU 上获得出色的性能，还有==协调系统处理器与 GPU 上的计算调度，以及系统存储器与 GPU 存储器之间的数据传输==。
 
@@ -23,13 +23,13 @@ NVIDIA 将 CUDA 编程定义为 **SIMT** -- ==单指令多线程==。
 硬件线程块调度器（Thread Block Scheduler）将线程块（Thread Blocks）分配给多线程 SIMD 处理器（multithreaded SIMD Processors），而硬件线程调度器（Thread Scheduler）在每个时钟周期内选择要在 SIMD 处理器中运行的 SIMD 指令线程（thread of SIMD instructions）。详细解释见 [Q2](#q2)
 
 
-## Q1
+## 3. Q1
 
 > 并行执行和线程管理由 GPU 硬件负责，而不是由应用程序或者操作系统完成。
 
 这句话的含义是：在 GPU 中，并行任务的执行和线程调度完全由硬件架构直接管理，而非依赖应用程序或操作系统的软件层面控制。这种设计使得 GPU 能够高效实现大规模并行计算，同时降低编程复杂度。
 
-### 具体解释
+### 3.1. 具体解释
 
 以下是具体解释：
 
@@ -49,7 +49,7 @@ NVIDIA 将 CUDA 编程定义为 **SIMT** -- ==单指令多线程==。
 - 线程调度器：SM 中的调度器（如 Warp Scheduler）根据线程状态（如是否等待数据）动态选择可执行的 Warp，最大化硬件利用率。
 - 内存层次：全局内存、共享内存等的访问由硬件自动优化，减少程序员对内存延迟的显式处理。
 
-### 举例：Grid/Block/Thread
+### 3.2. 举例：Grid/Block/Thread
 
 关系的示意图如下所示：(图中表示 $A = B * C$, 两个向量相乘，每个向量的长度为 8192 个元素)。
 
@@ -61,7 +61,7 @@ NVIDIA 将 CUDA 编程定义为 **SIMT** -- ==单指令多线程==。
 
 
 
-### 与 CPU 的对比
+### 3.3. 与 CPU 的对比
 
 CPU：依赖操作系统管理线程调度（如多核任务分配），线程切换和资源分配由软件控制，适合复杂逻辑和低延迟任务。
 
@@ -75,7 +75,7 @@ GPU（图形处理器）的架构与传统 CPU 有着根本性的不同，它专
 
 ---
 
-#### 1 . GPU 线程管理的“黑箱”特性
+#### 3.3.1. GPU 线程管理的“黑箱”特性
 
 在 GPU 上，程序员通常通过 CUDA（NVIDIA）或 HIP（AMD）等并行计算框架，定义计算任务的并行性。开发者需要做的主要工作是：
 
@@ -89,7 +89,7 @@ GPU（图形处理器）的架构与传统 CPU 有着根本性的不同，它专
 
 ---
 
-#### 2 . GPU 自动完成的线程管理机制
+#### 3.3.2. GPU 自动完成的线程管理机制
 
 GPU 硬件通过多个机制隐藏线程管理细节，从而优化计算效率：
   
@@ -140,7 +140,7 @@ CPU 主要依靠深度流水线（Deep Pipeline）和分支预测（Branch Predi
 
 ---
 
-#### 3 . GPU 这种硬件设计的优势
+#### 3.3.3. GPU 这种硬件设计的优势
 
   
 **(1) 降低编程复杂度**
@@ -179,79 +179,72 @@ GPU 的这种设计特别适合：
 
 ---
 
-#### 4 . 结论
+#### 3.3.4. 结论
 
 GPU 通过将**线程调度、资源分配、延迟隐藏等低层细节封装在硬件中**，使得开发者能够更专注于任务的并行划分，而无需关心具体的线程管理。这种“黑箱”设计使得 GPU 能够高效执行大规模并行计算任务，同时大幅降低了并行编程的复杂度，从而推动了 AI、HPC、图形渲染等领域的快速发展。
 
 这种架构的核心理念是**让硬件管理并行性，让开发者专注于计算逻辑**，从而最大化计算资源的利用率，实现高效的并行计算。
-## Q2
+## 4. Q2
 
-硬件线程块调度器（Thread Block Scheduler）将线程块（Thread Blocks）分配给多线程 SIMD 处理器（multithreaded SIMD Processors），而硬件线程调度器（Thread Scheduler）在每个时钟周期内选择要在 SIMD 处理器中运行的 SIMD 指令线程（thread of SIMD instructions）。
-
----
-
-**详细解释**
+>  硬件线程块调度器（Thread Block Scheduler）将线程块（Thread Blocks）分配给多线程 SIMD 处理器（multithreaded SIMD Processors），而硬件线程调度器（Thread Scheduler）在每个时钟周期内选择要在 SIMD 处理器中运行的 SIMD 指令线程（thread of SIMD instructions）。
 
 这句话描述了 GPU 内部的线程块调度（Thread Block Scheduling） 和线程调度（Thread Scheduling） 两个层次的机制，并且强调了线程调度是逐个时钟周期进行的，也就是在每个 SIMD 处理器内部的指令选择是动态的。
 
-### 硬件线程块调度器 （Thread Block Scheduler）
+### 4.1. 硬件线程块调度器 （Thread Block Scheduler）
 
-**作用：**
 1. 负责将线程块（Thread Blocks） 分配给多线程 SIMD 处理器（Multithreaded SIMD Processors）。
 2. 在 GPU 计算模型（如 CUDA、HIP、OpenCL）中，一个计算任务通常会被划分成多个线程块，每个线程块内部包含多个线程（Threads）。
-3. 由于 GPU 由多个 SIMD 处理单元（如 Streaming Multiprocessors（SM） 或 Compute Units（CU））组成，因此需要 线程块调度器 负责把任务均匀分配到这些处理单元上。
-
-**示例：**
+3. 由于 GPU 由多个 SIMD 处理单元（如 Streaming Multiprocessors（SM） 或 Compute Units（CU））组成，因此需要线程块调度器负责把任务均匀分配到这些处理单元上。
 
 如果一个 GPU 有 8 个 SIMD 处理单元，而计算任务包含 64 个线程块，线程块调度器可能会将每个 SIMD 处理单元分配 8 个线程块，确保所有计算单元都参与计算，从而最大化吞吐量。
 
 ---
 
-### 硬件线程调度器 （Thread Scheduler）
+### 4.2. 硬件线程调度器 （Thread Scheduler）
 
-**作用：**
+- 负责在每个 SIMD 处理器内部，每个时钟周期（clock cycle） 选择一个要执行的 SIMD 指令线程（thread of SIMD instructions）。
 
-- 负责在 **每个 SIMD 处理器** 内部，**每个时钟周期（clock cycle）** 选择一个要执行的 **SIMD 指令线程（thread of SIMD instructions）**。
-
-- 由于 GPU 采用 **SIMT（Single Instruction, Multiple Threads）** 计算模式，每个 SIMD 处理单元可以同时执行多个 **Warp（NVIDIA）/Wavefront（AMD）**，但由于计算资源有限，必须在多个候选线程中选择合适的线程执行。
+- 由于 GPU 采用 SIMT（Single Instruction, Multiple Threads） 计算模式，每个 SIMD 处理单元可以同时执行多个 Warp（NVIDIA）/Wavefront（AMD），但由于计算资源有限，必须在多个候选线程中选择合适的线程执行。
 
 **关键点：**
 
-1. **多个 Warp/Wavefront 竞争执行权：**在一个 SIMD 处理单元内部，可能有 **几十到上百个 Warp/Wavefront** 处于 **就绪（ready）** 状态，但一次只能执行一个 Warp/Wavefront 的 SIMD 指令。
+1. 多个 Warp/Wavefront 竞争执行权：在一个 SIMD 处理单元内部，可能有几十到上百个 Warp/Wavefront 处于就绪（ready） 状态，但一次只能执行一个 Warp/Wavefront 的 SIMD 指令。
 
-2. **调度发生在每个时钟周期：**线程调度器在 **每个时钟周期（clock cycle）** 都会选择一个 **Warp/Wavefront**，执行它的下一条 SIMD 指令。
+2. 调度发生在每个时钟周期：线程调度器在每个时钟周期（clock cycle） 都会选择一个 Warp/Wavefront，执行它的下一条 SIMD 指令。
 
-3. **影响调度决策的因素：**
+3. 影响调度决策的因素：
 
-	- **指令依赖性（Instruction Dependencies）：** 如果某个 Warp/Wavefront 需要的数据还没准备好，调度器可能会跳过它，选择另一个 Warp/Wavefront。
-	- **寄存器压力（Register Pressure）：** 如果某个 Warp/Wavefront 占用了太多寄存器，可能会降低调度器的灵活性。
-	- **内存访问延迟（Memory Latency）：** 如果某个 Warp/Wavefront 需要访问 DRAM，调度器可能会选择另一个不受内存访问限制的 Warp/Wavefront 先执行。
+	- 指令依赖性（Instruction Dependencies）： 如果某个 Warp/Wavefront 需要的数据还没准备好，调度器可能会跳过它，选择另一个 Warp/Wavefront。
+	- 寄存器压力（Register Pressure）： 如果某个 Warp/Wavefront 占用了太多寄存器，可能会降低调度器的灵活性。
+	- 内存访问延迟（Memory Latency）： 如果某个 Warp/Wavefront 需要访问 DRAM，调度器可能会选择另一个不受内存访问限制的 Warp/Wavefront 先执行。
 
-### 示例 
+### 4.3. 示例 
 
-假设 **一个 SIMD 处理器** 可以并行执行 **32 个线程（即 1 个 Warp/Wavefront）**，但它可能维护了 **64 个 Warp/Wavefront** 在等待执行。
+假设一个 SIMD 处理器可以并行执行 32 个线程（即 1 个 Warp/Wavefront），但它可能维护了 64 个 Warp/Wavefront 在等待执行。
 
-线程调度器会在 **每个时钟周期** 选择一个 **就绪（ready）** 的 Warp/Wavefront，执行其中的 SIMD 指令。
+线程调度器会在每个时钟周期选择一个就绪（ready） 的 Warp/Wavefront，执行其中的 SIMD 指令。
 
-如果某个 Warp/Wavefront 的内存访问未完成，线程调度器可能会选择另一个 **已经准备好执行的** Warp/Wavefront，以隐藏延迟（latency hiding）。
-
----
-
-**总结**：**Thread Block Scheduler（线程块调度器）**：
-
-- **作用：** 负责在多个 **SIMD 处理单元（如 SM/CU）** 之间分配 **线程块（Thread Blocks）**。
-- **目标：** 确保所有 SIMD 处理单元都参与计算，提高吞吐量。
-- **Thread Scheduler（线程调度器）**：
-- **作用：** 负责在 **每个 SIMD 处理单元** 内部，**每个时钟周期（clock cycle）** 选择一个 **Warp/Wavefront**，执行其中的 **SIMD 指令**。
-- **目标：** 通过动态调度 **Warp/Wavefront**，最大化计算资源的利用率，同时隐藏内存访问延迟。
+如果某个 Warp/Wavefront 的内存访问未完成，线程调度器可能会选择另一个已经准备好执行的 Warp/Wavefront，以隐藏延迟（latency hiding）。
 
 ---
 
-### 直观比喻
+### 4.4. 总结
 
-可以把整个 GPU 计算过程比作 **工厂流水线**：
+**Thread Block Scheduler（线程块调度器）**：
+- 作用： 负责在多个 SIMD 处理单元（如 SM/CU） 之间分配线程块（Thread Blocks）。
+- 目标： 确保所有 SIMD 处理单元都参与计算，提高吞吐量。
 
-1. **Thread Block Scheduler** 类似于 **车间经理**，负责把不同的任务分配给多个 **生产线（SIMD 处理单元）**。
-2. **Thread Scheduler** 类似于 **生产线上的调度员**，每秒钟（每个时钟周期）都要决定当前哪条生产线上的工作站（Warp/Wavefront）应该执行下一步任务。
+**Thread Scheduler（线程调度器）：**
+- 作用： 负责在每个 SIMD 处理单元内部，每个时钟周期（clock cycle） 选择一个 Warp/Wavefront，执行其中的 SIMD 指令。
+- 目标： 通过动态调度 Warp/Wavefront，最大化计算资源的利用率，同时隐藏内存访问延迟。
 
-这样，GPU 通过 **多层次调度**，在硬件层面实现 **高吞吐量并行计算**，有效地利用计算资源。
+---
+
+### 4.5. 直观比喻
+
+可以把整个 GPU 计算过程比作工厂流水线：
+
+1. Thread Block Scheduler 类似于车间经理，负责把不同的任务分配给多个生产线（SIMD 处理单元）。
+2. Thread Scheduler 类似于生产线上的调度员，每秒钟（每个时钟周期）都要决定当前哪条生产线上的工作站（Warp/Wavefront）应该执行下一步任务。
+
+这样，GPU 通过多层次调度，在硬件层面实现高吞吐量并行计算，有效地利用计算资源。
