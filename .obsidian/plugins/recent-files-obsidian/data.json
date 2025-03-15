@@ -1,6 +1,14 @@
 {
   "recentFiles": [
     {
+      "basename": "gpu_1",
+      "path": "architecture/gpu_1.md"
+    },
+    {
+      "basename": "Pasted image 20250310191138",
+      "path": "architecture/images/Pasted image 20250310191138.png"
+    },
+    {
       "basename": "numa_socket",
       "path": "architecture/numa_socket.md"
     },
@@ -11,10 +19,6 @@
     {
       "basename": "memory_1",
       "path": "architecture/memory_1.md"
-    },
-    {
-      "basename": "gpu_1",
-      "path": "architecture/gpu_1.md"
     },
     {
       "basename": "image",
