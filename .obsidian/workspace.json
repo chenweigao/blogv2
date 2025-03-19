@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "architecture/gpu_1.md",
+                "file": "architecture/Intel_inst.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "gpu_1"
+              "title": "Intel_inst"
             }
           }
         ]
@@ -152,13 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "architecture/gpu_1.md",
+                "file": "architecture/Intel_inst.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "gpu_1 的大纲"
+              "title": "Intel_inst 的大纲"
             }
           },
           {
@@ -170,9 +170,19 @@
               "icon": "calendar-with-checkmark",
               "title": "Calendar"
             }
+          },
+          {
+            "id": "1e5faf6d7e14025f",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
         ],
-        "currentTab": 3
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -192,29 +202,40 @@
   },
   "active": "0cb40a18a0c835a7",
   "lastOpenFiles": [
+    "java/jvm/01_jvm_memory.md",
+    "architecture/Intel_inst.md",
+    "java/jvm/images/11.png",
+    "java/jvm/images/jvm_mem.svg",
+    "java/jvm/images/b9dcbe63-9bfa-4323-8f40-97c48ca6e7a4.png",
+    "images/db26f870-7ab0-4c24-a328-e6c8f86ab699..md",
+    "images",
+    "linux/kernel/THP.md",
+    "java/jvm/images/db26f870-7ab0-4c24-a328-e6c8f86ab699.png",
+    "java/jvm/images/20250208151408.jpg",
+    "java/jvm/images/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f.jpg",
+    "architecture/gpu_1.md",
+    "linux/kernel/thermal_init.md",
+    "linux/kernel/idle_tick.md",
+    "linux/kernel/init_h.md",
+    "linux/kernel/idle.md",
+    "linux/kernel/i2c.md",
+    "linux/kernel/BL31.md",
     "architecture/images/Pasted image 20250310191138.png",
     "architecture/images/Pasted image 20250310191017.png",
-    "architecture/gpu_1.md",
     "Pasted image 20250310190907.png",
     "architecture/numa_socket.md",
     "architecture/images/03-01-System_socket_die_core_HT.svg",
     "architecture/images/未确认 162214.crdownload",
-    "architecture/images/03-02-NUMA_VM_local_acces_remote_access.svg",
     "architecture/images/未确认 103183.crdownload",
-    "architecture/images/03-05-Broadwell_HCC_Architecture.svg",
     "architecture/images/未确认 998819.crdownload",
-    "architecture/images/20250310102749.jpg",
-    "architecture/images/20250310102134.jpg",
     "architecture/cache.md",
     "2022-08-25.md",
     "architecture/memory_1.md",
-    "architecture/image.png",
     "java/art/gc_art_01.md",
     "java/jvm/gc_g1.md",
     "2022-08-24.md",
     "architecture/pipline.md",
     "2025-03-04.md",
-    "java/images/codecache.jpg",
     "java/art/jvm_basic_memory.md",
     "java/art/jvm_basic.md",
     "dist/sitemap.xsl",
@@ -223,13 +244,9 @@
     "dist/robots.txt",
     "dist/timeline/index.html",
     "dist/timeline",
-    "dist/star/index.html",
     "MWebLibrary/docs/17340781580636.md",
     "architecture/README.md",
     "architecture/memory.md",
-    "2024-11-20.md",
-    "home.md",
-    "slide.md",
-    "README.md"
+    "2024-11-20.md"
   ]
 }

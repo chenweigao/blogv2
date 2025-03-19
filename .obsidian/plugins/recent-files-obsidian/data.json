@@ -1,8 +1,56 @@
 {
   "recentFiles": [
     {
+      "basename": "Intel_inst",
+      "path": "architecture/Intel_inst.md"
+    },
+    {
+      "basename": "01_jvm_memory",
+      "path": "java/jvm/01_jvm_memory.md"
+    },
+    {
+      "basename": "THP",
+      "path": "linux/kernel/THP.md"
+    },
+    {
+      "basename": "db26f870-7ab0-4c24-a328-e6c8f86ab699",
+      "path": "java/jvm/images/db26f870-7ab0-4c24-a328-e6c8f86ab699.png"
+    },
+    {
+      "basename": "20250208151408",
+      "path": "java/jvm/images/20250208151408.jpg"
+    },
+    {
+      "basename": "1ccdb38e-07aa-41a5-9bfb-0d140fe7149f",
+      "path": "java/jvm/images/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f.jpg"
+    },
+    {
       "basename": "gpu_1",
       "path": "architecture/gpu_1.md"
+    },
+    {
+      "basename": "thermal_init",
+      "path": "linux/kernel/thermal_init.md"
+    },
+    {
+      "basename": "idle_tick",
+      "path": "linux/kernel/idle_tick.md"
+    },
+    {
+      "basename": "init_h",
+      "path": "linux/kernel/init_h.md"
+    },
+    {
+      "basename": "idle",
+      "path": "linux/kernel/idle.md"
+    },
+    {
+      "basename": "i2c",
+      "path": "linux/kernel/i2c.md"
+    },
+    {
+      "basename": "BL31",
+      "path": "linux/kernel/BL31.md"
     },
     {
       "basename": "Pasted image 20250310191138",
