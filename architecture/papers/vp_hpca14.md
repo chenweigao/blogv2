@@ -4,7 +4,7 @@
 
 
 
-## Abstract
+## 1. Abstract
 
 > Dedicating more silicon area to single thread performance will necessarily be considered as worthwhile in future – potentially heterogeneous – multicores. 
 >
@@ -50,7 +50,7 @@
 
 :::
 
-## Introduction
+## 2. Introduction
 
 > Gabbay et al. and Lipasti et al. independently proposed Value Prediction to speculatively ignore true data dependencies and therefore shorten critical paths in computations. 
 
@@ -143,7 +143,7 @@ FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction 
 
 上述也是原文中的摘录。
 
-## 	Questions
+## 3. 	Questions
 
 🤷‍♂️🤷‍♂️🤷‍♂️ 从以上对于文章的阅读，我们需要从文章中找到以下问题的答案：
 
@@ -151,7 +151,7 @@ FPC 是一种置信度的衡量机制。FPC 的作用在于降低 misprediction 
 2. VTAGE 如何利用 global branch history 和 path history? 其与上下文有关是如何体现的？
 3. VATGE 如何解决 tight lopp 的问题？
 
-## Related Work on VP
+## 4. Related Work on VP
 
 我们有必要研究一下相关的工作，看能否从中获得一些心得体会。
 
@@ -192,7 +192,7 @@ Zhou 实现了 gDiff 预测器，gDiff 计算了一个指令的结果和最后 n
 
 本文提出来的 VTAGE 预测器可以理解为一个 context-based 的预测器，其中的 context 包括 global branch history 和 path history.
 
-## Motivation
+## 5. Motivation
 
 > We identify two factors that will complicate the adaptation and implementation of value predictors in future processor cores. 
 >
@@ -205,7 +205,7 @@ Zhou 实现了 gDiff 预测器，gDiff 计算了一个指令的结果和最后 n
 
 > A tight loop is a loop that loops many times and the loop body has few instructions.
 
-### Misprediction Recovery
+### 5.1. Misprediction Recovery
 
 之前的很多研究都没有意识到 misprediction recovery 的复杂性，而只关注于准确率或者覆盖率，忽略了实际的加速效果。后续的很多研究也基本上忽略了与 misprediction recovery  相关的性能损失。
 
@@ -232,7 +232,7 @@ $$
 
 
 
-#### Value Misprediction Scenarios
+#### 5.1.1. Value Misprediction Scenarios
 
 处理器中目前已有两种机制去管理 value misprediciton recovery:
 
@@ -264,7 +264,7 @@ pipline squashing 可以被用于分支预测失败的 recovery 中，也可以�
 
 
 
-#### Validation at Execution vs Validation at Commit Time
+#### 5.1.2. Validation at Execution vs Validation at Commit Time
 
 下面是对于两种机制的对比：
 
@@ -299,7 +299,7 @@ pipeline at commit 会导致较高的 misprediction penalty, 但是其优点在�
 
 $T_{recov}$ 与错误预测的数量大致成正比，所以如果可以在牺牲一些覆盖率的情况下提升精度，那么总的 VP 性能是可以得到提升的。
 
-#### Reissue 
+#### 5.1.3. Reissue 
 
 先来看论文中对于 reissue 的定义：
 
@@ -321,7 +321,7 @@ $T_{recov}$ 与错误预测的数量大致成正比，所以如果可以在牺�
 
 从上面的分析，我们可以看出 reissue 和 selective reissue 的不同之处在于：selective reissue 只是存储了依赖于预测值的指令，而 reissue 是存储了所有的指令，但是直到该指令不投机的时候，才不存储（目前的理解）
 
-#### Refetch
+#### 5.1.4. Refetch
 
 先看论文中对于 refetch 的定义：
 
@@ -329,7 +329,7 @@ $T_{recov}$ 与错误预测的数量大致成正比，所以如果可以在牺�
 
 value 的 misprediction 可以看做分支预测的 misprediction, 使用预测值的指令将被全部清除掉，然后重新 fetch. 注意这边也使用了定语，开始于第一个使用预测值的指令。
 
-### Back-to-back prediction
+### 5.2. Back-to-back prediction
 
 > Unlike a branch prediction, a value prediction is needed rather late in the pipeline (at dispatch time).
 
@@ -375,7 +375,7 @@ value 的 misprediction 可以看做分支预测的 misprediction, 使用预测�
 
 接下来主要是对比 LVP, stride 和 FCM, 分别阐述这几个预测器的优缺点。
 
-#### LVP
+#### 5.2.1. LVP
 
 > Despite its name, LVP does not require the previous prediction to predict the current instance as long as the table is trained. Consequently, LVP uses only the program counter to generate a prediction.
 
@@ -385,11 +385,11 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 因此，连续的表查找是独立的，可以持续到 dispatch 阶段，因此 LVP 是可以使用大表的。
 
-#### Stride
+#### 5.2.2. Stride
 
 @todo
 
-#### FCM
+#### 5.2.3. FCM
 
 全称是 Finite Context Method, 其结构是 two-level:
 
@@ -399,7 +399,7 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 
 
-#### Summary
+#### 5.2.4. Summary
 
 上面阐述了三个预测器的实现细节和缺点。
 
@@ -417,7 +417,7 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 本文提出的 VTAGE 预测器可以完美预测 back-to-back 场景，因此它的访问可以跨越几个循环。
 
-### Commit Time Validation and Hardware Implications on the Out-of-Order Engine
+### 5.3. Commit Time Validation and Hardware Implications on the Out-of-Order Engine
 
 > In the previous section, we have pointed out that the hardware modifications induced by *pipeline squashing* at *commit time on* the Out-of-Order engine are limited. 
 >
@@ -458,7 +458,7 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 ❌❌❌ 这句话难理解：Similarly, thanks to commit time validation, the power overhead introduced by Value Prediction will essentially reside in the predictor table.
 
-### Maximizing Value Predictor Accuracy Through Confidence
+### 5.4. Maximizing Value Predictor Accuracy Through Confidence
 
 > As we already pointed out, the total misprediction recovery cost can be minimized through two vehicles: **Minimizing the *individual misprediction penalty* and/or minimizing the *total number of mispredictions.***
 
@@ -498,7 +498,7 @@ LVP 不需要依赖先前的预测结果，但是其依赖于程序计数器 PC 
 
 使用 FPC 计数器而不是完整计数器限制了置信度估计的开销，并且还提供了在运行时调整概率的机会，如根据重要指令个性化概率。
 
-### The Value TAgged GEometric Predictor
+### 5.5. The Value TAgged GEometric Predictor
 
 题目的含义为：值标记的几何预测器。
 
@@ -578,11 +578,11 @@ VTAGE 和 ITTAGE 不同的点在于，饱和计数器饱和的时候才使用预
 
 然而，由于多个组件的索引哈希和复用，其预测延迟可能会更高，尽管这可能不是一个问题，因为预测是可以跨周期的。
 
-## Evaluation Methodology
+## 6. Evaluation Methodology
 
-### Value Predictors
+### 6.1. Value Predictors
 
-#### Single Scheme Predictors
+#### 6.1.1. Single Scheme Predictors
 
 > We study the behavior of several distinct value predictors in addition to VTAGE.
 >
@@ -618,11 +618,11 @@ VTAGE 和 ITTAGE 不同的点在于，饱和计数器饱和的时候才使用预
 
 我们认为所有的预测器都可以瞬间预测，因此，它们可以在 dispatch 之前完美地传递预测。
 
-#### Hybrid Predictors
+#### 6.1.2. Hybrid Predictors
 
 作者阐述了一下，表明混合预测是可行的（混合预测我们在 HPCA 19 中进行重点研究）。
 
-### Simulator
+### 6.2. Simulator
 
 >  In our experiments, we use the gem5 cycle-accurate simulator (x86 ISA).
 
@@ -646,7 +646,7 @@ VTAGE 和 ITTAGE 不同的点在于，饱和计数器饱和的时候才使用预
 
 作者选择了一个慢的前端耦合到快速的后端中，可以观察逼真的 misprediction 惩罚。
 
-#### Misprediction Recovery
+#### 6.2.1. Misprediction Recovery
 
 > We illustrate two possible recovery scenarios, squashing at commit time and a very idealistic selective reissue.
 >
@@ -659,7 +659,7 @@ misprediction 时候的恢复有两种方式：
 
 在上述两种情况下，如果指令的预测错误但是其在执行之前没有 issue 依赖指令，则不需要 recovery, 因为预测会被执行时的有效结果取代。
 
-## Reference
+## 7. Reference
 
 [^1]: A. Perais and A. Seznec, "Practical data value speculation for future high-end processors", *High Performance Computer Architecture (HPCA) 2014 IEEE 20th International Symposium on*, Feb 2014.
 

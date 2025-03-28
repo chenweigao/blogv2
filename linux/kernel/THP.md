@@ -2,6 +2,7 @@
 title: THP 整理
 date: 2025-03-17
 ---
+
 ## 1. hugepages
 
 在 Linux 内核中，shmemhugepages、anonhugepages 和 pmdhugepages 这几个术语都与 **Transparent Huge Pages (THP)** 和 **Huge Pages** 相关，主要涉及如何使用更大的页（通常是 2MB 或 1GB）来减少 TLB（Translation Lookaside Buffer）miss，提高内存访问性能。
@@ -249,7 +250,7 @@ mount | grep tmpfs-index
 如果没有输出，说明该路径没有挂载，需要先挂载它。例如：
 
 ```bash
-mount -t tmpfs -o size=2G,huge=always tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
+mount -t tmpfs -o size=843750000k,huge=always tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
 ```
 
   

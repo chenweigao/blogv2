@@ -1,4 +1,7 @@
 {
   "promptDelete": false,
-  "attachmentFolderPath": "./images"
+  "attachmentFolderPath": "./images",
+  "alwaysUpdateLinks": true,
+  "newLinkFormat": "relative",
+  "showLineNumber": true
 }

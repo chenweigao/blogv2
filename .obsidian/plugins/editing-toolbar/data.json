@@ -1,4 +1,5 @@
 {
+  "lastVersion": "3.1.8",
   "aestheticStyle": "tiny",
   "positionStyle": "following",
   "menuCommands": [
@@ -243,6 +244,11 @@
       "icon": "exit-fullscreen"
     }
   ],
+  "followingCommands": [],
+  "topCommands": [],
+  "fixedCommands": [],
+  "mobileCommands": [],
+  "enableMultipleConfig": false,
   "appendMethod": "workspace",
   "shouldShowMenuOnSelect": false,
   "cMenuVisibility": true,
@@ -262,5 +268,13 @@
   "custom_fc3": "#245BDB",
   "custom_fc4": "#6425D0",
   "custom_fc5": "#646A73",
-  "isLoadOnMobile": false
+  "isLoadOnMobile": false,
+  "horizontalPosition": 0,
+  "verticalPosition": 0,
+  "formatBrushes": {},
+  "customCommands": [],
+  "viewTypeSettings": {},
+  "toolbarBackgroundColor": "rgba(var(--background-secondary-rgb), 0.7)",
+  "toolbarIconColor": "var(--text-normal)",
+  "toolbarIconSize": 18
 }

@@ -1,6 +1,9 @@
-# VP - Value Prediction Abstract
+---
+title: JVM_MEMORY
+date: 2022-10-11
+---
 
-## Value Prediction in a Nutshell
+## 1. Value Prediction in a Nutshell
 
 > Value Prediction (VP) is a microarchitectural technique that speculatively breaks true data dependency to increase instruction level parallelism in out-of-order processor cores.[^1]
 
@@ -8,13 +11,13 @@
 
 MICRO Test of Time Award[^2] 是一个十分具有分量的奖项，收录了微体系结构中经典的具有影响力的论文，关于 VP 的论文 <[ Exceeding the Dataflow Limit Via Value Prediction](http://dl.acm.org/citation.cfm?id=243889)>[^3] 就是 2017 年被该奖项收录。
 
-## MICRO 29
+## 2. MICRO 29
 
-### Abstract
+### 2.1. Abstract
 
 本章节主要研究 *Exceeding the dataflow limit via value prediction* 这篇文章，这篇文章作为经典的 VP 的顶尖著作之一，具有很高的研究价值。
 
-### Taxonomy of Speculative Execution
+### 2.2. Taxonomy of Speculative Execution
 
 投机执行的分类：
 
@@ -39,7 +42,7 @@ flowchart TD
 
 - 对于 binary vs multi-valued 而言，binary 表示的是预测的两种结果，0-1 或者 token vs not-token(branch 中表示 branch 的方向)，mutil-valued 表示的是 brach 的目标，这个目标可能是存在于程序地址的任何空间中的。
 
-### Data Speculation
+### 2.3. Data Speculation
 
 可以分为两类：
 
@@ -51,7 +54,7 @@ flowchart TD
 1. those that speculate on a specific attribute of the storage location：根据存储位置的特定属性进行推测
 2. those that speculate on the address of the storage location：根据存储位置的地址进行推测
 
-### Value Locality
+### 2.4. Value Locality
 
 > previously-seen value recurring repeatedly within a storage location.
 
@@ -67,7 +70,7 @@ flowchart TD
 
 这篇文章使用了 20 个 benchmark 总结出来了寄存器的 value locality,  特别是 signal cycle 的指定操作寄存器的 value locality 更加明显。
 
-### Exploiting Value Locality
+### 2.5. Exploiting Value Locality
 
 ```mermaid
 flowchart LR
@@ -77,7 +80,7 @@ flowchart LR
 	0 --- 1 & 2
 ```
 
-### Value Prediction Unit
+### 2.6. Value Prediction Unit
 
 文章提出了 VP 单元的两级预测结构：
 
@@ -115,7 +118,7 @@ PC 中的指令用于 index 进去 VPT, 找到需要预测的值。与此同时�
 
 
 
-#### CT
+#### 2.6.1. CT
 
 - valid
 
@@ -144,7 +147,7 @@ VPT 的替换策略受到 CT 预测历史的影响，这是为了避免引入不
 1. 用于在预测正确或者错误的时候饱和计数器自增或者自减
 2. 用于对某个指令分类，该指令是否可预测
 
-#### VPT
+#### 2.6.2. VPT
 
 VPT 的这两个字段的含义说明如下：
 
@@ -158,15 +161,15 @@ VPT 的这两个字段的含义说明如下：
 
   需要注意的是，VPT 的替换策略受到 CT 预测历史的影响，以免用了不那么有用的值替换掉有用的值。
 
-### Verifying Predictions
+### 2.7. Verifying Predictions
 
 由于值预测本来就是投机性的，所以需要一种机制来验证预测的正确性，并且从错误预测中恢复过来。
 
 
 
-## HPCA 19
+## 3. HPCA 19
 
-### Abstract
+### 3.1. Abstract
 
 本章主要研究 HPCA 19 的 *Efficient Load Value Prediction using Multiple Predictors and Filters[^4]*.
 
@@ -198,7 +201,7 @@ VPT 的这两个字段的含义说明如下：
 
 > Based on that finding, we evaluated a **new composite predictor** that combines all four component predictors. 
 
-### Summary
+### 3.2. Summary
 
 这块做一个简单的总结，从总体上对这篇文章有一个了解。
 
@@ -207,7 +210,7 @@ VPT 的这两个字段的含义说明如下：
 3. 使用 Heterogeneous Predictor Tables 技术，也可以称作动态融合预测器表，将资源从性能不佳的预测器重新分配到性能更好的预测器
 4. 深入分析比较了这种融合的方式对于预测准确度的提升，并和最先进的模型进行了对比
 
-### Introduction
+### 3.3. Introduction
 
 more ILP, true data limit.
 
@@ -217,7 +220,7 @@ ILP 指的是 Instruction Level Parallelism, 指令级并行。
 
 这个技术可以再研究一下。
 
-### 4 Predictors
+### 3.4. Predictors
 
 本文使用了 4 个先进的预测器，并对他们进行了融合，融合过后的组合预测器性能得到了很大的提升，这 4 个预测器如下表所示：
 
@@ -238,7 +241,7 @@ ILP 指的是 Instruction Level Parallelism, 指令级并行。
 
 注意到其并行性。
 
-#### LVP
+#### 3.4.1. LVP
 
 LVP[^5]这个预测器的原理在于：*that consecutive dynamic instances of a static load will often produce the same value*, 翻译过来就是说静态 load 的连续动态实例通常会产生相同的值。
 
@@ -270,12 +273,12 @@ LVP uses a PC-indexed, tagged prediction table. 其结构如下：
 
 这个预测器如果遇到了 tag/value 匹配的话，我们就增加置信值，否则不匹配的话，置信值归零。
 
-#### CVP
+#### 3.4.2. CVP
 
 **77bits: tag(14-bit) + virtual address(49-bit) + saturating confidence counter(2-bit)**
 saturating confidence counter: 饱和置信计数器。
 
-#### CVP
+#### 3.4.3. CVP
 
 **81bits: tag(14-bit) + value(64 bit) + counter(3-bit)**
 
@@ -285,7 +288,7 @@ saturating confidence counter: 饱和置信计数器。
 
 当 load 执行的时候，CVP 适用表中最长历史、最高置信的字段。
 
-#### CAP
+#### 3.4.4. CAP
 
 **67bits:tag(14-bit) + virtual address(49-bit) + confidence(2-bit) + load size(2-bit)**
 
@@ -297,15 +300,15 @@ CAP 预测器的工作方式如下：
 2. 新的 tag, value 和 size 和已知的 entry 匹配，则增加置信值
 3. 其他情况，置信值置 0
 
-### Value Prediction
+### 3.5. Value Prediction
 
-#### FPC Strategies
+#### 3.5.1. FPC Strategies
 
 使用一个 forward probabilistic counter(FPC) 可以减少数字的比特，这个在其他论文中提到了。
 
 目前的理解：使用标量构建置信度，然后再计算出对应的 FPC 矢量。
 
-### Smart Training
+### 3.6. Smart Training
 
 使用 Smart Training  的时候，我们在训练和预测时候使用的预测器的数量是减少的，figure 7 阐述了这个结论。
 
@@ -318,9 +321,9 @@ Smart Training 目的在于合理地对 4 中预测器进行组合，其工作�
 
 📌📌📌 todo：深入研究这个策略，其前置条件是什么，策略是什么，什么条件下对应使用什么策略。
 
-### Accuracy Monitor(AM)
+### 3.7. Accuracy Monitor(AM)
 
-#### AM
+#### 3.7.1. AM
 
 可以分为两种：
 
@@ -333,7 +336,7 @@ AM 的概念介绍如下：
 
 AM 是一种机制，其保证了当整个组合预测器产生了较高的总体误预测率时，我们可以对其进行限制。可以翻译为一种“节流机制”。
 
-#### AM Q&A
+#### 3.7.2. AM Q&A
 
 Q：AM 使能的时间节点是哪个？
 
@@ -347,11 +350,11 @@ Q: M-AM 和 PC-AM 有何不同？
 
 A: 先说相同点，两者都是衡量的可信指标；M-AM 是 epoch 维度，而 PC-AM 是指令维度。
 
-#### M-AM
+#### 3.7.3. M-AM
 
 M-AM 跟踪每个组件执行期间的错误预测率，这个预测错误率有一个计算的方法，以每一个 epoch 为单位，大概 100W 个指令。
 
-#### PC-AM
+#### 3.7.4. PC-AM
 
 不同于 M-AM，PC-AM 跟踪每一个 PC 的预测错误率，精度更高。
 
@@ -361,11 +364,11 @@ PC-AM 中的 narrow counter 的增加策略是，每一次触发了流水线的 
 
 PC-AM 追踪每一个 PC 以便于实施更有针对性的沉默。
 
-#### Heterogeneous Predictor Tables
+#### 3.7.5. Heterogeneous Predictor Tables
 
 
 
-### Discuss
+### 3.8. Discuss
 
 Q：这个机制最终还是没有保证 commit 步骤，前面的准确率是如何保证的？
 
@@ -377,9 +380,9 @@ A：
 
 
 
-## ASPLOS 96(LVP)
+## 4. ASPLOS 96(LVP)
 
-### Abstract
+### 4.1. Abstract
 
 本部分主要研究文章 *Value locality and load value prediction*[^6] ,  主要是涉及到这篇文章中的 LVP 预测器。
 
@@ -401,7 +404,7 @@ A：
 
    总体来看这篇文章，作者确实使用了预测+验证的机制，并且是将值进行了分类。load 执行完成以后，我们对预测的值进行验证，验证过后更新 LVPT 和 LCT, 并且在需要的时候 reissue 指令。
 
-### Value Locality
+### 4.2. Value Locality
 
 这篇文章也阐述了值局部性的原理，为了加深理解，我们对此也进行研究。
 
@@ -438,7 +441,7 @@ A：
 
 
 
-### LVPT
+### 4.3. LVPT
 
 作者通过对 loads value 进行分类达到减少预测错误率的目的，总共可以分为三类：
 
@@ -462,7 +465,7 @@ A：
 
 首先是 LVPT, LCT, CVU 之间的使用，文章中使用 CVU(constant verification unit) 来存储 constant.
 
-### LCT & CVU
+### 4.4. LCT & CVU
 
 尽管说 LVPT 将 loads 分为了三类，但是还是缺少一个验证的机制，所以说在 LCT 阶段，我们还是需要根据分类进行不同的决策：
 
@@ -482,7 +485,7 @@ A：
 
 这种措施的好处就是可以降低内存带宽的需求。
 
-### The Load Value Prediction Unit
+### 4.5. The Load Value Prediction Unit
 
 LVPT, LCT, CVU 之间是怎么合作的呢？
 
@@ -493,7 +496,7 @@ load 指令 fetch 的时候，LVPT, LCT 表被同时索引了，一个负责分�
 
 由于无法及时在 CVU 上面执行搜索以避免内存访问，因此 CVU 唯一可以阻止内存访问的时候是在 cache miss 或者 bank conflict 的时候。
 
-### Conclusion 
+### 4.6. Conclusion 
 
 > we demonstrate that load instructions, when examined on a per-instruction-address basis, exhibit significant amounts of value locality.
 
@@ -505,7 +508,7 @@ load 指令 fetch 的时候，LVPT, LCT 表被同时索引了，一个负责分�
 
 上面这段话讲述了 **load value prediction** 的重要意义，特别是在学术上的定义。
 
-## Words
+## 5. Words
 
 | Words              | 含义               |      | Words         | 含义             |
 | ------------------ | ------------------ | ---- | ------------- | ---------------- |
@@ -522,7 +525,7 @@ load 指令 fetch 的时候，LVPT, LCT 表被同时索引了，一个负责分�
 
 
 
-## Reference
+## 6. Reference
 
 [^1]: [Championship Value Prediction (CVP)](https://www.microarch.org/cvp1/index.html)
 [^2]: [MICRO Test of Time Award](https://www.microarch.org/tot/index.html#winners)
