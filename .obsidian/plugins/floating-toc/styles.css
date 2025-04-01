@@ -1014,7 +1014,9 @@ body.enable-background-blur-dept .floating-toc-div:hover .floating-toc {
   justify-content: flex-start;
   width: var(--floating-toc-line-width);
   text-align: left;
-  .floating-toc-div.pin .floating-toc .heading-list-item>.text-wrap, .floating-toc-div:hover .floating-toc .heading-list-item>.text-wrap {
+}
+  .floating-toc-div.pin .floating-toc .heading-list-item>.text-wrap, 
+  .floating-toc-div:hover .floating-toc .heading-list-item>.text-wrap {
     /* min-width: 12rem; */
     white-space: normal;
     opacity: 1;
@@ -1025,7 +1027,7 @@ body.enable-background-blur-dept .floating-toc-div:hover .floating-toc {
     -webkit-transition-property: width;
     -webkit-transition-timing-function: ease-in-out;
 }
-}
+
 
 
 
@@ -1077,10 +1079,10 @@ body.enable-bar-heading-text .floating-toc-div:not(:is(:hover, .pin)) .heading-l
   width: unset;
   overflow: visible;
 }
-body.enable-bar-heading-text .floating-toc-div:not(:is(:hover, .pin)) .floating-toc{
+/* body.enable-bar-heading-text .floating-toc-div:not(:is(:hover, .pin)) .floating-toc{
   width: 2rem;
   overflow: visible;
-}
+} */
 body.enable-bar-heading-text .floating-toc-div:not(:is(:hover, .pin)) .heading-list-item:is(.located, .focus) .text-wrap {
   opacity: 1;
   

@@ -1,11 +1,13 @@
 ---
-title: GPU 通信
+title: GPU Communication
 date: 2025-03-21
+tag:
+  - GPU
+  - AI
 ---
 ## 1. NVLink
 
 **NVLink** 是 NVIDIA 开发的一种高速互连技术，旨在实现 GPU 之间以及 GPU 与 CPU 之间的高带宽、低延迟通信。它主要用于加速 AI、HPC 和数据分析等场景中的数据传输。
-
 
 ### 1.1. CPU 连接
 
@@ -22,10 +24,7 @@ NVLink 不但可以实现 GPU 之间以及 GPU 和 CPU 之间的互联，还可�
 
 ==**GPU Direct RDMA**==(后面重点讲述)：支持直接的 GPU 到 GPU 访问，无需通过主机内存，大幅提升性能。2013 年，GPUDirect 增加了 RDMA 支持，使得第三方 PCI Express 设备可以 bypass CPU host memory 直接访问 GPU。
 
-
 **多 GPU 拓扑支持**：NVLink 支持多 GPU 拓扑，例如 **Fully Connected**、**Hybrid Cube Mesh** 等。NVIDIA 的 **NVSwitch** 提供了 GPU 间的全互联能力，实现大规模 GPU 集群通信。
-
-  
 
 ### 1.3. NVLink 的发展历程
 
@@ -38,8 +37,6 @@ NVLink 不但可以实现 GPU 之间以及 GPU 和 CPU 之间的互联，还可�
 • **NVLink 4.0** (2022)：在 Hopper 架构（如 H100）中推出，总带宽达到 900 GB/s。
 
 • **NVLink 5.0** (未来)：预计在 Blackwell 架构中进一步提升带宽和效率。
-
-
 
 
 ### 1.4. NVLink 与 AMD 的对比
@@ -137,7 +134,7 @@ V100 搭载的 NVLink 2.0，每个 V100 增加了 50%的 NVLink 通道达到 6 �
 
 ![p2p](./images/gpu/23dec7cb-0e10-4d1f-91ec-3209e2471361.avif)
 
-==GPU Direct Peer-to-Peer (P2P) ==技术主要用于单机 GPU 间的高速通信，它使得 GPU 可以通过 PCI Express 直接访问目标 GPU 的显存，避免了通过拷贝到 CPU host memory 作为中转，大大降低了数据交换的延迟。
+==GPU Direct Peer-to-Peer (P2P)== 技术主要用于单机 GPU 间的高速通信，它使得 GPU 可以通过 PCI Express 直接访问目标 GPU 的显存，避免了通过拷贝到 CPU host memory 作为中转，大大降低了数据交换的延迟。
 
 以深度学习应用为例，主流的开源深度学习框架如 TensorFlow、MXNet 都提供了对 GPUDirect P2P 的支持，NVIDIA 开发的 NCCL (NVIDIA Collective Communications Library) 也提供了针对 GPUDirect P2P 的特别优化。
 
@@ -206,7 +203,7 @@ RDMA 软件栈：
 
 简化一些的图：
 
-![Pasted image 20250321174352.png](./images/gpu/Pasted%20image%2020250321174352.png =600x)
+![Pasted image 20250321174352. Png](./images/gpu/Pasted%20image%2020250321174352.png =600x)
 
 
 #### 3.2.2. GPU 和 NIC 直接通信

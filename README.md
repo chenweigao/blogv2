@@ -4,7 +4,7 @@ layout: BlogHome
 icon: material-symbols:book-2
 title: 博客主页
 # heroImage: /bg1.jpeg
-bgImage: /goodluck.png
+bgImage: /1.png
 heroText: try to be better
 heroFullScreen: true
 # tagline: wiki & blog

@@ -1,8 +1,12 @@
 {
   "recentFiles": [
     {
-      "basename": "gpu_2",
-      "path": "architecture/gpu_2.md"
+      "basename": "THP",
+      "path": "linux/kernel/THP.md"
+    },
+    {
+      "basename": "MMU",
+      "path": "architecture/MMU.md"
     },
     {
       "basename": "Intel_inst",
@@ -13,44 +17,12 @@
       "path": "architecture/numa_socket.md"
     },
     {
-      "basename": "gpu_1",
-      "path": "architecture/gpu_1.md"
-    },
-    {
       "basename": "vp_hpca14",
       "path": "architecture/papers/vp_hpca14.md"
     },
     {
       "basename": "vp_value_prediction",
       "path": "architecture/papers/vp_value_prediction.md"
-    },
-    {
-      "basename": "SAC - ISCA 23",
-      "path": "architecture/papers/SAC - ISCA 23.md"
-    },
-    {
-      "basename": "sac_1",
-      "path": "architecture/papers/images/sac_1.png"
-    },
-    {
-      "basename": "THP",
-      "path": "linux/kernel/THP.md"
-    },
-    {
-      "basename": "Pasted image 20250310191138",
-      "path": "architecture/images/Pasted image 20250310191138.png"
-    },
-    {
-      "basename": "Pasted image 20250321174352",
-      "path": "architecture/images/gpu/Pasted image 20250321174352.png"
-    },
-    {
-      "basename": "Pasted image 20250321171922",
-      "path": "architecture/images/gpu/Pasted image 20250321171922.png"
-    },
-    {
-      "basename": "Pasted image 20250321171522",
-      "path": "architecture/images/gpu/Pasted image 20250321171522.png"
     },
     {
       "basename": "01_jvm_memory",

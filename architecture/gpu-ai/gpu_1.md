@@ -1,5 +1,5 @@
 ---
-title: GPU 体系结构
+title: GPU Architecture
 date: 2025-03-06
 category:
   - GPU
@@ -77,7 +77,7 @@ SM（Streaming Multiprocessor，流多处理器）和 Tensor Core（张量核心
 2. 每个线程块包含 16 个 SIMD 线程；
 3. 网格包含 16 个线程块。
 
-![a](./images/Pasted%20image%2020250310191138.png =400x)
+![a](./images/gpu/Pasted%20image%2020250310191138.png =400x)
 
 ### 4.4. 与 CPU 的对比
 
@@ -111,7 +111,7 @@ GPU（图形处理器）的架构与传统 CPU 有着根本性的不同，它专
 
 GPU 硬件通过多个机制隐藏线程管理细节，从而优化计算效率：
 
-**(1) 线程调度（Warp Scheduling）**
+**(1) 线程调度（Warp Scheduling）**：
 
 GPU 的基本执行单元是“Warp”或“Wavefront”（如 NVIDIA 的 Warp 由 32 个线程组成，AMD 的 Wavefront 通常为 64 个线程）。GPU 的硬件调度器负责：
 
@@ -121,7 +121,7 @@ GPU 的基本执行单元是“Warp”或“Wavefront”（如 NVIDIA 的 Warp �
 
 例如，在 CPU 上，如果多个线程争夺相同的核心，可能会导致复杂的上下文切换（context switch），而 GPU 通过“零开销线程切换”机制，在一个 Warp 执行遇到内存访问延迟时，硬件可以快速切换到另一个 Warp，隐藏延迟，从而提高计算效率。
 
-**(2) 资源分配（Register & Shared Memory Management）**
+**(2) 资源分配（Register & Shared Memory Management）**：
 
 GPU 采用分层存储架构，包括：
 
@@ -140,7 +140,7 @@ GPU 采用分层存储架构，包括：
 
 在 CPU 上，开发者需要手动进行缓存优化，而在 GPU 上，很多缓存优化（如 L2 Cache、共享内存）由硬件完成，大大减少了程序优化的复杂度。
 
-**(3) 延迟隐藏（Latency Hiding）**
+**(3) 延迟隐藏（Latency Hiding）**：
 
 CPU 主要依靠深度流水线（Deep Pipeline）和分支预测（Branch Prediction） 来减少指令执行的延迟，而 GPU 采用了**大规模线程切换（Thread-Level Parallelism, TLP）** 来隐藏延迟：
 
@@ -284,7 +284,7 @@ Explicit Predicate Registers（显式谓词寄存器）通常出现在支持 VLI
 
 **避免分支预测失败**：传统 if-else 代码会引入分支预测，而谓词寄存器允许**无分支执行**，减少分支预测开销。例如：
 
-```
+```asm
 ; x86 AVX-512
 VPADDQ ZMM1, ZMM2, ZMM3 {k1}  ; 仅在 k1 掩码为 1 的位置执行加法
 ```
@@ -293,7 +293,7 @@ VPADDQ ZMM1, ZMM2, ZMM3 {k1}  ; 仅在 k1 掩码为 1 的位置执行加法
 
  **向量化计算（SIMD/SIMT）**：GPU 和向量指令集利用谓词寄存器进行**掩码计算**，控制哪些元素参与计算，例如：
 
-```
+```asm
 ; ARM SVE
 ADD Z0.S, P0/M, Z1.S, Z2.S  ; 仅对 P0 掩码为 1 的元素执行加法
 ```
