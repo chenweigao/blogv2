@@ -1,12 +1,15 @@
-# init.h in Thermal
+---
+title: Thermal (3) - init.h in Thermal
+date: 2022-04-26
+---
 
-## Abstract
+## 1. Abstract
 
 本文分析 Linux 源码 `init.h` 文件，并研究其中涉及到的内核初始化过程、Thermal 模块如何调用等问题。
 
-## initcall
+## 2. initcall
 
-### initcall{n}.init
+### 2.1. initcall{n}.init
 
 内核初始化过程中的调用顺序[^1]：所有的 `__init` 函数在区段 `.initcall.init` 中还保存了一份函数指针，在初始化时内核会通过这些函数指针调用这些 `__init` 函数指针，并在整个初始化完成后，释放整个 `init` 区段，包括 `.init.text`，`.initcall.init` 等。
 
@@ -73,7 +76,7 @@ late_initcall(fn) --->.initcall7.init
 
 >  A "pure" initcall has no dependencies on anything else, and purely initializes variables that couldn't be statically initialized.
 
-## Thermal postcore_initcall()
+## 3. Thermal postcore_initcall()
 
 在 `thermal_core.c` 对 thermal 进行初始化，我们这么调用：
 
@@ -83,7 +86,7 @@ postcore_initcall(thermal_init);
 
 也就是说，我们江 thermal_init 的步骤放在了 `.initcall2.init` 的子区段中，其 init 优先级仅次于 pure_init 和 core_init, 其中 pure_init 是不依赖于其他任何初始化函数的最先运行的。
 
-## __section
+## 4. __section
 
 对于各个区段 section 的定义是这样的：
 
@@ -169,7 +172,7 @@ flowchart LR
 
 我们不难看出，其本质就是一个 `__attribute__`.
 
-### `__attribute__`
+### 4.1. `__attribute__`
 
 可以设置函数属性(Function Attribute), 变量属性(Variable Attribute), 类型属性(Type Attribute)[^3].
 
@@ -178,9 +181,9 @@ GNU CC 需要使用 `–Wall` 编译器来击活 `__attribute__` 功能。
 具体后续再进行研究。
 
 
-## Linux 内核初始化
+## 5. Linux 内核初始化
 
-### start_kernel
+### 5.1. start_kernel
 
 内核初始化的 C 语言入口[^4]是 `start_kernel`, 该函数首先初始化基础设施，即初始化内核的各个子系统，然后调用函数 `rest_init`, 该函数的执行流程如下：
 
@@ -188,7 +191,7 @@ GNU CC 需要使用 `–Wall` 编译器来击活 `__attribute__` 功能。
 2. 创建 2 号线程，即 kthread 线程，负责创建内核线程
 3. 0 号线程最终变成空闲线程
 
-### init 线程
+### 5.2. init 线程
 
 init 线程继续初始化，执行的主要操作如下：
 
@@ -204,7 +207,7 @@ init 线程继续初始化，执行的主要操作如下：
 2. 从上文看到，在初始化 thermal 的时候，从处理器已经完成启动了。这句话的深层含义是说，系统启动时拔核等操作是在更底层完成的，要和加载区分进行区分，不要混淆。
 
 
-## Reference
+## 6. Reference
 
 [^1]: [内核初始化过程中的调用顺序](https://e-mailky.github.io/2016-10-14-linux_kernel_init_seq)
 [^2]: [Linux 内核初始化定义](https://blog.csdn.net/beatbean/article/details/8448623)

@@ -1,5 +1,5 @@
 ---
-title: THP 整理
+title: THP
 date: 2025-03-17
 ---
 
@@ -72,7 +72,35 @@ PMDHugePages 是 Huge Pages 实现的一部分，适用于 64-bit 架构（x86-6
 
 3. 在 HPC、AI 训练等场景下，可以考虑预分配 Huge Pages（使用 hugetlbfs）以减少内存碎片和 THP 分配的开销。
 
-## 2. Tmpfs & THP
+## 2. Tmpfs 要点
+
+本章节主要参考：https://www.kernel.org/doc/html//v6.7/filesystems/tmpfs.html
+
+>  Since tmpfs lives completely in the page cache and optionally on swap, all tmpfs pages will be shown as =="Shmem"== in /proc/meminfo and "Shared" in free(1). Notice that these counters also include shared memory (shmem, see ipcs(1)). The most reliable way to get the count is using df(1) and du(1).
+
+>  tmpfs also supports ==Transparent Huge Pages ==which requires a kernel configured with CONFIG_TRANSPARENT_HUGEPAGE and with huge supported for your system (has_transparent_hugepage(), which is architecture specific). The mount options for this are:
+
+|                  |                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| huge=never       | Do not allocate huge pages. This is the default.                                          |
+| huge=always      | Attempt to allocate huge page every time a new page is needed.                            |
+| huge=within_size | Only allocate huge page if it will be fully within i_size. Also respect madvise(2) hints. |
+| huge=advise      | Only allocate huge page if requested with madvise(2).                                     |
+`huge=within_size` 会在文件写入时检查其**实际分配的内存大小**（而非文件元数据大小）。当文件占用的连续物理内存块达到或超过大页阈值时，内核会尝试将这些内存块转换为大页（如 2MB 或 1GB）。例如：
+
+- 若文件写入了 3MB 数据，且大页大小为 2MB，则内核会分配一个 2MB 的大页和一个 1MB 的普通页。
+- 若文件写入了 4MB 数据，则直接分配两个 2MB 的大页。
+
+另一个文档中 [https://www.kernel.org/doc/html//v6.7/admin-guide/mm/transhuge.html](https://www.kernel.org/doc/html//v6.7/admin-guide/mm/transhuge.html) 出现了类似的解释：
+
+>  `within_size`
+> 
+> Only allocate huge page if it will be fully within i_size. Also respect fadvise()/madvise() hints;
+
+
+>  Currently THP only **works for anonymous memory mappings and tmpfs/shmem.** But in the future it can expand to other filesystems.
+
+## 3. Tmpfs & THP
 
 >  C++ 的 THP 无感使能，tmpfs 加上 huge 的 mount 参数使用 THP，如何理解？
 
@@ -86,7 +114,7 @@ PMDHugePages 是 Huge Pages 实现的一部分，适用于 64-bit 架构（x86-6
 > [!info] 
 > 需要先开启内核的 THP 支持。
 
-### 2.1. 在 tmpfs 上使用 THP
+### 3.1. 在 tmpfs 上使用 THP
   
 Tmpfs 是一个基于 RAM 的文件系统，默认情况下使用 **普通 4KB 页面**。如果想让 tmpfs 上的文件自动使用 Huge Pages，可以在挂载 tmpfs 时加上 huge 选项。
 
@@ -112,7 +140,7 @@ mount -t tmpfs -o size=2G,huge=always tmpfs /mnt/tmpfs
 
   
 
-### 2.2. 如何验证 THP 是否生效
+### 3.2. 如何验证 THP 是否生效
 
   
 **查看 THP 配置**:
@@ -167,7 +195,7 @@ cat /proc/<pid>/smaps | grep "AnonHugePages"
 如果看到 AnonHugePages 占据较大比例，说明 Huge Pages 已被应用。
 
 
-### 2.3. 可能的性能影响
+### 3.3. 可能的性能影响
 
 尽管 THP 带来许多优势，但在某些情况下：
 
@@ -175,9 +203,9 @@ cat /proc/<pid>/smaps | grep "AnonHugePages"
 
 • **可能增加内存使用**，如果进程实际使用的内存较少，而 THP 仍然分配了 2MB 页面，则可能会浪费一些内存。
 
-如果遇到问题，可以改为 `huge=within_siz` e 或 `huge=never` 进行调试。
+如果遇到问题，可以改为 `huge=within_size` 或 `huge=never` 进行调试。
 
-### 2.4. 总结 
+### 3.4. 总结 
 
 Tmpfs 加 huge=always，让 Linux 内核在 tmpfs 上**自动分配 Huge Pages**，提高性能，无需修改应用代码。
 
@@ -190,9 +218,9 @@ Tmpfs 加 huge=always，让 Linux 内核在 tmpfs 上**自动分配 Huge Pages**
   
 你在 AMD 这边做 EPYC 和 AI/HPC 相关的优化，这块 THP 结合 NUMA 亲和性、RDMA、大页回收等策略的优化，可能会是一个有意思的方向，像 PostgreSQL、TensorFlow 之类的 workload 都可以针对性优化，甚至可以看看 AMD SEV + THP 在安全计算场景下的影响。
 
-## 3. Mount 用法
+## 4. Mount 用法
 
-### 3.1. Remount
+### 4.1. Remount
 
 `mount -o remount` 主要用于重新挂载已挂载的文件系统，并修改挂载选项。如果要增加 `size=2G,huge=always` 选项，命令如下：
 
@@ -236,7 +264,7 @@ mount -o remount /dev/shm
 
 以应用新的挂载选项。
 
-### 3.2. Deug
+### 4.2. Deug
 
 > mount -o remount, size=2M, huge=always /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
 > 
@@ -275,9 +303,20 @@ df -T /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/
 ```bash
 umount -l /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
 
-mount -t tmpfs -o size=2G,huge=always tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
+mount -t tmpfs -o size=843750000k,huge=always tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
 ```
 
+```
+mount -t tmpfs -o size=843750000k,huge=within_size tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
+```
+
+如果是在容器里面操作：
+
+```
+umount -l /tmpfs-index
+
+mount -t tmpfs -o size=843750000k,huge=within_size tmpfs /tmpfs-index
+```
 
 3. **Kubernetes 管理的 emptyDir 可能限制手动挂载**
 
@@ -305,9 +344,9 @@ spec:
 
 你可以先确认当前的挂载状态，再决定是否需要重新挂载或者修改 Pod 配置。
 
-## 4. 碎片整理
+## 5. 碎片整理
 
-### 4.1. 手动碎片整理
+### 5.1. 手动碎片整理
 
 通常而言，我们使用手动碎片整理的方式：
 
@@ -316,7 +355,7 @@ echo 3 > /proc/sys/vm/drop_caches
 echo 1 > /proc/sys/vm/compact_memory 
 ```
 
-#### 4.1.1. Drop_caches 
+#### 5.1.1. Drop_caches 
 
 
 该命令用于强制内核释放内存中的各类缓存，具体包括：
@@ -344,7 +383,7 @@ echo 1 > /proc/sys/vm/compact_memory
 - 谨慎操作：在生产环境中使用该命令时，务必确认当前业务处于低峰期，以避免对正常服务造成影响。
 - 需要 root 权限：执行该命令需要具备 root 权限。
 
-#### 4.1.2. Compact_memory
+#### 5.1.2. Compact_memory
 
 此命令用于==触发内核的内存压缩机制==。当内存碎片化问题较为严重时，内核会尝试将分散的空闲内存页移动到一起，形成连续的大块内存区域，从而提高内存的利用率。
 
@@ -366,7 +405,7 @@ echo 1 > /proc/sys/vm/compact_memory
 - 大内存分配失败：如果应用程序需要分配大块内存但失败，可能是因为内存碎片化，触发内存压缩可能会解决这一问题。
 - 实时系统优化：在实时系统中，需要确保有足够的连续内存来满足实时性要求，此时可以使用该命令来优化内存布局。
 
-### 4.2. 自动碎片整理
+### 5.2. 自动碎片整理
 
 该能力依赖于 AliOS 的内存整理：[THP reclaim功能](https://help.aliyun.com/zh/alinux/user-guide/thp-reclaim?spm=a2c4g.11186623.help-menu-2632541.d_2_0_25.1c38458ceoUVwN)
 

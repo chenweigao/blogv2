@@ -1,22 +1,25 @@
-# XV6(6.828)
+---
+title: XV6 (6.828)
+date: 2022-04-13
+---
 
-> xv6: a simple, Unix-like teaching operating system.
+> Xv6: a simple, Unix-like teaching operating system.
 
-## Foreword and acknowledgements
+## 1. Foreword and acknowledgements
 
-### RISC-V(risk-five)
+### 1.1. RISC-V (risk-five)
 
 1. An open standard instruction set architecture (ISA)
 2. Open source
 3. A RISC architecture, a load–store architecture;
 
-### XV6
+### 1.2. XV6
 
 XV6 is a Linux example kernel, re-implementation.
 
 Understanding xv6 is a good start toward understanding any of these systems and many others.
 
-### Register
+### 1.3. Register
 
 > In computer engineering, a load–store architecture is an instruction set architecture that divides instructions into two categories: **memory access** (load and store between memory and registers[^1]) and **ALU operations** (which only occur between registers).
 
@@ -36,7 +39,7 @@ Understanding xv6 is a good start toward understanding any of these systems and 
 
 GPU 上的寄存器远远多于 CPU 上寄存器的数量。
 
-## Operation System Interfaces
+## 2. Operation System Interfaces
 
 操作系统的作用主要可以归类为以下几点：
 
@@ -46,6 +49,6 @@ GPU 上的寄存器远远多于 CPU 上寄存器的数量。
 
 而接口的作用就是操作系统为用户提供服务的方式。
 
-## References
+## 3. References
 
 [^1]: [Processor register](https://en.wikipedia.org/wiki/Processor_register), 寄存器；Processor register 为处理器寄存器。

@@ -25,8 +25,7 @@ tag:
 
 ### 2.1. 虚拟内存与进程（进程隔离）
 
->  [!important]
-> 
+> [!important]
 > 虚拟内存是保证进程之间隔离的重要机制之一。
 
 内核使用**虚拟内存和进程控制块**来保证进程之间的隔离。
@@ -41,13 +40,13 @@ tag:
 > 
 > 进程 A 的虚拟地址空间：
 > 
-> 0x00000000 ~ 0x7fffffff    用户空间
-> 0x80000000 ~ 0xffffffff    内核空间
+> - 0x00000000 ~ 0x7fffffff    用户空间
+> - 0x80000000 ~ 0xffffffff    内核空间
 > 
 > 进程 B 的虚拟地址空间：
 > 
-> 0x00000000 ~ 0x7fffffff    用户空间
-> 0x80000000 ~ 0xffffffff    内核空间
+> - 0x00000000 ~ 0x7fffffff    用户空间
+> - 0x80000000 ~ 0xffffffff    内核空间
 > 
 > A, B 是两个独立的进程，所以虽然用户空间的地址范围相同，但是使用的虚拟地址是不同的；哪怕虚拟地址相同，也会对应不同的物理地址。
 
@@ -57,11 +56,11 @@ tag:
 
 每个进程都拥有自己的页表；具体而言，Linux 为每个进程都维护一个 `task_struct` 结构体（进程描述符 PCB, 无论怎么称呼），`task_struct -> mm_struct` 结构体成员用来保存该进程的页表。
 
-> 在进程切换的过程中，内核把新的页表的地址写入 CR3 控制寄存器。CR3 中含有页目录表的物理内存基地址，因此该寄存器也被称为页目录基地址寄存器 PDBR(Page-Directory Base address Register)[^1]
+> 在进程切换的过程中，内核把新的页表的地址写入 ==CR3 控制寄存器==。CR3 中含有页目录表的==物理内存基地址==，因此该寄存器也被称为页目录基地址寄存器 PDBR(Page-Directory Base address Register)[^1]
 
 每个进程（线程）绑定到自己的页表，页表不同意味着物理页不同（MMU 负责地址转换，不同的页表无法对应到一个物理页）
 
-对于一个进程而言，操作系统如何保证其访问权限？检查当前操作系统进程是否可以访问目标内存地址，具体到指令级别：**验证当前指令是否允许访问特定内存地址；这个过程的实现是通过 MMU 来做的**：CPU生成一个虚拟地址，虚拟地址经过 MMU 进行转换，将虚拟地址分解为**页号和页内偏移**，然后 MMU 查找页表，计算出最终的物理地址，查找时会检测非法或者权限。
+对于一个进程而言，操作系统如何保证其访问权限？检查当前操作系统进程是否可以访问目标内存地址，具体到指令级别：**验证当前指令是否允许访问特定内存地址；这个过程的实现是通过 MMU 来做的**：CPU 生成一个虚拟地址，虚拟地址经过 MMU 进行转换，将虚拟地址分解为**页号和页内偏移**，然后 MMU 查找页表，计算出最终的物理地址，查找时会检测非法或者权限。
 
 对于 4K 页表，网络上有一个非常好的解释如下[^2]:
 
@@ -80,22 +79,18 @@ Linux 内存提供的**大页机制**，上图的 4 级页表中，每个 PTE en
 > [!note]
 > 可以使用 perf 工具对比进程使用大页前后的 PageFault 次数的变化：
 > 
-> ```bash
-> perf stat -e page-faults -p <pid> --sleep 5
-> ```
+> `perf stat -e page-faults -p <pid> --sleep 5`
+
 
 ### 2.3. Summary
 
 ```mermaid
 flowchart LR
-    id1(虚拟内存)
-    id1-1(主存和辅存之间的缓存)
-    id1-2(地址空间超过主存)
-    id1-3(虚拟存储中的保护)
-    id1 --> id1-1 & id1-2 & id1-3
-    id1-3-1(多个应用程序访问物理地址 - 页表)
-    id1-3-2(两个活跃进程共享主存)
-    id1-3 --> id1-3-1 & id1-3-2
+    Id1(虚拟内存) --> Id1-1(主存和辅存之间的缓存)
+    Id1 --> Id1-2(地址空间超过主存)
+    Id1 --> Id1-3(虚拟存储中的保护)
+    Id1-3 --> Id1-3-1(多个应用程序访问物理地址 - 页表)
+    Id1-3 --> Id1-3-2(两个活跃进程共享主存)
 ```
 
 - 虚拟内存可以理解成在主存和辅存（磁盘、硬盘）之间进行数据缓存管理的一级存储层次。
@@ -117,7 +112,7 @@ flowchart LR
   1. 保护多个应用程序不会同时访问到同一块物理地址。（官方行文：允许多个进程共享一个主存；保护机制确保：一个恶意进程不能写另一个用户进程或者操作系统的地址空间）
   2. 防止一个进程读另一个进程的数据
 
-### 2.4. 进程与页表
+## 3. Context Switch
 
 在进程切换时，页表的处理是操作系统内存管理的重要部分。不同的进程拥有不同的虚拟地址空间，而页表用于将虚拟地址转换为物理地址，因此在进程切换时需要进行页表切换。具体的处理过程如下：
 
@@ -125,18 +120,18 @@ flowchart LR
 
 2. **加载新进程的页表**：当操作系统切换到进程 P2 时，需要恢复 P2 的上下文信息：
    
-   - 从 P2 的 PCB 中加载页表基地址到 页表基地址寄存器（PTBR）
+   - 从 P2 的 PCB 中加载页表基地址到页表基地址寄存器（PTBR）
    - 如果系统支持多级页表或页表缓存在硬件中（例如 TLB 缓存），操作系统还需要清空或重新配置这些缓存。
 
-3. **刷新 TLB**：TLB 用于缓存最近访问的页表项，加速地址转换。在进程切换时，由于不同的进程页表不同，TLB 中的条目通常会失效（因为它们对应的是旧进程的虚拟地址空间），操作系统通常通过 TLB 刷新 或 上下文标识符（ASID） 机制来确保页表转换正确。
+2. **刷新 TLB**：TLB 用于缓存最近访问的页表项，加速地址转换。在进程切换时，由于不同的进程页表不同，TLB 中的条目通常会失效（因为它们对应的是旧进程的虚拟地址空间），操作系统通常通过 <u>TLB 刷新或上下文标识符（ASID）</u> 机制来确保页表转换正确。
 
-4. **更新 MMU**：现代 CPU 使用 内存管理单元（MMU） 完成地址转换，操作系统在进程切换时将新页表基地址通知 MMU，MMU 会自动根据新的页表基地址完成虚拟地址到物理地址的转换。
+3. **更新 MMU**：现代 CPU 使用内存管理单元（MMU） 完成地址转换，操作系统在进程切换时将新页表基地址通知 MMU，MMU 会自动根据新的页表基地址完成虚拟地址到物理地址的转换。
 
-5. **地址空间的保护**：由于不同的进程使用各自的页表，每个进程的虚拟地址空间是相互隔离的。页表的切换确保了进程只能访问属于自己的地址空间，以及防止跨进程的内存访问，从而提供内存保护。
+4. **地址空间的保护**：由于不同的进程使用各自的页表，每个进程的虚拟地址空间是相互隔离的。页表的切换确保了进程只能访问属于自己的地址空间，以及防止跨进程的内存访问，从而提供内存保护。
 
 不同的体系结构和操作系统对页表的处理可能有细微差别：
 
-1. x86 架构：页表基地址通过 CR3 寄存器加载，切换进程时修改 CR3，并触发 TLB 刷新。
+1. X86 架构：页表基地址通过 CR3 寄存器加载，切换进程时修改 CR3，并触发 TLB 刷新。
 2. ARM 架构：类似地，使用页表基地址寄存器（例如 TTBR0/TTBR1）切换页表。
 3. 上下文标识符（ASID）：一些硬件支持 ASID，可以减少 TLB 刷新的开销。
 
@@ -149,9 +144,13 @@ flowchart LR
 
 页表的切换是确保各进程虚拟地址空间隔离和正确运行的核心机制。
 
-## 3. TLB
+## 4. MMU
 
-### 3.1. What is TLB?
+具体的专题分析见文章： [MMU](./MMU.md)。
+
+## 5. TLB
+
+### 5.1. What is TLB?
 
 > TLB stands for **Translation Lookaside Buffer**, and it is a **hardware cache** that is used in computer architecture to **speed up virtual memory access.**
 
@@ -170,7 +169,7 @@ flowchart LR
   
   简而言之：TLB 作为页表的 cache 而存在（注意页表是在主存中，方便理解 ）
 
-### 3.2. TLB Miss
+### 5.2. TLB Miss
 
 > A TLB miss occurs when the hardware attempts to translate a virtual memory address into a physical memory address and **cannot find the translation in the Translation Lookaside Buffer (TLB)**. When this happens, the hardware has to **perform a full page table walk** to find the translation, which is a more time-consuming process than using the TLB.
 
@@ -191,24 +190,22 @@ TLB 失效的原因可能是：
    
    这两者就可以对应上述两点 TLB 失效的两种可能。
 
-:::note 如何处理缺页失效或者 TLB 失效？
+> [!note] 
+> **如何处理缺页失效或者 TLB 失效？**
+> - 核心：通过**例外机制**来中断活跃进程，将控制转移到操作系统，然后再恢复执行被中断的进程。
+> - 两个特殊的控制寄存器：SEPC 和 SCAUSE.
 
-核心：通过**例外机制**来中断活跃进程，将控制转移到操作系统，然后再恢复执行被中断的进程。
-
-两个特殊的控制寄存器：SEPC 和 SCAUSE.
-
-:::
 
 除此之外，如果我们检测到某个系统的 TLB Miss 比较高的话，可以使用如下的措施：
 
 > To mitigate the impact of TLB misses, modern processors often employ techniques such as **multi-level TLBs**, **TLB prefetching**, and **hardware page table walkers**, which can reduce the likelihood and latency of TLB misses. Additionally, operating systems can optimize memory management strategies to minimize the number of TLB misses, such as using **huge pages** or transparent huge pages to reduce the size of page tables and increase TLB hit rates.
 
-1. multi-level TLBs (two-level page table structure in arm)
+1. Multi-level TLBs (two-level page table structure in arm)
 2. TLB prefetching
-3. hardware page table walkers
-4. huge pages, THP, hugetext..(reduce page table size, increase TLB hit)
+3. Hardware page table walkers
+4. Huge pages, THP, hugetext.. (reduce page table size, increase TLB hit)
 
-### 3.3. TLB and L1 ICache(VIPT)
+### 5.3. TLB and L1 ICache (VIPT)
 
 ![alt text](./pics/20241213105941.jpg)
 
@@ -216,11 +213,11 @@ TLB 失效的原因可能是：
 
 1. 64 位虚拟地址在逻辑上被分为虚拟页号与页内偏移：virtual pagenumber & page offset
 2. 页内偏移的高位被发送到 L1 ICache 用作索引
-3. 如果 TLB 匹配命中，则将物理页号发送到 L1 缓存标记(L1 cache tag), 检查是否匹配
+3. 如果 TLB 匹配命中，则将物理页号发送到 L1 缓存标记 (L1 cache tag), 检查是否匹配
 4. 如果匹配，则是 L1 缓存命中
 5. L1 Miss 的话则使用物理地址尝试 L2 缓存
 
-### 3.4. TLB Walk vs. TLB Miss
+### 5.4. TLB Walk vs. TLB Miss
 
 **ITLB Miss**：ITLB 中没有找到所需的地址映射；
 
@@ -230,9 +227,9 @@ TLB 失效的原因可能是：
 > 
 > Sections L.5 and L.6 of online Appendix L describe page table walkers and page structure caches. In the worst case, the page is not in memory, and the operating system gets the page from secondary storage. Because millions of instructions could execute during a **page fault**, the operating system will swap in another process if one is waiting to run. Otherwise, if there is no TLB exception, the instruction cache access continues.
 
-## 4. Page 进阶
+## 6. Page 进阶
 
-### 4.1. 页面大小的权衡
+### 6.1. 页面大小的权衡
 
 页面大小是比较常见的体系结构参数。如果选择一个偏大的页面的话，其优点可以如下所示：
 
@@ -245,16 +242,16 @@ TLB 失效的原因可能是：
 
 **页表和 TLB 的关系**：TLB 用于加速虚拟地址到物理地址的映射过程，而页表是实现虚拟内存管理的核心数据结构之一。如果 TLB 中没有缓存映射关系的话，CPU 就需要对页表进行查找，并将这个映射关系添加到 TLB 中以供下次使用。
 
-### 4.2. THP
+### 6.2. THP
 
 目前内核提供了两种大页机制：**静态大页和透明大页**。
 
-静态大页通常需要应用程序显式指定预留的大小和数量，而透明大页(THP, Transparent Huge Page) 的分配过程用户不感知，所以对用户透明，其过程如下：
+静态大页通常需要应用程序显式指定预留的大小和数量，而透明大页 (THP, Transparent Huge Page) 的分配过程用户不感知，所以对用户透明，其过程如下：
 在 THP **always 模式**下，会在 Page Fault 过程中，为符合要求的 vma 尽量分配大页进行映射；如果此时分配大页失败，比如整机物理内存碎片化严重，无法分配出连续的大页内存，那么就会 fallback 到普通的 4K 进行映射，但会记录下该进程的地址空间 mm_struct；然后 THP 会在后台启动 khugepaged 线程，定期扫描这些记录的 mm_struct，并进行合页操作。因为此时可能已经能分配出大页内存了，那么就可以将此前 fallback 的 4K 小页映射转换为大页映射，以提高程序性能。整个过程完全不需要用户进程参与，对用户进程是透明的，因此称为透明大页。
 
 THP 还支持 **madvise 模式**，该模式需要应用程序指定使用大页的地址范围，内核只对指定的地址范围做 THP 相关的操作。这样可以更加针对性、更加细致地优化特定应用程序的性能，又不至于造成反向的负面影响。
 
-### 4.3. IPC 与页表
+### 6.3. IPC 与页表
 
 OK，现在有一个很重要的问题：进程间通信的时候，我们都需要把数据 copy 到 kernel space, 因为进程的地址空间是隔离的，而 kernel space 是进程共享的；如果说，我们要绕过 kernel 直接进行进程间通信，需要解决以下问题：
 
@@ -295,7 +292,7 @@ OK，现在有一个很重要的问题：进程间通信的时候，我们都需
 
 如果你想自己实现一个支持用户态共享页表的机制，关键点在于如何在用户态安全地管理页表，同时确保不同进程的权限控制。如果你打算构建一个高性能的进程间通信机制，可以结合 RDMA、共享内存以及 TLB 优化来减少 syscall 和数据拷贝的开销。
 
-### 4.4. Page Fault
+### 6.4. Page Fault
 
 - 如果 virtual page 的有效位无效，那么就发生缺页失效。其本质是程序在执行过程中中需要访问的某一页数据或者代码不在内存中。
 
@@ -303,11 +300,11 @@ OK，现在有一个很重要的问题：进程间通信的时候，我们都需
 
 - 替换的时候使用近似 LRU 算法，因为实现完整的 LRU 算法代价太高。ARM V8 使用了一个 access bit 来实现这个。
 
-### 4.5. Virtual page number and Page offset
+### 6.5. Virtual page number and Page offset
 
 Virtual Address 可以分为两个部分：Virtual page number 和 Page offset, 可以翻译为虚拟页号和页内偏移量。
 
-#### 4.5.1. Virtual Page Number
+#### 6.5.1. Virtual Page Number
 
 Virtual Page Number (VPN) 是用于标识要访问的 page, 这个字段会用于虚拟地址到物理地址的转换。
 
@@ -317,7 +314,7 @@ VPN 和 TLB 之间的关系需要加以理解：
 
 > When a program accesses a virtual memory address, the processor extracts the virtual page number from the address and uses it as the index into the TLB cache.
 
-从上面可知：VPN 用于索引 TLB, 即 VPN -> PPN(Physical Page Number).
+从上面可知：VPN 用于索引 TLB, 即 VPN -> PPN (Physical Page Number).
 
 > [!info]
 > 
@@ -327,11 +324,11 @@ VPN 和 TLB 之间的关系需要加以理解：
 > 
 > 当 TLB index 确定的时候，TLB tag compare address 的位数也就确定了。
 
-#### 4.5.2. Page Offset
+#### 6.5.2. Page Offset
 
 Page Offset 用于确定页表中数据的具体位置，通常而言，其比 Virtual page number 要小。以一个 4KB 的 page 而言，其需要 12 bit 来标识在这个 4KB page 中的 byte offset.
 
-### 4.6. 页表的映射方式？
+### 6.6. 页表的映射方式？
 
 页表通常选择使用全相联的方式，出于以下几个原因（页表使用全相联 + 额外的页表）：
 
@@ -339,25 +336,25 @@ Page Offset 用于确定页表中数据的具体位置，通常而言，其比 V
 2. 全相联允许软件使用负责的替换策略以降低失效率
 3. 全相联很容易索引，并且不需要额外的硬件，也不需要进行查找
 
-### 4.7. TLB 和 cache 的映射方式？
+### 6.7. TLB 和 cache 的映射方式？
 
 通常选用组相连，一些系统使用直接映射，看中其访问时间短并且实现简单。
 
-## 5. Kernel Pages: kidled
+## 7. Kernel Pages: kidled
 
-kidled 是 Linux 内核中的一个后台线程，它的主要作用是 扫描并标记长时间未使用的内存页（冷页），为内存回收提供更智能的策略。相比于传统的 LRU 回收 方式，kidled 可以主动识别冷页，减少误删活跃页的可能性，从而降低 page fault（缺页中断）和 swap-in 开销，提高系统性能。
+Kidled 是 Linux 内核中的一个后台线程，它的主要作用是扫描并标记长时间未使用的内存页（冷页），为内存回收提供更智能的策略。相比于传统的 LRU 回收方式，kidled 可以主动识别冷页，减少误删活跃页的可能性，从而降低 page fault（缺页中断）和 swap-in 开销，提高系统性能。
 
-### 5.1. kidled 的核心机制
+### 7.1. Kidled 的核心机制
 
-kidled 主要通过以下几个步骤来工作：
+Kidled 主要通过以下几个步骤来工作：
 
 **1️⃣ 通过访问位（Access Bit）检测页面活跃度**
 
-- Linux 内核中的 页表（Page Table） 记录了每个内存页的访问状态
+- Linux 内核中的页表（Page Table） 记录了每个内存页的访问状态
 
 - 现代 CPU 维护 Access Bit（访问位），每当 CPU 访问某个内存页时，这个位会被自动设置为 1
 
-- kidled 定期扫描内存页的 Access Bit，判断它是否在一段时间内未被访问：
+- Kidled 定期扫描内存页的 Access Bit，判断它是否在一段时间内未被访问：
   
   - 如果 Access Bit 为 1：说明这个页最近被访问过，是“热”页，不进行回收。
   
@@ -365,13 +362,13 @@ kidled 主要通过以下几个步骤来工作：
 
 📌 **总结**：
 
-kidled **不会立即回收页，而是先进行标记，等到真正需要回收时，优先清理冷页**，这样可以**避免 LRU 直接误删“热”页**。
+Kidled **不会立即回收页，而是先进行标记，等到真正需要回收时，优先清理冷页**，这样可以**避免 LRU 直接误删“热”页**。
 
 **2️⃣ 标记冷页，并分层管理**
 
-- kidled 发现 访问位为 0 的页 后，不会立刻释放，而是进一步观察。
+- Kidled 发现访问位为 0 的页后，不会立刻释放，而是进一步观察。
 
-- 它会 多次扫描 这些页：
+- 它会多次扫描这些页：
   
   - 如果连续 N 次扫描都没有被访问，则认为它是真正的冷页，可以安全回收。
   
@@ -383,7 +380,7 @@ kidled **不会立即回收页，而是先进行标记，等到真正需要回�
 
 当系统出现内存压力时：
 
-- kidled 会优先回收已经标记为“冷”的页，避免影响活跃进程。
+- Kidled 会优先回收已经标记为“冷”的页，避免影响活跃进程。
 
 - 避免直接从 LRU 里回收，这样可以减少 page fault 和 swap-in。
 
@@ -391,19 +388,19 @@ kidled **不会立即回收页，而是先进行标记，等到真正需要回�
 
 **4️⃣ 交互式调优**
 
-- kidled 可以通过 sysfs 接口进行调优，例如：
+- Kidled 可以通过 sysfs 接口进行调优，例如：
   
   - 调整扫描间隔：可以设定多长时间扫描一次。
   
   - 调整回收门槛：可以设定多少次未访问才标记为冷页。
 
-这样，系统管理员可以根据 实际业务场景 进行优化，比如：
+这样，系统管理员可以根据实际业务场景进行优化，比如：
 
-- 高吞吐的数据库系统 可能需要更长的观察周期，避免回收频繁访问的数据页。
+- 高吞吐的数据库系统可能需要更长的观察周期，避免回收频繁访问的数据页。
 
-- 嵌入式系统或低内存环境 可能需要更积极地回收冷页，腾出内存。
+- 嵌入式系统或低内存环境可能需要更积极地回收冷页，腾出内存。
 
-### 5.2. vs. LRU
+### 7.2. Vs. LRU
 
 | 机制            | 传统 LRU                      | kidled                     |
 |:-------------:|:---------------------------:|:--------------------------:|
@@ -413,7 +410,7 @@ kidled **不会立即回收页，而是先进行标记，等到真正需要回�
 | CPU 负担        | 低<br/>（简单的 LRU 计算）          | 略高<br/>（需要定期扫描 Access Bit） |
 | 适用于           | 一般场景<br/>简单但可能导致 swap 过多    | 高负载场景<br/>优化内存回收效果         |
 
-### 5.3. kidled 适用的场景
+### 7.3. Kidled 适用的场景
 
 ✅ **适合大内存、长时间运行的服务器**，可以减少 swap-in 影响，提高系统响应速度[^3]。
 
@@ -423,10 +420,10 @@ kidled **不会立即回收页，而是先进行标记，等到真正需要回�
 
 🚫 **不适合极低内存的嵌入式系统**，因为它会额外占用一些 CPU 资源来扫描页面。
 
-## 6. Reference
+## 8. Reference
 
 [^1]: [知乎：操作系统中的多级页表到底是为了解决什么问题？](https://www.zhihu.com/question/63375062/answer/1403291487)
 
-[^2]: 操作系统中的多级页表到底是为了解决什么问题？ - bin的技术小屋的回答 - 知乎 https://www.zhihu.com/question/63375062/answer/3158720655
+[^2]: 操作系统中的多级页表到底是为了解决什么问题？ - bin 的技术小屋的回答 - 知乎 https://www.zhihu.com/question/63375062/answer/3158720655
 
 [^3]: [Linux内核内存性能调优的一些笔记](https://mp.weixin.qq.com/s/S0sc2aysc6aZ5kZCcpMVTw)

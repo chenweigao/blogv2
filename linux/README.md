@@ -20,4 +20,4 @@ title: Linux and C
 | :-----: | :------------------: | :-----------------------------------------------: |
 | Thermal | [link](./kernel/thermal.md) |       主要介绍 Thermal 框架的原理、源码分析       |
 |  BL31   |  [link](./kernel/BL31.md)   |    主要介绍 bootloader 的过程、重点研究 BL3-1     |
-| init.h  | [link](./kernel/init_h.md)  | 主要分析 Linux 源码 `init.h `相关的逻辑和设计理念 |
+| init.h  | [link](kernel/thermal_init_h.md)  | 主要分析 Linux 源码 `init.h `相关的逻辑和设计理念 |

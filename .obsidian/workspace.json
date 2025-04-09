@@ -8,25 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "c2dc0ee45d0ce974",
-            "type": "leaf",
-            "state": {
-              "type": "pkmer-downloader",
-              "state": {},
-              "icon": "bookmark",
-              "title": "Pkmer Market"
-            }
-          },
-          {
             "id": "da928cd4960d64d8",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "architecture/images/gpu/Pasted image 20250321171522.png"
+                "file": "architecture/gpu-ai/gpu_1.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "Pasted image 20250321171522"
+              "icon": "lucide-file",
+              "title": "gpu_1"
             }
           }
         ]
@@ -160,12 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "architecture/gpu-ai/gpu_1.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "gpu_1 的大纲"
             }
           },
           {
@@ -207,28 +200,38 @@
       "pkmer:Open Pkmer Market": false
     }
   },
-  "active": "c2dc0ee45d0ce974",
+  "active": "1e5faf6d7e14025f",
   "lastOpenFiles": [
+    "architecture/gpu-ai/images/gpu_1-1744183885388.png",
+    "architecture/gpu-ai/images/Pasted image 20250409151437.png",
+    "architecture/gpu-ai/images/gpu_1-1744183833977.png",
+    "architecture/gpu-ai/gpu_1.md",
+    "architecture/gpu-ai/images/gpu_1-1744183658997.png",
+    "architecture/gpu-ai/images/gpu_1-20250409.png",
+    "architecture/gpu-ai/gpu_2.md",
+    "architecture/gpu-ai/SAC - ISCA 23.md",
+    "architecture/gpu-ai/images/sac_1.png",
     "linux/kernel/THP.md",
     "architecture/MMU.md",
+    "architecture/memory_1.md",
+    "architecture/image.png",
+    "architecture/cache.md",
+    "linux/kernel/xv6.md",
+    "linux/kernel/thermal_init_h.md",
+    "linux/kernel/thermal.md",
+    "linux/kernel/notifier.md",
+    "linux/kernel/rcu.md",
+    "linux/kernel/thermal_init.md",
+    "linux/kernel/pthread.md",
     "architecture/Intel_inst.md",
     "architecture/gpu-ai/images/sac2.png",
-    "architecture/gpu-ai/images/sac_1.png",
-    "architecture/gpu-ai/SAC - ISCA 23.md",
     "architecture/gpu-ai/images/gpu/Pasted image 20250310191138.png",
     "architecture/gpu-ai/README.md",
     "architecture/gpu-ai/images/gpu/image-1.png",
     "architecture/gpu-ai/images/gpu/Pasted image 20250321174352.png",
-    "architecture/gpu-ai/images/gpu/Pasted image 20250321173622.png",
-    "architecture/gpu-ai/images/gpu/Pasted image 20250321171922.png",
-    "architecture/gpu-ai/images/gpu/Pasted image 20250321171522.png",
-    "architecture/gpu-ai/images/gpu/23dec7cb-0e10-4d1f-91ec-3209e2471361.avif",
-    "architecture/gpu-ai/images/gpu/20250322205534.jpg",
     "architecture/gpu-ai/images/gpu",
     "architecture/gpu-ai/images",
     "architecture/gpu_2.md",
-    "architecture/gpu-ai/gpu_2.md",
-    "architecture/gpu-ai/gpu_1.md",
     "architecture/gpu-ai",
     "architecture/numa_socket.md",
     "architecture/gpu_1.md",
@@ -241,19 +244,9 @@
     "architecture/images/gpu/23dec7cb-0e10-4d1f-91ec-3209e2471361.avif.crdownload",
     "architecture/images/gpu",
     "java/jvm/01_jvm_memory.md",
-    "java/jvm/gc_g1.md",
-    "java/jvm/01_jvm_memory~.md",
-    "linux/kernel/pthread.md",
     "pnpm-lock.yaml.858560857",
     "pnpm-lock.yaml.2037768292",
-    "notes/heroImage꞉ ⁄bg1.jpeg.md",
-    "notes/Untitled (2).md",
-    "notes/Untitled.md",
     "notes",
-    "images/db26f870-7ab0-4c24-a328-e6c8f86ab699..md",
-    "images",
-    "linux/kernel/thermal_init.md",
-    "linux/kernel/idle_tick.md",
-    "linux/kernel/init_h.md"
+    "images"
   ]
 }

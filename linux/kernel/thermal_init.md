@@ -1,6 +1,9 @@
-# Thermal Init
+---
+title: Thermal (2) - Thermal Init
+date: 2022-04-28
+---
 
-## Abstract
+## 1. Abstract
 
 __init thermal_init 是 thermal 的初始化函数，thermal 驱动模块的入口（thermel_core.c）。
 
@@ -38,20 +41,19 @@ flowchart TD
 ```
 
 
+> [!tip] 
+> 
+> **关于 postcore_initcall**
+> 
+> 注意最后调用：`postcore_initcall(thermal_init);`, 在之前的代码中使用的是 `fs_initcall()`, 但是最新的代码更改成了前者。 
+> 
+> `fs_initcall()` 用的原因是因为：thermal 模块加载进内核用的 `fs_initcall()`，tsadc 驱动一般用的是 `module_init()`，前者会早于后者加载，这点比较重要，有些代码流程上会依赖这种先后关系，需要留意[^1]。
+> 这边使用 `postcore_initcall(thermal_init);`, 也是为了解决调用顺序的问题。
+> 
+> 要理解这个我们需要了解内核初始化过程中的调用顺序[^2], 可以参考 \<init.h\> 那篇文章的分析。
 
-:::tip 关于 postcore_initcall: 
 
-注意最后调用：`postcore_initcall(thermal_init);`, 在之前的代码中使用的是 `fs_initcall()`, 但是最新的代码更改成了前者。 
-
-`fs_initcall()` 用的原因是因为：thermal 模块加载进内核用的 `fs_initcall()`，tsadc 驱动一般用的是 `module_init()`，前者会早于后者加载，这点比较重要，有些代码流程上会依赖这种先后关系，需要留意[^1]。
-这边使用 `postcore_initcall(thermal_init);`, 也是为了解决调用顺序的问题。
-
-
-要理解这个我们需要了解内核初始化过程中的调用顺序[^2], 可以参考 \<init.h\> 那篇文章的分析。
-
-:::
-
-## thermal_register_governors
+## 2. thermal_register_governors
 
 这个代码比较重要，所以在这边列举出来：
 
@@ -103,7 +105,7 @@ flowchart TD
 	A --> register
 ```
 
-### thermal_register_governor
+### 2.1. thermal_register_governor
 
 函数定义如下：`int thermal_register_governor(struct thermal_governor *governor)`.
 
@@ -204,7 +206,7 @@ int thermal_register_governor(struct thermal_governor *governor)
 
 - 第 41 行，调用 `thermal_set_governor()`, 下文继续分析
 
-#### __find_governor
+#### 2.1.1. __find_governor
 
 ```c
 static struct thermal_governor *__find_governor(const char *name) {
@@ -242,7 +244,7 @@ static struct thermal_governor *__find_governor(const char *name) {
 
 ❌❌❌ 了解预先设置的返回什么？
 
-### thermal_set_governor
+### 2.2. thermal_set_governor
 
 > thermal_set_governor() - Switch to another governor
 
@@ -275,7 +277,7 @@ ret = new_gov->bind_to_tz(tz);
 
 
 
-### thermal_zone_device_set_policy
+### 2.3. thermal_zone_device_set_policy
 
 ```c
 int thermal_zone_device_set_policy(struct thermal_zone_device *tz, char *policy){
@@ -298,7 +300,7 @@ gov = __find_governor(strim(policy));
 
 如果成功找到的话，调用 `thermal_set_governor`.
 
-### thermal_zone_device_register
+### 2.4. thermal_zone_device_register
 
 ```c
 /**
@@ -339,11 +341,11 @@ thermal_zone_device_register(const char *type, int trips, int mask,
 
 如注释所示，这个接口实现了增加一个新的 thermal zone device(sensor), 位置在 `/sys/class/thermal `, 其中每个文件夹的名称都类似于 `thermal_zone[0-*]`, 如 `thermal_zone0` 这样。
 
-## class_register
+## 3. class_register
 
 @todo
 
-## of_parse_thermal_zones
+## 4. of_parse_thermal_zones
 
 thermal_of.c
 
@@ -353,9 +355,9 @@ thermal_of.c
 >
 >  Return: 0 on success, proper error code otherwise
 
-## register_pm_notifier
+## 5. register_pm_notifier
 
-## Reference
+## 6. Reference
 
 [^1]: [内核初始化过程中的调用顺序](https://e-mailky.github.io/2016-10-14-linux_kernel_init_seq)
 [^2]: <https://blog.csdn.net/beatbean/article/details/8448623>

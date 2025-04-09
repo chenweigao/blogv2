@@ -256,7 +256,7 @@
   "cMenuNumRows": 12,
   "cMenuWidth": 558,
   "cMenuFontColor": "#f79646",
-  "cMenuBackgroundColor": "#d3f8b6",
+  "cMenuBackgroundColor": "rgba(74, 82, 199, 0.2)",
   "autohide": true,
   "custom_bg1": "#FFB78B8C",
   "custom_bg2": "#CDF4698C",

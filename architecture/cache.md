@@ -479,7 +479,7 @@ Figure: a 4-way set associative 32 KB data cache, with an 8-word (1 word equals 
 
 ❤️ 有一点需要注意的是，图中出现了 4 个 way 叠加处理，每个 way 都是由 256 条 cacheline 组成的；图中并未体现出多个 set，只画了一个 set. 现在再体会一下这句话：A way is a subset of the cache entries in a set that have the same index but different tags.
 
-#### Arm 原文参考
+#### 5.3.3. Arm 原文参考
 
 > The cache line length is eight words (32 bytes) and you have 4-ways. 32 KB divided by 4 (the number of ways), divided by 32 (the number of bytes in each line) gives you a figure of 256 lines in each way. This means that you require eight bits to index a line within a way (bits [12:5]). Here, you must use bits [4:2] of the address to select from the eight words within the line, though the number of bits which are required to index into the line depends on whether you are accessing a word, halfword, or byte. The remaining bits [31:13] in this case will be used as a tag.
 
@@ -499,7 +499,7 @@ $$\frac{32 \text{ KB}}{4 \text{ （way 数）} \times 32 \text{ （每行字节�
 
 剩余的地址位 **[31:13]** 作为 **标记（tag）**，用于区分不同的地址映射到相同索引的情况。
 
-#### 5.3.3. QA
+#### 5.3.4. QA
 
 1. 我们知道，cacheline 包括 tag, set index 和 offset bit, 其中 offset bit 用于定位数据在 cacheline 中具体的偏移，那么是如何仅根据一个 offset 就能确定具体的数据要取多少个 byte 呢？
    

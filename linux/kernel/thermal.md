@@ -1,6 +1,9 @@
-# Thermal Overview
+---
+title: Thermal (1) - Thermal Overview
+date: 2022-04-14
+---
 
-## Abstract
+## 1. Abstract
 
 Linux Thermal 是 Linux 系统下温度控制相关的模块，主要用来控制系统运行中芯片产生的热量。配合 ic 内部温度传感器，对 ic 温度进行管控，保证系统稳定性[^1]。
 
@@ -18,7 +21,7 @@ flowchart TD
 
 Thermal 中有一些基础概念，下文会结合定义的代码对其进行分析。
 
-## Thermal Zone Device
+## 2. Thermal Zone Device
 
 Thermal Zone 代表一个温控区间，将其看成一个虚拟的温度 sensor, 但是需要有物理 sensor 与其关联才可以发挥作用。 需要注意的是，一个 Thermal zone 最多可以关联一个 sensor, 但是一个 sensor 可以是多个硬件 Sensor 的混合。
 
@@ -112,7 +115,7 @@ classDiagram
 
 
 
-### thermal_zone_params *tzp
+### 2.1. thermal_zone_params *tzp
 
 在上述结构体的 24 行，结构体细节如下：
 
@@ -182,7 +185,7 @@ typedef unsigned int __u32;
 
 :::
 
-#### thermal_bind_params 
+#### 2.1.1. thermal_bind_params 
 
 thermal_bind_params (thermal.h)结构体如下：
 
@@ -218,7 +221,7 @@ flowchart LR
 
 
 
-### thermal_zone_device_ops *ops
+### 2.2. thermal_zone_device_ops *ops
 
 指的是 thermal 可以操作的类型：
 
@@ -258,7 +261,7 @@ struct thermal_zone_device_ops {
 };
 ```
 
-#### int (*get_temp)
+#### 2.2.1. int (*get_temp)
 
 获取温度 `int (*get_temp) (struct thermal_zone_device *, int *);`
 
@@ -267,7 +270,7 @@ if (d->override_ops && d->override_ops->get_temp)
 	return d->override_ops->get_temp(zone, temp);
 ```
 
-#### int (*get_trip_temp)
+#### 2.2.2. int (*get_trip_temp)
 
 在 `thermal_sysfs.c` 中调用：
 
@@ -295,7 +298,7 @@ trip_point_temp_show(struct device *dev, struct device_attribute *attr,
 }
 ```
 
-#### int (*set_trip_temp)
+#### 2.2.3. int (*set_trip_temp)
 
 ```c
 static ssize_t
@@ -348,7 +351,7 @@ trip_point_temp_store(struct device *dev, struct device_attribute *attr,
    `#define EINVAL 22`;
    `#define EPERM 1;`
 
-### Trip point
+### 2.3. Trip point
 
 > The binding of the cooling devices to the trip point is left for the user.
 
@@ -366,7 +369,7 @@ trip_point_temp_store(struct device *dev, struct device_attribute *attr,
 
   🤔🤔🤔 state 这个取值是由谁决定的？state 的计算由 Thermal Governor 完成。
 
-### Source Code
+### 2.4. Source Code
 
 dts 的配置：
 
@@ -378,7 +381,7 @@ dts 的配置：
 2. @todo
 
 
-## Thermal Governal
+## 3. Thermal Governal
 
 Thermal Governal 是降温策略的一个抽象，与 cpufreq 的 governal 概念类似。
 
@@ -395,7 +398,7 @@ struct thermal_governor {
 };
 ```
 
-## Thermal Cooling Device
+## 4. Thermal Cooling Device
 
 Thermal Cooling Device 是可以降温设备的抽象，如风扇。除此之外，还会包括CPU、GPU 这些，如何理解呢？
 
@@ -424,7 +427,7 @@ struct thermal_cooling_device_ops {
 };
 ```
 
-## Thermal Core
+## 5. Thermal Core
 
 Thermal Core 作为中枢注册 Governor, 注册 Thermal 类，并且基于 Device Tree 注册 Thermal Zone;
 
@@ -432,7 +435,7 @@ Thermal Core 作为中枢注册 Governor, 注册 Thermal 类，并且基于 Devi
 
 提供了核心函数 thermal_zone_device_update 作为 Thermal 中断处理函数和轮询函数，轮询的时候会根据不同 Trip Delay 调节。
 
-### struct thermal_governor
+### 5.1. struct thermal_governor
 
 对于 `thermal_governor` 结构体组成如下：
 
@@ -480,6 +483,6 @@ struct list_head {
 
 
 
-## Reference
+## 6. Reference
 
 [^1]: [Linux电源管理（五）thermal](https://www.it610.com/article/1288705954065489920.htm)
