@@ -49,9 +49,11 @@ NVIDIA 将 CUDA 编程定义为 **SIMT** -- ==单指令多线程==。
 
 - 在多 GPU 系统中，每个 GPU 都是一个 device。
     
-- 可以用 API 来查询和选择当前使用的 device（例如 cudaSetDevice() 或 hipSetDevice()）。
+- 可以用 API 来查询和选择当前使用的 device（例如 cudaSetDevice () 或 hipSetDevice ()）。
     
 - GPU 的内存（device memory）和 CPU 的内存是分开的，通常需要显式拷贝数据。
+
+一个 GPU（device）内部通常包含多个 **SM（Streaming Multiprocessors）**，每个 SM 可以并发执行多个 **warp**（每个 warp 是 32 个线程的调度单元）。
 
 
 **Kernel** 是运行在 GPU 上的 **函数**，由 host 发起调用。
@@ -60,11 +62,13 @@ NVIDIA 将 CUDA 编程定义为 **SIMT** -- ==单指令多线程==。
     
 - 在 CUDA/ROCm 中，通过语法类似 `kernel<<<grid, block>>>(...)` 来发起执行。
     
-    - grid: 指的是 thread blocks 的网格布局
+    - Grid: 指的是 thread blocks 的网格布局
         
-    - block: 指的是 block 中线程的个数和布局
+    - Block: 指的是 block 中线程的个数和布局
     
 - Kernel 执行时的数据并行性由开发者设计。
+
+一个 kernel 实际上被分割为多个 block，每个 block 被绑定到一个 SM，直到所有 block 执行完成为止。
 
 **Stream** 是 GPU 上执行指令的 **执行队列**。
 
@@ -75,6 +79,20 @@ NVIDIA 将 CUDA 编程定义为 **SIMT** -- ==单指令多线程==。
 - 默认的 stream 是 0，叫 **default stream** 或 **legacy stream**。
     
 - 非默认 stream 被称为 **explicit streams**，允许更细粒度的并发控制。
+
+实际的硬件交互映射关系如下图所示：
+
+```
++--------------------+            +---------------------------+
+|   CPU (Host)       |            |         GPU               |
+|--------------------|            |---------------------------|
+| API: cudaMemcpy    |  ======>   | DMA Engine                |
+| API: kernel launch |  ======>   | Command Processor (GPC)   |
+|                    |            |  └── dispatch to SMs      |
++--------------------+            |     └── Warp Schedulers   |
+                                  |         └── Threads       |
+                                  +---------------------------+
+```
 
 再参考 GPU 的存储结构设计以加深印象：
 
@@ -406,3 +424,119 @@ GPU 的架构设计强调**吞吐量**而非**低延迟**。通过依靠**小型
 > [!NOTE]
 >
 > 此处命名为 `数据`，但这里并没有提供具体数据集，而是提供了处理获取大规模数据的方法
+
+## 10. Device and Stream
+
+在 CUDA 编程里，`device`（设备）和 `stream`（流）是两个关键概念，它们存在着密切的联系，下面将为你详细介绍它们之间的关系。
+
+### 10.1. 基本概念
+
+- **Device**：在 CUDA 语境中，`device` 通常指的是 GPU。CUDA 程序可以在多个 GPU 设备上并行运行，每个 GPU 设备都有其独立的内存和计算资源。
+- **Stream**：`stream` 是一系列按顺序执行的 CUDA 操作队列。同一流内的操作会按照顺序依次执行，不同流内的操作则可以并行执行，这样就能提高 GPU 资源的利用率。
+
+### 10.2. 二者关系
+
+- **设备包含多个流**：一个 `device`（GPU）能够同时管理多个 `stream`。借助多个流，你可以让不同的 CUDA 操作在同一个 GPU 上并行执行，以此提升整体性能。例如，在一个 GPU 上可以同时开启数据传输流和内核执行流，使数据传输和内核计算并行进行。
+- **流在设备上执行**：所有的 `stream` 都必须依附于某个 `device`。当你创建一个 `stream` 时，实际上是在特定的 GPU 设备上创建了一个操作队列。不同设备上的流是相互独立的，不能跨设备共享。
+- **通过流管理设备资源**：合理运用 `stream` 能够更好地管理 `device`（GPU）的资源。例如，你可以把不同类型的任务分配到不同的流中，像将数据传输任务和内核计算任务分别放到不同的流里，从而实现数据传输和内核计算的重叠，充分利用 GPU 的带宽和计算能力。
+
+### 10.3. 示例代码
+
+下面是一个简单的 CUDA C++代码示例，展示了如何在一个 GPU 设备上创建和使用多个流：
+
+```
+#include <cuda_runtime.h>
+#include <iostream>
+
+__global__ void kernel(float* d_a, float* d_b, float* d_c, int n) {
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    if (idx < n) {
+        d_c[idx] = d_a[idx] + d_b[idx];
+    }
+}
+
+int main() {
+    const int n = 1024;
+    const int blockSize = 256;
+    const int gridSize = (n + blockSize - 1) / blockSize;
+
+    float *h_a, *h_b, *h_c;
+    float *d_a, *d_b, *d_c;
+
+    // 分配主机内存
+    h_a = (float*)malloc(n * sizeof(float));
+    h_b = (float*)malloc(n * sizeof(float));
+    h_c = (float*)malloc(n * sizeof(float));
+
+    // 初始化主机数据
+    for (int i = 0; i < n; i++) {
+        h_a[i] = static_cast<float>(i);
+        h_b[i] = static_cast<float>(i * 2);
+    }
+
+    // 分配设备内存
+    cudaMalloc((void**)&d_a, n * sizeof(float));
+    cudaMalloc((void**)&d_b, n * sizeof(float));
+    cudaMalloc((void**)&d_c, n * sizeof(float));
+
+    // 创建两个流
+    cudaStream_t stream1, stream2;
+    cudaStreamCreate(&stream1);
+    cudaStreamCreate(&stream2);
+
+    // 在流1中执行数据传输和内核计算
+    cudaMemcpyAsync(d_a, h_a, n * sizeof(float), cudaMemcpyHostToDevice, stream1);
+    cudaMemcpyAsync(d_b, h_b, n * sizeof(float), cudaMemcpyHostToDevice, stream1);
+    kernel<<<gridSize, blockSize, 0, stream1>>>(d_a, d_b, d_c, n);
+    cudaMemcpyAsync(h_c, d_c, n * sizeof(float), cudaMemcpyDeviceToHost, stream1);
+
+    // 在流2中执行另一个任务（这里简单示例为同步操作）
+    cudaStreamSynchronize(stream2);
+
+    // 销毁流
+    cudaStreamDestroy(stream1);
+    cudaStreamDestroy(stream2);
+
+    // 释放设备内存
+    cudaFree(d_a);
+    cudaFree(d_b);
+    cudaFree(d_c);
+
+    // 释放主机内存
+    free(h_a);
+    free(h_b);
+    free(h_c);
+
+    return 0;
+}
+```
+
+在这个示例里，我们在同一个 GPU 设备上创建了两个流 `stream1` 和 `stream2`，并在 `stream1` 中执行了数据传输和内核计算任务。这样，通过使用流，我们能够更好地管理 GPU 设备的资源，提高程序的性能。
+
+### 10.4. Stream 的进一步细分理解
+
+从功能和操作类型角度，`Stream`内的操作可以更细致地划分：
+
+- **内存操作流**：
+
+	- **主机到设备的内存传输**：借助 `cudaMemcpyAsync` 函数，能把数据从主机（CPU）内存异步传输到设备（GPU）内存。比如在深度学习训练里，需把输入数据和标签从主机内存传至 GPU 内存，以开展后续计算。
+	- **设备到主机的内存传输**：同样使用 `cudaMemcpyAsync` 函数，可将数据从设备内存异步传输回主机内存。例如在推理结束后，要把计算结果从 GPU 内存传回 CPU 内存进行后续处理。
+	- **设备内的内存操作**：像 `cudaMemsetAsync` 可用于异步地将设备内存的某个区域设置为特定值，`cudaMemcpyPeerAsync` 能在不同 GPU 设备间异步传输数据。
+
+- **内核执行流**：用于调度和执行 CUDA 内核函数。CUDA 内核是在 GPU 上并行执行的函数，可同时处理大量数据。例如，在矩阵乘法运算中，可编写一个 CUDA 内核函数，让大量线程并行计算矩阵元素的乘积和累加结果。
+- **事件同步流**：CUDA 事件可用于记录流中特定操作的完成时间，并且能实现不同流之间的同步。例如，你可以在一个流中记录一个事件，在另一个流中等待该事件完成后再继续执行后续操作，以此确保不同流中的操作按特定顺序执行。
+
+## 11. Cuda 内核
+
+CUDA 内核是在 GPU 上并行执行的函数。它由大量线程组成，这些线程会被组织成线程块和网格。每个线程负责处理数据的一部分，众多线程同时运行，从而实现并行计算。以下是一个简单的 CUDA 内核示例，用于实现向量加法：
+
+```
+__global__ void vectorAdd(float* a, float* b, float* c, int n) {
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    if (idx < n) {
+        c[idx] = a[idx] + b[idx];
+    }
+}
+```
+
+在这个示例中，`__global__` 关键字表明这是一个 CUDA 内核函数。`threadIdx.x` 表示线程在块内的索引，`blockIdx.x` 表示块在网格内的索引，`blockDim.x` 表示块的大小。通过这些索引，每个线程可以确定自己要处理的数据位置。

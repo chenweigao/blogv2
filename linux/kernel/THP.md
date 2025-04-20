@@ -7,15 +7,13 @@ date: 2025-03-17
 
 在 Linux 内核中，shmemhugepages、anonhugepages 和 pmdhugepages 这几个术语都与 **Transparent Huge Pages (THP)** 和 **Huge Pages** 相关，主要涉及如何使用更大的页（通常是 2MB 或 1GB）来减少 TLB（Translation Lookaside Buffer）miss，提高内存访问性能。
 
----
-
-### 1.1. 1 . ShmemHugePages（共享内存 Huge Pages）
+### 1.1. ### ShmemHugePages（共享内存 Huge Pages）
 
 适用于 **tmpfs（shmem）和 SysV 共享内存（shmget/shmat）**，如果启用了 THP，则共享内存也可以使用 Huge Pages。
 
 受 sysfs 配置项影响：
 
-```
+```bash
 cat /sys/kernel/mm/transparent_hugepage/shmem_enabled
 ```
 
@@ -26,9 +24,8 @@ cat /sys/kernel/mm/transparent_hugepage/shmem_enabled
 
 一些数据库（如 PostgreSQL）利用共享内存，可能会受到 `ShmemHugePages` 影响。
 
----
 
-### 1.2. 2 . AnonHugePages（匿名 Huge Pages）
+### 1.2. AnonHugePages（匿名 Huge Pages）
 
 适用于 **匿名内存映射（如堆、栈、mmap (匿名)）**，自动使用 THP。
 

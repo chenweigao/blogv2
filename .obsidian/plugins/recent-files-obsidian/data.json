@@ -1,6 +1,22 @@
 {
   "recentFiles": [
     {
+      "basename": "01_jvm_memory",
+      "path": "java/jvm/01_jvm_memory.md"
+    },
+    {
+      "basename": "reflection",
+      "path": "java/jvm/reflection.md"
+    },
+    {
+      "basename": "gc_g1",
+      "path": "java/jvm/gc_g1.md"
+    },
+    {
+      "basename": "jvm_inst",
+      "path": "java/jvm/jvm_inst.md"
+    },
+    {
       "basename": "gpu_1",
       "path": "architecture/gpu-ai/gpu_1.md"
     },
@@ -9,16 +25,16 @@
       "path": "architecture/gpu-ai/gpu_2.md"
     },
     {
+      "basename": "THP",
+      "path": "linux/kernel/THP.md"
+    },
+    {
       "basename": "SAC - ISCA 23",
       "path": "architecture/gpu-ai/SAC - ISCA 23.md"
     },
     {
       "basename": "sac_1",
       "path": "architecture/gpu-ai/images/sac_1.png"
-    },
-    {
-      "basename": "THP",
-      "path": "linux/kernel/THP.md"
     },
     {
       "basename": "MMU",
@@ -79,14 +95,6 @@
     {
       "basename": "vp_value_prediction",
       "path": "architecture/papers/vp_value_prediction.md"
-    },
-    {
-      "basename": "01_jvm_memory",
-      "path": "java/jvm/01_jvm_memory.md"
-    },
-    {
-      "basename": "gc_g1",
-      "path": "java/jvm/gc_g1.md"
     },
     {
       "basename": "db26f870-7ab0-4c24-a328-e6c8f86ab699",
