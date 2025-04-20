@@ -86,11 +86,47 @@ JVM 在执行某个类的时候，必须经过加载、连接、初始化，而�
 
 ![heap](./images/db26f870-7ab0-4c24-a328-e6c8f86ab699.png)
 
-### 4.1. 对象内存布局
+
+### 4.1. Code Cache
+
+CodeCache 内存主要存储 JVM 动态生成的代码。动态生成的代码最主要的是 JIT 编译后的代码，其次动态生成的代码，本地方法代码（JNI）也会存在 CodeCache 中。
+上章节提到的 NonProfiledHotCodeHeap 是属于 JIT 编译的产物，所以是 CodeCache 的一部分。
+code cache 会被分成三块区域，可以使用 `jcmd <pid> Compiler. codecache` 打印出各个区域的情况，如下图所示：
+
+![](../images/codecache.jpg)
+
+这三个区域的含义如下：
+- **non-nmethods**, 也叫做 JVM internal (non-method) code，通常包括 compiler buffers 和 bytecode interpreter 等，这些代码通常永久保存在 codecache 中；itable/vtable stub 这些函数就保存在该区域。
+
+- **profiled nmethods**，表示被 profiled 但是 lightly optimized 的 code heap 区域，profiled nmethods 的生命周期较短；由 ProfiledCodeHeapSize 控制大小；
+
+- **non-profiled nmethods**，被 fully optimized 的 C2 编译，生命周期较长；由 NonProfiledCodeHeapSize 控制大小；为了更高的性能优化，我们在 non-profiled 区再开辟了一块空间用于存储 non-profiled-hot-code, 这个 heap 区域一般比较小，由 NonProfiledHotCodeHeapSize 控制，该区域存储的 hotest code 能在 non-profile heap 中再进行冷热分离，提高性能。
+
+JVM 的 THP 重排就是针对 non-profiled code heap 中的 non-profiled hot code heap 进行了重排。
+
+
+> [!note]
+> 举个例子，我们知道虚方法是用来实现面向对象语言多态性的。对于一个虚方法调用，尽管它有很多个目标方法，但在实际运行过程中它可能只调用其中的一个。
+
+
+### 4.2. 浅堆和深堆
+
+浅堆和深堆通常是计算机科学中特别是在垃圾回收领域讨论的两个概念。它们通常用于分析对象在内存中的占用情况。
+
+**浅堆（Shallow Heap）** 浅堆大小指的是一个**对象本身在堆内存中的大小**，不包括该对象引用的其他对象所占的内存。例如，一个 Java 对象的浅堆大小只计算该对象的数据字段和对象头（如类元数据引用、锁信息等）所占据的内存。
+
+**深堆（Retained Heap）** 深堆大小是指对象本身以及从该对象可达的所有其他对象所占的内存之和。这意味着它考虑了整个对象图的内存占用，是一个递归的大小计算。计算深堆大小通常用于了解某个对象及其相关对象链的整体内存使用情况。
+在性能分析中，浅堆和深堆的区别可以帮助开发者识别内存泄漏和优化内存使用。例如，通过分析一个应用程序中某个对象的深堆大小，开发者可以识别出由于复杂的对象引用导致的高内存消耗情况。
+
+在使用工具进行堆分析时（如 Java 的 VisualVM 或 Eclipse MAT），这些概念可以帮助更有效地理解内存分布和定位性能问题。
+
+## 5. 对象内存布局
 
 当 JVM 遇到对象创建的字节码指令时，首先会检查常量池中是否存在该类的符号引用，并判断该符号引用所代表的类是否已经 **加载（Loading）、解析（Linking）、初始化（Initialization）**。如果类尚未完成这些过程，则需要先执行类的加载操作，以确保类的元数据已经在方法区中准备就绪。
 在完成检查后，JVM 开始为新对象分配内存。对象的大小在类加载完成后确定，JVM 需要在 **堆（Heap）** 上划分一块足够的空间来存放该对象。
 对于 JVM 在堆内存中的对象存储布局，通常可以划分为三个部分：**对象头、实例数据和对齐填充。**
+
+### 5.1. 指针压缩
 
 在 Java 虚拟机中，每个 Java 对象都有一个==对象头==（object header），这个由**标记字段**和**类型指针**所构成。其中，标记字段用以存储 Java 虚拟机有关该对象的运行数据，如哈希码、GC 信息以及锁信息，而类型指针则指向该对象的类。
 
@@ -118,8 +154,7 @@ JVM 在执行某个类的时候，必须经过加载、连接、初始化，而�
 > [!note]
 > 为什么是左移 3 位？因为我们关于 8N 做了对齐。
 > 
-> 参考前面的哪个例子：*这样一来，32 位压缩指针最多可以标记 2 的 32 次方辆车，对应着 2 的 33 次方个车位。*
-
+> 参考前面的哪个例子：*这样一来，32 位压缩指针最多可以标记 2 的 32 次方辆车，对应着 2 的 33 次方个车位。(这个例子类似于关于 2N 做了对齐)*
 
 
 此外，我们可以通过配置刚刚提到的内存对齐选项（`-XX:ObjectAlignmentInBytes`）来进一步提升寻址范围。但是，这同时也可能增加对象间填充，导致压缩指针没有达到原本节省空间的效果。
@@ -132,7 +167,7 @@ JVM 在执行某个类的时候，必须经过加载、连接、初始化，而�
 
 字段内存对齐的其中一个原因，是让字段只出现在同一 CPU 的缓存行中。如果字段不是对齐的，那么就有可能出现跨缓存行的字段。也就是说，该字段的读取可能需要替换两个缓存行，而该字段的存储也会同时污染两个缓存行。这两种情况对程序的执行效率而言都是不利的。
 
-#### 4.1.1. 字段重排列
+### 5.2. 字段重排列
 
 介绍一下对象内存布局另一个有趣的特性：字段重排列。
 
@@ -154,7 +189,7 @@ Java 虚拟机会让不同的@Contended 字段处于独立的缓存行中，因�
 
 如果你感兴趣，可以利用实践环节的工具，来查阅 Contended 字段的内存布局。注意使用虚拟机选项-XX:-RestrictContended。如果你在 Java 9 以上版本试验的话，在使用 javac 编译时需要添加 --add-exports java. Base/jdk.internal.vm.annotation=ALL-UNNAME
 
-#### 4.1.2. 对象头（Header）
+### 5.3. 对象头（Header）
 
 对象头部分通常由两类信息组成：
 
@@ -171,13 +206,13 @@ Java 虚拟机会让不同的@Contended 字段处于独立的缓存行中，因�
 
 综上所述，对象头的总大小是：
 
-$8（Mark Word）+ 8（Class Pointer）= 16 字节$
+$8\text{(Mark Word)}+ 8（\text{(Class Pointer)}= 16 \text{Bytes}$
 
 启用 Compressed Oops 后，**Class Pointer 以及所有的引用类型字段都会被压缩为 4 字节（32 位）**，而不是原来的 8 字节。  
 
 因此对象头变成了：
 
-$8（Mark Word）+ 4（压缩后的 Class Pointer）= 12 字节$
+$8\text{(Mark Word)}+ 4\text{(Compressed Class Pointer)}= 12 \text{Bytes}$
 
 问题：**那多出来的 4 字节怎么办？对象不是要 8 字节对齐吗？**
 
@@ -196,11 +231,46 @@ $8（Mark Word）+ 4（压缩后的 Class Pointer）= 12 字节$
 | 12      | 4      | int 字段 a      |
 | 16      | 0~4    | Padding（补齐）   |
 
-#### 4.1.3. 实例数据（Instance Data）
+---
+
+> [!important]
+> 
+> JVM 是怎么在对象头里用 4 字节表示一个 8 字节的类型指针？
+
+
+每个 Java 对象在内存中都有一个 **Class Pointer**，指向它的类元数据（即 Klass 对象，在 HotSpot JVM 中）。
+
+这个 Class Pointer 是在对象头里，作用是告诉 JVM：
+
+> “我是谁？我是哪个类的实例？”
+
+默认情况下，这是个 **64 位指针（8 字节）**，直接指向 Klass 结构的地址。
+
+当启用了 `-XX:+UseCompressedClassPointers` 后，Class Pointer 被压缩成 4 字节，压缩方式与 Compressed Oops 类似。
+
+
+> JVM 会为所有 Klass 对象分配一个连续的内存区域（叫 **Klass Space**），然后通过 **基地址 + 偏移量** 的方式来代替原始指针。
+
+**举个例子（类指针版）：**
+
+- Klass space 起始地址：0x100000000
+    
+- 某个类的元数据 Klass 对象地址：0x100001000
+    
+- 那么 offset = (0x100001000 - 0x100000000) >> shift = 0x1000 >> 3 = 0x200
+    
+- 压缩的 class pointer = 0x20
+
+解压时 JVM 做：
+Real_klass_pointer = klass_base_address + (compressed_class_pointer << shift)
+                   = 0x100000000 + (0x200 << 3)
+                   = 0x100001000
+
+### 5.4. 实例数据（Instance Data）
 
 该部分存储的是程序代码中定义的所有 **实例字段（Instance Fields）**，包括从父类继承的字段和子类自身定义的字段。这些字段的实际存储顺序可能会影响对象的内存占用和访问效率，JVM 可能会根据字段类型（如 int、long、reference 等）进行 **字段对齐（Field Alignment）** 和 **字段重排序（Field Reordering）** 以优化访问性能。可以通过 JVM 参数 **-XX:FieldsAllocationStyle** 进行字段分配策略的调整。
 
-#### 4.1.4. 对齐填充（Padding）
+### 5.5. 对齐填充（Padding）
 
 填充部分并不是所有对象都具备的，其主要目的是 **保证对象的整体大小是 8 字节的整数倍（在 64 位 JVM 上一般是 16 字节的整数倍）**，以符合 **CPU 内存对齐（Memory Alignment）** 规则，提高 CPU 访问速度。由于对象头的大小通常是 32 位（4 字节）或 64 位（8 字节），JVM 会对 **实例数据部分（Instance Data）** 进行适当的填充，使对象大小符合对齐要求。这一部分的填充内容没有实际意义，仅仅是为了满足对齐规则，避免 CPU 在读取对象数据时发生 **跨缓存行（Cache Line Crossing）** 导致的性能下降。
 对象大小计算公式：$\text{对象大小} = \text{头信息} + \text{实例数据} + padding$
@@ -209,42 +279,10 @@ $8（Mark Word）+ 4（压缩后的 Class Pointer）= 12 字节$
 > 综上所述，JVM 在创建对象时，会按照 **对象头 -> 实例数据 -> 填充** 的顺序进行内存布局，以确保高效的内存管理和对象访问性能。
 
 
-### 4.2. Code Cache
 
-CodeCache 内存主要存储 JVM 动态生成的代码。动态生成的代码最主要的是 JIT 编译后的代码，其次动态生成的代码，本地方法代码（JNI）也会存在 CodeCache 中。
-上章节提到的 NonProfiledHotCodeHeap 是属于 JIT 编译的产物，所以是 CodeCache 的一部分。
-code cache 会被分成三块区域，可以使用 `jcmd <pid> Compiler. codecache` 打印出各个区域的情况，如下图所示：
+## 6. 堆外内存
 
-![](../images/codecache.jpg)
-
-这三个区域的含义如下：
-- **non-nmethods**, 也叫做 JVM internal (non-method) code，通常包括 compiler buffers 和 bytecode interpreter 等，这些代码通常永久保存在 codecache 中；itable/vtable stub 这些函数就保存在该区域。
-
-- **profiled nmethods**，表示被 profiled 但是 lightly optimized 的 code heap 区域，profiled nmethods 的生命周期较短；由 ProfiledCodeHeapSize 控制大小；
-
-- **non-profiled nmethods**，被 fully optimized 的 C2 编译，生命周期较长；由 NonProfiledCodeHeapSize 控制大小；为了更高的性能优化，我们在 non-profiled 区再开辟了一块空间用于存储 non-profiled-hot-code, 这个 heap 区域一般比较小，由 NonProfiledHotCodeHeapSize 控制，该区域存储的 hotest code 能在 non-profile heap 中再进行冷热分离，提高性能。
-
-JVM 的 THP 重排就是针对 non-profiled code heap 中的 non-profiled hot code heap 进行了重排。
-
-
-> [!note]
-> 举个例子，我们知道虚方法是用来实现面向对象语言多态性的。对于一个虚方法调用，尽管它有很多个目标方法，但在实际运行过程中它可能只调用其中的一个。
-
-
-### 4.3. 浅堆和深堆
-
-浅堆和深堆通常是计算机科学中特别是在垃圾回收领域讨论的两个概念。它们通常用于分析对象在内存中的占用情况。
-
-**浅堆（Shallow Heap）** 浅堆大小指的是一个**对象本身在堆内存中的大小**，不包括该对象引用的其他对象所占的内存。例如，一个 Java 对象的浅堆大小只计算该对象的数据字段和对象头（如类元数据引用、锁信息等）所占据的内存。
-
-**深堆（Retained Heap）** 深堆大小是指对象本身以及从该对象可达的所有其他对象所占的内存之和。这意味着它考虑了整个对象图的内存占用，是一个递归的大小计算。计算深堆大小通常用于了解某个对象及其相关对象链的整体内存使用情况。
-在性能分析中，浅堆和深堆的区别可以帮助开发者识别内存泄漏和优化内存使用。例如，通过分析一个应用程序中某个对象的深堆大小，开发者可以识别出由于复杂的对象引用导致的高内存消耗情况。
-
-在使用工具进行堆分析时（如 Java 的 VisualVM 或 Eclipse MAT），这些概念可以帮助更有效地理解内存分布和定位性能问题。
-
-## 5. 堆外内存
-
-### 5.1. 堆外内存的作用
+### 6.1. 堆外内存的作用
 
 堆外内存有以下作用:
 
@@ -266,11 +304,11 @@ JVM 的 THP 重排就是针对 non-profiled code heap 中的 non-profiled hot co
 
 总之，合理地利用 JVM 堆外内存可以在特定场景下显著改善应用程序的性能，但是也需要注意相关的管理和优化工作。
 
-## 6. MetaSpace
+## 7. MetaSpace
 
 JVM 的 **元空间（Metaspace）不属于堆内存**，而是使用 **本地内存（Native Heap）**，即操作系统管理的非堆内存区域。
 
-### 6.1. MetaSpace & CMS
+### 7.1. MetaSpace & CMS
 
 在 Java 8 及更高版本中，元空间（Metaspace）替代了 Java 7 及之前的永久代（PermGen），用于存储类元数据（如类信息、常量池、方法代码等）。当与 CMS（Concurrent Mark-Sweep）垃圾回收器结合使用时，元空间的管理机制和 GC 行为会受到特定影响。以下是关于 CMS 与元空间的关键点总结：
 元空间与 CMS 的交互机制
@@ -317,6 +355,6 @@ JVM 的 **元空间（Metaspace）不属于堆内存**，而是使用 **本地
 3. 结合 CMS 特性调优  
    - 若应用频繁加载动态类（如反射、CGLIB），可考虑减少 `CMSInitiatingOccupancyFraction` 阈值，提前触发 CMS 以缓解元空间压力。
 
-## 7. Reference
+## 8. Reference
 
 - [苹果的堆内存管理与分析](https://developer.apple.com/cn/videos/play/wwdc2024/10173/?spm=ata.21736010.0.0.13622830DuCZPL)，可以作为目标。

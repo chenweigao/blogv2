@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "bbc891f2b0e591ca",
+        "id": "6b73a204d6f1ea0c",
         "type": "tabs",
         "children": [
           {
-            "id": "da928cd4960d64d8",
+            "id": "0ff78213501d1690",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -202,9 +202,9 @@
   },
   "active": "1e5faf6d7e14025f",
   "lastOpenFiles": [
+    "java/jvm/01_jvm_memory.md",
     "java/jvm/reflection.md",
     "java/jvm/gc_g1.md",
-    "java/jvm/01_jvm_memory.md",
     "java/jvm/jvm_inst.md",
     "architecture/gpu-ai/gpu_1.md",
     "architecture/gpu-ai/gpu_2.md",
