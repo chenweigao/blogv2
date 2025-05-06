@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "6b73a204d6f1ea0c",
+        "id": "14300c45a2a5d0ef",
         "type": "tabs",
         "children": [
           {
-            "id": "0ff78213501d1690",
+            "id": "b3cb4f2a9f794c79",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "java/jvm/01_jvm_memory.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "01_jvm_memory"
+              "title": "新标签页"
             }
           }
         ]
@@ -152,13 +148,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "java/jvm/01_jvm_memory.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "01_jvm_memory 的大纲"
+              "title": "大纲"
             }
           },
           {
@@ -200,27 +195,40 @@
       "pkmer:Open Pkmer Market": false
     }
   },
-  "active": "1e5faf6d7e14025f",
+  "active": "b3cb4f2a9f794c79",
   "lastOpenFiles": [
+    "dist/sitemap.xsl",
+    "dist/sitemap.xml",
+    "dist/slimsearch.worker.js",
+    "dist/robots.txt",
+    "dist/timeline/index.html",
+    "dist/timeline",
+    "dist/star/index.html",
+    "dist/star",
+    "dist/article/index.html",
+    "dist/article",
+    "dist/tag/ohos/index.html",
+    "dist/assets/01_jvm_memory-1744795568045-BQchyHxn.png",
+    "dist/assets/image-1-C6aqLwxQ.png",
+    "dist/assets/codecache-BHfvsN0K.jpg",
+    "dist/assets/gpu_1-1744183885388-Bdm7BTnJ.png",
+    "dist/assets/el-BewLX4iy.png",
+    "dist/assets/20250208151408-BfK2NezI.jpg",
+    "dist/assets/db26f870-7ab0-4c24-a328-e6c8f86ab699-DuNzSviA.png",
+    "dist/assets/jvm_mem-8htZXMAZ.svg",
+    "dist/assets/Pasted image 20250310191138-CbtG_62F.png",
+    "dist/assets/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f-BdweNBjN.jpg",
+    "linux/kernel/THP.md",
+    "architecture/cache.md",
     "java/jvm/01_jvm_memory.md",
     "java/jvm/reflection.md",
     "java/jvm/gc_g1.md",
     "java/jvm/jvm_inst.md",
     "architecture/gpu-ai/gpu_1.md",
     "architecture/gpu-ai/gpu_2.md",
-    "java/jvm/images/01_jvm_memory-1744795568045.png",
-    "linux/kernel/THP.md",
-    "architecture/gpu-ai/images/gpu_1-1744183885388.png",
-    "architecture/gpu-ai/images/Pasted image 20250409151437.png",
-    "architecture/gpu-ai/images/gpu_1-1744183833977.png",
-    "architecture/gpu-ai/images/gpu_1-1744183658997.png",
-    "architecture/gpu-ai/images/gpu_1-20250409.png",
     "architecture/gpu-ai/SAC - ISCA 23.md",
-    "architecture/gpu-ai/images/sac_1.png",
     "architecture/MMU.md",
     "architecture/memory_1.md",
-    "architecture/image.png",
-    "architecture/cache.md",
     "linux/kernel/xv6.md",
     "linux/kernel/thermal_init_h.md",
     "linux/kernel/thermal.md",
@@ -229,24 +237,11 @@
     "linux/kernel/thermal_init.md",
     "linux/kernel/pthread.md",
     "architecture/Intel_inst.md",
-    "architecture/gpu-ai/images/sac2.png",
-    "architecture/gpu-ai/images/gpu/Pasted image 20250310191138.png",
     "architecture/gpu-ai/README.md",
-    "architecture/gpu-ai/images/gpu",
-    "architecture/gpu-ai/images",
     "architecture/gpu_2.md",
-    "architecture/gpu-ai",
     "architecture/numa_socket.md",
     "architecture/gpu_1.md",
     "architecture/papers/vp_hpca14.md",
-    "architecture/papers/vp_value_prediction.md",
-    "architecture/papers/SAC - ISCA 23.md",
-    "architecture/papers/images",
-    "architecture/images/gpu/23dec7cb-0e10-4d1f-91ec-3209e2471361.avif.crdownload",
-    "architecture/images/gpu",
-    "pnpm-lock.yaml.858560857",
-    "pnpm-lock.yaml.2037768292",
-    "notes",
-    "images"
+    "architecture/papers/vp_value_prediction.md"
   ]
 }

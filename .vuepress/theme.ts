@@ -18,6 +18,8 @@ export default hopeTheme(
 
         sidebar: mysidebar,
 
+        lastUpdated: true,
+
         logo: "excellence.png",
 
         repo: "https://github.com/chenweigao",

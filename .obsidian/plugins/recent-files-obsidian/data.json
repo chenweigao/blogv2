@@ -1,6 +1,14 @@
 {
   "recentFiles": [
     {
+      "basename": "THP",
+      "path": "linux/kernel/THP.md"
+    },
+    {
+      "basename": "cache",
+      "path": "architecture/cache.md"
+    },
+    {
       "basename": "01_jvm_memory",
       "path": "java/jvm/01_jvm_memory.md"
     },
@@ -25,10 +33,6 @@
       "path": "architecture/gpu-ai/gpu_2.md"
     },
     {
-      "basename": "THP",
-      "path": "linux/kernel/THP.md"
-    },
-    {
       "basename": "SAC - ISCA 23",
       "path": "architecture/gpu-ai/SAC - ISCA 23.md"
     },
@@ -47,10 +51,6 @@
     {
       "basename": "image",
       "path": "architecture/image.png"
-    },
-    {
-      "basename": "cache",
-      "path": "architecture/cache.md"
     },
     {
       "basename": "xv6",
