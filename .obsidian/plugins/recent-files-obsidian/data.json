@@ -1,12 +1,60 @@
 {
   "recentFiles": [
     {
-      "basename": "THP",
-      "path": "linux/kernel/THP.md"
+      "basename": "ibs",
+      "path": "architecture/ibs.md"
+    },
+    {
+      "basename": "image222",
+      "path": "architecture/image222.png"
+    },
+    {
+      "basename": "memory_vm_page",
+      "path": "architecture/memory_vm_page.md"
     },
     {
       "basename": "cache",
       "path": "architecture/cache.md"
+    },
+    {
+      "basename": "MMU",
+      "path": "architecture/MMU.md"
+    },
+    {
+      "basename": "SAC - ISCA 23",
+      "path": "architecture/gpu-ai/SAC - ISCA 23.md"
+    },
+    {
+      "basename": "arm_inline_assembly",
+      "path": "architecture/arm/arm_inline_assembly.md"
+    },
+    {
+      "basename": "sort",
+      "path": "algorithm/sort.md"
+    },
+    {
+      "basename": "README",
+      "path": "architecture/gpu-ai/README.md"
+    },
+    {
+      "basename": "gpu_1",
+      "path": "architecture/gpu-ai/gpu_1.md"
+    },
+    {
+      "basename": "gpu_2",
+      "path": "architecture/gpu-ai/gpu_2.md"
+    },
+    {
+      "basename": "numa_socket",
+      "path": "architecture/numa_socket.md"
+    },
+    {
+      "basename": "x86_inst",
+      "path": "architecture/x86_inst.md"
+    },
+    {
+      "basename": "THP",
+      "path": "linux/kernel/THP.md"
     },
     {
       "basename": "01_jvm_memory",
@@ -25,32 +73,8 @@
       "path": "java/jvm/jvm_inst.md"
     },
     {
-      "basename": "gpu_1",
-      "path": "architecture/gpu-ai/gpu_1.md"
-    },
-    {
-      "basename": "gpu_2",
-      "path": "architecture/gpu-ai/gpu_2.md"
-    },
-    {
-      "basename": "SAC - ISCA 23",
-      "path": "architecture/gpu-ai/SAC - ISCA 23.md"
-    },
-    {
       "basename": "sac_1",
       "path": "architecture/gpu-ai/images/sac_1.png"
-    },
-    {
-      "basename": "MMU",
-      "path": "architecture/MMU.md"
-    },
-    {
-      "basename": "memory_1",
-      "path": "architecture/memory_1.md"
-    },
-    {
-      "basename": "image",
-      "path": "architecture/image.png"
     },
     {
       "basename": "xv6",
@@ -79,14 +103,6 @@
     {
       "basename": "pthread",
       "path": "linux/kernel/pthread.md"
-    },
-    {
-      "basename": "Intel_inst",
-      "path": "architecture/Intel_inst.md"
-    },
-    {
-      "basename": "numa_socket",
-      "path": "architecture/numa_socket.md"
     },
     {
       "basename": "vp_hpca14",

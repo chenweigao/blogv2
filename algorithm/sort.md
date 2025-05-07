@@ -2,9 +2,9 @@
 
 [GitHub Sort code](https://github.com/chenweigao/_code/tree/master/sort)
 
-## Abstract
+## 1. Abstract
 
-### Base Sort Function Py
+### 1.1. Base Sort Function Py
 
 在 Python 中，按照优先级进行排序可以使用 `lis.sort(lombda x: (x[1], x[0]))` 这样的方式。
 
@@ -30,7 +30,7 @@ res.sort(key=lambda x: (x[0], x[1]))
 
 剩下的可以直接研究，总结来说：`sort` 默认的是升序。
 
-### cmp_to_key
+### 1.2. cmp_to_key
 
 :::tip Python 自定义排序函数
 
@@ -67,9 +67,9 @@ def test01(self):
 
 还有一个 leetcode 的例子是 `cmp_to_key` 的应用，[953. 验证外星语词典](https://leetcode.cn/problems/verifying-an-alien-dictionary/)，具体可以参考后面的实例章节。
 
-## Sort
+## 2. Sort
 
-### Insertion Sort
+### 2.1. Insertion Sort
 
 直接使用 bisect 模块，可以直接插入某个元素，返回排序好的元素：
 
@@ -80,7 +80,7 @@ bisect.insort(nums, 2)
 print(nums)  # [1, 2, 3, 4]
 ```
 
-### Merge Sort
+### 2.2. Merge Sort
 
 $T(n) = O(nlog_{2}n)$
 
@@ -91,7 +91,7 @@ another example:
 - Matrix Multiplication:
   - Brute Force(暴力):  $O(n^3)$ arithmetic operations
 
-### Quick Sort
+### 2.3. Quick Sort
 
 - Worst-case running time $O(n^2)$ :
   - input sorted or reverse sorted, partition around min or max element.
@@ -111,7 +111,7 @@ def qsort(arr):
         return qsort(l) + [pivot] + qsort(r)
 ```
 
-### Selection Sort
+### 2.4. Selection Sort
 
 ```py
 def selection_sort(arr):
@@ -124,7 +124,7 @@ def selection_sort(arr):
 ​    return arr
 ```
 
-## Sort Template
+## 3. Sort Template
 
 C++ 使用模板降序排列：
 
@@ -137,7 +137,7 @@ struct greater
 std::sort(numbers.begin(), numbers.end(), greater());
 ```
 
-### Swap
+### 3.1. Swap
 
 1. 基本实现：
 
@@ -205,9 +205,9 @@ std::sort(numbers.begin(), numbers.end(), greater());
    swap(x, y);
    ```
 
-## Problems
+## 4. Problems
 
-### LC179 最大数
+### 4.1. LC179 最大数
 
 > Given a list of non negative integers, arrange them such that they form the largest number.
 >
@@ -223,7 +223,7 @@ std::sort(numbers.begin(), numbers.end(), greater());
 
 10 和 2 的大小关系（或者说前后顺序），可以根据 10 + 2 = 102 和 2 + 10 = 210 的大小来判断。
 
-#### 冒泡排序 C 解法
+#### 4.1.1. 冒泡排序 C 解法
 
 这是百度百科冒泡排序算法的参考：
 
@@ -245,7 +245,7 @@ void bubbleSort(elemType arr[], int len)
 }
 ```
 
-#### 一刷
+#### 4.1.2. 一刷
 
 该题目的解法如下：
 
@@ -278,7 +278,7 @@ class Solution:
 
 主要到 lambda 表达式中出现了一个 `+1`, 是因为有时候会遇到奇数的情况，比如说：[121, 12] 这种情况，会得出商为 1, 从而产生错误的结果。
 
-#### 二刷
+#### 4.1.3. 二刷
 
 二刷于 2022年4月18日。
 
@@ -324,7 +324,7 @@ class Solution:
         return '0' if nums[0] == '0' else ''.join(nums)
 ```
 
-### LC953 验证外星语词典
+### 4.2. LC953 验证外星语词典
 
 [953. 验证外星语词典](https://leetcode.cn/problems/verifying-an-alien-dictionary/)
 

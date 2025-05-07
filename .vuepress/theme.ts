@@ -18,7 +18,7 @@ export default hopeTheme(
 
         sidebar: mysidebar,
 
-        lastUpdated: true,
+        lastUpdated: false,
 
         logo: "excellence.png",
 

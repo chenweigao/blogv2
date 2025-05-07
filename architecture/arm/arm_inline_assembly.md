@@ -5,7 +5,7 @@ category:
  -  Arm
 ---
 
-## __asm
+## 1. __asm
 
 Example[^1]:
 
@@ -55,14 +55,14 @@ __asm [volatile] (code_template
 
 我们总共有 3 个 **”:“**,  每一个后面都有不同的含义，下面对其进行具体说明。（注意 *[]* 符号包含住表示的是这个参数是可选的）
 
-### output
+### 1.1. output
 
 第一个 ：冒号后面跟汇编代码的输出；有几个细节需要注意：
 
 - "=r" 而不是 "r", 在输出中
 - `%[variable]` 的 % 是在最前面的
 
-### input 
+### 1.2. input 
 
 第二个后面跟汇编代码的输入，如下所示：
 
@@ -75,13 +75,13 @@ __asm ("ADD R0, %[input_i], %[input_j]"
 
 在这个例子中，我们将 `input_i` 和 `input_j` 的值相加放入寄存器 `R0` 中，每一个 input 都使用逗号分隔开，三个字段 `[input_i] "r" (i)` 的含义分别是符号名称，约束字符串和 C 表达式。
 
-### clobbered_register_list
+### 1.3. clobbered_register_list
 
 这个里面指定寄存器，嵌入式汇编代码中指定的寄存器可能会产生冲突，因此需要把这些寄存器列举出来，表示其可以在编译的时候被重命名。
 
-## Real Example
+## 2. Real Example
 
-### prfm
+### 2.1. prfm
 
 下面例子是实战中写的汇编示例，使用了 `prfm` 指令：
 
@@ -102,7 +102,7 @@ __asm ("ADD R0, %[input_i], %[input_j]"
   #endif
 ```
 
-### __builtin_prefetch()
+### 2.2. __builtin_prefetch()
 
 `__builtin_prefetch()` 接口的使用，我们列举几个 art 的例子，看一下大佬门是怎么使用预取，保证提前量，或者将预取的功效发挥到最大的：
 
@@ -124,7 +124,7 @@ prefetch_fifo.pop_front();
 
 其次就是利用 fifo 数据结构，但是在实践中使用该方法，并无太大的增益。
 
-### prefetch in for loop
+### 2.3. prefetch in for loop
 
 ```cpp
 uint8_t* begin = reinterpret_cast<uint8_t*>(new_run) + headerSizes[idx];
@@ -150,7 +150,7 @@ for (size_t i = 0; i < num_of_bytes; i += kPrefetchStride) {
 
 
 
-### mrs pmu
+### 2.4. mrs pmu
 
 下面这个是读取 PMU 寄存器中的数据的示例：
 
@@ -172,7 +172,7 @@ static inline uint64_t arch_counter_get_cntpct() {
 
 `CNTVCT_EL0` 寄存器为一个不需要开启用户态访问权限也能访问到的寄存器。
 
-### TSC
+### 2.5. TSC
 
 这里引出了 TSC 的相关知识：
 
@@ -198,7 +198,7 @@ or rax, rdx    ; RAX = 完整的64位 TSC 值
 
 
 
-### memcpy
+### 2.6. memcpy
 
 下面这个是嵌入 `memecpy` 的例子：
 
@@ -245,10 +245,7 @@ or rax, rdx    ; RAX = 完整的64位 TSC 值
 
 
 
-
-
-
-
+## 3. Reference
 
 [^1]: [ARM 官方文档](https://developer.arm.com/documentation/100748/0616/Using-Assembly-and-Intrinsics-in-C-or-C---Code/Writing-inline-assembly-code)
 

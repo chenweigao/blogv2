@@ -11,13 +11,32 @@
             "id": "b3cb4f2a9f794c79",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "architecture/gpu-ai/SAC - ISCA 23.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "SAC - ISCA 23"
+            }
+          },
+          {
+            "id": "ddea9329be37a99b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "architecture/ibs.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ibs"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -148,12 +167,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "architecture/ibs.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "ibs 的大纲"
             }
           },
           {
@@ -177,7 +197,7 @@
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -195,7 +215,7 @@
       "pkmer:Open Pkmer Market": false
     }
   },
-  "active": "b3cb4f2a9f794c79",
+  "active": "ddea9329be37a99b",
   "lastOpenFiles": [
     "dist/sitemap.xsl",
     "dist/sitemap.xml",
@@ -207,28 +227,34 @@
     "dist/star",
     "dist/article/index.html",
     "dist/article",
-    "dist/tag/ohos/index.html",
-    "dist/assets/01_jvm_memory-1744795568045-BQchyHxn.png",
-    "dist/assets/image-1-C6aqLwxQ.png",
-    "dist/assets/codecache-BHfvsN0K.jpg",
+    "dist/tag/gc/index.html",
     "dist/assets/gpu_1-1744183885388-Bdm7BTnJ.png",
+    "dist/assets/tcp-B_MGbFxk.jpg",
     "dist/assets/el-BewLX4iy.png",
-    "dist/assets/20250208151408-BfK2NezI.jpg",
+    "dist/assets/01_jvm_memory-1744795568045-BQchyHxn.png",
+    "dist/assets/codecache-BHfvsN0K.jpg",
     "dist/assets/db26f870-7ab0-4c24-a328-e6c8f86ab699-DuNzSviA.png",
+    "dist/assets/20250208151408-BfK2NezI.jpg",
     "dist/assets/jvm_mem-8htZXMAZ.svg",
-    "dist/assets/Pasted image 20250310191138-CbtG_62F.png",
-    "dist/assets/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f-BdweNBjN.jpg",
-    "linux/kernel/THP.md",
+    "dist/assets/20250322205534-Bd0_5x-u.jpg",
+    "dist/assets/11-RrLnDIHO.png",
+    "architecture/memory_vm_page.md",
     "architecture/cache.md",
+    "architecture/ibs.md",
+    "architecture/MMU.md",
+    "architecture/gpu-ai/SAC - ISCA 23.md",
+    "architecture/arm/arm_inline_assembly.md",
+    "algorithm/sort.md",
+    "architecture/gpu-ai/README.md",
+    "architecture/gpu-ai/gpu_1.md",
+    "architecture/gpu-ai/gpu_2.md",
+    "architecture/numa_socket.md",
+    "architecture/x86_inst.md",
+    "linux/kernel/THP.md",
     "java/jvm/01_jvm_memory.md",
     "java/jvm/reflection.md",
     "java/jvm/gc_g1.md",
     "java/jvm/jvm_inst.md",
-    "architecture/gpu-ai/gpu_1.md",
-    "architecture/gpu-ai/gpu_2.md",
-    "architecture/gpu-ai/SAC - ISCA 23.md",
-    "architecture/MMU.md",
-    "architecture/memory_1.md",
     "linux/kernel/xv6.md",
     "linux/kernel/thermal_init_h.md",
     "linux/kernel/thermal.md",
@@ -236,12 +262,6 @@
     "linux/kernel/rcu.md",
     "linux/kernel/thermal_init.md",
     "linux/kernel/pthread.md",
-    "architecture/Intel_inst.md",
-    "architecture/gpu-ai/README.md",
-    "architecture/gpu_2.md",
-    "architecture/numa_socket.md",
-    "architecture/gpu_1.md",
-    "architecture/papers/vp_hpca14.md",
-    "architecture/papers/vp_value_prediction.md"
+    "architecture/Intel_inst.md"
   ]
 }

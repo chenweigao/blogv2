@@ -1,7 +1,7 @@
 ---
 title: GPU Architecture
 date: 2025-03-06
-category:
+tags:
   - GPU
   - AI
 ---

@@ -8,9 +8,9 @@ tags:
   - cpu
 ---
 
-## GPT
+## 1. GPT
 
-### NUMA & Socket
+### 1.1. NUMA & Socket
 
 在服务器架构中，NUMA（Non-Uniform Memory Access）和 Socket（CPU 插槽）是紧密相关但又不同的概念：
 
@@ -42,7 +42,7 @@ Socket 是物理概念，表示主板上可以安装一个物理 CPU（或者多
 
 - Socket 0 访问 NUMA Node 1 的内存会有更高延迟。
 
-### Chiplet 设计下的 NUMA
+### 1.2. Chiplet 设计下的 NUMA
 
 AMD EPYC 处理器采用 Chiplet（小芯片）架构，一个物理 CPU 内部可能包含多个 CCX（Core Complex） 或 CCD（Core Complex Die），每个 CCD 可能会形成一个 NUMA 节点。
 
@@ -52,7 +52,7 @@ AMD EPYC 处理器采用 Chiplet（小芯片）架构，一个物理 CPU 内部�
 
 - 也可以通过 BIOS 配置，将多个 CCD 组合成较少的 NUMA 节点（NUMA per Socket）。
 
-### 总结
+### 1.3. 总结
 
 |**术语**|**概念**|
 |---|---|
@@ -63,13 +63,13 @@ AMD EPYC 处理器采用 Chiplet（小芯片）架构，一个物理 CPU 内部�
 
 不同架构下，NUMA 和 Socket 的映射关系可能有所不同，在优化软件性能时，需要考虑 NUMA 亲和性（NUMA Affinity），合理调度 CPU 线程和内存，以减少远程访问延迟。
 
-## GPT - 一个比喻
+## 2. GPT - 一个比喻
 
 好的，我们用一个形象的比喻来解释 NUMA 和 Socket 的关系，把它想象成一个公司办公楼里的**茶水间**和**员工办公室**。
 
 ---
 
-### 比喻 ：办公室 & 茶水间
+### 2.1. 比喻 ：办公室 & 茶水间
 
 • **Socket（CPU 插槽）** → **办公楼**
 
@@ -91,7 +91,7 @@ AMD EPYC 处理器采用 Chiplet（小芯片）架构，一个物理 CPU 内部�
 
 ---
 
-### 单 Socket vs 多 Socket
+### 2.2. 单 Socket vs 多 Socket
 
 1. **单 Socket 服务器（UMA 架构）**
 
@@ -116,7 +116,7 @@ AMD EPYC 处理器采用 Chiplet（小芯片）架构，一个物理 CPU 内部�
 
 ---
 
-### 优化策略
+### 2.3. 优化策略
 
 **合理安排员工（进程调度）**：
 
@@ -142,7 +142,7 @@ AMD EPYC 处理器采用 Chiplet（小芯片）架构，一个物理 CPU 内部�
 
 这样是不是更直观了？ 😃
 
-## DeepSeek
+## 3. DeepSeek - 解答赏析
 
 NUMA（非一致内存访问）架构与 Socket（物理 CPU 插槽）的关系并非固定，而是取决于硬件设计。以下是两者的核心联系与区别：
 
@@ -171,7 +171,7 @@ NUMA（非一致内存访问）架构与 Socket（物理 CPU 插槽）的关系�
 
 NUMA 与 Socket 的关系并非绝对，需结合具体硬件设计判断。理解两者的映射对优化多核应用性能至关重要，尤其是在虚拟化、高并发计算和网络处理场景中，需通过绑定策略减少跨节点访问开销。
 
-## 架构图
+## 4. 架构图
 
 参考该文章[^1]:
 
@@ -193,6 +193,6 @@ NUMA 与 Socket 的关系并非绝对，需结合具体硬件设计判断。理�
 
 
 
-## Reference
+## 5. Reference
 
 [^1]: <https://frankdenneman.nl/2016/07/08/numa-deep-dive-part-2-system-architecture/>
