@@ -1,16 +1,40 @@
 {
   "recentFiles": [
     {
+      "basename": "idle",
+      "path": "linux/kernel/idle.md"
+    },
+    {
+      "basename": "numa_socket",
+      "path": "architecture/numa_socket.md"
+    },
+    {
+      "basename": "x86_inst",
+      "path": "architecture/x86_inst.md"
+    },
+    {
+      "basename": "THP",
+      "path": "linux/kernel/THP.md"
+    },
+    {
+      "basename": "memory_va_page",
+      "path": "architecture/memory_va_page.md"
+    },
+    {
+      "basename": "gpu_arch",
+      "path": "architecture/gpu-ai/gpu_arch.md"
+    },
+    {
+      "basename": "Drawing 2025-05-11 16.01.37 - GPU Arch.excalidraw",
+      "path": "Excalidraw/Drawing 2025-05-11 16.01.37 - GPU Arch.excalidraw.md"
+    },
+    {
+      "basename": "20241213105941",
+      "path": "architecture/pics/20241213105941.jpg"
+    },
+    {
       "basename": "ibs",
       "path": "architecture/ibs.md"
-    },
-    {
-      "basename": "image222",
-      "path": "architecture/image222.png"
-    },
-    {
-      "basename": "memory_vm_page",
-      "path": "architecture/memory_vm_page.md"
     },
     {
       "basename": "cache",
@@ -35,26 +59,6 @@
     {
       "basename": "README",
       "path": "architecture/gpu-ai/README.md"
-    },
-    {
-      "basename": "gpu_1",
-      "path": "architecture/gpu-ai/gpu_1.md"
-    },
-    {
-      "basename": "gpu_2",
-      "path": "architecture/gpu-ai/gpu_2.md"
-    },
-    {
-      "basename": "numa_socket",
-      "path": "architecture/numa_socket.md"
-    },
-    {
-      "basename": "x86_inst",
-      "path": "architecture/x86_inst.md"
-    },
-    {
-      "basename": "THP",
-      "path": "linux/kernel/THP.md"
     },
     {
       "basename": "01_jvm_memory",
@@ -127,10 +131,6 @@
     {
       "basename": "idle_tick",
       "path": "linux/kernel/idle_tick.md"
-    },
-    {
-      "basename": "idle",
-      "path": "linux/kernel/idle.md"
     },
     {
       "basename": "i2c",

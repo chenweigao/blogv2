@@ -3,9 +3,11 @@ title: SAC - ISCA 23
 date: 2025-03-27
 tags:
   - gpu
+  - AI
 ---
 ## 1. Abstract
 
+todo
 
 ## 2. Memory-Side versus SM-Side LLC
 
@@ -13,7 +15,7 @@ tags:
 下图是一个 mutli-chip GPU, 由四个 GPU 芯片组成。每个芯片包含 64 个流多处理器（ SM），每个 SM 配有 128KB 的私有一级缓存（ L1 缓存），具有 4MB 的末级缓存（ LLC）容量，以及 8 个内存控制器（图中每个 chip 画出了一个）。
 
 ![sac2](./images/sac_1.png)
-The Network-on-Chip (NoC) connects 32 SM clusters (two SMs share one network port) to 16 LLC slices with a total bisection bandwidth of 4 TB/s. 
+The Network-on-Chip (NoC) connects 32 SM clusters (two SMs share one network port) to 16 LLC slices with a total bisection bandwidth of 4 TB/s.
 
 ### 2.1. NOC 是什么？
 

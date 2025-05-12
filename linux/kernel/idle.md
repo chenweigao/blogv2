@@ -6,11 +6,62 @@ category:
  -  Kernel
 ---
 
-## Abstract
+## 1. Abstract
 
 本文主要研究 kernel 中的 idle 机制以及代码实现。
 
-## Function Flow
+## 2. x86 idle state
+
+来看一下 x86 的 idle state：
+
+C-state 描述的是 CPU 处于空闲时的不同睡眠状态，包括 POLL C1 C1E和C6，它们统称为 C-states。CPU 的每种睡眠状态都消耗不同的功耗，并且对应用程序性能的影响也不同。这些状态的睡眠深度排序为 C6 > C1E > C1 > POLL。
+
+POLL 状态表示 CPU 不睡眠，一直空跑或执行指令，这种状态下 CPU 性能最好，功耗也最大。
+
+C1 状态是 CPU 的基本睡眠状态。当 CPU 没有任务需要处理时，会进入这个状态。这种状态下，CPU 的大部分电路会停止工作，从而降低功耗，但 CPU 可以迅速唤醒以继续处理任务。
+
+==C1E（Enhanced C1）== 是 C1 状态的增强，进一步提高了节能效果。在 C1E 状态下，CPU 可以**动态降低其频率和电压**，以达到更低的功耗。
+
+C6 状态是一个更深的节能状态，通常能将 CPU 的功耗进一步降低到非常低的水平。在这个状态下，CPU 的核心可能会关闭电源，从而实现更显著的节能效果。
+
+当 CPU 从一个更深的 C-state 返回到运行状态时，CPU 被唤醒的时间也更长，对应用程序性能影响也更大。
+
+|**状态**|**描述**|**延迟**|**功耗**|**说明**|
+|---|---|---|---|---|
+|**C0**|工作状态（非 Idle）|0|高|CPU 正在运行任务，不是空闲状态|
+|**C1**|第一个 Idle 状态|低|中|快速响应，可立即唤醒|
+|**C1E**|C1 Enhanced（增强型 C1）|低|更低|在 C1 的基础上降低电压/频率（一般 BIOS 控制）|
+|**C2**|更深层 Idle|中|更低|延迟略高于 C1，现代系统中不常见|
+|**C3**|停止 L2 缓存|更高|更低|停止更多组件，唤醒延迟变大|
+|**C6**|Save 内核状态并切断供电|高|极低|将核心寄存器状态写入内存，彻底切断电源|
+|**C7**|更深的 Idle，比 C6 更激进|非常高|最低|只有现代架构支持，如 Haswell/Broadwell 等|
+|**POLL**|短暂空转等待状态（不是省电）|极低|高|通常为驱动内部逻辑，不建议启用为省电手段|
+
+对比一下 C1E 和 C6 state 的区别：
+
+| **特性** | **C1E**            | **C6**                 |
+| ------ | ------------------ | ---------------------- |
+| 功能     | 类似 C1，但更进一步降低电压/频率 | 将 CPU 核心电源关闭，状态写入内存    |
+| 响应速度   | 非常快（<10 微秒）        | 慢得多（>100 微秒）           |
+| 适用场景   | 高频次短暂 idle（频繁进出）   | 长时间空闲或低负载系统            |
+| 由谁控制   | 多数时候由 BIOS 启用      | 由操作系统 + 硬件协同控制         |
+| 对性能影响  | 非常小，几乎无影响          | 可能影响延迟敏感任务，尤其是高频唤醒场景   |
+| 是否推荐开启 | 通常推荐开启             | HPC / 低延迟场景建议关闭以减少唤醒延迟 |
+
+如果需要查看当下支持的 idle 状态：
+
+```bash
+cpupower idle-info
+```
+
+或者：
+
+```bash
+cat /sys/devices/system/cpu/cpu0/cpuidle/state*/name
+```
+
+
+## 3. Function Flow
 
 我们先对大体上的函数调用栈进行一个简单的示意图总结：
 
@@ -31,7 +82,7 @@ flowchart TD
 
 cpuidle_enter_state() 之后的流程可以参考 tick_broadcast_oneshot_control() 的分析。
 
-## cpu_startup_entry
+## 4. cpu_startup_entry
 
 笔者在实际的业务场景中抓取过 idle 函数的调用栈，大概如下所示：
 
@@ -75,7 +126,7 @@ void cpu_startup_entry(enum cpuhp_state state)
 
 也就是说，idle 线程执行的时候，是一直在运行这个 `do_idle()` 的。
 
-## do_idle
+## 5. do_idle
 
 `do_idle()` 会执行 CPU idle 的主要操作。
 
@@ -101,7 +152,7 @@ void cpu_startup_entry(enum cpuhp_state state)
 
 :::
 
-## local_irq_dis(en)able
+## 6. local_irq_dis(en)able
 
 这个函数涉及到中断处理的相关操作，`local_irq_disable()` 会禁止本地中断的传递，在这个地方有 4 个相似的接口，可以加以区分便于使用：
 
@@ -118,7 +169,7 @@ void cpu_startup_entry(enum cpuhp_state state)
 
 实现禁止中断只需要使用一条汇编指令即可，在 arm64 中使用的是 `msr daifclr, #2` 来禁止中断。
 
-## cpuidle_idle_call
+## 7. cpuidle_idle_call
 
 在外围对是否进入该函数有一个判断：
 
@@ -189,7 +240,7 @@ cpuidle_idle_call 函数刚开始，先是两个判断：
 
 接下来的流程就是进行判断，根据策略的不同走不同的分支，最终都会调用到函数 call_cpuidle.
 
-## call_cpuidle
+## 8. call_cpuidle
 
 该函数的逻辑比较简单，就是一些特殊情况的判断，而后进行 **cpuidle_enter** 函数的调用：
 
@@ -225,7 +276,7 @@ int cpuidle_enter(struct cpuidle_driver *drv, struct cpuidle_device *dev,
 
 无论哪种情况，都是会进行 cpuidle_enter_state 函数的调用。
 
-## cpuidle_enter_state()
+## 9. cpuidle_enter_state()
 
 >  函数位置：kernel/linux-5.10/drivers/cpuidle/cpuidle.c
 
@@ -277,7 +328,7 @@ int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
 
 下文是对代码中细节和原理的研究：
 
-### broadcast
+### 9.1. broadcast
 
 ```c
 broadcast = !!(target_state->flags & CPUIDLE_FLAG_TIMER_STOP);
@@ -291,7 +342,7 @@ broadcast = !!(target_state->flags & CPUIDLE_FLAG_TIMER_STOP);
 
 简单来说，如果 local timer 关闭的话（进入更深层次的 idle 状态），就需要使用 broadcast.
 
-### CPUIDLE_FLAG_TLB_FLUSHED
+### 9.2. CPUIDLE_FLAG_TLB_FLUSHED
 
 ```c
 if (target_state->flags & CPUIDLE_FLAG_TLB_FLUSHED) {
@@ -307,7 +358,7 @@ if (target_state->flags & CPUIDLE_FLAG_TLB_FLUSHED) {
 
 总之，这段代码的作用是确保在进入特定的空闲状态之前清除 TLB 以避免任何不必要的冲突，同时保证进程能够正确地切换。
 
-### sched_idle_set_state
+### 9.3. sched_idle_set_state
 
 ```c
 /* Take note of the planned idle state. */
@@ -340,7 +391,7 @@ sched_idle_set_state(NULL);
 
 整个过程是由内核负责管理和控制的，程序员无法直接控制。当系统需要重新唤醒 CPU 时，内核会根据 CPU 的中断或事件触发来驱动 CPU 从空闲状态中返回，并恢复相关的设备和资源。
 
-### rcu_idle_enter
+### 9.4. rcu_idle_enter
 
 ```c
 if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
@@ -369,7 +420,7 @@ void rcu_idle_enter(void)
 
 `rcu_eqs_enter` 函数则用于进入RCU空闲状态并等待所有正在使用旧副本的进程访问完毕。其中，参数false表示*不需要检查是否处于内核软件调试状态*（KDB或KGDB）。在该函数中，会调用rcu_prepare_for_idle函数进行RCU更新准备工作，并将当前CPU所在的调度器状态设置为RCU空闲状态。然后，该函数会启动一个RCU处理线程，在其中等待所有正在使用旧副本的进程访问完毕并结束。❓❓ 待处理线程结束之后，该函数会将当前CPU所在调度器状态设置为正常运行状态，并返回。
 
-### enter
+### 9.5. enter
 
 ```c
 entered_state = target_state->enter(dev, drv, index);
@@ -377,7 +428,7 @@ entered_state = target_state->enter(dev, drv, index);
 
 进入 state, 待深入研究。❌❌❌
 
-### rcu_idle_exit
+### 9.6. rcu_idle_exit
 
 ```c
 if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
@@ -392,7 +443,7 @@ if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
 
 需要注意的是，只有在完成了RCU更新操作之后，才能调用rcu_idle_exit函数退出RCU空闲状态。否则，会引起数据访问冲突和不一致性，导致系统出现异常。因此，在使用该函数时，需要保证系统支持RCU机制，并遵循相关的使用原则和规范。
 
-### critical_timings
+### 9.7. critical_timings
 
 ```c
 stop_critical_timings();
@@ -406,7 +457,7 @@ start_critical_timings();
 
 `start_critical_timings` 的作用正好相反，就不过多赘述了。
 
-## idle polling
+## 10. idle polling
 
 idle polling 是一个空闲轮询机制。
 
@@ -442,7 +493,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
 
 具体的 polling 实现可能会分成很多种，如 busy-waiting, 表示如果没有可以运行的进程的话，则调度器会继续等待下一次轮询；如 sleep, 当 CPU 空闲时，会将整个 CPU 设置为休眠状态，以节能。
 
-## DEFINE_PER_CPU
+## 11. DEFINE_PER_CPU
 
 `DEFINE_PER_CPU` 是一个宏，用于定义一种特殊的变量类型，称为 "per-cpu 变量"。这种变量在 Linux 内核中广泛使用，用于跨多个 CPU 核心共享数据时保证数据的一致性。
 
@@ -469,9 +520,9 @@ put_cpu_var(my_var, val+1);
 
 需要注意的是，per-cpu 变量仅适用于每个 CPU 核心独立使用的数据，并不适用于需要全局同步的数据结构。此外，需要注意内存分配和访问的开销，以避免影响系统的性能。
 
-## Idle Data Struct
+## 12. Idle Data Struct
 
-### Abstract
+### 12.1. Abstract
 
 本章节主要针对性分析 Idle 中的数据结构。在 kernel 中的 cpuidle framework 主体包括三个模块：cpuidle core, cpudile governors 和 cpuidle drivers.
 
@@ -492,7 +543,7 @@ flowchart TD
     E -->|cpu_ops| F[CPU core]
 ```
 
-### cpuidle core
+### 12.2. cpuidle core
 
 cpuidle core 是 cpuidle framework 的核心模块，负责抽象出 cpuidle device、cpuidle driver 和 cpuidle governor三个实体。
 
@@ -504,13 +555,13 @@ cpuidle core 是 cpuidle framework 的核心模块，负责抽象出 cpuidle dev
 4. （如上阐述）向用户空间程序提供 governor 选择的接口；
 5. 向 kernel sched 中的 cpuidle entry 提供 cpuidle 的级别选择、进入等接口，以方便调用。
 
-### cpuidle device
+### 12.3. cpuidle device
 
 在现在的 SMP 系统中，每个 cpu core 都会对应一个 cpuidle device, 内核通过 `strcut cpuidle_device` 抽象 cpuidle device.
 
 
 
-### cpuidle driver
+### 12.4. cpuidle driver
 
 cpuidle driver 是一个 “driver", 其驱动的对象是 cpuidle device, 也就是 CPU；注意到在 SMP 系统中，有多个 CPU，也就意味着有多个 cpuidle device; 在实现 idle 的时候，如果这些 cpuidle device 的功能、参数相同，则可以使用一个 cpuidle driver 驱动，具体而言，kernel 中的宏 `CONFIG_CPU_IDLE_MULTIPLE_DRIVERS` 可以用来使能是否使用多个 cpu driver.  在实际的应用场景中，这个开关是被使能的。
 
@@ -585,9 +636,9 @@ static inline int __cpuidle_set_driver(struct cpuidle_driver *drv)
 
 
 
-## Something Else
+## 13. Something Else
 
-### tickless
+### 13.1. tickless
 
 > In the context of operating systems, "tickless" refers to a power management feature that allows the system to reduce power consumption by dynamically adjusting the frequency of timer interrupts.
 
@@ -595,7 +646,7 @@ About "tick" interrupt:
 
 > Traditionally, operating systems use a periodic timer interrupt, often called the "tick," to keep track of time and to perform various tasks such as updating the system clock, scheduling tasks, and handling interrupts. These timer interrupts are generated at a fixed frequency, regardless of whether there is any work to be done, which can consume a significant amount of power.
 
-### WFI
+### 13.2. WFI
 
 WFI 是英文 Wait for Interrupt 的缩写，意为等待中断。WFI 指令是 ARM 处理器提供的一种指令，用于将处理器置于等待状态，直到下一个中断事件发生后才会继续执行。
 

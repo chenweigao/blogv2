@@ -111,6 +111,8 @@ export default hopeTheme(
             imgMark: true,
             imgSize: true,
             chartjs: true,
+            figure: true
+
         },
         sidebarSorter: ["readme", "order", "date", "filename"]
     }

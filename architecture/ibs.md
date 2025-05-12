@@ -12,47 +12,46 @@ AMD IBS（Instruction-Based Sampling，基于指令采样）是 AMD 处理器中
 IBS 是一种**基于已执行指令**的硬件采样技术。与传统基于事件计数的采样（如周期、缓存未命中等）不同，IBS 能够采集**指令级别**的丰富信息，比如：
 
 - 每条采样指令是否命中 L1/L2/L3 缓存
-    
+
 - 是否发生 TLB miss
-    
+
 - 分支预测是否成功
-    
+
 - 指令类型（load、store、branch、ret 等）
-    
+
 - 执行延迟、流水线 stalls 情况
-    
+
 - 内存地址访问路径（可选）
 
 ## 2. IBS 的两种采样模式
 
-IBS 提供两种模式： 
+IBS 提供两种模式：
 
 ### 2.1. **IBS Fetch Sampling（IBS-Fetch）**
 
 - 针对**指令获取阶段**。
-    
+
 - 可分析：
-    
-    - 指令是否来自 L1 I-cache
-        
-    - 指令 TLB miss
-        
-    - ITLB/TLB walk 等
-        
+
+  - 指令是否来自 L1 I-cache
+
+  - 指令 TLB miss
+
+  - ITLB/TLB walk 等
 
 ### 2.2. **IBS Operation Sampling（IBS-Op）**
 
 - 针对**指令执行阶段**。
-    
+
 - 可分析：
-    
-    - 指令是否为 Load/Store
-        
-    - Load 是否命中 L1/L2/L3 或内存
-        
-    - Load 延迟、分支指令是否预测成功
-        
-    - Load 地址（可选开启）
+
+  - 指令是否为 Load/Store
+
+  - Load 是否命中 L1/L2/L3 或内存
+
+  - Load 延迟、分支指令是否预测成功
+
+  - Load 地址（可选开启）
 
 ## 3. 优缺点
 
@@ -67,8 +66,8 @@ IBS 提供两种模式： 
 
 ## 4. 用法解析
 
->  [!tip]
->  确保内核已经安装 IBS 驱动。
+> [!tip]
+> 确保内核已经安装 IBS 驱动。
 
 ### 4.1. 使用 perf 采集
 
@@ -86,10 +85,9 @@ perf record -c 1000000 -C0-7 -a -e ibs_op/l3missonly=1/ --raw-samples sleep 30
 perf report -D | grep -B4 "PERF_RECORD_SAMPLE" | grep -A5 "DRAM" | grep -o "DcMissLat......." | awk '{sum += $2; count++} END {if (count > 0) print sum / count}'
 ```
 
-
 ### 4.2. 技术原理简述
 
-`ibs_op/l3missonly=1/ ` 用于指定 **只采样那些导致 L3 cache miss 的 load/store 指令**。开启该选项时，**只有穿透 L3 cache，访问 DRAM 或远程 CCD 的 memory 操作才会被采样**。也就是说，**只会记录那些因为 L3 cache miss 而最终访问 DRAM 或远程 CCD 的 load/store 指令。**
+`ibs_op/l3missonly=1/` 用于指定 **只采样那些导致 L3 cache miss 的 load/store 指令**。开启该选项时，**只有穿透 L3 cache，访问 DRAM 或远程 CCD 的 memory 操作才会被采样**。也就是说，**只会记录那些因为 L3 cache miss 而最终访问 DRAM 或远程 CCD 的 load/store 指令。**
 
 **导致 L3 Cache Miss 的指令**，通常是 memory load/store 指令，具体包括：
 
@@ -109,24 +107,23 @@ perf report -D | grep -B4 "PERF_RECORD_SAMPLE" | grep -A5 "DRAM" | grep -o "DcMi
 | 非访存指令（ALU、branch、NOP等）  | 不涉及 memory load/store，自然不会触发采样   |
 | Instruction fetch（指令本身） | ibs_op 是采样 **data 操作指令**，不关注取指行为 |
 
-
 IBS 在每个周期可捕获一条指令的详细微架构信息。设置 l3missonly=1 后：
 
 - IBS 会观察 micro-op 是否触发了 memory 访问；
-    
+
 - 如果访问 L3 时没有命中（即发生 L3 miss）；
-    
+
 - 且满足采样周期条件（如 -c 1000000）；
-    
+
 - 则记录该指令样本，包括：
-    
-    - 虚拟/物理地址
-        
-    - DRAM 延迟（DcMissLat=xxx）
-        
-    - 访存类型（load/store）
-        
-    - 是否在 NUMA 本地 / 远程
+
+  - 虚拟/物理地址
+
+  - DRAM 延迟（DcMissLat=xxx）
+
+  - 访存类型（load/store）
+
+  - 是否在 NUMA 本地 / 远程
 
 ## 5. 内容解析
 
@@ -134,7 +131,7 @@ IBS 在每个周期可捕获一条指令的详细微架构信息。设置 l3miss
 
 我们列举其中的一个 sample:
 
-```
+```txt
 0x17e310 [0x78]: event: 9
 .
 . ... raw event: size 120 bytes
@@ -147,13 +144,13 @@ IBS 在每个周期可捕获一条指令的详细微架构信息。设置 l3miss
 .  0060:  84 57 3b 7c 9f 89 ff ff 84 57 3b 7c 1f 01 00 00  .W;|.....W;|....
 .  0070:  34 35 14 81 ff ff ff ff                          45......        
 
-ibs_op_ctl:	000005410007f424 MaxCnt   1000000 L3MissOnly 1 En 1 Val 1 CntCtl 0=cycles CurCnt      1345
-IbsOpRip:	ffffffff81143526
-ibs_op_data:	0000000004f70200 CompToRetCtr   512 TagToRetCtr  1271 BrnRet 0  RipInvalid 0 BrnFuse 0 Microcode 0
-ibs_op_data2:	0000000000000023 RmtNode 0 DataSrc 3=DRAM
-ibs_op_data3:	000001dc14d700a1 LdOp 1 StOp 0 DcL1TlbMiss 0 DcL2TlbMiss 0 DcL1TlbHit2M 0 DcL1TlbHit1G 1 DcL2TlbHit2M 0 DcMiss 1 DcMisAcc 0 DcWcMemAcc 0 DcUcMemAcc 0 DcLockedOp 0 DcMissNoMabAlloc 1 DcLinAddrValid 1 DcPhyAddrValid 1 DcL2TlbHit1G 0 L2Miss 1 SwPf 0 OpMemWidth  4 bytes OpDcMissOpenMemReqs  5 DcMissLat   476 TlbRefillLat     0
-IbsDCLinAd:	ffff899f7c3b5784
-IbsDCPhysAd:	0000011f7c3b5784
+ibs_op_ctl: 000005410007f424 MaxCnt   1000000 L3MissOnly 1 En 1 Val 1 CntCtl 0=cycles CurCnt      1345
+IbsOpRip: ffffffff81143526
+ibs_op_data: 0000000004f70200 CompToRetCtr   512 TagToRetCtr  1271 BrnRet 0  RipInvalid 0 BrnFuse 0 Microcode 0
+ibs_op_data2: 0000000000000023 RmtNode 0 DataSrc 3=DRAM
+ibs_op_data3: 000001dc14d700a1 LdOp 1 StOp 0 DcL1TlbMiss 0 DcL2TlbMiss 0 DcL1TlbHit2M 0 DcL1TlbHit1G 1 DcL2TlbHit2M 0 DcMiss 1 DcMisAcc 0 DcWcMemAcc 0 DcUcMemAcc 0 DcLockedOp 0 DcMissNoMabAlloc 1 DcLinAddrValid 1 DcPhyAddrValid 1 DcL2TlbHit1G 0 L2Miss 1 SwPf 0 OpMemWidth  4 bytes OpDcMissOpenMemReqs  5 DcMissLat   476 TlbRefillLat     0
+IbsDCLinAd: ffff899f7c3b5784
+IbsDCPhysAd: 0000011f7c3b5784
 0 118629299983995 0x17e310 [0x78]: PERF_RECORD_SAMPLE(IP, 0x4001): 0/0: 0xffffffff81143526 period: 1000000 addr: 0
  ... thread: swapper:0
  ...... dso: /proc/kcore
@@ -178,7 +175,7 @@ IbsDCPhysAd:	0000011f7c3b5784
 
 ### 5.2. ibs_op_ctl
 
->  ibs_op_ctl:	000005410007f424 MaxCnt   1000000 L3MissOnly 1 En 1 Val 1 CntCtl 0=cycles CurCnt      1345
+> ibs_op_ctl: 000005410007f424 MaxCnt   1000000 L3MissOnly 1 En 1 Val 1 CntCtl 0=cycles CurCnt      1345
 
 属于控制字段，拆解如下：
 
@@ -190,21 +187,20 @@ IbsDCPhysAd:	0000011f7c3b5784
 | Val = 1           | 当前样本有效                   |
 | CurCnt = 1345     | 当前样本指令周期倒数计数（用于调节分布）     |
 | CntCtl 0 = cycles | 使用周期控制采样（而非 retired 指令数） |
+
 ### 5.3. IbsOpRip
 
->  IbsOpRip:	ffffffff81143526
+> IbsOpRip: ffffffff81143526
 
 采样到的 **指令虚拟地址（RIP）**：
 
 - 该例子对应内核空间：ffffffff81xxxxxx，可能是某个内核函数中发生的访存
-    
-- 可用 `addr2line -e /boot/vmlinux ffffffff81143526` 映射函数名
 
+- 可用 `addr2line -e /boot/vmlinux ffffffff81143526` 映射函数名
 
 ### 5.4. ibs_op_data
 
->  ibs_op_data:	0000000004f70200 CompToRetCtr   512 TagToRetCtr  1271 BrnRet 0  RipInvalid 0 BrnFuse 0 Microcode 0
-
+> ibs_op_data: 0000000004f70200 CompToRetCtr   512 TagToRetCtr  1271 BrnRet 0  RipInvalid 0 BrnFuse 0 Microcode 0
 
 | 字段                 | 含义                                    |
 | ------------------ | ------------------------------------- |
@@ -213,10 +209,10 @@ IbsDCPhysAd:	0000011f7c3b5784
 | BrnRet = 0         | 非分支指令                                 |
 | Microcode = 0      | 非 microcode 执行                        |
 | RipInvalid = 0     | RIP 有效                                |
+
 ### 5.5. ibs_op_data2
 
->  ibs_op_data2:	0000000000000023 RmtNode 0 DataSrc 3=DRAM
-
+> ibs_op_data2: 0000000000000023 RmtNode 0 DataSrc 3=DRAM
 
 | **字段**      | **含义**                                  |
 | ----------- | --------------------------------------- |
@@ -225,9 +221,7 @@ IbsDCPhysAd:	0000011f7c3b5784
 
 ### 5.6. ibs_op_data3
 
-
->  ibs_op_data3:	000001dc14d700a1 LdOp 1 StOp 0 DcL1TlbMiss 0 DcL2TlbMiss 0 DcL1TlbHit2M 0 DcL1TlbHit1G 1 DcL2TlbHit2M 0 DcMiss 1 DcMisAcc 0 DcWcMemAcc 0 DcUcMemAcc 0 DcLockedOp 0 DcMissNoMabAlloc 1 DcLinAddrValid 1 DcPhyAddrValid 1 DcL2TlbHit1G 0 L2Miss 1 SwPf 0 OpMemWidth  4 bytes OpDcMissOpenMemReqs  5 DcMissLat   476 TlbRefillLat     0
-
+> ibs_op_data3: 000001dc14d700a1 LdOp 1 StOp 0 DcL1TlbMiss 0 DcL2TlbMiss 0 DcL1TlbHit2M 0 DcL1TlbHit1G 1 DcL2TlbHit2M 0 DcMiss 1 DcMisAcc 0 DcWcMemAcc 0 DcUcMemAcc 0 DcLockedOp 0 DcMissNoMabAlloc 1 DcLinAddrValid 1 DcPhyAddrValid 1 DcL2TlbHit1G 0 L2Miss 1 SwPf 0 OpMemWidth  4 bytes OpDcMissOpenMemReqs  5 DcMissLat   476 TlbRefillLat     0
 
 这是最关键的字段之一，包含了 memory 延迟与 miss 类型，逐项如下：
 
@@ -247,8 +241,8 @@ IbsDCPhysAd:	0000011f7c3b5784
 
 ### 5.7. IbsDCLinAd / IbsDCPhysAd
 
->  IbsDCLinAd:	ffff899f7c3b5784
-> IbsDCPhysAd:	0000011f7c3b5784
+> IbsDCLinAd: ffff899f7c3b5784
+> IbsDCPhysAd: 0000011f7c3b5784
 
 | **字段**                         | **含义**                 |
 | ------------------------------ | ---------------------- |
@@ -257,16 +251,16 @@ IbsDCPhysAd:	0000011f7c3b5784
 
 ### 5.8. PERF_RECORD_SAMPLE(IP...)
 
->  0 118629299983995 0x17e310 [0x78]: PERF_RECORD_SAMPLE(IP, 0x4001): 0/0: 0xffffffff81143526 period: 1000000 addr: 0
->  ... thread: swapper:0
->  ...... dso: /proc/kcore
+> 0 118629299983995 0x17e310 [0x78]: PERF_RECORD_SAMPLE(IP, 0x4001): 0/0: 0xffffffff81143526 period: 1000000 addr: 0
+> ... thread: swapper:0
+> ...... dso: /proc/kcore
 
 这是 perf 报告格式，概括该采样点：
 
 - PERF_RECORD_SAMPLE(IP, 0x4001)：采样事件，包含指令地址
-    
+
 - thread: swapper:0：发生于 idle thread
-    
+
 - dso: /proc/kcore：说明是在内核执行过程中被采样（非用户态）
 
 ## 6. 监控使能
@@ -277,7 +271,7 @@ IbsDCPhysAd:	0000011f7c3b5784
 
 Linux 的 perf 子系统支持 IBS 的硬件事件，**通过 perf_event_open() 系统调用直接启用 ibs_op 类型事件**，然后从 ring buffer 中读取采样样本，包括 DcMissLat。
 
->  目前正在咨询 ARM Light Spe 是如何实现监控的，将来可以作为参考。
+> 目前正在咨询 ARM Light Spe 是如何实现监控的，将来可以作为参考。
 
 下面是我列举的一个 demo，用于调用接口：
 

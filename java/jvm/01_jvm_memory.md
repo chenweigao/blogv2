@@ -44,7 +44,7 @@ Other (reserved=733088KB, committed=733088KB)
 
 JVM 在运行时的数据区大致如下图所示：
 
-![jvm_run](./images/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f.jpg =400x)
+![jvm_run|400x0](./images/1ccdb38e-07aa-41a5-9bfb-0d140fe7149f.jpg)
 
 或者参考这张图：
 

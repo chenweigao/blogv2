@@ -35,3 +35,8 @@ nrm use taobao
 
 > [!note]
 > 注释文字
+
+
+![替代文字|200x200](/example.png)
+![替代文字|200x0](/example.jpg)
+![替代文字|0x300](/example.bmp)

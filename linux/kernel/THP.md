@@ -7,7 +7,7 @@ date: 2025-03-17
 
 在 Linux 内核中，shmemhugepages、anonhugepages 和 pmdhugepages 这几个术语都与 **Transparent Huge Pages (THP)** 和 **Huge Pages** 相关，主要涉及如何使用更大的页（通常是 2MB 或 1GB）来减少 TLB（Translation Lookaside Buffer）miss，提高内存访问性能。
 
-### 1.1. ### ShmemHugePages（共享内存 Huge Pages）
+### 1.1. ShmemHugePages（共享内存 Huge Pages）
 
 适用于 **tmpfs（shmem）和 SysV 共享内存（shmget/shmat）**，如果启用了 THP，则共享内存也可以使用 Huge Pages。
 
@@ -17,13 +17,11 @@ date: 2025-03-17
 cat /sys/kernel/mm/transparent_hugepage/shmem_enabled
 ```
 
-
 可用 `/proc/meminfo` 监测：
 
 `ShmemHugePages`: 当前 `tmpfs/shmem` 使用的 Huge Pages 数量。
 
 一些数据库（如 PostgreSQL）利用共享内存，可能会受到 `ShmemHugePages` 影响。
-
 
 ### 1.2. AnonHugePages（匿名 Huge Pages）
 
@@ -41,7 +39,6 @@ cat /sys/kernel/mm/transparent_hugepage/shmem_enabled
 
 AnonHugePages: 当前匿名 Huge Pages 使用情况。例如，大量 `malloc()` 分配的内存可能会使用 AnonHugePages。
 
-
 ### 1.3. 3 . PMDHugePages（PMD 级 Huge Pages）
 
 PMD (Page Middle Directory) 级别的 Huge Pages（通常是 **2MB** 大小）。
@@ -51,7 +48,6 @@ PMDHugePages 是 Huge Pages 实现的一部分，适用于 64-bit 架构（x86-6
 主要用于 THP，当 THP 作用于 **匿名页（anonhugepages）或共享页（shmemhugepages）** 时，就会尝试分配 PMD Huge Pages。
 
 `/sys/kernel/debug/mm/hugepages` 可以用于调试 PMD 级 Huge Pages 统计信息。
-
 
 ### 1.4. 总结
 
@@ -71,11 +67,11 @@ PMDHugePages 是 Huge Pages 实现的一部分，适用于 64-bit 架构（x86-6
 
 ## 2. Tmpfs 要点
 
-本章节主要参考：https://www.kernel.org/doc/html//v6.7/filesystems/tmpfs.html
+本章节主要参考：<https://www.kernel.org/doc/html//v6.7/filesystems/tmpfs.html>
 
->  Since tmpfs lives completely in the page cache and optionally on swap, all tmpfs pages will be shown as =="Shmem"== in /proc/meminfo and "Shared" in free(1). Notice that these counters also include shared memory (shmem, see ipcs(1)). The most reliable way to get the count is using df(1) and du(1).
+> Since tmpfs lives completely in the page cache and optionally on swap, all tmpfs pages will be shown as =="Shmem"== in /proc/meminfo and "Shared" in free(1). Notice that these counters also include shared memory (shmem, see ipcs(1)). The most reliable way to get the count is using df(1) and du(1).
 
->  tmpfs also supports ==Transparent Huge Pages ==which requires a kernel configured with CONFIG_TRANSPARENT_HUGEPAGE and with huge supported for your system (has_transparent_hugepage(), which is architecture specific). The mount options for this are:
+> tmpfs also supports ==Transparent Huge Pages ==which requires a kernel configured with CONFIG_TRANSPARENT_HUGEPAGE and with huge supported for your system (has_transparent_hugepage(), which is architecture specific). The mount options for this are:
 
 |                  |                                                                                           |
 | ---------------- | ----------------------------------------------------------------------------------------- |
@@ -90,16 +86,15 @@ PMDHugePages 是 Huge Pages 实现的一部分，适用于 64-bit 架构（x86-6
 
 另一个文档中 [https://www.kernel.org/doc/html//v6.7/admin-guide/mm/transhuge.html](https://www.kernel.org/doc/html//v6.7/admin-guide/mm/transhuge.html) 出现了类似的解释：
 
->  `within_size`
-> 
+> `within_size`
+>
 > Only allocate huge page if it will be fully within i_size. Also respect fadvise()/madvise() hints;
 
-
->  Currently THP only **works for anonymous memory mappings and tmpfs/shmem.** But in the future it can expand to other filesystems.
+> Currently THP only **works for anonymous memory mappings and tmpfs/shmem.** But in the future it can expand to other filesystems.
 
 ## 3. Tmpfs & THP
 
->  C++ 的 THP 无感使能，tmpfs 加上 huge 的 mount 参数使用 THP，如何理解？
+> C++ 的 THP 无感使能，tmpfs 加上 huge 的 mount 参数使用 THP，如何理解？
 
 在 Linux 中，**Transparent Huge Pages (THP)** 允许内核自动使用 **Huge Pages** 来优化内存管理，减少 TLB (Translation Lookaside Buffer) misses，提高性能。你的问题涉及在 tmpfs（基于内存的文件系统）上使用 THP，无感使能（transparent enablement）。
 
@@ -108,7 +103,7 @@ PMDHugePages 是 Huge Pages 实现的一部分，适用于 64-bit 架构（x86-6
 1. 进程本身**不需要显式申请 Huge Pages**（比如 `mmap ()` 方式显式使用 `MAP_HUGETLB`）。
 2. 由**内核透明地分配 Huge Pages**，使应用程序可以自动受益于更高效的内存管理，而无需修改代码。
 
-> [!info] 
+> [!info]
 > 需要先开启内核的 THP 支持。
 
 ### 3.1. 在 tmpfs 上使用 THP
@@ -135,11 +130,8 @@ mount -t tmpfs -o size=2G,huge=always tmpfs /mnt/tmpfs
 
 - `never`（禁用 THP）
 
-  
-
 ### 3.2. 如何验证 THP 是否生效
 
-  
 **查看 THP 配置**:
 
 ```bash
@@ -155,14 +147,13 @@ cat /sys/kernel/mm/transparent_hugepage/enabled
 • always madvise [never]（禁用 THP）
 
 如果没生效，则手动开启内核的 THP 支持：
+
 ```bash
 echo 'madvise' > /sys/kernel/mm/transparent_hugepage/enabled
 echo 'madvise' > /sys/kernel/mm/transparent_hugepage/defrag
 ```
   
-
 **查看 tmpfs 是否使用 THP**:
-
 
 挂载后，可以通过 `cat /proc/mounts | grep tmpfs` 确认 huge=always 是否生效：
 
@@ -178,10 +169,7 @@ grep AnonHugePages /proc/meminfo
 
 如果 AnonHugePages 有显著增加，则说明 THP 在 tmpfs 上生效了。
 
-  
-
 **使用 pagemap 观察**:
-
 
 可以用 pagemap 观察进程的内存页大小：
 
@@ -190,7 +178,6 @@ cat /proc/<pid>/smaps | grep "AnonHugePages"
 ```
 
 如果看到 AnonHugePages 占据较大比例，说明 Huge Pages 已被应用。
-
 
 ### 3.3. 可能的性能影响
 
@@ -202,7 +189,7 @@ cat /proc/<pid>/smaps | grep "AnonHugePages"
 
 如果遇到问题，可以改为 `huge=within_size` 或 `huge=never` 进行调试。
 
-### 3.4. 总结 
+### 3.4. 总结
 
 Tmpfs 加 huge=always，让 Linux 内核在 tmpfs 上**自动分配 Huge Pages**，提高性能，无需修改应用代码。
 
@@ -212,7 +199,6 @@ Tmpfs 加 huge=always，让 Linux 内核在 tmpfs 上**自动分配 Huge Pages**
 
 在某些工作负载下，可能需要权衡**内存使用 vs. 访问效率**，可以调整 huge=within_size 以获得更好的兼容性。
 
-  
 你在 AMD 这边做 EPYC 和 AI/HPC 相关的优化，这块 THP 结合 NUMA 亲和性、RDMA、大页回收等策略的优化，可能会是一个有意思的方向，像 PostgreSQL、TensorFlow 之类的 workload 都可以针对性优化，甚至可以看看 AMD SEV + THP 在安全计算场景下的影响。
 
 ## 4. Mount 用法
@@ -264,7 +250,7 @@ mount -o remount /dev/shm
 ### 4.2. Deug
 
 > mount -o remount, size=2M, huge=always /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
-> 
+>
 > mount: /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index: **mount point not mounted or bad option.**
 
 这个错误通常是由于以下几个原因导致的：
@@ -282,8 +268,6 @@ mount | grep tmpfs-index
 ```bash
 mount -t tmpfs -o size=843750000k,huge=always tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
 ```
-
-  
 
 2. **挂载点类型不支持 huge=always 选项**
 
@@ -352,8 +336,7 @@ echo 3 > /proc/sys/vm/drop_caches
 echo 1 > /proc/sys/vm/compact_memory 
 ```
 
-#### 5.1.1. Drop_caches 
-
+#### 5.1.1. Drop_caches
 
 该命令用于强制内核释放内存中的各类缓存，具体包括：
 
@@ -386,9 +369,9 @@ echo 1 > /proc/sys/vm/compact_memory
 
 **参数说明**：
 `1` 是 `compact_memory` 的值，它表示立即启动内存压缩过程。该参数的取值范围为 `0-1`：
+
 - `0`：不主动触发内存压缩。
 - `1`：强制触发内存压缩。
-
 
 内存压缩通过以下步骤来整理内存：
 
@@ -402,8 +385,10 @@ echo 1 > /proc/sys/vm/compact_memory
 - 大内存分配失败：如果应用程序需要分配大块内存但失败，可能是因为内存碎片化，触发内存压缩可能会解决这一问题。
 - 实时系统优化：在实时系统中，需要确保有足够的连续内存来满足实时性要求，此时可以使用该命令来优化内存布局。
 
-### 5.2. 自动碎片整理
+### 5.2. THP Reclaim
 
 该能力依赖于 AliOS 的内存整理：[THP reclaim功能](https://help.aliyun.com/zh/alinux/user-guide/thp-reclaim?spm=a2c4g.11186623.help-menu-2632541.d_2_0_25.1c38458ceoUVwN)
 
+### 5.3. Defrag
 
+Todo
