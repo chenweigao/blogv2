@@ -1,6 +1,34 @@
 {
   "recentFiles": [
     {
+      "basename": "amx",
+      "path": "architecture/amx.md"
+    },
+    {
+      "basename": "AI Profiling",
+      "path": "python/AI Profiling.md"
+    },
+    {
+      "basename": "hash",
+      "path": "python/hash.md"
+    },
+    {
+      "basename": "virtualenv",
+      "path": "python/virtualenv.md"
+    },
+    {
+      "basename": "README",
+      "path": "python/README.md"
+    },
+    {
+      "basename": "ibs",
+      "path": "architecture/ibs.md"
+    },
+    {
+      "basename": "THP",
+      "path": "linux/kernel/THP.md"
+    },
+    {
       "basename": "idle",
       "path": "linux/kernel/idle.md"
     },
@@ -11,10 +39,6 @@
     {
       "basename": "x86_inst",
       "path": "architecture/x86_inst.md"
-    },
-    {
-      "basename": "THP",
-      "path": "linux/kernel/THP.md"
     },
     {
       "basename": "memory_va_page",
@@ -31,10 +55,6 @@
     {
       "basename": "20241213105941",
       "path": "architecture/pics/20241213105941.jpg"
-    },
-    {
-      "basename": "ibs",
-      "path": "architecture/ibs.md"
     },
     {
       "basename": "cache",
@@ -179,10 +199,6 @@
     {
       "basename": "24-3 月总结",
       "path": "24-3 月总结.md"
-    },
-    {
-      "basename": "欢迎",
-      "path": "欢迎.md"
     }
   ],
   "omittedPaths": [],

@@ -3,7 +3,7 @@ title: virtualenv&Visdom
 date: 2019-12-20
 ---
 
-## 虚环境
+## 1. 虚环境
 
 安装 Python3 虚环境
 
@@ -20,7 +20,7 @@ source racv/bin/activate
 
 http://201.117.21.195/
 
-### 标准启动方式
+### 1.1. 标准启动方式
 
 根据书籍《Black.Hat.Python.2nd.Edition.2021.4》介绍的，可以用如下的顺序正确使用虚环境。
 
@@ -75,7 +75,7 @@ rmvirtualenv my-first-env
 ```
 
 
-## 远程访问 Visdom
+## 2. 远程访问 Visdom
 
 重定向 8097 端口到本地：
 
@@ -95,7 +95,7 @@ python3 -m visdom.server
 nvidia-smi
 ```
 
-## 查看 Python 路径
+## 3. 查看 Python 路径
 
 有的时候我们可能需要查看一下 python 的安装路径，可以使用如下的方法：
 
@@ -105,9 +105,9 @@ python
 >>> sys.path
 ```
 
-## 设置 pip 源
+## 4. 设置 pip 源
 
-### windows 
+### 4.1. windows 
 
 直接在 user 目录中创建一个 pip 目录，而后创建一个 `pip.ini` 文件：
 
@@ -116,6 +116,6 @@ python
 index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
-### linux
+### 4.2. linux
 
 修改 ~/.pip/pip.conf (没有就创建一个)。

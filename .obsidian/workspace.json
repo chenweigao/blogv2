@@ -27,12 +27,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "linux/kernel/idle.md",
+                "file": "python/README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "idle"
+              "title": "README"
+            }
+          },
+          {
+            "id": "93e5c6a30ec9cf0b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "architecture/amx.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "amx"
             }
           },
           {
@@ -48,7 +62,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -179,13 +193,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "linux/kernel/idle.md",
+                "file": "architecture/amx.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "idle 的大纲"
+              "title": "amx 的大纲"
             }
           },
           {
@@ -209,7 +223,7 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -228,8 +242,17 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "ddea9329be37a99b",
+  "active": "1e5faf6d7e14025f",
   "lastOpenFiles": [
+    "python/AI Profiling.md",
+    "python/hash.md",
+    "python/virtualenv.md",
+    "python/README.md",
+    "architecture/ibs.md",
+    "architecture/amx.md",
+    "architecture/images/amx-1750062373190.png",
+    "linux/kernel/THP.md",
+    "linux/kernel/idle.md",
     "dist/sitemap.xsl",
     "dist/sitemap.xml",
     "dist/slimsearch.worker.js",
@@ -240,7 +263,6 @@
     "dist/star",
     "dist/article/index.html",
     "dist/article",
-    "dist/tag/gc/index.html",
     "dist/assets/wsl-DnR9Ka4J.png",
     "dist/assets/value-result-DM-eFDxI.jpg",
     "dist/assets/tcp_4-DfBz_odY.jpg",
@@ -250,10 +272,8 @@
     "dist/assets/sac2-nu6nrd-3.png",
     "dist/assets/pages_kernel-QgcYrE-D.png",
     "dist/assets/llvm_ir--SfsTexz.svg",
-    "dist/assets/jvm_mem2-Dup96IVN.svg",
     "architecture/numa_socket.md",
     "architecture/x86_inst.md",
-    "linux/kernel/THP.md",
     "architecture/memory_va_page.md",
     "architecture/gpu-ai/gpu_arch.md",
     "architecture/gpu-ai/gpu_communication.md",
@@ -261,7 +281,6 @@
     "architecture/gpu-ai/gpu_1.md",
     "Excalidraw/Drawing 2025-05-11 16.01.37 - GPU Arch.excalidraw.md",
     "draws/未命名.canvas",
-    "architecture/ibs.md",
     "architecture/memory_vm_page.md",
     "architecture/cache.md",
     "architecture/MMU.md",
@@ -271,11 +290,6 @@
     "architecture/gpu-ai/README.md",
     "java/jvm/01_jvm_memory.md",
     "java/jvm/reflection.md",
-    "java/jvm/gc_g1.md",
-    "java/jvm/jvm_inst.md",
-    "linux/kernel/xv6.md",
-    "linux/kernel/thermal_init_h.md",
-    "linux/kernel/thermal.md",
-    "linux/kernel/notifier.md"
+    "java/jvm/gc_g1.md"
   ]
 }

@@ -287,13 +287,13 @@ umount -l /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20
 mount -t tmpfs -o size=843750000k,huge=always tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
 ```
 
-```
+```bash
 mount -t tmpfs -o size=843750000k,huge=within_size tmpfs /home/t4/kubernetes/lib/kubelet/pods/405d43ee-5053-498e-9ceb-0d19c9c20ba7/volumes/kubernetes.io~empty-dir/tmpfs-index
 ```
 
 如果是在容器里面操作：
 
-```
+```bash
 umount -l /tmpfs-index
 
 mount -t tmpfs -o size=843750000k,huge=within_size tmpfs /tmpfs-index
@@ -391,4 +391,26 @@ echo 1 > /proc/sys/vm/compact_memory
 
 ### 5.3. Defrag
 
-Todo
+发生缺页异常（Page Fault）时，该功能可控制内存分别进行直接回收（Direct Reclaim）、后台回收（Background Reclaim）、直接整理（Direct Compaction）、后台整理（Background Compaction）的行为。开启或关闭该功能的配置文件路径为 `/sys/kernel/mm/transparent_hugepage/defrag`，可选的配置项如下[^1]：
+
+- `always`
+
+    当系统分配不出透明大页时，暂停内存分配行为，总是等待系统进行内存的直接回收和内存的直接整理。内存回收和整理结束后，如果存在足够的连续空闲内存，则继续分配透明大页。
+
+- `defer`
+
+    当系统分配不出透明大页时，转为分配普通的4 KB页。同时唤醒kswapd内核守护进程以进行内存的后台回收，唤醒kcompactd内核守护进程以进行内存的后台整理。一段时间后，如果存在足够的连续空闲内存，khugepaged内核守护进程将此前分配的4 KB页合并为2 MB的透明大页。
+
+- `madvise`
+
+    仅在通过 `madvise()` 系统调用，并且设置了 `MADV_HUGEPAGE` 标记的内存区域中，内存分配行为等同于 `always`。其余部分的内存分配行为保持为：发生缺页异常时，转为分配普通的4 KB页。
+
+- `defer+madvise`
+
+    仅在通过`madvise()`系统调用，并且设置了`MADV_HUGEPAGE`标记的内存区域中，内存分配行为等同于`always`。其余部分的内存分配行为保持为`defer`。
+
+- never
+
+    禁止碎片整理。
+
+[^1]: <https://help.aliyun.com/zh/alinux/support/performance-tuning-method-related-to-transparent-large-page-thp-in?spm=a2c4g.11186623.help-menu-search-2632541.d_1#b6d183120cx8c>

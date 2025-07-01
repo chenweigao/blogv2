@@ -14,11 +14,11 @@ category:
 
 
 
-## Hash Map
+## 1. Hash Map
 
 背景：以前很擅长写这个，现在记性不太好了，今天练习了一下，写在这里备忘一下。
 
-### Implement
+### 1.1. Implement
 
 Python 中的 Hash Map 使用方法很多，以后会慢慢复习到，现在先写上基本的实现。
 
@@ -42,7 +42,7 @@ class Solution:
 
 具体的[完整示例](https://github.com/chenweigao/_code/blob/master/LeetCode/LC1512_Number_of_good_pairs.py)可以参考 GitHub。
 
-## Cache result: pickle
+## 2. Cache result: pickle
 
 pickle 模块可以把我们只需要一次生成的中间结果缓存起来，比如说 dict, list 都可以进行缓存，下一次直接从这个文件中假造，避免了进一步的分析工作。
 
@@ -64,7 +64,7 @@ try:
 
 
 
-## collections.Counter()
+## 3. collections.Counter()
 
 这是 python 官方库的实现方式，使用前需要先导入 `collections` 依赖。
 
@@ -95,9 +95,9 @@ print(Solution2().uniqueOccurrences(arr))
 
 该题目中使用了 `collections.Counter()` 获得字典，而后通过 `.values()` 拿到字典中的 value 集合，最后通过将其转化为 set 来判断是否与原有字典长度相等达到解决问题的目的。
 
-## OrderedDict
+## 4. OrderedDict
 
-### init
+### 4.1. init
 
 `OrderedDict` 是 python3 内置的数据结构，其主要存在两个函数可以供我们使用：
 
@@ -115,7 +115,7 @@ d = collections.OrderedDict.fromkeys('abcde')
 d_str = ''.join(d.keys())
 ```
 
-### move_to_end()
+### 4.2. move_to_end()
 
 使用 `move_to_end`, 参数 `last` 指定为 True（默认值），则将特定的元素移动到 dict 的最后面，指定为 False 移动到 dict 的最前面。
 
@@ -126,7 +126,7 @@ d.move_to_end('b', last=False)
 d.move_to_end('b', last=True)
 ```
 
-### popitem()
+### 4.3. popitem()
 
 使用 `popitem`，参数 `last` 指定为 True（默认值），则移除 dict 中最后的元素，指定为 False 则移除 dict 中最左的元素。
 
@@ -150,7 +150,7 @@ d.move_to_end('b', last=True)
 
    `OrderedDict([('a', None), ('c', None), ('d', None), ('e', None), ('b', None)])` --> `OrderedDict([('c', None), ('d', None), ('e', None), ('b', None)])`
 
-### Sort by dict value
+### 4.4. Sort by dict value
 
 使用如下的方式按照 value 排序：
 
