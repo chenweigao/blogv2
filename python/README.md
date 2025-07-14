@@ -6,9 +6,9 @@ title: Python
 
 > Python’s simplicity lets you become productive quickly, but this often means you aren’t using everything it has to offer.  With this hands-on guide, you’ll learn how to write effective, idiomatic Python code by leveraging its best—and possibly most neglected—features. Author Luciano Ramalho takes you through Python’s core language features and libraries, and shows you how to make your code shorter, faster, and more readable at the same time.
 
-## Install
+## 1. Install
 
-### Linux
+### 1.1. Linux
 
 1. 在 Python 官网下载 tar 包，然后解压
 2. 安装必要的库
@@ -26,7 +26,7 @@ make install
 
 执行以上操作后，Python 会安装在 `/usr/local/bin` 目录中，Python 库安装在 `/usr/local/lib/pythonXX`，XX 为你使用的 Python 的版本号
 
-### openssl install
+### 1.2. openssl install
 
 如果遇到了报错，如 opsnssl 版本不正确的话，需要参考这个解决方案[^2]；我们在此对其做一个简单的总结：
 
@@ -65,7 +65,7 @@ make install
 
 注意 `/usr/src/openssl-1.0.2o` 路径的替换。
 
-### venv
+### 1.3. venv
 
 我们此时就可以使用新版的 Python 来创建我们的虚环境了[^3]:
 
