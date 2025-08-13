@@ -1,6 +1,5 @@
 ---
 title: Hash Map & Dict
-icon: creative
 date: 2020-07-12
 category:
   - Python

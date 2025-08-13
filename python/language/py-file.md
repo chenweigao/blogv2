@@ -6,8 +6,6 @@ tag:
  - file
 category:
  - Python
-
-
 ---
 
 

@@ -16,18 +16,22 @@ Python 的 site-package 和 dist-package 有什么区别？
 
 **site-packages**:
 
-- **定义**：  `site-packages` 是 Python 官方默认用于存放第三方库的目录。
-- **标准化**： 是 Python [标准库 site 模块](https://docs.python.org/3/library/site.html)支持的标准路径，几乎所有平台与发行版默认都包含该目录。
-- **典型路径**：
+**定义**：`site-packages` 是 Python 官方默认用于存放第三方库的目录。
+
+**标准化**： 是 Python [标准库 site 模块](https://docs.python.org/3/library/site.html)支持的标准路径，几乎所有平台与发行版默认都包含该目录。
+
+**典型路径**：
   - Windows: `PythonXY\Lib\site-packages\`
   - macOS/Linux: `/usr/local/lib/pythonX.Y/site-packages/`(系统Python) 或虚拟环境目录下
 - **pip、setuptools、conda** 默认都向此路径装包。
 
 **dist-packages**:
 
-- **定义**：  `dist-packages` 并非 Python 官方标准目录，而是**Debian/Ubuntu 等 Linux 发行版引入**的用于区分系统级包（如`apt`安装）和用户/第三方包（如通过`pip`或源码手动装包） 的目录。
-- **目的**：  避免系统包和用户装包冲突。这样用系统包管理器安装的 python 库放在 `dist-packages`，而通过 pip/user 装的放在 `site-packages`。
-- **典型路径**：`/usr/lib/pythonX.Y/dist-packages/`
+**定义**：  `dist-packages` 并非 Python 官方标准目录，而是**Debian/Ubuntu 等 Linux 发行版引入**的用于区分系统级包（如 `apt` 安装）和用户/第三方包（如通过 `pip` 或源码手动装包） 的目录。
+
+**目的**：  避免系统包和用户装包冲突。这样用系统包管理器安装的 python 库放在 `dist-packages`，而通过 pip/user 装的放在 `site-packages`。
+
+**典型路径**：`/usr/lib/pythonX.Y/dist-packages/`
 - **dpkg/apt/rpm** 这类系统包管理安装的库（如 `apt install python3-requests`）会被放到此目录。
 
 实际区别

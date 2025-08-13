@@ -1,24 +1,36 @@
 {
   "recentFiles": [
     {
+      "basename": "pipline",
+      "path": "architecture/pipline.md"
+    },
+    {
+      "basename": "read-lifeifei",
+      "path": "read-lifeifei.md"
+    },
+    {
+      "basename": "6.6",
+      "path": "others/tmp/6.6.md"
+    },
+    {
+      "basename": "Marketing",
+      "path": "others/tmp/Marketing.md"
+    },
+    {
+      "basename": "Drawing 2025-07-18 10.37.43.excalidraw",
+      "path": "Excalidraw/Drawing 2025-07-18 10.37.43.excalidraw.md"
+    },
+    {
+      "basename": "openvino",
+      "path": "python/AI/openvino.md"
+    },
+    {
       "basename": "AI Profiling",
       "path": "python/AI/AI Profiling.md"
     },
     {
-      "basename": "effective-python",
-      "path": "python/effective-python.md"
-    },
-    {
       "basename": "README",
       "path": "python/README.md"
-    },
-    {
-      "basename": "未命名",
-      "path": "未命名.md"
-    },
-    {
-      "basename": "pipline",
-      "path": "architecture/pipline.md"
     },
     {
       "basename": "cache",
@@ -51,14 +63,6 @@
     {
       "basename": "amx",
       "path": "architecture/amx.md"
-    },
-    {
-      "basename": "hash",
-      "path": "python/hash.md"
-    },
-    {
-      "basename": "virtualenv",
-      "path": "python/virtualenv.md"
     },
     {
       "basename": "ibs",
@@ -195,10 +199,6 @@
     {
       "basename": "outliner-20250305120435",
       "path": "notes/outliner-20250305120435.md"
-    },
-    {
-      "basename": "Inbox",
-      "path": "Inbox.md"
     }
   ],
   "omittedPaths": [],

@@ -36,9 +36,9 @@ def get_all_pattern_pandas(self, file=None):
 
 上述代码中有些细节需要注意：
 
-1.  `pd.read_csv()` 返回了 df 对象；我们传入了 `header=None` 可以使得不产生制表的 header, 而 `sep='\t'` 就是分割 txt 文件常用的分割符
-2.  `df.itertuples()` 可以产生 df 的迭代器对象，是比较快速的迭代方法
-3.  `more_itertools.grouper()` 是滑动窗口的接口，可以参考 *\<Itertools\>* 那篇文章
+1. `pd.read_csv()` 返回了 df 对象；我们传入了 `header=None` 可以使得不产生制表的 header, 而 `sep='\t'` 就是分割 txt 文件常用的分割符
+2. `df.itertuples()` 可以产生 df 的迭代器对象，是比较快速的迭代方法
+3. `more_itertools.grouper()` 是滑动窗口的接口，可以参考 *<Itertools>* 那篇文章
 
 ## Example
 
