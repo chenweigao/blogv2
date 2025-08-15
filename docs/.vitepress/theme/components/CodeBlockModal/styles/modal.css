@@ -1,0 +1,88 @@
+/* 模态框动画 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .code-modal-container,
+.modal-leave-to .code-modal-container {
+  transform: scale(0.95) translateY(-20px);
+  opacity: 0;
+}
+
+/* 遮罩层 */
+.code-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  padding: 20px;
+}
+
+/* 模态框容器 */
+.code-modal-container {
+  background: var(--vp-c-bg);
+  border-radius: 16px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  max-width: min(90vw, 1200px);
+  max-height: min(90vh, 800px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 内容区域 */
+.code-modal-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.code-modal-content.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background: var(--vp-c-bg);
+}
+
+.code-block-wrapper {
+  height: 100%;
+  position: relative;
+}
+
+.code-container {
+  display: flex;
+  height: 100%;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .code-modal-overlay {
+    padding: 10px;
+  }
+  
+  .code-modal-container {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 12px;
+  }
+}

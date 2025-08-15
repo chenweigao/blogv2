@@ -1,0 +1,120 @@
+/* 行号样式 */
+.line-numbers {
+  background: var(--vp-c-bg-soft);
+  border-right: 1px solid var(--vp-c-border);
+  padding: 20px 0;
+  min-width: 60px;
+  overflow: hidden;
+  user-select: none;
+  font-family: var(--vp-font-family-mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.line-number {
+  padding: 0 16px;
+  color: var(--vp-c-text-3);
+  text-align: right;
+  transition: color 0.2s ease;
+}
+
+.line-number.highlighted {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+.code-content {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.shiki-container {
+  min-height: 100%;
+  overflow: auto;
+}
+
+/* Shiki 样式覆盖 */
+:deep(.shiki) {
+  margin: 0;
+  padding: 20px 24px;
+  background: transparent !important;
+  font-family: var(--vp-font-family-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: auto;
+  min-height: 100%;
+}
+
+:deep(.shiki code) {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre;
+}
+
+:deep(.highlighted-line) {
+  background: var(--vp-c-brand-soft);
+  display: block;
+  margin: 0 -24px;
+  padding: 0 24px;
+  border-left: 3px solid var(--vp-c-brand-1);
+}
+
+/* 滚动条样式 */
+.shiki-container::-webkit-scrollbar,
+.line-numbers::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.shiki-container::-webkit-scrollbar-track,
+.line-numbers::-webkit-scrollbar-track {
+  background: var(--vp-c-bg-soft);
+}
+
+.shiki-container::-webkit-scrollbar-thumb,
+.line-numbers::-webkit-scrollbar-thumb {
+  background: var(--vp-c-text-3);
+  border-radius: 4px;
+}
+
+.shiki-container::-webkit-scrollbar-thumb:hover,
+.line-numbers::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-text-2);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .line-numbers {
+    min-width: 50px;
+    padding: 16px 0;
+  }
+  
+  .line-number {
+    padding: 0 12px;
+  }
+  
+  :deep(.shiki) {
+    padding: 16px 20px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .line-numbers {
+    min-width: 40px;
+  }
+  
+  .line-number {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+  
+  :deep(.shiki) {
+    padding: 16px;
+    font-size: 12px;
+  }
+}
