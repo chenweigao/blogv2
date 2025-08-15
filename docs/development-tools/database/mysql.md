@@ -82,8 +82,53 @@ ON table_name1.column_name=table_name2.column_name
 
 [可以参考这一篇博客，讲述了如何使用 MySql + 邻接表存储一个 DAG](https://www.codeproject.com/Articles/22824/A-Model-to-Represent-Directed-Acyclic-Graphs-DAG-o)，代码如下所示：
 
+```sql
+-- DAG (Directed Acyclic Graph) 示例 SQL
+-- 创建节点表
+CREATE TABLE nodes (
+    id INT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
 
-  <<< @/docs/.vuepress/code/sql/DAG.sql
+-- 创建边表（邻接表）
+CREATE TABLE edges (
+    from_node INT,
+    to_node INT,
+    PRIMARY KEY (from_node, to_node),
+    FOREIGN KEY (from_node) REFERENCES nodes(id),
+    FOREIGN KEY (to_node) REFERENCES nodes(id)
+);
+
+-- 插入示例数据
+INSERT INTO nodes (id, name) VALUES 
+(1, 'Start'),
+(2, 'Process A'),
+(3, 'Process B'),
+(4, 'End');
+
+INSERT INTO edges (from_node, to_node) VALUES
+(1, 2),
+(1, 3),
+(2, 4),
+(3, 4);
+
+-- 查询从起始节点到所有可达节点的路径
+WITH RECURSIVE path_finder AS (
+    SELECT from_node, to_node, 1 as depth, 
+           CAST(from_node AS CHAR(1000)) as path
+    FROM edges
+    WHERE from_node = 1
+    
+    UNION ALL
+    
+    SELECT e.from_node, e.to_node, pf.depth + 1,
+           CONCAT(pf.path, ' -> ', e.to_node)
+    FROM edges e
+    JOIN path_finder pf ON e.from_node = pf.to_node
+    WHERE pf.depth < 10  -- 防止无限递归
+)
+SELECT * FROM path_finder;
+```
 
 ## Index 索引
 
@@ -147,4 +192,3 @@ InnoDB 默认是事务存储引擎，默认。
 索引文件 .MYI(MyIndex) 和 数据文件 .MYD(MyData)分离
 
 缓冲池值缓存索引文件，而不缓存数据文件。
-

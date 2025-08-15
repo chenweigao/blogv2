@@ -240,7 +240,7 @@ class TestClassScope:
 
 如可以在测试时统计测试的耗时，下面是两个自动计时固件，一个用于统计每个函数运行时间（`function` 作用域），一个用于计算测试总耗时（`session` 作用域）：
 
-  <<< @/docs/.vuepress/code/demo/pytest_autouse_demo.py
+  <!-- <<< @/docs/.vuepress/code/demo/pytest_autouse_demo.py -->
 
 ### 重命名
 
@@ -496,7 +496,7 @@ YML 的文件定义不同，在 Python 中解析出来的结果也不同：
 `dicts.yml` 的格式如下所示：
 
 
-  <<< @/docs/.vuepress/code/python/dicts.yml
+  <!-- <<< @/docs/.vuepress/code/python/dicts.yml -->
 
 如果使用 Python 进行解析的话，代码可以如下所示：
 
@@ -515,7 +515,7 @@ def read_file():
 
 方便观看，转换成 JSON：
 
-  <<< @/docs/.vuepress/code/python/dicts.json
+  <!-- <<< @/docs/.vuepress/code/python/dicts.json -->
 
 
 2. 列表
@@ -547,7 +547,7 @@ if __name__ == '__main__':
 
 `list.yml` 的文件内容为：
 
-  <<< @/docs/.vuepress/code/python/list.yml
+  <!-- <<< @/docs/.vuepress/code/python/list.yml -->
 
 可以解析出来，输出如下：
 
