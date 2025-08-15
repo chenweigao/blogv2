@@ -35,6 +35,7 @@
     "js-yaml": "^4.1.0",
     "medium-zoom": "^1.1.0",
     "prismjs": "^1.30.0",
+    "shiki": "^0.14.7",
     "vue": "^3.3.8"
   },
   "engines": {

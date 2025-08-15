@@ -30,6 +30,13 @@
                 <span class="icon-text">#</span>
               </button>
               <button 
+                @click="toggleTheme" 
+                class="action-button"
+                title="切换主题"
+              >
+                <span class="icon-text">🎨</span>
+              </button>
+              <button 
                 @click="toggleFullscreen" 
                 class="action-button"
                 :class="{ active: isFullscreen }"
@@ -70,13 +77,12 @@
                 
                 <!-- 代码内容 -->
                 <div class="code-content" ref="codeContentRef">
-                  <pre 
-                    :class="`language-${language}`"
+                  <div 
+                    class="shiki-container"
+                    :class="currentTheme"
                     @scroll="syncScroll"
-                  ><code 
-                    v-html="highlightedCode" 
-                    :class="`language-${language}`"
-                  ></code></pre>
+                    v-html="highlightedCode"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -88,6 +94,8 @@
               <span class="encoding">UTF-8</span>
               <span class="separator">•</span>
               <span class="language">{{ displayLanguage }}</span>
+              <span class="separator">•</span>
+              <span class="theme">{{ currentTheme }}</span>
             </div>
             <div class="footer-actions">
               <button @click="downloadCode" class="footer-button" title="下载代码">
@@ -108,6 +116,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { getHighlighter } from 'shiki'
 
 const props = defineProps({
   visible: {
@@ -141,8 +150,22 @@ const showLineNumbers = ref(true)
 const isFullscreen = ref(false)
 const lineNumbersRef = ref(null)
 const codeContentRef = ref(null)
+const highlighter = ref(null)
+const currentTheme = ref('github-light')
 
-// 语言配置
+// 可用主题
+const themes = [
+  'github-light',
+  'github-dark',
+  'monokai',
+  'nord',
+  'one-dark-pro',
+  'dracula',
+  'material-theme-palenight',
+  'slack-theme-dark-mode'
+]
+
+// 语言配置 - 扩展了更多语言
 const languageConfig = {
   'js': { name: 'JavaScript', color: '#f7df1e', icon: '🟨' },
   'javascript': { name: 'JavaScript', color: '#f7df1e', icon: '🟨' },
@@ -166,11 +189,22 @@ const languageConfig = {
   'sh': { name: 'Shell', color: '#89e051', icon: '🐚' },
   'sql': { name: 'SQL', color: '#336791', icon: '🗄️' },
   'php': { name: 'PHP', color: '#777bb4', icon: '🐘' },
-  'go': { name: 'Go', color: '#00add8', icon: '🐹' },
+  'go': { name: 'Go', color: '#00add8', icon: 'hamster' },
   'rust': { name: 'Rust', color: '#ce422b', icon: '🦀' },
   'vue': { name: 'Vue', color: '#4fc08d', icon: '💚' },
   'jsx': { name: 'JSX', color: '#61dafb', icon: '⚛️' },
-  'tsx': { name: 'TSX', color: '#61dafb', icon: '⚛️' }
+  'tsx': { name: 'TSX', color: '#61dafb', icon: '⚛️' },
+  'swift': { name: 'Swift', color: '#fa7343', icon: '🦉' },
+  'kotlin': { name: 'Kotlin', color: '#7f52ff', icon: '🎯' },
+  'dart': { name: 'Dart', color: '#0175c2', icon: '🎯' },
+  'ruby': { name: 'Ruby', color: '#cc342d', icon: '💎' },
+  'scala': { name: 'Scala', color: '#dc322f', icon: '⚖️' },
+  'r': { name: 'R', color: '#276dc3', icon: '📊' },
+  'matlab': { name: 'MATLAB', color: '#e16737', icon: '🔬' },
+  'powershell': { name: 'PowerShell', color: '#012456', icon: '💙' },
+  'dockerfile': { name: 'Dockerfile', color: '#384d54', icon: '🐳' },
+  'nginx': { name: 'Nginx', color: '#009639', icon: '🌐' },
+  'apache': { name: 'Apache', color: '#d22128', icon: '🪶' }
 }
 
 // 计算属性
@@ -196,15 +230,32 @@ const highlightedLines = computed(() => {
   return props.highlightLines || []
 })
 
-// 语法高亮
+// 使用 Shiki 进行语法高亮
 const highlightedCode = computed(() => {
-  if (!props.code) return ''
+  if (!props.code || !highlighter.value) {
+    return `<pre><code>${escapeHtml(props.code)}</code></pre>`
+  }
   
-  // HTML转义
-  let highlighted = escapeHtml(props.code)
-  
-  // 应用语法高亮
-  return applyAdvancedHighlighting(highlighted, props.language)
+  try {
+    const html = highlighter.value.codeToHtml(props.code, {
+      lang: props.language,
+      theme: currentTheme.value,
+      transformers: [
+        // 添加行高亮支持
+        {
+          line(node, line) {
+            if (highlightedLines.value.includes(line)) {
+              node.properties.class = (node.properties.class || '') + ' highlighted-line'
+            }
+          }
+        }
+      ]
+    })
+    return html
+  } catch (error) {
+    console.warn('Shiki highlighting failed:', error)
+    return `<pre><code>${escapeHtml(props.code)}</code></pre>`
+  }
 })
 
 // HTML转义函数
@@ -219,68 +270,23 @@ const escapeHtml = (text) => {
   return text.replace(/[&<>"']/g, (m) => map[m])
 }
 
-// 改进的语法高亮函数
-const applyAdvancedHighlighting = (code, language) => {
-  const lang = language.toLowerCase()
-  
-  // 通用的高亮规则
-  const highlightRules = {
-    javascript: {
-      keywords: /\b(async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|false|finally|for|function|if|import|in|instanceof|let|new|null|return|super|switch|this|throw|true|try|typeof|undefined|var|void|while|with|yield)\b/g,
-      strings: /(["'`])((?:\\.|(?!\1)[^\\])*?)\1/g,
-      numbers: /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/g,
-      comments: /\/\*[\s\S]*?\*\/|\/\/.*$/gm,
-      functions: /\b([a-zA-Z_$][a-zA-Z09_$]*)\s*(?=\()/g,
-      operators: /[+\-*/%=<>!&|^~?:]/g
-    },
-    python: {
-      keywords: /\b(and|as|assert|break|class|continue|def|del|elif|else|except|exec|finally|for|from|global|if|import|in|is|lambda|not|or|pass|print|raise|return|try|while|with|yield|True|False|None)\b/g,
-      strings: /(["'])((?:\\.|(?!\1)[^\\])*?)\1/g,
-      numbers: /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/g,
-      comments: /#.*$/gm,
-      functions: /\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\()/g
-    },
-    css: {
-      properties: /([a-zA-Z-]+)\s*:/g,
-      values: /:\s*([^;{}]+)/g,
-      selectors: /([.#]?[a-zA-Z][a-zA-Z0-9-_]*)\s*\{/g,
-      colors: /(#[0-9a-fA-F]{3,6}|\b(?:rgb|rgba|hsl|hsla)\([^)]+\))/g,
-      units: /\b(\d+(?:\.\d+)?(?:px|em|rem|%|vh|vw|pt|pc|in|cm|mm|ex|ch|vmin|vmax|fr))\b/g,
-      comments: /\/\*[\s\S]*?\*\//g
-    }
+// 初始化 Shiki
+const initHighlighter = async () => {
+  try {
+    highlighter.value = await getHighlighter({
+      themes: themes,
+      langs: [
+        'javascript', 'typescript', 'python', 'java', 'cpp', 'c',
+        'css', 'html', 'json', 'xml', 'yaml', 'markdown',
+        'bash', 'shell', 'sql', 'php', 'go', 'rust',
+        'vue', 'jsx', 'tsx', 'swift', 'kotlin', 'dart',
+        'ruby', 'scala', 'r', 'matlab', 'powershell',
+        'dockerfile', 'nginx', 'apache'
+      ]
+    })
+  } catch (error) {
+    console.error('Failed to initialize Shiki:', error)
   }
-  
-  const rules = highlightRules[lang] || highlightRules.javascript
-  
-  let result = code
-  
-  // 应用高亮规则
-  if (rules.comments) {
-    result = result.replace(rules.comments, '<span class="token comment">$&</span>')
-  }
-  if (rules.strings) {
-    result = result.replace(rules.strings, '<span class="token string">$&</span>')
-  }
-  if (rules.keywords) {
-    result = result.replace(rules.keywords, '<span class="token keyword">$&</span>')
-  }
-  if (rules.numbers) {
-    result = result.replace(rules.numbers, '<span class="token number">$&</span>')
-  }
-  if (rules.functions) {
-    result = result.replace(rules.functions, '<span class="token function">$1</span>')
-  }
-  if (rules.properties) {
-    result = result.replace(rules.properties, '<span class="token property">$1</span>:')
-  }
-  if (rules.selectors) {
-    result = result.replace(rules.selectors, '<span class="token selector">$1</span> {')
-  }
-  if (rules.colors) {
-    result = result.replace(rules.colors, '<span class="token color">$&</span>')
-  }
-  
-  return result
 }
 
 // 事件处理函数
@@ -338,6 +344,12 @@ const toggleLineNumbers = () => {
   showLineNumbers.value = !showLineNumbers.value
 }
 
+const toggleTheme = () => {
+  const currentIndex = themes.indexOf(currentTheme.value)
+  const nextIndex = (currentIndex + 1) % themes.length
+  currentTheme.value = themes[nextIndex]
+}
+
 const toggleFullscreen = () => {
   isFullscreen.value = !isFullscreen.value
   emit('fullscreen', isFullscreen.value)
@@ -352,7 +364,7 @@ const closeModal = () => {
 
 const syncScroll = () => {
   if (lineNumbersRef.value && codeContentRef.value) {
-    const codeElement = codeContentRef.value.querySelector('pre')
+    const codeElement = codeContentRef.value.querySelector('.shiki-container')
     if (codeElement) {
       lineNumbersRef.value.scrollTop = codeElement.scrollTop
     }
@@ -389,6 +401,12 @@ const handleKeydown = (e) => {
         toggleFullscreen()
       }
       break
+    case 't':
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault()
+        toggleTheme()
+      }
+      break
   }
 }
 
@@ -415,7 +433,8 @@ watch(isVisible, (newVal) => {
 })
 
 // 生命周期
-onMounted(() => {
+onMounted(async () => {
+  await initHighlighter()
   if (isVisible.value) {
     document.addEventListener('keydown', handleKeydown)
   }
@@ -700,25 +719,37 @@ onUnmounted(() => {
   position: relative;
 }
 
-.code-content pre {
+.shiki-container {
+  min-height: 100%;
+  overflow: auto;
+}
+
+/* Shiki 样式覆盖 */
+:deep(.shiki) {
   margin: 0;
   padding: 20px 24px;
-  background: var(--vp-code-block-bg);
-  color: var(--vp-code-block-color);
+  background: transparent !important;
   font-family: var(--vp-font-family-mono);
   font-size: 14px;
   line-height: 1.5;
   overflow: auto;
-  white-space: pre;
   min-height: 100%;
 }
 
-.code-content code {
+:deep(.shiki code) {
   background: transparent;
   padding: 0;
   font-size: inherit;
   color: inherit;
   white-space: pre;
+}
+
+:deep(.highlighted-line) {
+  background: var(--vp-c-brand-soft);
+  display: block;
+  margin: 0 -24px;
+  padding: 0 24px;
+  border-left: 3px solid var(--vp-c-brand-1);
 }
 
 /* 底部工具栏 */
@@ -765,126 +796,6 @@ onUnmounted(() => {
 .footer-button:hover {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
-}
-
-/* 语法高亮样式 */
-:deep(.token.keyword) {
-  color: #d73a49;
-  font-weight: 600;
-}
-
-:deep(.token.string) {
-  color: #032f62;
-}
-
-:deep(.token.comment) {
-  color: #6a737d;
-  font-style: italic;
-}
-
-:deep(.token.function) {
-  color: #6f42c1;
-  font-weight: 500;
-}
-
-:deep(.token.number) {
-  color: #005cc5;
-  font-weight: 500;
-}
-
-:deep(.token.boolean) {
-  color: #005cc5;
-  font-weight: 600;
-}
-
-:deep(.token.property) {
-  color: #005cc5;
-}
-
-:deep(.token.selector) {
-  color: #6f42c1;
-  font-weight: 500;
-}
-
-:deep(.token.tag) {
-  color: #22863a;
-}
-
-:deep(.token.attr-name) {
-  color: #6f42c1;
-}
-
-:deep(.token.attr-value) {
-  color: #032f62;
-}
-
-:deep(.token.variable) {
-  color: #e36209;
-}
-
-:deep(.token.color) {
-  color: #005cc5;
-}
-
-:deep(.token.operator) {
-  color: #d73a49;
-}
-
-/* 暗色主题 */
-.dark :deep(.token.keyword) {
-  color: #ff7b72;
-}
-
-.dark :deep(.token.string) {
-  color: #a5d6ff;
-}
-
-.dark :deep(.token.comment) {
-  color: #8b949e;
-}
-
-.dark :deep(.token.function) {
-  color: #d2a8ff;
-}
-
-.dark :deep(.token.number) {
-  color: #79c0ff;
-}
-
-.dark :deep(.token.boolean) {
-  color: #79c0ff;
-}
-
-.dark :deep(.token.property) {
-  color: #79c0ff;
-}
-
-.dark :deep(.token.selector) {
-  color: #d2a8ff;
-}
-
-.dark :deep(.token.tag) {
-  color: #7ee787;
-}
-
-.dark :deep(.token.attr-name) {
-  color: #d2a8ff;
-}
-
-.dark :deep(.token.attr-value) {
-  color: #a5d6ff;
-}
-
-.dark :deep(.token.variable) {
-  color: #ffa657;
-}
-
-.dark :deep(.token.color) {
-  color: #79c0ff;
-}
-
-.dark :deep(.token.operator) {
-  color: #ff7b72;
 }
 
 /* 响应式设计 */
@@ -941,7 +852,7 @@ onUnmounted(() => {
     padding: 0 12px;
   }
   
-  .code-content pre {
+  :deep(.shiki) {
     padding: 16px 20px;
     font-size: 13px;
   }
@@ -974,31 +885,31 @@ onUnmounted(() => {
     font-size: 12px;
   }
   
-  .code-content pre {
+  :deep(.shiki) {
     padding: 16px;
     font-size: 12px;
   }
 }
 
 /* 滚动条样式 */
-.code-content pre::-webkit-scrollbar,
+.shiki-container::-webkit-scrollbar,
 .line-numbers::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.code-content pre::-webkit-scrollbar-track,
+.shiki-container::-webkit-scrollbar-track,
 .line-numbers::-webkit-scrollbar-track {
   background: var(--vp-c-bg-soft);
 }
 
-.code-content pre::-webkit-scrollbar-thumb,
+.shiki-container::-webkit-scrollbar-thumb,
 .line-numbers::-webkit-scrollbar-thumb {
   background: var(--vp-c-text-3);
   border-radius: 4px;
 }
 
-.code-content pre::-webkit-scrollbar-thumb:hover,
+.shiki-container::-webkit-scrollbar-thumb:hover,
 .line-numbers::-webkit-scrollbar-thumb:hover {
   background: var(--vp-c-text-2);
 }

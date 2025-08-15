@@ -1,136 +1,142 @@
 {
-  "hash": "bc8deeac",
+  "hash": "bf6dc889",
   "configHash": "848ba9e5",
-  "lockfileHash": "4c7b1ae8",
-  "browserHash": "db3b3182",
+  "lockfileHash": "218e534e",
+  "browserHash": "2adcabe0",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/.pnpm/vue@3.3.8/node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "1c09884a",
+      "fileHash": "45007cf9",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../../node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "185f3e60",
+      "fileHash": "560c15e6",
       "needsInterop": false
     },
     "vitepress > @vueuse/integrations/useFocusTrap": {
       "src": "../../../../node_modules/.pnpm/@vueuse+integrations@10.11.1_focus-trap@7.6.5_vue@3.3.8/node_modules/@vueuse/integrations/useFocusTrap.mjs",
       "file": "vitepress___@vueuse_integrations_useFocusTrap.js",
-      "fileHash": "1e5f53c4",
+      "fileHash": "bfe0f530",
       "needsInterop": false
     },
     "vitepress > mark.js/src/vanilla.js": {
       "src": "../../../../node_modules/.pnpm/mark.js@8.11.1/node_modules/mark.js/src/vanilla.js",
       "file": "vitepress___mark__js_src_vanilla__js.js",
-      "fileHash": "76c9a6e0",
+      "fileHash": "1cd298eb",
       "needsInterop": false
     },
     "vitepress > minisearch": {
       "src": "../../../../node_modules/.pnpm/minisearch@6.3.0/node_modules/minisearch/dist/es/index.js",
       "file": "vitepress___minisearch.js",
-      "fileHash": "c5b1a177",
+      "fileHash": "31448e34",
       "needsInterop": false
     },
     "medium-zoom": {
       "src": "../../../../node_modules/.pnpm/medium-zoom@1.1.0/node_modules/medium-zoom/dist/medium-zoom.esm.js",
       "file": "medium-zoom.js",
-      "fileHash": "a2d50a5e",
+      "fileHash": "996fbdbe",
       "needsInterop": false
     },
     "prismjs": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/prism.js",
       "file": "prismjs.js",
-      "fileHash": "bc114222",
+      "fileHash": "16afc694",
       "needsInterop": true
     },
     "prismjs/components/prism-javascript": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-javascript.js",
       "file": "prismjs_components_prism-javascript.js",
-      "fileHash": "24259735",
+      "fileHash": "81719718",
       "needsInterop": true
     },
     "prismjs/components/prism-typescript": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-typescript.js",
       "file": "prismjs_components_prism-typescript.js",
-      "fileHash": "b31f5a27",
+      "fileHash": "6aa92191",
       "needsInterop": true
     },
     "prismjs/components/prism-python": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-python.js",
       "file": "prismjs_components_prism-python.js",
-      "fileHash": "f2158229",
+      "fileHash": "9a22ccec",
       "needsInterop": true
     },
     "prismjs/components/prism-java": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-java.js",
       "file": "prismjs_components_prism-java.js",
-      "fileHash": "98371990",
+      "fileHash": "d43c07e2",
       "needsInterop": true
     },
     "prismjs/components/prism-cpp": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-cpp.js",
       "file": "prismjs_components_prism-cpp.js",
-      "fileHash": "a26a75d6",
+      "fileHash": "0e8f7246",
       "needsInterop": true
     },
     "prismjs/components/prism-css": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-css.js",
       "file": "prismjs_components_prism-css.js",
-      "fileHash": "f5314636",
+      "fileHash": "dc2feb7b",
       "needsInterop": true
     },
     "prismjs/components/prism-json": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-json.js",
       "file": "prismjs_components_prism-json.js",
-      "fileHash": "3ab6b2a2",
+      "fileHash": "a9d44640",
       "needsInterop": true
     },
     "prismjs/components/prism-bash": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-bash.js",
       "file": "prismjs_components_prism-bash.js",
-      "fileHash": "41720d58",
+      "fileHash": "f488250f",
       "needsInterop": true
     },
     "prismjs/components/prism-sql": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-sql.js",
       "file": "prismjs_components_prism-sql.js",
-      "fileHash": "a5015607",
+      "fileHash": "1bcb45b9",
       "needsInterop": true
     },
     "prismjs/components/prism-php": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-php.js",
       "file": "prismjs_components_prism-php.js",
-      "fileHash": "878d4197",
+      "fileHash": "f3a1bdff",
       "needsInterop": true
     },
     "prismjs/components/prism-go": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-go.js",
       "file": "prismjs_components_prism-go.js",
-      "fileHash": "29e43c31",
+      "fileHash": "8f36765f",
       "needsInterop": true
     },
     "prismjs/components/prism-rust": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-rust.js",
       "file": "prismjs_components_prism-rust.js",
-      "fileHash": "4c42b056",
+      "fileHash": "94c72296",
       "needsInterop": true
     },
     "prismjs/components/prism-yaml": {
       "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-yaml.js",
       "file": "prismjs_components_prism-yaml.js",
-      "fileHash": "6c75e8f1",
+      "fileHash": "0d163dba",
       "needsInterop": true
+    },
+    "shiki": {
+      "src": "../../../../node_modules/.pnpm/shiki@0.14.7/node_modules/shiki/dist/index.esm.js",
+      "file": "shiki.js",
+      "fileHash": "2f79f76b",
+      "needsInterop": false
     }
   },
   "chunks": {
     "chunk-AO7DNPHN": {
       "file": "chunk-AO7DNPHN.js"
     },
-    "chunk-BUSYA2B4": {
-      "file": "chunk-BUSYA2B4.js"
+    "chunk-7D4SUZUM": {
+      "file": "chunk-7D4SUZUM.js"
     }
   }
 }
