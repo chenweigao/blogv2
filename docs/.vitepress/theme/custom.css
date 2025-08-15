@@ -31,6 +31,10 @@
   --animation-duration-slow: 0.5s;
   --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Page transition variables */
+  --page-transition-duration: 0.4s;
+  --page-transition-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Dark theme adjustments */
@@ -46,6 +50,83 @@
   
   --vp-c-border: #30363d;
   --vp-c-divider: #21262d;
+}
+
+/* ===== PAGE TRANSITION ANIMATIONS ===== */
+
+/* 页面切换过渡效果 */
+.VPContent {
+  transition: all var(--page-transition-duration) var(--page-transition-easing);
+  transform-origin: center top;
+}
+
+/* 页面内容淡入淡出 */
+.VPDoc {
+  transition: all var(--page-transition-duration) var(--page-transition-easing);
+  transform-origin: center top;
+}
+
+/* 页面切换时的内容动画 */
+.vp-doc {
+  transition: all var(--page-transition-duration) var(--page-transition-easing);
+}
+
+/* 页面加载状态 */
+.page-loading .VPContent {
+  opacity: 0.7;
+  transform: translateY(10px);
+  filter: blur(1px);
+}
+
+.page-loading .VPDoc {
+  opacity: 0.5;
+  transform: scale(0.98) translateY(20px);
+}
+
+/* 链接点击时的即时反馈 */
+.VPNavBarMenuLink,
+.VPSidebarItem .link,
+.vp-doc a {
+  position: relative;
+  transition: all var(--animation-duration-fast) var(--animation-easing);
+}
+
+.VPNavBarMenuLink:active,
+.VPSidebarItem .link:active,
+.vp-doc a:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+/* 页面切换时的加载指示器 */
+.page-transition-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--vp-c-brand-1) 50%, 
+    transparent 100%);
+  z-index: 9998;
+  animation: pageTransitionProgress 1s ease-in-out;
+  transform-origin: left center;
+}
+
+@keyframes pageTransitionProgress {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scaleX(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
 }
 
 /* ===== GLOBAL ANIMATIONS ===== */
@@ -148,6 +229,7 @@
 .Layout {
   background-color: var(--vp-c-bg);
   animation: pageLoad var(--animation-duration-slow) var(--animation-easing);
+  transition: all var(--page-transition-duration) var(--page-transition-easing);
 }
 
 /* Wiki-style navigation */
@@ -248,95 +330,76 @@
 
 .VPDoc {
   background-color: var(--vp-c-bg);
+  transition: all var(--page-transition-duration) var(--page-transition-easing);
 }
 
-.VPDoc .container {
-  max-width: var(--vp-layout-max-width);
-  animation: scaleIn var(--animation-duration-normal) var(--animation-easing);
+/* 文档内容渐进式加载动画 */
+.vp-doc > * {
+  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing);
+  animation-fill-mode: both;
 }
 
-/* Wiki-style article content */
-.vp-doc {
-  background-color: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
-  padding: 2rem;
-  margin: 1rem 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.vp-doc > *:nth-child(1) { animation-delay: 0.1s; }
+.vp-doc > *:nth-child(2) { animation-delay: 0.15s; }
+.vp-doc > *:nth-child(3) { animation-delay: 0.2s; }
+.vp-doc > *:nth-child(4) { animation-delay: 0.25s; }
+.vp-doc > *:nth-child(5) { animation-delay: 0.3s; }
+
+/* 标题动画 */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4,
+.vp-doc h5,
+.vp-doc h6 {
   transition: all var(--animation-duration-normal) var(--animation-easing);
-  animation: scaleIn var(--animation-duration-slow) var(--animation-easing);
-}
-
-.vp-doc:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
-}
-
-/* ===== HEADING ANIMATIONS ===== */
-
-/* Wiki-style headings */
-.vp-doc h1 {
-  border-bottom: 3px solid var(--vp-c-border);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-size: 2.2rem;
-  font-weight: 400;
-  color: var(--vp-c-text-1);
   position: relative;
-  overflow: hidden;
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing) 0.1s both;
 }
 
-.vp-doc h1::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: -100%;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  animation: slideInFromLeft var(--animation-duration-slow) var(--animation-easing) 0.3s both;
-}
-
-.vp-doc h2 {
-  border-bottom: 1px solid var(--vp-c-border);
-  padding-bottom: 0.3rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  font-size: 1.8rem;
-  font-weight: 500;
-  position: relative;
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing) 0.2s both;
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.vp-doc h2:hover {
-  color: var(--vp-c-brand-1);
-  transform: translateX(5px);
-}
-
-.vp-doc h3 {
-  margin-top: 1.5rem;
-  margin-bottom: 0.8rem;
-  font-size: 1.4rem;
-  font-weight: 500;
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing) 0.3s both;
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
+.vp-doc h1:hover,
+.vp-doc h2:hover,
 .vp-doc h3:hover {
+  transform: translateX(5px);
   color: var(--vp-c-brand-1);
-  transform: translateX(3px);
 }
 
-/* ===== LINK ANIMATIONS ===== */
-
-/* Wiki-style links */
-.vp-doc a {
-  color: var(--vp-c-brand-1);
-  text-decoration: none;
-  position: relative;
+/* 代码块动画 */
+.vp-doc div[class*="language-"] {
   transition: all var(--animation-duration-normal) var(--animation-easing);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vp-doc div[class*="language-"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* 表格动画 */
+.vp-doc table {
+  transition: all var(--animation-duration-normal) var(--animation-easing);
+}
+
+.vp-doc table:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 引用块动画 */
+.vp-doc blockquote {
+  transition: all var(--animation-duration-normal) var(--animation-easing);
+  position: relative;
+}
+
+.vp-doc blockquote:hover {
+  transform: translateX(5px);
+  border-left-color: var(--vp-c-brand-1);
+}
+
+/* 链接动画增强 */
+.vp-doc a {
+  position: relative;
+  transition: all var(--animation-duration-fast) var(--animation-easing);
 }
 
 .vp-doc a::after {
@@ -355,314 +418,17 @@
 }
 
 .vp-doc a:hover {
-  color: var(--vp-c-brand-2);
-  transform: translateY(-1px);
-}
-
-.vp-doc a:visited {
-  color: #0b0080;
-}
-
-/* ===== CODE BLOCK ANIMATIONS ===== */
-
-/* Wiki-style code blocks */
-.vp-doc div[class*="language-"] {
-  background-color: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
-  margin: 1rem 0;
-  overflow: hidden;
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing);
-}
-
-.vp-doc div[class*="language-"]:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.vp-doc div[class*="language-"] pre {
-  background-color: transparent;
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-/* Wiki-style inline code */
-.vp-doc code {
-  background-color: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 4px;
-  padding: 0.1em 0.3em;
-  font-size: 0.9em;
-  transition: all var(--animation-duration-fast) var(--animation-easing);
-}
-
-.vp-doc code:hover {
-  background-color: var(--vp-c-brand-soft);
-  border-color: var(--vp-c-brand-1);
-  transform: scale(1.05);
-}
-
-/* ===== TABLE ANIMATIONS ===== */
-
-/* Wiki-style tables */
-.vp-doc table {
-  border-collapse: collapse;
-  border: 1px solid var(--vp-c-border);
-  margin: 1rem 0;
-  width: 100%;
-  border-radius: 8px;
-  overflow: hidden;
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing);
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.vp-doc table:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.vp-doc th,
-.vp-doc td {
-  border: 1px solid var(--vp-c-border);
-  padding: 0.5rem 0.8rem;
-  text-align: left;
-  transition: all var(--animation-duration-fast) var(--animation-easing);
-}
-
-.vp-doc th {
-  background-color: var(--vp-c-bg-soft);
-  font-weight: 600;
-  position: relative;
-}
-
-.vp-doc th::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--vp-c-brand-1);
-  transition: width var(--animation-duration-normal) var(--animation-easing);
-}
-
-.vp-doc th:hover::after {
-  width: 100%;
-}
-
-.vp-doc tr:nth-child(even) {
-  background-color: var(--vp-c-bg-soft);
-}
-
-.vp-doc tr {
-  transition: all var(--animation-duration-fast) var(--animation-easing);
-}
-
-.vp-doc tr:hover {
-  background-color: var(--vp-c-brand-soft);
-  transform: scale(1.01);
-}
-
-/* ===== BLOCKQUOTE ANIMATIONS ===== */
-
-/* Wiki-style blockquotes */
-.vp-doc blockquote {
-  border-left: 4px solid var(--vp-c-brand-1);
-  background-color: var(--vp-c-bg-soft);
-  padding: 1rem 1.5rem;
-  margin: 1rem 0;
-  border-radius: 0 8px 8px 0;
-  position: relative;
-  overflow: hidden;
-  animation: slideInFromLeft var(--animation-duration-slow) var(--animation-easing);
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.vp-doc blockquote::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 4px;
-  height: 0;
-  background: linear-gradient(180deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  transition: height var(--animation-duration-normal) var(--animation-easing);
-}
-
-.vp-doc blockquote:hover::before {
-  height: 100%;
-}
-
-.vp-doc blockquote:hover {
-  transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* ===== INFO BOX ANIMATIONS ===== */
-
-/* Wiki-style info boxes */
-.info-box {
-  border: 1px solid var(--vp-c-border);
-  background-color: var(--vp-c-bg-soft);
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-  animation: scaleIn var(--animation-duration-slow) var(--animation-easing);
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.info-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  transform: translateX(-100%);
-  transition: transform var(--animation-duration-normal) var(--animation-easing);
-}
-
-.info-box:hover::before {
-  transform: translateX(0);
-}
-
-.info-box:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.info-box.warning {
-  border-left: 4px solid #ff6b35;
-  background-color: #fff5f5;
-}
-
-.info-box.warning::before {
-  background: linear-gradient(90deg, #ff6b35, #ff8c42);
-}
-
-.info-box.tip {
-  border-left: 4px solid #10b981;
-  background-color: #f0fdf4;
-}
-
-.info-box.tip::before {
-  background: linear-gradient(90deg, #10b981, #34d399);
-}
-
-.info-box.note {
-  border-left: 4px solid var(--vp-c-brand-1);
-  background-color: var(--vp-c-brand-soft);
-}
-
-/* ===== OUTLINE/TOC ANIMATIONS ===== */
-
-/* Wiki-style outline/TOC */
-.VPDocAsideOutline {
-  background-color: var(--vp-c-bg-alt);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
-  padding: 1rem;
-  animation: slideInFromRight var(--animation-duration-slow) var(--animation-easing);
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.VPDocAsideOutline:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.VPDocAsideOutline .outline-title {
-  font-weight: 600;
-  color: var(--vp-c-text-1);
-  border-bottom: 1px solid var(--vp-c-border);
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.8rem;
-  position: relative;
-}
-
-.VPDocAsideOutline .outline-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--vp-c-brand-1);
-  transition: width var(--animation-duration-normal) var(--animation-easing);
-}
-
-.VPDocAsideOutline:hover .outline-title::after {
-  width: 100%;
-}
-
-.VPDocAsideOutlineItem {
-  transition: all var(--animation-duration-fast) var(--animation-easing);
-}
-
-.VPDocAsideOutlineItem:hover {
-  transform: translateX(5px);
   color: var(--vp-c-brand-1);
-}
-
-/* ===== SEARCH ANIMATIONS ===== */
-
-/* Wiki-style search */
-.VPNavBarSearch {
-  background-color: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 20px;
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.VPNavBarSearch:hover {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 0 0 2px var(--vp-c-brand-soft);
-}
-
-.VPNavBarSearch:focus-within {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 0 0 3px var(--vp-c-brand-soft);
-  transform: scale(1.02);
-}
-
-/* ===== FOOTER ANIMATIONS ===== */
-
-/* Wiki-style footer */
-.VPFooter {
-  background-color: var(--vp-c-bg-alt);
-  border-top: 1px solid var(--vp-c-border);
-  padding: 2rem 0;
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing);
-}
-
-/* ===== CUSTOM WIKI COMPONENTS ===== */
-
-/* Custom wiki components */
-.wiki-infobox {
-  float: right;
-  width: 300px;
-  margin: 0 0 1rem 1rem;
-  border: 1px solid var(--vp-c-border);
-  background-color: var(--vp-c-bg-soft);
-  border-radius: 8px;
-  padding: 1rem;
-  animation: slideInFromRight var(--animation-duration-slow) var(--animation-easing);
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.wiki-infobox:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 /* ===== SCROLL ANIMATIONS ===== */
 
-/* Scroll-triggered animations */
+/* 滚动时的元素动画 */
 .scroll-animate {
   opacity: 0;
   transform: translateY(30px);
-  transition: all var(--animation-duration-slow) var(--animation-easing);
+  transition: all 0.6s var(--animation-easing);
 }
 
 .scroll-animate.animate {
@@ -670,36 +436,42 @@
   transform: translateY(0);
 }
 
-/* ===== LOADING ANIMATIONS ===== */
+/* 不同类型元素的滚动动画延迟 */
+.scroll-animate:nth-child(odd) {
+  transition-delay: 0.1s;
+}
 
-/* Loading shimmer effect */
-.loading-shimmer {
-  background: linear-gradient(90deg, 
-    var(--vp-c-bg-soft) 25%, 
-    var(--vp-c-bg-alt) 50%, 
-    var(--vp-c-bg-soft) 75%);
-  background-size: 200px 100%;
-  animation: shimmer 2s infinite;
+.scroll-animate:nth-child(even) {
+  transition-delay: 0.2s;
 }
 
 /* ===== RESPONSIVE ANIMATIONS ===== */
 
-/* Reduce animations on mobile for performance */
+/* 移动端优化 */
 @media (max-width: 768px) {
-  .vp-doc {
-    animation-duration: 0.2s;
+  :root {
+    --animation-duration-fast: 0.15s;
+    --animation-duration-normal: 0.25s;
+    --animation-duration-slow: 0.4s;
+    --page-transition-duration: 0.3s;
   }
   
-  .VPSidebar {
-    animation-duration: 0.2s;
+  .VPSidebarItem:hover {
+    transform: translateX(3px);
   }
   
-  .VPContent {
-    animation-duration: 0.2s;
+  .vp-doc h1:hover,
+  .vp-doc h2:hover,
+  .vp-doc h3:hover {
+    transform: translateX(3px);
+  }
+  
+  .vp-doc div[class*="language-"]:hover {
+    transform: translateY(-1px);
   }
 }
 
-/* Respect user's motion preferences */
+/* 减少动画偏好设置 */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -711,29 +483,103 @@
   }
 }
 
-/* Medium Zoom 图片弹出查看样式优化 */
-.medium-zoom-overlay {
-  z-index: 999;
+/* ===== LOADING STATES ===== */
+
+/* 页面加载状态指示器 */
+.page-loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    var(--vp-c-brand-1) 0%, 
+    var(--vp-c-brand-2) 50%, 
+    var(--vp-c-brand-1) 100%);
+  z-index: 9999;
+  animation: loadingProgress 2s ease-in-out infinite;
+  transform-origin: left;
 }
 
-.medium-zoom-image {
-  z-index: 1000;
+@keyframes loadingProgress {
+  0% {
+    transform: scaleX(0);
+  }
+  50% {
+    transform: scaleX(0.7);
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
 }
 
-/* 为图片添加悬停效果，提示可以点击 */
-.main img {
-  cursor: zoom-in;
-  transition: transform 0.2s ease;
+/* 内容加载骨架屏效果 */
+.content-skeleton {
+  background: linear-gradient(90deg, 
+    var(--vp-c-bg-soft) 25%, 
+    var(--vp-c-bg-alt) 50%, 
+    var(--vp-c-bg-soft) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ===== ENHANCED INTERACTIONS ===== */
+
+/* 按钮和交互元素的增强动画 */
+.VPButton,
+button,
+.vp-doc .custom-block {
+  transition: all var(--animation-duration-normal) var(--animation-easing);
+}
+
+.VPButton:hover,
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.VPButton:active,
+button:active {
+  transform: translateY(0);
+  transition-duration: var(--animation-duration-fast);
+}
+
+/* 自定义块的动画 */
+.vp-doc .custom-block {
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.main img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+.vp-doc .custom-block:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* 确保图片在缩放时的样式 */
-.medium-zoom-image--opened {
-  cursor: zoom-out;
+/* ===== THEME TRANSITIONS ===== */
+
+/* 主题切换时的平滑过渡 */
+html {
+  transition: color-scheme var(--animation-duration-normal) var(--animation-easing);
+}
+
+.dark,
+.light {
+  transition: all var(--animation-duration-normal) var(--animation-easing);
+}
+
+/* 确保所有颜色变化都有过渡 */
+* {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: var(--animation-duration-normal);
+  transition-timing-function: var(--animation-easing);
 }
