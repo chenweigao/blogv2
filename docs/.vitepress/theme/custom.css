@@ -249,337 +249,97 @@
   transition: all var(--animation-duration-normal) var(--animation-easing);
 }
 
-.VPNavBarTitle:hover {
-  transform: scale(1.05);
-  color: var(--vp-c-brand-1);
-}
+/* ===== CODE BLOCK CLICK FUNCTIONALITY ===== */
 
-/* Navigation menu items animation */
-.VPNavBarMenuLink {
-  position: relative;
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.VPNavBarMenuLink::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  transition: width var(--animation-duration-normal) var(--animation-easing);
-}
-
-.VPNavBarMenuLink:hover::after {
-  width: 100%;
-}
-
-.VPNavBarMenuLink:hover {
-  transform: translateY(-2px);
-  color: var(--vp-c-brand-1);
-}
-
-/* ===== SIDEBAR ANIMATIONS ===== */
-
-/* Wiki-style sidebar */
-.VPSidebar {
-  background-color: var(--vp-c-bg-alt);
-  border-right: 1px solid var(--vp-c-border);
-  animation: slideInFromLeft var(--animation-duration-slow) var(--animation-easing);
-}
-
-.VPSidebarItem {
-  border-radius: 0;
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.VPSidebarItem:hover {
-  transform: translateX(5px);
-  background-color: var(--vp-c-bg-soft);
-}
-
-.VPSidebarItem.is-active > .item > .link {
-  background-color: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  font-weight: 600;
-  position: relative;
-  overflow: hidden;
-  /* 为指示器留出空间，避免遮挡文字 */
-  padding-left: 12px !important;
-}
-
-.VPSidebarItem.is-active > .item > .link::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  animation: slideInFromLeft var(--animation-duration-normal) var(--animation-easing);
-}
-
-/* ===== CONTENT ANIMATIONS ===== */
-
-/* Wiki-style content area */
-.VPContent {
-  background-color: var(--vp-c-bg);
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing);
-}
-
-.VPDoc {
-  background-color: var(--vp-c-bg);
-  transition: all var(--page-transition-duration) var(--page-transition-easing);
-}
-
-/* 文档内容渐进式加载动画 */
-.vp-doc > * {
-  animation: fadeInUp var(--animation-duration-slow) var(--animation-easing);
-  animation-fill-mode: both;
-}
-
-.vp-doc > *:nth-child(1) { animation-delay: 0.1s; }
-.vp-doc > *:nth-child(2) { animation-delay: 0.15s; }
-.vp-doc > *:nth-child(3) { animation-delay: 0.2s; }
-.vp-doc > *:nth-child(4) { animation-delay: 0.25s; }
-.vp-doc > *:nth-child(5) { animation-delay: 0.3s; }
-
-/* 标题动画 */
-.vp-doc h1,
-.vp-doc h2,
-.vp-doc h3,
-.vp-doc h4,
-.vp-doc h5,
-.vp-doc h6 {
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-  position: relative;
-}
-
-.vp-doc h1:hover,
-.vp-doc h2:hover,
-.vp-doc h3:hover {
-  transform: translateX(5px);
-  color: var(--vp-c-brand-1);
-}
-
-/* 代码块动画 */
-.vp-doc div[class*="language-"] {
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.vp-doc div[class*="language-"]:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-/* 表格动画 */
-.vp-doc table {
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.vp-doc table:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* 引用块动画 */
-.vp-doc blockquote {
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-  position: relative;
-}
-
-.vp-doc blockquote:hover {
-  transform: translateX(5px);
-  border-left-color: var(--vp-c-brand-1);
-}
-
-/* 链接动画增强 */
-.vp-doc a {
+/* 可点击的代码块样式 */
+.clickable-code-block {
+  cursor: pointer !important;
   position: relative;
   transition: all var(--animation-duration-fast) var(--animation-easing);
 }
 
-.vp-doc a::after {
-  content: '';
+.clickable-code-block:hover {
+  background-color: var(--vp-c-bg-soft) !important;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clickable-code-block:active {
+  transform: scale(0.99);
+}
+
+/* 代码块悬停提示 */
+.clickable-code-block::before {
+  content: '点击查看完整代码';
   position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--vp-c-brand-1);
-  transition: width var(--animation-duration-normal) var(--animation-easing);
-}
-
-.vp-doc a:hover::after {
-  width: 100%;
-}
-
-.vp-doc a:hover {
-  color: var(--vp-c-brand-1);
-  transform: translateY(-1px);
-}
-
-/* ===== SCROLL ANIMATIONS ===== */
-
-/* 滚动时的元素动画 */
-.scroll-animate {
+  top: -30px;
+  right: 8px;
+  background: var(--vp-c-text-1);
+  color: var(--vp-c-bg);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s var(--animation-easing);
+  pointer-events: none;
+  transition: opacity var(--animation-duration-fast) var(--animation-easing);
+  z-index: 10;
 }
 
-.scroll-animate.animate {
+.clickable-code-block:hover::before {
   opacity: 1;
-  transform: translateY(0);
 }
 
-/* 不同类型元素的滚动动画延迟 */
-.scroll-animate:nth-child(odd) {
-  transition-delay: 0.1s;
-}
-
-.scroll-animate:nth-child(even) {
-  transition-delay: 0.2s;
-}
-
-/* ===== RESPONSIVE ANIMATIONS ===== */
-
-/* 移动端优化 */
-@media (max-width: 768px) {
-  :root {
-    --animation-duration-fast: 0.15s;
-    --animation-duration-normal: 0.25s;
-    --animation-duration-slow: 0.4s;
-    --page-transition-duration: 0.3s;
-  }
-  
-  .VPSidebarItem:hover {
-    transform: translateX(3px);
-  }
-  
-  .vp-doc h1:hover,
-  .vp-doc h2:hover,
-  .vp-doc h3:hover {
-    transform: translateX(3px);
-  }
-  
-  .vp-doc div[class*="language-"]:hover {
-    transform: translateY(-1px);
-  }
-}
-
-/* 减少动画偏好设置 */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* ===== LOADING STATES ===== */
-
-/* 页面加载状态指示器 */
-.page-loading-indicator {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, 
-    var(--vp-c-brand-1) 0%, 
-    var(--vp-c-brand-2) 50%, 
-    var(--vp-c-brand-1) 100%);
-  z-index: 9999;
-  animation: loadingProgress 2s ease-in-out infinite;
-  transform-origin: left;
-}
-
-@keyframes loadingProgress {
-  0% {
-    transform: scaleX(0);
-  }
-  50% {
-    transform: scaleX(0.7);
-  }
-  100% {
-    transform: scaleX(1);
-    opacity: 0;
-  }
-}
-
-/* 内容加载骨架屏效果 */
-.content-skeleton {
-  background: linear-gradient(90deg, 
-    var(--vp-c-bg-soft) 25%, 
-    var(--vp-c-bg-alt) 50%, 
-    var(--vp-c-bg-soft) 75%);
-  background-size: 200% 100%;
-  animation: skeleton-loading 1.5s ease-in-out infinite;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* ===== ENHANCED INTERACTIONS ===== */
-
-/* 按钮和交互元素的增强动画 */
-.VPButton,
-button,
-.vp-doc .custom-block {
-  transition: all var(--animation-duration-normal) var(--animation-easing);
-}
-
-.VPButton:hover,
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.VPButton:active,
-button:active {
-  transform: translateY(0);
-  transition-duration: var(--animation-duration-fast);
-}
-
-/* 自定义块的动画 */
-.vp-doc .custom-block {
+/* 代码块容器悬停效果 */
+.main pre:has(.clickable-code-block) {
+  transition: all var(--animation-duration-fast) var(--animation-easing);
   border-radius: 8px;
   overflow: hidden;
 }
 
-.vp-doc .custom-block:hover {
+.main pre:has(.clickable-code-block):hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== THEME TRANSITIONS ===== */
-
-/* 主题切换时的平滑过渡 */
-html {
-  transition: color-scheme var(--animation-duration-normal) var(--animation-easing);
+/* 暗色主题下的代码块样式调整 */
+.dark .clickable-code-block:hover {
+  background-color: var(--vp-c-bg-alt) !important;
 }
 
-.dark,
-.light {
-  transition: all var(--animation-duration-normal) var(--animation-easing);
+.dark .clickable-code-block::before {
+  background: var(--vp-c-text-1);
+  color: var(--vp-c-bg);
 }
 
-/* 确保所有颜色变化都有过渡 */
-* {
-  transition-property: color, background-color, border-color, box-shadow;
-  transition-duration: var(--animation-duration-normal);
-  transition-timing-function: var(--animation-easing);
+/* 代码块点击动画 */
+@keyframes codeBlockClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.clickable-code-block.clicked {
+  animation: codeBlockClick 0.2s ease-out;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .clickable-code-block::before {
+    display: none;
+  }
+  
+  .clickable-code-block:hover {
+    transform: none;
+  }
+  
+  .main pre:has(.clickable-code-block):hover {
+    transform: none;
+  }
 }
