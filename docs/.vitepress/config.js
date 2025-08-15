@@ -166,25 +166,25 @@ export default defineConfig({
           text: 'CPU 基础架构',
           collapsed: false,
           items: [
-            { text: '流水线 (Pipeline)', link: '/computer-systems/cpu-gpu/pipline' },
-            { text: '缓存系统 (Cache)', link: '/computer-systems/cpu-gpu/cache' },
-            { text: '内存管理单元 (MMU)', link: '/computer-systems/cpu-gpu/MMU' },
-            { text: '虚拟内存与分页', link: '/computer-systems/cpu-gpu/memory_va_page' }
+            { text: '流水线 (Pipeline)', link: '/computer-systems/cpu-gpu/cpu-architecture/pipeline-performance/pipline' },
+            { text: '缓存系统 (Cache)', link: '/computer-systems/cpu-gpu/cpu-architecture/memory-systems/cache' },
+            { text: '内存管理单元 (MMU)', link: '/computer-systems/cpu-gpu/cpu-architecture/memory-systems/MMU' },
+            { text: '虚拟内存与分页', link: '/computer-systems/cpu-gpu/cpu-architecture/memory-systems/memory_va_page' }
           ]
         },
         {
           text: '指令集架构 (ISA)',
           collapsed: false,
           items: [
-            { text: 'x86 指令集', link: '/computer-systems/cpu-gpu/x86_inst' },
-            { text: 'AMX 矩阵扩展', link: '/computer-systems/cpu-gpu/amx' },
+            { text: 'x86 指令集', link: '/computer-systems/cpu-gpu/cpu-architecture/instruction-sets/x86_inst' },
+            { text: 'AMX 矩阵扩展', link: '/computer-systems/cpu-gpu/cpu-architecture/instruction-sets/amx' },
             {
               text: 'ARM 架构',
               collapsed: true,
               items: [
-                { text: 'ARM 概述', link: '/computer-systems/cpu-gpu/arm/' },
-                { text: 'ARM 指令集', link: '/computer-systems/cpu-gpu/arm/arm_ins' },
-                { text: 'ARM 内联汇编', link: '/computer-systems/cpu-gpu/arm/arm_inline_assembly' }
+                { text: 'ARM 概述', link: '/computer-systems/cpu-gpu/arm-architecture/' },
+                { text: 'ARM 指令集', link: '/computer-systems/cpu-gpu/arm-architecture/arm_ins' },
+                { text: 'ARM 内联汇编', link: '/computer-systems/cpu-gpu/arm-architecture/arm_inline_assembly' }
               ]
             }
           ]
@@ -193,8 +193,8 @@ export default defineConfig({
           text: '系统架构',
           collapsed: false,
           items: [
-            { text: 'NUMA 与 Socket', link: '/computer-systems/cpu-gpu/numa_socket' },
-            { text: 'IBS 指令采样', link: '/computer-systems/cpu-gpu/ibs' }
+            { text: 'NUMA 与 Socket', link: '/computer-systems/cpu-gpu/cpu-architecture/memory-systems/numa_socket' },
+            { text: 'IBS 指令采样', link: '/computer-systems/cpu-gpu/cpu-architecture/pipeline-performance/ibs' }
           ]
         },
         {
