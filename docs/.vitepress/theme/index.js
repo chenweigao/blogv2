@@ -105,18 +105,99 @@ export default {
       const codeText = codeElement.textContent || codeElement.innerText || ''
       console.log('[CodeBlock] 代码内容长度:', codeText.length)
       
-      // 获取语言类型
+      // 改进的语言类型检测逻辑
       let language = 'text'
-      const preElement = codeElement.closest('pre')
-      if (preElement) {
-        const classNames = preElement.className || preElement.parentElement?.className || ''
-        const languageMatch = classNames.match(/language-(\w+)/)
-        if (languageMatch) {
-          language = languageMatch[1]
+      
+      // 检查多个可能包含语言信息的元素
+      const elementsToCheck = [
+        codeElement,                    // code 元素本身
+        codeElement.closest('pre'),     // pre 元素
+        codeElement.closest('div'),     // 包含的 div 元素
+        codeElement.parentElement,      // 直接父元素
+        codeElement.parentElement?.parentElement  // 祖父元素
+      ].filter(Boolean)
+      
+      // 需要排除的辅助类名
+      const excludeClasses = [
+        'clickable-code-block',
+        'code-block',
+        'highlight',
+        'hljs',
+        'prism',
+        'shiki',
+        'line-numbers',
+        'line-highlight'
+      ]
+      
+      // 尝试从各种可能的位置提取语言类型
+      for (const element of elementsToCheck) {
+        if (!element) continue
+        
+        const classNames = element.className || ''
+        console.log('[CodeBlock] 检查元素类名:', element.tagName, classNames)
+        
+        // 将类名分割成数组，逐个检查
+        const classList = classNames.split(/\s+/).filter(cls => cls.trim())
+        
+        for (const className of classList) {
+          // 跳过排除的辅助类名
+          if (excludeClasses.some(exclude => className.includes(exclude))) {
+            continue
+          }
+          
+          // 匹配各种可能的语言类名模式
+          const patterns = [
+            /^language-(\w+)$/,         // language-xxx (精确匹配)
+            /^lang-(\w+)$/,             // lang-xxx (精确匹配)
+            /^highlight-(\w+)$/,        // highlight-xxx (精确匹配)
+            /^(\w+)-highlight$/,        // xxx-highlight (精确匹配)
+          ]
+          
+          for (const pattern of patterns) {
+            const match = className.match(pattern)
+            if (match && match[1]) {
+              const extractedLang = match[1].toLowerCase()
+              // 确保提取的是有效的编程语言名称
+              if (isValidLanguage(extractedLang)) {
+                language = extractedLang
+                console.log('[CodeBlock] 从类名中提取到语言:', language, '来源类名:', className)
+                break
+              }
+            }
+          }
+          
+          if (language !== 'text') break
+        }
+        
+        if (language !== 'text') break
+      }
+      
+      // 如果还是没找到，尝试从 data 属性中获取
+      if (language === 'text') {
+        for (const element of elementsToCheck) {
+          if (!element) continue
+          
+          const dataLang = element.getAttribute('data-language') || 
+                          element.getAttribute('data-lang') ||
+                          element.getAttribute('data-highlight-lang')
+          
+          if (dataLang && isValidLanguage(dataLang.toLowerCase())) {
+            language = dataLang.toLowerCase()
+            console.log('[CodeBlock] 从 data 属性中提取到语言:', language)
+            break
+          }
         }
       }
       
-      console.log('[CodeBlock] 检测到语言:', language)
+      // 最后尝试从文本内容推断（针对一些特殊情况）
+      if (language === 'text' && codeText) {
+        language = inferLanguageFromContent(codeText)
+        if (language !== 'text') {
+          console.log('[CodeBlock] 从代码内容推断出语言:', language)
+        }
+      }
+      
+      console.log('[CodeBlock] 最终检测到语言:', language)
       
       // 设置弹窗数据并显示
       codeModalState.data.value = {
@@ -125,6 +206,99 @@ export default {
       }
       codeModalState.visible.value = true
       console.log('[CodeBlock] 弹窗已显示')
+    }
+    
+    // 检查是否为有效的编程语言名称
+    const isValidLanguage = (lang) => {
+      const validLanguages = [
+        'javascript', 'js', 'typescript', 'ts', 'python', 'py', 'java', 
+        'cpp', 'c', 'css', 'html', 'json', 'xml', 'yaml', 'yml',
+        'markdown', 'md', 'bash', 'shell', 'sh', 'sql', 'php', 'go',
+        'rust', 'vue', 'jsx', 'tsx', 'swift', 'kotlin', 'dart', 'ruby',
+        'scala', 'r', 'matlab', 'powershell', 'dockerfile', 'nginx', 
+        'apache', 'perl', 'lua', 'haskell', 'clojure', 'erlang', 'elixir',
+        'fsharp', 'csharp', 'vb', 'objective-c', 'assembly', 'asm',
+        'makefile', 'cmake', 'gradle', 'maven', 'ant', 'properties',
+        'ini', 'toml', 'conf', 'config', 'log', 'diff', 'patch'
+      ]
+      return validLanguages.includes(lang.toLowerCase())
+    }
+    
+    // 从代码内容推断语言类型
+    const inferLanguageFromContent = (codeText) => {
+      const content = codeText.toLowerCase().trim()
+      
+      // JavaScript/TypeScript
+      if (content.includes('function ') || content.includes('const ') || 
+          content.includes('let ') || content.includes('var ') ||
+          content.includes('=>') || content.includes('console.log')) {
+        return content.includes('interface ') || content.includes(': string') || 
+               content.includes(': number') ? 'typescript' : 'javascript'
+      }
+      
+      // Python
+      if (content.includes('def ') || content.includes('import ') || 
+          content.includes('from ') || content.includes('print(') ||
+          content.includes('if __name__')) {
+        return 'python'
+      }
+      
+      // Java
+      if (content.includes('public class ') || content.includes('private ') ||
+          content.includes('system.out.println') || content.includes('public static void main')) {
+        return 'java'
+      }
+      
+      // PHP
+      if (content.includes('<?php') || content.includes('echo ') || 
+          content.includes('$_') || content.startsWith('<?')) {
+        return 'php'
+      }
+      
+      // C/C++
+      if (content.includes('#include') || content.includes('printf(') ||
+          content.includes('int main(') || content.includes('cout <<')) {
+        return content.includes('cout') || content.includes('std::') ? 'cpp' : 'c'
+      }
+      
+      // CSS
+      if (content.includes('{') && content.includes('}') && 
+          (content.includes(':') && content.includes(';'))) {
+        return 'css'
+      }
+      
+      // HTML
+      if (content.includes('<html') || content.includes('<!doctype') ||
+          content.includes('<div') || content.includes('<span')) {
+        return 'html'
+      }
+      
+      // JSON
+      if ((content.startsWith('{') && content.endsWith('}')) ||
+          (content.startsWith('[') && content.endsWith(']'))) {
+        try {
+          JSON.parse(codeText)
+          return 'json'
+        } catch (e) {
+          // 不是有效的JSON
+        }
+      }
+      
+      // Shell/Bash
+      if (content.includes('#!/bin/bash') || content.includes('#!/bin/sh') ||
+          content.includes('echo ') || content.includes('grep ') ||
+          content.includes('awk ') || content.includes('sed ')) {
+        return 'bash'
+      }
+      
+      // SQL
+      if (content.includes('select ') || content.includes('insert ') ||
+          content.includes('update ') || content.includes('delete ') ||
+          content.includes('create table')) {
+        return 'sql'
+      }
+      
+      return 'text'
     }
     
     onMounted(() => {
