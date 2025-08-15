@@ -1,49 +1,136 @@
 {
-  "hash": "9e300b4f",
+  "hash": "bc8deeac",
   "configHash": "848ba9e5",
-  "lockfileHash": "12347ca0",
-  "browserHash": "1df6a0a5",
+  "lockfileHash": "4c7b1ae8",
+  "browserHash": "db3b3182",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/.pnpm/vue@3.3.8/node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "4a6daedf",
+      "fileHash": "1c09884a",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../../node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "9837adf4",
+      "fileHash": "185f3e60",
       "needsInterop": false
     },
     "vitepress > @vueuse/integrations/useFocusTrap": {
       "src": "../../../../node_modules/.pnpm/@vueuse+integrations@10.11.1_focus-trap@7.6.5_vue@3.3.8/node_modules/@vueuse/integrations/useFocusTrap.mjs",
       "file": "vitepress___@vueuse_integrations_useFocusTrap.js",
-      "fileHash": "02cf32b9",
+      "fileHash": "1e5f53c4",
       "needsInterop": false
     },
     "vitepress > mark.js/src/vanilla.js": {
       "src": "../../../../node_modules/.pnpm/mark.js@8.11.1/node_modules/mark.js/src/vanilla.js",
       "file": "vitepress___mark__js_src_vanilla__js.js",
-      "fileHash": "96de04df",
+      "fileHash": "76c9a6e0",
       "needsInterop": false
     },
     "vitepress > minisearch": {
       "src": "../../../../node_modules/.pnpm/minisearch@6.3.0/node_modules/minisearch/dist/es/index.js",
       "file": "vitepress___minisearch.js",
-      "fileHash": "b09b1920",
+      "fileHash": "c5b1a177",
       "needsInterop": false
     },
     "medium-zoom": {
       "src": "../../../../node_modules/.pnpm/medium-zoom@1.1.0/node_modules/medium-zoom/dist/medium-zoom.esm.js",
       "file": "medium-zoom.js",
-      "fileHash": "d42fa047",
+      "fileHash": "a2d50a5e",
       "needsInterop": false
+    },
+    "prismjs": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/prism.js",
+      "file": "prismjs.js",
+      "fileHash": "bc114222",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-javascript": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-javascript.js",
+      "file": "prismjs_components_prism-javascript.js",
+      "fileHash": "24259735",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-typescript": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-typescript.js",
+      "file": "prismjs_components_prism-typescript.js",
+      "fileHash": "b31f5a27",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-python": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-python.js",
+      "file": "prismjs_components_prism-python.js",
+      "fileHash": "f2158229",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-java": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-java.js",
+      "file": "prismjs_components_prism-java.js",
+      "fileHash": "98371990",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-cpp": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-cpp.js",
+      "file": "prismjs_components_prism-cpp.js",
+      "fileHash": "a26a75d6",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-css": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-css.js",
+      "file": "prismjs_components_prism-css.js",
+      "fileHash": "f5314636",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-json": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-json.js",
+      "file": "prismjs_components_prism-json.js",
+      "fileHash": "3ab6b2a2",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-bash": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-bash.js",
+      "file": "prismjs_components_prism-bash.js",
+      "fileHash": "41720d58",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-sql": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-sql.js",
+      "file": "prismjs_components_prism-sql.js",
+      "fileHash": "a5015607",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-php": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-php.js",
+      "file": "prismjs_components_prism-php.js",
+      "fileHash": "878d4197",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-go": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-go.js",
+      "file": "prismjs_components_prism-go.js",
+      "fileHash": "29e43c31",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-rust": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-rust.js",
+      "file": "prismjs_components_prism-rust.js",
+      "fileHash": "4c42b056",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-yaml": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.30.0/node_modules/prismjs/components/prism-yaml.js",
+      "file": "prismjs_components_prism-yaml.js",
+      "fileHash": "6c75e8f1",
+      "needsInterop": true
     }
   },
   "chunks": {
     "chunk-AO7DNPHN": {
       "file": "chunk-AO7DNPHN.js"
+    },
+    "chunk-BUSYA2B4": {
+      "file": "chunk-BUSYA2B4.js"
     }
   }
 }

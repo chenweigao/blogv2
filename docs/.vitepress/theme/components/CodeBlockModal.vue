@@ -3,7 +3,7 @@
     <div class="code-modal-container" @click.stop>
       <div class="code-modal-header">
         <div class="code-modal-title">
-          <span class="code-language">{{ language }}</span>
+          <span class="code-language">{{ displayLanguage }}</span>
           <span class="code-title">代码块</span>
         </div>
         <div class="code-modal-actions">
@@ -15,14 +15,16 @@
         </div>
       </div>
       <div class="code-modal-content">
-        <pre><code v-html="highlightedCode"></code></pre>
+        <div class="code-block-wrapper" :class="`language-${language}`">
+          <pre :class="`language-${language}`"><code v-html="highlightedCode" :class="`language-${language}`"></code></pre>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 
 const props = defineProps({
   visible: {
@@ -44,6 +46,42 @@ const emit = defineEmits(['close'])
 const isVisible = ref(false)
 const isCopied = ref(false)
 
+// 语言映射表
+const languageMap = {
+  'js': 'JavaScript',
+  'javascript': 'JavaScript',
+  'ts': 'TypeScript',
+  'typescript': 'TypeScript',
+  'py': 'Python',
+  'python': 'Python',
+  'java': 'Java',
+  'cpp': 'C++',
+  'c': 'C',
+  'css': 'CSS',
+  'html': 'HTML',
+  'json': 'JSON',
+  'xml': 'XML',
+  'yaml': 'YAML',
+  'yml': 'YAML',
+  'md': 'Markdown',
+  'markdown': 'Markdown',
+  'bash': 'Bash',
+  'shell': 'Shell',
+  'sh': 'Shell',
+  'sql': 'SQL',
+  'php': 'PHP',
+  'go': 'Go',
+  'rust': 'Rust',
+  'vue': 'Vue',
+  'jsx': 'JSX',
+  'tsx': 'TSX'
+}
+
+// 显示的语言名称
+const displayLanguage = computed(() => {
+  return languageMap[props.language.toLowerCase()] || props.language.toUpperCase()
+})
+
 // 监听 visible 属性变化
 watch(() => props.visible, (newVal) => {
   isVisible.value = newVal
@@ -56,9 +94,97 @@ watch(() => props.visible, (newVal) => {
 
 // 计算高亮代码
 const highlightedCode = computed(() => {
-  // 这里可以集成代码高亮库，暂时返回原始代码
-  return props.code.replace(/</g, '<').replace(/>/g, '>')
+  if (!props.code) return ''
+  
+  // 基本的HTML转义
+  let highlighted = props.code
+    .replace(/&/g, '&')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
+    .replace(/'/g, '&#39;')
+  
+  // 应用语法高亮
+  return applyHighlighting(highlighted, props.language)
 })
+
+// 语法高亮函数
+const applyHighlighting = (code, language) => {
+  const lang = language.toLowerCase()
+  
+  // JavaScript/TypeScript 高亮
+  if (lang === 'javascript' || lang === 'js' || lang === 'typescript' || lang === 'ts') {
+    return code
+      .replace(/\b(function|const|let|var|if|else|for|while|return|class|import|export|async|await|try|catch|finally|throw|new|this|super|extends|implements|interface|type|enum|namespace|module|declare|public|private|protected|static|readonly|abstract)\b/g, '<span class="token keyword">$&</span>')
+      .replace(/\b(true|false|null|undefined|NaN|Infinity)\b/g, '<span class="token boolean">$&</span>')
+      .replace(/\b\d+(\.\d+)?\b/g, '<span class="token number">$&</span>')
+      .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="token string">$&</span>')
+      .replace(/\/\*[\s\S]*?\*\//g, '<span class="token comment">$&</span>')
+      .replace(/\/\/.*$/gm, '<span class="token comment">$&</span>')
+      .replace(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, '<span class="token function">$1</span>(')
+  }
+  
+  // Python 高亮
+  else if (lang === 'python' || lang === 'py') {
+    return code
+      .replace(/\b(def|class|if|else|elif|for|while|return|import|from|as|try|except|finally|with|lambda|yield|global|nonlocal|assert|break|continue|pass|raise|del|and|or|not|in|is)\b/g, '<span class="token keyword">$&</span>')
+      .replace(/\b(True|False|None)\b/g, '<span class="token boolean">$&</span>')
+      .replace(/\b\d+(\.\d+)?\b/g, '<span class="token number">$&</span>')
+      .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="token string">$&</span>')
+      .replace(/#.*$/gm, '<span class="token comment">$&</span>')
+      .replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, '<span class="token function">$1</span>(')
+  }
+  
+  // Java 高亮
+  else if (lang === 'java') {
+    return code
+      .replace(/\b(public|private|protected|static|final|abstract|class|interface|extends|implements|import|package|void|int|long|double|float|boolean|char|String|if|else|for|while|do|switch|case|default|break|continue|return|try|catch|finally|throw|throws|new|this|super|null)\b/g, '<span class="token keyword">$&</span>')
+      .replace(/\b(true|false|null)\b/g, '<span class="token boolean">$&</span>')
+      .replace(/\b\d+(\.\d+)?[fFdDlL]?\b/g, '<span class="token number">$&</span>')
+      .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="token string">$&</span>')
+      .replace(/\/\*[\s\S]*?\*\//g, '<span class="token comment">$&</span>')
+      .replace(/\/\/.*$/gm, '<span class="token comment">$&</span>')
+      .replace(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, '<span class="token function">$1</span>(')
+  }
+  
+  // CSS 高亮
+  else if (lang === 'css') {
+    return code
+      .replace(/([a-zA-Z-]+)\s*:/g, '<span class="token property">$1</span>:')
+      .replace(/(#[0-9a-fA-F]{3,6}|\b(?:rgb|rgba|hsl|hsla)\([^)]+\))/g, '<span class="token color">$&</span>')
+      .replace(/\b(\d+(?:\.\d+)?(?:px|em|rem|%|vh|vw|pt|pc|in|cm|mm|ex|ch|vmin|vmax|fr))\b/g, '<span class="token number">$&</span>')
+      .replace(/\/\*[\s\S]*?\*\//g, '<span class="token comment">$&</span>')
+      .replace(/([.#]?[a-zA-Z][a-zA-Z0-9-_]*)\s*\{/g, '<span class="token selector">$1</span> {')
+  }
+  
+  // HTML 高亮
+  else if (lang === 'html') {
+    return code
+      .replace(/<(\/?[a-zA-Z][a-zA-Z0-9-]*)/g, '<<span class="token tag">$1</span>')
+      .replace(/([a-zA-Z-]+)=("[^&]*"|&#39;[^&#]*&#39;)/g, '<span class="token attr-name">$1</span>=<span class="token attr-value">$2</span>')
+      .replace(/<!--[\s\S]*?-->/g, '<span class="token comment">$&</span>')
+  }
+  
+  // JSON 高亮
+  else if (lang === 'json') {
+    return code
+      .replace(/("[^&]*")\s*:/g, '<span class="token property">$1</span>:')
+      .replace(/:\s*("[^&]*")/g, ': <span class="token string">$1</span>')
+      .replace(/\b(true|false|null)\b/g, '<span class="token boolean">$&</span>')
+      .replace(/\b-?\d+(\.\d+)?([eE][+-]?\d+)?\b/g, '<span class="token number">$&</span>')
+  }
+  
+  // Bash/Shell 高亮
+  else if (lang === 'bash' || lang === 'shell' || lang === 'sh') {
+    return code
+      .replace(/\b(if|then|else|elif|fi|for|while|do|done|case|esac|function|return|exit|break|continue|echo|printf|read|cd|ls|mkdir|rm|cp|mv|grep|sed|awk|sort|uniq|head|tail|cat|less|more)\b/g, '<span class="token keyword">$&</span>')
+      .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="token string">$&</span>')
+      .replace(/#.*$/gm, '<span class="token comment">$&</span>')
+      .replace(/\$[a-zA-Z_][a-zA-Z0-9_]*/g, '<span class="token variable">$&</span>')
+  }
+  
+  return code
+}
 
 // 复制代码
 const copyCode = async () => {
@@ -207,6 +333,10 @@ watch(isVisible, (newVal) => {
   padding: 0;
 }
 
+.code-block-wrapper {
+  position: relative;
+}
+
 .code-modal-content pre {
   margin: 0;
   padding: 20px;
@@ -225,6 +355,115 @@ watch(isVisible, (newVal) => {
   padding: 0;
   font-size: inherit;
   color: inherit;
+}
+
+/* 语法高亮样式 */
+:deep(.token.keyword) {
+  color: #d73a49;
+  font-weight: bold;
+}
+
+:deep(.token.string) {
+  color: #032f62;
+}
+
+:deep(.token.comment) {
+  color: #6a737d;
+  font-style: italic;
+}
+
+:deep(.token.function) {
+  color: #6f42c1;
+}
+
+:deep(.token.number) {
+  color: #005cc5;
+}
+
+:deep(.token.boolean) {
+  color: #005cc5;
+  font-weight: bold;
+}
+
+:deep(.token.property) {
+  color: #005cc5;
+}
+
+:deep(.token.selector) {
+  color: #6f42c1;
+}
+
+:deep(.token.tag) {
+  color: #22863a;
+}
+
+:deep(.token.attr-name) {
+  color: #6f42c1;
+}
+
+:deep(.token.attr-value) {
+  color: #032f62;
+}
+
+:deep(.token.variable) {
+  color: #e36209;
+}
+
+:deep(.token.color) {
+  color: #005cc5;
+}
+
+/* 暗色主题下的语法高亮 */
+.dark :deep(.token.keyword) {
+  color: #ff7b72;
+}
+
+.dark :deep(.token.string) {
+  color: #a5d6ff;
+}
+
+.dark :deep(.token.comment) {
+  color: #8b949e;
+}
+
+.dark :deep(.token.function) {
+  color: #d2a8ff;
+}
+
+.dark :deep(.token.number) {
+  color: #79c0ff;
+}
+
+.dark :deep(.token.boolean) {
+  color: #79c0ff;
+}
+
+.dark :deep(.token.property) {
+  color: #79c0ff;
+}
+
+.dark :deep(.token.selector) {
+  color: #d2a8ff;
+}
+
+.dark :deep(.token.tag) {
+  color: #7ee787;
+}
+
+.dark :deep(.token.attr-name) {
+  color: #d2a8ff;
+}
+
+.dark :deep(.token.attr-value) {
+  color: #a5d6ff;
+}
+
+.dark :deep(.token.variable) {
+  color: #ffa657;
+}
+
+.dark :deep(.token.color) {
+  color: #79c0ff;
 }
 
 @keyframes fadeIn {
