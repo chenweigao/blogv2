@@ -258,58 +258,28 @@
   transition: all var(--animation-duration-fast) var(--animation-easing);
 }
 
-.clickable-code-block:hover {
-  background-color: var(--vp-c-bg-soft) !important;
-  transform: scale(1.01);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
 .clickable-code-block:active {
   transform: scale(0.99);
-}
-
-/* 代码块悬停提示 */
-.clickable-code-block::before {
-  content: '点击查看完整代码';
-  position: absolute;
-  top: -30px;
-  right: 8px;
-  background: var(--vp-c-text-1);
-  color: var(--vp-c-bg);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--animation-duration-fast) var(--animation-easing);
-  z-index: 10;
-}
-
-.clickable-code-block:hover::before {
-  opacity: 1;
 }
 
 /* 代码块容器悬停效果 */
 .main pre:has(.clickable-code-block) {
   transition: all var(--animation-duration-fast) var(--animation-easing);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  cursor: pointer;
 }
 
 .main pre:has(.clickable-code-block):hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  overflow: visible;
 }
 
 /* 暗色主题下的代码块样式调整 */
-.dark .clickable-code-block:hover {
-  background-color: var(--vp-c-bg-alt) !important;
-}
-
-.dark .clickable-code-block::before {
-  background: var(--vp-c-text-1);
-  color: var(--vp-c-bg);
+.dark .main pre:has(.clickable-code-block):hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 /* 代码块点击动画 */
@@ -331,14 +301,6 @@
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .clickable-code-block::before {
-    display: none;
-  }
-  
-  .clickable-code-block:hover {
-    transform: none;
-  }
-  
   .main pre:has(.clickable-code-block):hover {
     transform: none;
   }
