@@ -223,6 +223,8 @@
   font-weight: 600;
   position: relative;
   overflow: hidden;
+  /* 为指示器留出空间，避免遮挡文字 */
+  padding-left: 12px !important;
 }
 
 .VPSidebarItem.is-active > .item > .link::before {
@@ -250,6 +252,7 @@
 
 .VPDoc .container {
   max-width: var(--vp-layout-max-width);
+  animation: scaleIn var(--animation-duration-normal) var(--animation-easing);
 }
 
 /* Wiki-style article content */
