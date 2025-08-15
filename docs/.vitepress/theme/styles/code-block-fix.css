@@ -1,0 +1,171 @@
+/* 修复代码块点击后悬停样式变化的问题 */
+
+/* 统一代码块的 hover 和 focus 样式，确保点击前后悬停效果一致 */
+pre, 
+code, 
+.language-text,
+[class*="language-"],
+.shiki,
+.code-block,
+.markdown-preview-view pre,
+.markdown-preview-view code,
+.clickable-code-block {
+  /* 移除默认的 focus outline */
+  outline: none !important;
+  
+  /* 确保所有状态的过渡效果一致 */
+  transition: all 0.2s ease !important;
+}
+
+/* 代码块 hover 状态 - 定义统一的悬停效果 */
+pre:hover,
+code:hover,
+.language-text:hover,
+[class*="language-"]:hover,
+.shiki:hover,
+.code-block:hover,
+.markdown-preview-view pre:hover,
+.markdown-preview-view code:hover,
+.clickable-code-block:hover {
+  /* 使用统一的 hover 样式 */
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+}
+
+/* 代码块 focus 状态 - 与 hover 保持完全一致 */
+pre:focus,
+code:focus,
+.language-text:focus,
+[class*="language-"]:focus,
+.shiki:focus,
+.code-block:focus,
+.markdown-preview-view pre:focus,
+.markdown-preview-view code:focus,
+.clickable-code-block:focus {
+  /* 使用与 hover 完全相同的样式 */
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+  outline: none !important;
+}
+
+/* 移除所有可能的蓝色 outline 和浏览器默认样式 */
+pre:focus-visible,
+code:focus-visible,
+.language-text:focus-visible,
+[class*="language-"]:focus-visible,
+.shiki:focus-visible,
+.code-block:focus-visible,
+.markdown-preview-view pre:focus-visible,
+.markdown-preview-view code:focus-visible,
+.clickable-code-block:focus-visible {
+  outline: none !important;
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+}
+
+/* 确保点击后的状态与悬停状态一致 */
+pre:active,
+code:active,
+.language-text:active,
+[class*="language-"]:active,
+.shiki:active,
+.code-block:active,
+.markdown-preview-view pre:active,
+.markdown-preview-view code:active,
+.clickable-code-block:active {
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+  outline: none !important;
+}
+
+/* 特别处理可能的代码块容器 */
+.code-container,
+.code-wrapper,
+.highlight,
+.highlighter-rouge,
+div[class*="language-"] {
+  outline: none !important;
+}
+
+.code-container:focus,
+.code-wrapper:focus,
+.highlight:focus,
+.highlighter-rouge:focus,
+div[class*="language-"]:focus {
+  outline: none !important;
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 移除浏览器默认的蓝色 focus ring */
+*:focus {
+  outline: none !important;
+}
+
+/* 为可访问性保留键盘导航的 focus 指示，但对代码块使用统一样式 */
+*:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1, #646cff) !important;
+  outline-offset: 2px !important;
+}
+
+/* 但对于代码块，即使是键盘导航也使用统一样式 */
+pre:focus-visible,
+code:focus-visible,
+.language-text:focus-visible,
+[class*="language-"]:focus-visible,
+.shiki:focus-visible,
+.code-block:focus-visible,
+.markdown-preview-view pre:focus-visible,
+.markdown-preview-view code:focus-visible,
+.clickable-code-block:focus-visible {
+  outline: none !important;
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+}
+
+/* 确保点击后立即失去焦点时的样式重置 */
+.clickable-code-block.clicked {
+  animation: resetFocus 0.1s ease-out;
+}
+
+@keyframes resetFocus {
+  0% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* VitePress 特定的代码块样式修复 */
+.vp-doc pre,
+.vp-doc code {
+  outline: none !important;
+}
+
+.vp-doc pre:hover,
+.vp-doc code:hover {
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+}
+
+.vp-doc pre:focus,
+.vp-doc code:focus {
+  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+  outline: none !important;
+}

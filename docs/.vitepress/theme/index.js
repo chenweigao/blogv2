@@ -1,5 +1,6 @@
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
+import './styles/code-block-fix.css'
 import ArticleMeta from './components/ArticleMeta.vue'
 import PageTransition from './components/PageTransition.vue'
 import ScrollAnimations from './components/ScrollAnimations.vue'
@@ -100,6 +101,31 @@ export default {
         console.log('[CodeBlock] 未找到code元素')
         return
       }
+      
+      // 立即清除focus状态，防止悬停样式变化
+      codeElement.blur()
+      const preElement = codeElement.closest('pre')
+      if (preElement) {
+        preElement.blur()
+      }
+      
+      // 添加临时类名用于样式重置动画
+      codeElement.classList.add('clicked')
+      setTimeout(() => {
+        codeElement.classList.remove('clicked')
+      }, 100)
+      
+      // 延迟确保focus状态被完全清除
+      setTimeout(() => {
+        if (document.activeElement === codeElement || document.activeElement === preElement) {
+          document.activeElement.blur()
+        }
+        // 强制重置任何可能的focus相关样式
+        codeElement.style.outline = 'none'
+        if (preElement) {
+          preElement.style.outline = 'none'
+        }
+      }, 0)
       
       // 获取代码内容
       const codeText = codeElement.textContent || codeElement.innerText || ''
@@ -328,30 +354,13 @@ export default {
     
     return h(PageTransition, null, {
       default: () => h(DefaultTheme.Layout, null, {
-        // 在页面最外层添加粒子背景
-        'layout-top': () => h(ParticleBackground, { 
-          density: 30, 
-          speed: 0.5, 
-          showInteractive: true,
-          theme: 'knowledge'
-        }),
-        // 在文档内容前插入文章元数据组件和历史记录按钮
-        'doc-before': () => [
-          h(ArticleMeta),
-          h('div', { class: 'git-history-container', style: 'margin: 1rem 0; text-align: right;' }, [
-            h(GitHistoryButton)
-          ])
-        ],
-        // 在页面底部添加滚动动画组件和代码块弹窗
-        'layout-bottom': () => [
-          h(ScrollAnimations),
-          h(CodeBlockModal, {
-            visible: codeModalState.visible.value,
-            code: codeModalState.data.value.code,
-            language: codeModalState.data.value.language,
-            onClose: closeCodeModal
-          })
-        ]
+        // 在页面底部添加代码块弹窗组件
+        'layout-bottom': () => h(CodeBlockModal, {
+          visible: codeModalState.visible.value,
+          code: codeModalState.data.value.code,
+          language: codeModalState.data.value.language,
+          onClose: closeCodeModal
+        })
       })
     })
   }
