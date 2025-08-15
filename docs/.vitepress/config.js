@@ -26,32 +26,12 @@ export default defineConfig({
     // 导航栏 - 根据实际文档分类更新
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Timeline', link: '/timeline' },
-      { text: 'Algorithms', link: '/algorithms/' },
       { text: 'AI', link: '/artificial-intelligence/' },
       { 
         text: 'Computer Systems',
         items: [
           { text: 'CPU & GPU', link: '/computer-systems/cpu-gpu/' },
           { text: 'Linux', link: '/computer-systems/linux/' }
-        ]
-      },
-      {
-        text: 'Programming',
-        items: [
-          { text: 'Java', link: '/programming-languages/java/' },
-          { text: 'Python', link: '/programming-languages/python/' }
-        ]
-      },
-      {
-        text: 'Development',
-        items: [
-          { text: 'Tools', link: '/development-tools/tools/' },
-          { text: 'Frameworks', link: '/development-tools/frameworks/' },
-          { text: 'Database', link: '/development-tools/database/' },
-          { text: 'Frontend', link: '/development-tools/frontend/' },
-          { text: 'Networks', link: '/development-tools/networks/' },
-          { text: 'Cloud Server', link: '/development-tools/cloud-server/' }
         ]
       },
       {
@@ -62,9 +42,29 @@ export default defineConfig({
           { text: 'Research', link: '/research-projects/research/' }
         ]
       },
+      { text: 'Timeline', link: '/timeline' },
       {
         text: 'More',
         items: [
+          { text: 'Algorithms', link: '/algorithms/' },
+          {
+            text: 'Programming',
+            items: [
+              { text: 'Java', link: '/programming-languages/java/' },
+              { text: 'Python', link: '/programming-languages/python/' }
+            ]
+          },
+          {
+            text: 'Development',
+            items: [
+              { text: 'Tools', link: '/development-tools/tools/' },
+              { text: 'Frameworks', link: '/development-tools/frameworks/' },
+              { text: 'Database', link: '/development-tools/database/' },
+              { text: 'Frontend', link: '/development-tools/frontend/' },
+              { text: 'Networks', link: '/development-tools/networks/' },
+              { text: 'Cloud Server', link: '/development-tools/cloud-server/' }
+            ]
+          },
           { text: 'About', link: '/about' },
           { text: 'Search', link: '/search' }
         ]
@@ -93,12 +93,21 @@ export default defineConfig({
           text: 'AI & Machine Learning',
           collapsed: false,
           items: [
-            { text: 'Overview', link: '/artificial-intelligence/' },
-            { text: 'Machine Learning Basics', link: '/artificial-intelligence/ml-basics' },
-            { text: 'Deep Learning', link: '/artificial-intelligence/deep-learning' },
-            { text: 'Natural Language Processing', link: '/artificial-intelligence/nlp' },
-            { text: 'Computer Vision', link: '/artificial-intelligence/computer-vision' },
-            { text: 'AI Tools & Frameworks', link: '/artificial-intelligence/tools-frameworks' }
+            { text: 'Overview', link: '/artificial-intelligence/' }
+          ]
+        },
+        {
+          text: 'Intel AMX & Optimization',
+          collapsed: false,
+          items: [
+            { text: 'OpenVINO', link: '/artificial-intelligence/AMX/openvino' }
+          ]
+        },
+        {
+          text: 'AI Profiling & Performance',
+          collapsed: false,
+          items: [
+            { text: 'Python AI Profiling', link: '/artificial-intelligence/profiling/AI Profiling' }
           ]
         }
       ],
