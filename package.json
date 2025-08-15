@@ -1,53 +1,43 @@
 {
-  "name": "blogv2-dev",
-  "version": "2.0.0",
-  "description": "Demo for vuepress-theme-reco@2.x.",
-  "repository": "git@github.com:chenweigao/blogv2.git",
-  "author": "weiggao <mail@weigao.cc>",
-  "license": "MIT",
+  "name": "knowledge-wiki",
+  "version": "1.0.0",
+  "description": "Personal Knowledge Wiki - A documentation site for work and study notes",
+  "type": "module",
   "scripts": {
-    "dev": "vuepress dev .",
-    "start": "vuepress dev .",
-    "build": "vuepress build .",
-    "docs:build": "vuepress build .",
-    "docs:clean-dev": "vuepress dev . --clean-cache",
-    "docs:dev": "vuepress dev .",
-    "build:webpack": "vuepress-webpack build ."
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs",
+    "serve": "vitepress serve docs",
+    "timeline:generate": "node docs/.vitepress/utils/generateTimeline.js",
+    "timeline:watch": "node docs/.vitepress/utils/watchTimeline.js",
+    "timeline:watch:legacy": "nodemon --watch docs --ext md --ignore docs/.vitepress/data --exec \"npm run timeline:generate\"",
+    "timeline:incremental": "node docs/.vitepress/utils/incrementalUpdate.js incremental",
+    "timeline:full": "node docs/.vitepress/utils/incrementalUpdate.js full",
+    "dev:watch": "concurrently \"npm run timeline:watch\" \"vitepress dev docs\"",
+    "setup:hooks": "git config core.hooksPath .githooks && chmod +x .githooks/*"
   },
   "keywords": [
-    "vuepress",
-    "personal-blog"
+    "wiki",
+    "documentation",
+    "knowledge-base",
+    "vitepress"
   ],
-  "dependencies": {
-    "highlight.js": "^11.11.1",
-    "sass-loader": "13.2.0",
-    "vue": "^3.5.13",
-    "vuepress": "2.0.0-rc.22",
-    "vuepress-plugin-full-text-search2": "0.5.1",
-    "vuepress-theme-hope": "2.0.0-rc.85"
-  },
+  "author": "Your Name",
+  "license": "MIT",
   "devDependencies": {
-    "@vuepress/bundler-vite": "2.0.0-rc.22",
-    "@vuepress/plugin-slimsearch": "2.0.0-rc.99",
-    "chart.js": "^4.4.9",
-    "cross-env": "7.0.3",
-    "katex": "^0.16.22",
-    "markdownlint-cli": "0.33.0",
-    "mermaid": "^11.6.0",
-    "prettier": "2.8.3",
-    "sass-embedded": "^1.87.0",
-    "vuepress-plugin-full-text-search2": "0.5.1",
-    "vuepress-plugin-search-pro": "2.0.0-rc.59"
+    "@types/node": "^20.10.0",
+    "chokidar": "^4.0.3",
+    "nodemon": "^3.0.0",
+    "vitepress": "^1.0.0-rc.31",
+    "concurrently": "^9.2.0"
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search",
-        "@types/react",
-        "react",
-        "react-dom",
-        "webpack"
-      ]
-    }
-  }
+  "dependencies": {
+    "vue": "^3.3.8",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.10.0"
 }
