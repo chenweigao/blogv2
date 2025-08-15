@@ -707,3 +707,30 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Medium Zoom 图片弹出查看样式优化 */
+.medium-zoom-overlay {
+  z-index: 999;
+}
+
+.medium-zoom-image {
+  z-index: 1000;
+}
+
+/* 为图片添加悬停效果，提示可以点击 */
+.main img {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* 确保图片在缩放时的样式 */
+.medium-zoom-image--opened {
+  cursor: zoom-out;
+}

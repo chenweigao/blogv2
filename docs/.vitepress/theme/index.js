@@ -7,6 +7,9 @@ import ParticleBackground from './components/ParticleBackground.vue'
 import GitHistoryButton from './components/GitHistoryButton.vue'
 import GitHistoryModal from './components/GitHistoryModal.vue'
 import { h } from 'vue'
+import mediumZoom from 'medium-zoom'
+import { onMounted, watch, nextTick } from 'vue'
+import { useRoute } from 'vitepress'
 
 export default {
   extends: DefaultTheme,
@@ -18,6 +21,27 @@ export default {
     app.component('ParticleBackground', ParticleBackground)
     app.component('GitHistoryButton', GitHistoryButton)
     app.component('GitHistoryModal', GitHistoryModal)
+  },
+  setup() {
+    const route = useRoute()
+    const initZoom = () => {
+      // 等待 DOM 更新完成后初始化 medium-zoom
+      nextTick(() => {
+        mediumZoom('.main img', {
+          background: 'rgba(0, 0, 0, 0.8)',
+          scrollOffset: 0,
+          margin: 24
+        })
+      })
+    }
+    onMounted(() => {
+      initZoom()
+    })
+    watch(
+      () => route.path,
+      () => initZoom(),
+      { flush: 'post' }
+    )
   },
   Layout() {
     return h(DefaultTheme.Layout, null, {
