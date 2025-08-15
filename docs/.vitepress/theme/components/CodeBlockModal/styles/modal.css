@@ -41,6 +41,7 @@
   max-width: min(90vw, 1200px);
   max-height: min(90vh, 800px);
   width: 100%;
+  height: min(90vh, 800px); /* 确保有明确的高度 */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -52,6 +53,7 @@
   flex: 1;
   overflow: hidden;
   position: relative;
+  min-height: 0; /* 确保 flex 子元素可以收缩 */
 }
 
 .code-modal-content.fullscreen {
@@ -62,6 +64,11 @@
   bottom: 0;
   z-index: 10000;
   background: var(--vp-c-bg);
+  max-width: none;
+  max-height: none;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
 }
 
 .code-block-wrapper {
@@ -83,6 +90,18 @@
   .code-modal-container {
     max-width: 100%;
     max-height: 100%;
+    height: min(95vh, 600px);
     border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .code-modal-overlay {
+    padding: 5px;
+  }
+  
+  .code-modal-container {
+    height: min(98vh, 500px);
+    border-radius: 8px;
   }
 }

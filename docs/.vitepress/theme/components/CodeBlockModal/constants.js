@@ -40,7 +40,7 @@ export const languageConfig = {
   'apache': { name: 'Apache', color: '#d22128', icon: '🪶' }
 }
 
-// 可用主题
+// 可用主题 - 使用 Shiki 官方支持的主题
 export const themes = [
   'github-light',
   'github-dark',
@@ -48,8 +48,7 @@ export const themes = [
   'nord',
   'one-dark-pro',
   'dracula',
-  'material-theme-palenight',
-  'slack-theme-dark-mode'
+  'material-theme-palenight'
 ]
 
 // 支持的语言列表

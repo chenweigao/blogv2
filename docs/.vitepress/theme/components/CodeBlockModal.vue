@@ -1,3 +1,4 @@
+## Here's my code: 
 <template>
   <Teleport to="body">
     <Transition name="modal" appear>
@@ -36,7 +37,14 @@
                 
                 <!-- 代码内容 -->
                 <div class="code-content" ref="codeContentRef">
+                  <!-- 加载状态 -->
+                  <div v-if="isLoading" class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <span>正在加载语法高亮...</span>
+                  </div>
+                  <!-- 代码显示 -->
                   <div 
+                    v-else
                     class="shiki-container"
                     :class="currentTheme"
                     @scroll="syncScroll"
@@ -93,7 +101,7 @@ const props = defineProps({
 const emit = defineEmits(['close', 'fullscreen'])
 
 // 使用 composables
-const { currentTheme, initHighlighter, getHighlightedCode, toggleTheme } = useShiki()
+const { currentTheme, isLoading, initHighlighter, getHighlightedCode, toggleTheme } = useShiki()
 const { isVisible, isFullscreen, closeModal, toggleFullscreen } = useModal(props, emit)
 const { 
   isCopied, 
@@ -141,4 +149,30 @@ onMounted(async () => {
 <style>
 @import './CodeBlockModal/styles/modal.css';
 @import './CodeBlockModal/styles/code.css';
+
+/* 加载状态样式 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--vp-c-border);
+  border-top: 3px solid var(--vp-c-brand-1);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>

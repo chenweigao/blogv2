@@ -4,11 +4,13 @@
   border-right: 1px solid var(--vp-c-border);
   padding: 20px 0;
   min-width: 60px;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   user-select: none;
   font-family: var(--vp-font-family-mono);
   font-size: 13px;
   line-height: 1.5;
+  flex-shrink: 0;
 }
 
 .line-number {
@@ -16,6 +18,7 @@
   color: var(--vp-c-text-3);
   text-align: right;
   transition: color 0.2s ease;
+  white-space: nowrap;
 }
 
 .line-number.highlighted {
@@ -28,11 +31,13 @@
   flex: 1;
   overflow: auto;
   position: relative;
+  min-width: 0; /* 确保 flex 子元素可以收缩 */
 }
 
 .shiki-container {
-  min-height: 100%;
+  height: 100%;
   overflow: auto;
+  position: relative;
 }
 
 /* Shiki 样式覆盖 */
@@ -43,8 +48,10 @@
   font-family: var(--vp-font-family-mono);
   font-size: 14px;
   line-height: 1.5;
-  overflow: auto;
+  overflow: visible; /* 让内容自然流动 */
   min-height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 :deep(.shiki code) {
@@ -53,6 +60,17 @@
   font-size: inherit;
   color: inherit;
   white-space: pre;
+  display: block;
+  width: 100%;
+}
+
+:deep(.shiki pre) {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: visible;
+  white-space: pre;
+  word-wrap: normal;
 }
 
 :deep(.highlighted-line) {
@@ -63,27 +81,55 @@
   border-left: 3px solid var(--vp-c-brand-1);
 }
 
+/* 确保代码容器有正确的高度 */
+.code-block-wrapper {
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-container {
+  display: flex;
+  height: 100%;
+  flex: 1;
+  min-height: 0; /* 确保可以收缩 */
+}
+
 /* 滚动条样式 */
 .shiki-container::-webkit-scrollbar,
-.line-numbers::-webkit-scrollbar {
+.line-numbers::-webkit-scrollbar,
+.code-content::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 .shiki-container::-webkit-scrollbar-track,
-.line-numbers::-webkit-scrollbar-track {
+.line-numbers::-webkit-scrollbar-track,
+.code-content::-webkit-scrollbar-track {
   background: var(--vp-c-bg-soft);
+  border-radius: 4px;
 }
 
 .shiki-container::-webkit-scrollbar-thumb,
-.line-numbers::-webkit-scrollbar-thumb {
+.line-numbers::-webkit-scrollbar-thumb,
+.code-content::-webkit-scrollbar-thumb {
   background: var(--vp-c-text-3);
   border-radius: 4px;
 }
 
 .shiki-container::-webkit-scrollbar-thumb:hover,
-.line-numbers::-webkit-scrollbar-thumb:hover {
+.line-numbers::-webkit-scrollbar-thumb:hover,
+.code-content::-webkit-scrollbar-thumb:hover {
   background: var(--vp-c-text-2);
+}
+
+/* Firefox 滚动条样式 */
+.shiki-container,
+.line-numbers,
+.code-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-c-text-3) var(--vp-c-bg-soft);
 }
 
 /* 响应式设计 */
