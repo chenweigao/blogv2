@@ -1,14 +1,18 @@
 import { defineConfig } from 'vitepress'
 import { writeTimelineData } from './utils/generateTimeline.js'
+import { writeGitHistoryData } from './utils/generateGitHistoryData.js'
 
 export default defineConfig({
   title: 'Knowledge Wiki',
   description: 'Personal Knowledge Base - Work & Study Documentation',
   
-  // 构建钩子 - 在构建前生成 timeline 数据
+  // 构建钩子 - 在构建前生成 timeline 数据和 git 历史记录
   buildStart() {
     console.log('Generating timeline data...')
     writeTimelineData()
+    
+    console.log('Generating git history data for modal...')
+    writeGitHistoryData()
   },
   
   // 网站图标
