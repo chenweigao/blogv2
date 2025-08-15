@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { writeTimelineData } from './utils/generateTimeline.js'
 import { writeGitHistoryData } from './utils/generateGitHistoryData.js'
+import { createGitHistoryAPI } from './utils/gitHistoryAPI.js'
 
 export default defineConfig({
   title: 'Knowledge Wiki',
@@ -13,6 +14,13 @@ export default defineConfig({
     
     console.log('Generating git history data for modal...')
     writeGitHistoryData()
+  },
+  
+  // Vite 配置 - 添加实时 git 历史记录 API 插件
+  vite: {
+    plugins: [
+      createGitHistoryAPI()
+    ]
   },
   
   // 网站图标

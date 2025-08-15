@@ -174,7 +174,24 @@ async function loadHistoryData() {
   historyData.value = null
   
   try {
-    // 尝试从预生成的数据中加载
+    // 优先尝试实时获取（开发模式）
+    if (import.meta.env.DEV) {
+      try {
+        const filePath = props.docPath.replace(/^\//, '') + '.md'
+        const response = await fetch(`/api/git-history?file=${encodeURIComponent(filePath)}&max=10`)
+        
+        if (response.ok) {
+          const realtimeData = await response.json()
+          historyData.value = realtimeData
+          console.log('✅ 使用实时 Git 历史记录')
+          return
+        }
+      } catch (realtimeError) {
+        console.warn('实时获取失败，回退到静态数据:', realtimeError.message)
+      }
+    }
+    
+    // 回退到预生成的静态数据
     const response = await fetch('/.vitepress/data/git-history.json')
     if (response.ok) {
       const allHistoryData = await response.json()
@@ -182,6 +199,7 @@ async function loadHistoryData() {
       
       if (docHistory) {
         historyData.value = docHistory
+        console.log('📄 使用预生成的静态数据')
       } else {
         error.value = '未找到该文档的历史记录'
       }

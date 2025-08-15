@@ -14,12 +14,16 @@
         </svg>
       </div>
       <span class="button-text">历史记录</span>
+      <div class="mode-indicator" :class="{ 'realtime': isRealtimeMode }">
+        {{ isRealtimeMode ? '🔄' : '📄' }}
+      </div>
       <div class="button-ripple"></div>
     </button>
     
     <GitHistoryModal 
       :visible="modalVisible"
       :doc-path="currentDocPath"
+      :realtime-mode="isRealtimeMode"
       @close="closeHistoryModal"
     />
   </div>
@@ -33,6 +37,11 @@ import GitHistoryModal from './GitHistoryModal.vue'
 const { page } = useData()
 const modalVisible = ref(false)
 
+// 检测是否为开发模式（支持实时获取）
+const isRealtimeMode = computed(() => {
+  return import.meta.env.DEV
+})
+
 // 获取当前文档路径
 const currentDocPath = computed(() => {
   if (!page.value.relativePath) return ''
@@ -43,7 +52,8 @@ const currentDocPath = computed(() => {
 })
 
 const buttonTitle = computed(() => {
-  return `查看 ${currentDocPath.value} 的历史记录`
+  const mode = isRealtimeMode.value ? '实时' : '静态'
+  return `查看 ${currentDocPath.value} 的历史记录 (${mode}模式)`
 })
 
 function openHistoryModal() {
@@ -113,6 +123,29 @@ function closeHistoryModal() {
 .button-text {
   font-weight: 500;
   white-space: nowrap;
+}
+
+.mode-indicator {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.25rem;
+  border-radius: 4px;
+  background: var(--vp-c-bg-mute);
+  transition: all 0.2s ease;
+}
+
+.mode-indicator.realtime {
+  background: linear-gradient(45deg, #10b981, #059669);
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .button-ripple {
