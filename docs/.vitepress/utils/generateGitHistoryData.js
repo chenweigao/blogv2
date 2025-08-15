@@ -15,7 +15,8 @@ const __dirname = path.dirname(__filename)
 function getFileGitHistory(filePath, maxEntries = 10) {
   try {
     const repoRoot = path.resolve(__dirname, '../../../')
-    const gitCommand = `git log --format="%h|%an|%ad|%s" --date=short -${maxEntries} -- "${filePath}"`
+    // 添加 --follow 参数以追踪文件移动历史
+    const gitCommand = `git log --follow --format="%h|%an|%ad|%s" --date=short -${maxEntries} -- "${filePath}"`
     
     const output = execSync(gitCommand, { 
       cwd: repoRoot, 

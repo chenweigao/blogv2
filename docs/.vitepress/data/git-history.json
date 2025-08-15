@@ -7,10 +7,22 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "cbc06ebf",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Rename readme.md to README.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 3
   },
   "/algorithms/backtrack": {
     "filePath": "algorithms/backtrack.md",
@@ -20,10 +32,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "6b912220",
+        "author": "weigao chen",
+        "date": "2024-09-24",
+        "subject": "Update backtrack.md"
+      },
+      {
+        "hash": "ad67f62a",
+        "author": "weigao chen",
+        "date": "2024-09-24",
+        "subject": "Update backtrack.md"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3895eb86",
+        "author": "chenweigao",
+        "date": "2022-06-01",
+        "subject": "Update backtrack.md"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/algorithms/binary_search": {
     "filePath": "algorithms/binary_search.md",
@@ -33,10 +99,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "97c172f3",
+        "author": "weigao",
+        "date": "2024-12-16",
+        "subject": "update some pics"
+      },
+      {
+        "hash": "154c2ef6",
+        "author": "weigao chen",
+        "date": "2024-09-09",
+        "subject": "Update binary_search.md"
+      },
+      {
+        "hash": "5ef52591",
+        "author": "weigao chen",
+        "date": "2024-09-09",
+        "subject": "Update binary_search.md"
+      },
+      {
+        "hash": "c14229f6",
+        "author": "chenweigao",
+        "date": "2023-03-08",
+        "subject": "update project"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "e014780d",
+        "author": "chenweigao",
+        "date": "2022-09-25",
+        "subject": "update some images"
+      },
+      {
+        "hash": "9ccf6d57",
+        "author": "chenweigao",
+        "date": "2022-06-15",
+        "subject": "Update binary_search.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/algorithms/binary_tree": {
     "filePath": "algorithms/binary_tree.md",
@@ -46,10 +166,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "f120a1a5",
+        "author": "weigao chen",
+        "date": "2024-09-20",
+        "subject": "Update binary_tree.md"
+      },
+      {
+        "hash": "74f4ce03",
+        "author": "weigao chen",
+        "date": "2024-09-19",
+        "subject": "Update binary_tree.md"
+      },
+      {
+        "hash": "01d13278",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "update some blog"
+      },
+      {
+        "hash": "4af35925",
+        "author": "weigao chen",
+        "date": "2022-05-17",
+        "subject": "Update binary_tree.md"
+      },
+      {
+        "hash": "114c5e76",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "48326274",
+        "author": "weigao chen",
+        "date": "2022-04-12",
+        "subject": "Update tree.md"
+      },
+      {
+        "hash": "efa8affa",
+        "author": "weigao chen",
+        "date": "2022-04-08",
+        "subject": "Update tree.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/algorithms/data_struct/hashmap": {
     "filePath": "algorithms/data_struct/hashmap.md",
@@ -59,10 +233,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/algorithms/data_struct/linkedlist": {
     "filePath": "algorithms/data_struct/linkedlist.md",
@@ -72,10 +282,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/algorithms/data_struct/readme": {
     "filePath": "algorithms/data_struct/readme.md",
@@ -85,10 +331,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e7f7675d",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "update blog arch"
+      },
+      {
+        "hash": "d9f7cb55",
+        "author": "weigao chen",
+        "date": "2023-02-18",
+        "subject": "Update readme.md"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/algorithms/data_struct/stack": {
     "filePath": "algorithms/data_struct/stack.md",
@@ -98,10 +392,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "e014780d",
+        "author": "chenweigao",
+        "date": "2022-09-25",
+        "subject": "update some images"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/algorithms/data_struct/string": {
     "filePath": "algorithms/data_struct/string.md",
@@ -111,10 +447,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "01d13278",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "update some blog"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "095a0783",
+        "author": "weigao chen",
+        "date": "2022-03-17",
+        "subject": "Update string.md"
+      },
+      {
+        "hash": "2d24cea0",
+        "author": "weigao chen",
+        "date": "2022-03-17",
+        "subject": "Update string.md"
+      },
+      {
+        "hash": "36fc75ff",
+        "author": "weigao chen",
+        "date": "2022-03-07",
+        "subject": "Update string.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/algorithms/data_struct/tree": {
     "filePath": "algorithms/data_struct/tree.md",
@@ -124,10 +514,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "aa622b03",
+        "author": "chenweigao",
+        "date": "2022-06-03",
+        "subject": "Update tree.md"
+      },
+      {
+        "hash": "15250486",
+        "author": "chenweigao",
+        "date": "2022-06-03",
+        "subject": "Update tree.md"
+      },
+      {
+        "hash": "11843bfa",
+        "author": "chenweigao",
+        "date": "2022-04-28",
+        "subject": "update blog"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "48326274",
+        "author": "weigao chen",
+        "date": "2022-04-12",
+        "subject": "Update tree.md"
+      },
+      {
+        "hash": "efa8affa",
+        "author": "weigao chen",
+        "date": "2022-04-08",
+        "subject": "Update tree.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/algorithms/dfs_bfs": {
     "filePath": "algorithms/dfs_bfs.md",
@@ -137,10 +581,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "ebdba802",
+        "author": "chenweigao",
+        "date": "2023-03-14",
+        "subject": "update code and color theme"
+      },
+      {
+        "hash": "678fdda3",
+        "author": "weigao chen",
+        "date": "2022-05-19",
+        "subject": "Update dfs_bfs.md"
+      },
+      {
+        "hash": "114c5e76",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "7e970c2f",
+        "author": "weigao chen",
+        "date": "2022-04-27",
+        "subject": "Update dfs_bfs.md"
+      },
+      {
+        "hash": "538a8243",
+        "author": "weigao chen",
+        "date": "2022-04-27",
+        "subject": "Update dfs_bfs.md"
+      },
+      {
+        "hash": "f1a257d9",
+        "author": "weigao chen",
+        "date": "2022-04-18",
+        "subject": "Update dfs_bfs.md"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/algorithms/dp": {
     "filePath": "algorithms/dp.md",
@@ -150,10 +648,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "114c5e76",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/algorithms/index": {
     "filePath": "algorithms/index.md",
@@ -176,10 +710,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/algorithms/package": {
     "filePath": "algorithms/package.md",
@@ -189,10 +765,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/algorithms/presum": {
     "filePath": "algorithms/presum.md",
@@ -202,10 +814,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "ebdba802",
+        "author": "chenweigao",
+        "date": "2023-03-14",
+        "subject": "update code and color theme"
+      },
+      {
+        "hash": "114c5e76",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "be7046a5",
+        "author": "weigao chen",
+        "date": "2022-03-08",
+        "subject": "Update presum.md"
+      },
+      {
+        "hash": "519827a4",
+        "author": "weigao chen",
+        "date": "2022-03-08",
+        "subject": "Update presum.md"
+      },
+      {
+        "hash": "960cabc6",
+        "author": "weigao chen",
+        "date": "2022-03-08",
+        "subject": "Create presum.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/algorithms/slide_window": {
     "filePath": "algorithms/slide_window.md",
@@ -215,10 +881,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "7c852387",
+        "author": "weigao chen",
+        "date": "2022-04-28",
+        "subject": "Update slide_window.md"
+      },
+      {
+        "hash": "5ddd5079",
+        "author": "weigao chen",
+        "date": "2022-04-28",
+        "subject": "Update slide_window.md"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "a584e7cf",
+        "author": "chenweigao",
+        "date": "2022-03-30",
+        "subject": "update"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/algorithms/snappet": {
     "filePath": "algorithms/snappet.md",
@@ -228,10 +936,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "97c172f3",
+        "author": "weigao",
+        "date": "2024-12-16",
+        "subject": "update some pics"
+      },
+      {
+        "hash": "aad24075",
+        "author": "weigao chen",
+        "date": "2024-03-21",
+        "subject": "Create snappet.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/algorithms/sort": {
     "filePath": "algorithms/sort.md",
@@ -241,10 +967,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
+      },
+      {
+        "hash": "b213bc30",
+        "author": "chenweigao",
+        "date": "2023-07-18",
+        "subject": "make some update"
+      },
+      {
+        "hash": "6da459b6",
+        "author": "weigao chen",
+        "date": "2022-05-19",
+        "subject": "Update sort.md"
+      },
+      {
+        "hash": "3456ab72",
+        "author": "chenweigao",
+        "date": "2022-04-27",
+        "subject": "update file structure"
+      },
+      {
+        "hash": "c11a4742",
+        "author": "weigao chen",
+        "date": "2022-04-18",
+        "subject": "Update sort.md"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "1159dc10",
+        "author": "weigao chen",
+        "date": "2022-03-09",
+        "subject": "Update sort.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/artificial-intelligence/AMX/openvino": {
     "filePath": "artificial-intelligence/AMX/openvino.md",
@@ -254,10 +1034,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/artificial-intelligence/cloud-platforms/index": {
     "filePath": "artificial-intelligence/cloud-platforms/index.md",
@@ -306,10 +1104,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "move ai post"
+      },
+      {
+        "hash": "a852217d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "6a06855a",
+        "author": "weigao",
+        "date": "2025-04-01",
+        "subject": "vault backup: 2025-04-01 13:10:24"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/artificial-intelligence/gpu-computing/SAC - ISCA 23": {
     "filePath": "artificial-intelligence/gpu-computing/SAC - ISCA 23.md",
@@ -319,10 +1141,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "move ai post"
+      },
+      {
+        "hash": "a852217d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "6a06855a",
+        "author": "weigao",
+        "date": "2025-04-01",
+        "subject": "vault backup: 2025-04-01 13:10:24"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/artificial-intelligence/gpu-computing/gpu_arch": {
     "filePath": "artificial-intelligence/gpu-computing/gpu_arch.md",
@@ -332,10 +1190,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "move ai post"
+      },
+      {
+        "hash": "a852217d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
+      },
+      {
+        "hash": "54de0c0a",
+        "author": "weigao",
+        "date": "2025-04-20",
+        "subject": "vault backup: 2025-04-20 20:48:40"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "6a06855a",
+        "author": "weigao",
+        "date": "2025-04-01",
+        "subject": "vault backup: 2025-04-01 13:10:24"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/artificial-intelligence/gpu-computing/gpu_communication": {
     "filePath": "artificial-intelligence/gpu-computing/gpu_communication.md",
@@ -345,10 +1257,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "move ai post"
+      },
+      {
+        "hash": "a852217d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "6a06855a",
+        "author": "weigao",
+        "date": "2025-04-01",
+        "subject": "vault backup: 2025-04-01 13:10:24"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/artificial-intelligence/hardware-acceleration/index": {
     "filePath": "artificial-intelligence/hardware-acceleration/index.md",
@@ -429,10 +1377,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "79858423",
+        "author": "xiaocheng",
+        "date": "2025-07-14",
+        "subject": "update"
+      },
+      {
+        "hash": "561939d1",
+        "author": "xiaocheng",
+        "date": "2025-07-01",
+        "subject": "vault backup: 2025-07-01 10:56:12"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/artificial-intelligence/storage-data/index": {
     "filePath": "artificial-intelligence/storage-data/index.md",
@@ -474,10 +1452,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "93697c5b",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Rename readme.md to README.md"
+      },
+      {
+        "hash": "3cb36e1a",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update to new version"
+      },
+      {
+        "hash": "53c42d54",
+        "author": "chenweigao",
+        "date": "2022-08-24",
+        "subject": "add new dir: architecture"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 2
+    "totalCommits": 6
   },
   "/computer-systems/cpu-gpu/arm-architecture/README": {
     "filePath": "computer-systems/cpu-gpu/arm-architecture/README.md",
@@ -487,10 +1489,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/computer-systems/cpu-gpu/arm-architecture/arm_inline_assembly": {
     "filePath": "computer-systems/cpu-gpu/arm-architecture/arm_inline_assembly.md",
@@ -500,10 +1520,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
+      },
+      {
+        "hash": "3d787621",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update post and fonts"
+      },
+      {
+        "hash": "77800db6",
+        "author": "weigao chen",
+        "date": "2023-04-13",
+        "subject": "Update arm_inline_assembly.md"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "3cb36e1a",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update to new version"
+      },
+      {
+        "hash": "b5c431c9",
+        "author": "weigao chen",
+        "date": "2022-12-20",
+        "subject": "Update arm_inline_assembly.md"
+      },
+      {
+        "hash": "5df51066",
+        "author": "weigao chen",
+        "date": "2022-12-03",
+        "subject": "Create arm_inline_assembly.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/cpu-gpu/arm-architecture/arm_ins": {
     "filePath": "computer-systems/cpu-gpu/arm-architecture/arm_ins.md",
@@ -513,10 +1587,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "3d787621",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update post and fonts"
+      },
+      {
+        "hash": "8677fc6e",
+        "author": "weigao chen",
+        "date": "2023-04-13",
+        "subject": "Update arm_ins.md"
+      },
+      {
+        "hash": "ebdba802",
+        "author": "chenweigao",
+        "date": "2023-03-14",
+        "subject": "update code and color theme"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "d6b8a306",
+        "author": "weigao chen",
+        "date": "2022-10-10",
+        "subject": "Update arm_ins.md"
+      },
+      {
+        "hash": "88f3811d",
+        "author": "weigao chen",
+        "date": "2022-10-08",
+        "subject": "Update arm_ins.md"
+      },
+      {
+        "hash": "53c42d54",
+        "author": "chenweigao",
+        "date": "2022-08-24",
+        "subject": "add new dir: architecture"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/cpu-gpu/cpu-architecture/instruction-sets/amx": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/instruction-sets/amx.md",
@@ -526,10 +1654,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "79858423",
+        "author": "xiaocheng",
+        "date": "2025-07-14",
+        "subject": "update"
+      },
+      {
+        "hash": "561939d1",
+        "author": "xiaocheng",
+        "date": "2025-07-01",
+        "subject": "vault backup: 2025-07-01 10:56:12"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/computer-systems/cpu-gpu/cpu-architecture/instruction-sets/x86_inst": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/instruction-sets/x86_inst.md",
@@ -545,10 +1697,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 2
+    "totalCommits": 5
   },
   "/computer-systems/cpu-gpu/cpu-architecture/memory-systems/MMU": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/memory-systems/MMU.md",
@@ -558,10 +1728,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "6a06855a",
+        "author": "weigao",
+        "date": "2025-04-01",
+        "subject": "vault backup: 2025-04-01 13:10:24"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/computer-systems/cpu-gpu/cpu-architecture/memory-systems/cache": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/memory-systems/cache.md",
@@ -571,10 +1765,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "79858423",
+        "author": "xiaocheng",
+        "date": "2025-07-14",
+        "subject": "update"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
+      },
+      {
+        "hash": "3ee98f6d",
+        "author": "weigao",
+        "date": "2025-05-06",
+        "subject": "update blog and fix some problems"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
+      },
+      {
+        "hash": "3896de0f",
+        "author": "weigao",
+        "date": "2025-03-10",
+        "subject": "update styles of bold text"
+      },
+      {
+        "hash": "8e770608",
+        "author": "weigao",
+        "date": "2025-02-18",
+        "subject": "update"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/cpu-gpu/cpu-architecture/memory-systems/memory_va_page": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/memory-systems/memory_va_page.md",
@@ -584,10 +1832,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "8e770608",
+        "author": "weigao",
+        "date": "2025-02-18",
+        "subject": "update"
+      },
+      {
+        "hash": "dc6c3b3f",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update"
+      },
+      {
+        "hash": "3d787621",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update post and fonts"
+      },
+      {
+        "hash": "34cf2a00",
+        "author": "weigao",
+        "date": "2024-12-18",
+        "subject": "update"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/cpu-gpu/cpu-architecture/memory-systems/numa_socket": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/memory-systems/numa_socket.md",
@@ -597,10 +1899,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
+      },
+      {
+        "hash": "3896de0f",
+        "author": "weigao",
+        "date": "2025-03-10",
+        "subject": "update styles of bold text"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/computer-systems/cpu-gpu/cpu-architecture/pipeline-performance/ibs": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/pipeline-performance/ibs.md",
@@ -610,10 +1942,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "51464062",
+        "author": "weigao",
+        "date": "2025-05-07",
+        "subject": "do some update version"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/computer-systems/cpu-gpu/cpu-architecture/pipeline-performance/pipline": {
     "filePath": "computer-systems/cpu-gpu/cpu-architecture/pipeline-performance/pipline.md",
@@ -623,10 +1979,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "label update"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "3d787621",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update post and fonts"
+      },
+      {
+        "hash": "34cf2a00",
+        "author": "weigao",
+        "date": "2024-12-18",
+        "subject": "update"
+      },
+      {
+        "hash": "dae05995",
+        "author": "chenweigao",
+        "date": "2023-03-02",
+        "subject": "rename some file"
+      },
+      {
+        "hash": "53c42d54",
+        "author": "chenweigao",
+        "date": "2022-08-24",
+        "subject": "add new dir: architecture"
+      },
+      {
+        "hash": "4eeb7447",
+        "author": "weigao chen",
+        "date": "2022-07-02",
+        "subject": "Update pipline.md"
+      },
+      {
+        "hash": "eb37af62",
+        "author": "weigao chen",
+        "date": "2022-06-29",
+        "subject": "Create pipline.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/cpu-gpu/index": {
     "filePath": "computer-systems/cpu-gpu/index.md",
@@ -674,10 +2084,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "b213bc30",
+        "author": "chenweigao",
+        "date": "2023-07-18",
+        "subject": "make some update"
+      },
+      {
+        "hash": "81dabdce",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Rename readme.md to README.md"
+      },
+      {
+        "hash": "3cb36e1a",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update to new version"
+      },
+      {
+        "hash": "1b0d9cc9",
+        "author": "weigao chen",
+        "date": "2022-09-25",
+        "subject": "Update readme.md"
+      },
+      {
+        "hash": "f25dd2c4",
+        "author": "weigao chen",
+        "date": "2022-09-25",
+        "subject": "Update readme.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 3
+    "totalCommits": 10
   },
   "/computer-systems/linux/commands-tools/command": {
     "filePath": "computer-systems/linux/commands-tools/command.md",
@@ -687,10 +2139,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "9cbd52db",
+        "author": "weigao chen",
+        "date": "2023-07-20",
+        "subject": "Update command.md"
+      },
+      {
+        "hash": "8c6ab128",
+        "author": "weigao chen",
+        "date": "2023-07-19",
+        "subject": "Update command.md"
+      },
+      {
+        "hash": "f5561e07",
+        "author": "weigao chen",
+        "date": "2023-07-19",
+        "subject": "Create command.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/computer-systems/linux/educational/xv6": {
     "filePath": "computer-systems/linux/educational/xv6.md",
@@ -700,10 +2182,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "9d90de93",
+        "author": "weigao chen",
+        "date": "2022-04-13",
+        "subject": "Create xv6.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/computer-systems/linux/index": {
     "filePath": "computer-systems/linux/index.md",
@@ -726,10 +2238,22 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 3
   },
   "/computer-systems/linux/kernel/architecture/BL31": {
     "filePath": "computer-systems/linux/kernel/architecture/BL31.md",
@@ -739,10 +2263,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "a39903a2",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "Update BL31.md"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "3fe96aa4",
+        "author": "weigao chen",
+        "date": "2022-04-19",
+        "subject": "Update BL31.md"
+      },
+      {
+        "hash": "18077e16",
+        "author": "weigao chen",
+        "date": "2022-04-19",
+        "subject": "Update BL31.md"
+      },
+      {
+        "hash": "8ac5b510",
+        "author": "chenweigao",
+        "date": "2022-04-18",
+        "subject": "update code"
+      },
+      {
+        "hash": "7c14e9f3",
+        "author": "weigao chen",
+        "date": "2022-04-18",
+        "subject": "Update BL31.md"
+      },
+      {
+        "hash": "1051ed5d",
+        "author": "weigao chen",
+        "date": "2022-04-18",
+        "subject": "Update BL31.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/linux/kernel/core-concepts/notifier": {
     "filePath": "computer-systems/linux/kernel/core-concepts/notifier.md",
@@ -752,10 +2330,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "3df36f11",
+        "author": "weigao chen",
+        "date": "2022-05-05",
+        "subject": "Update notifier.md"
+      },
+      {
+        "hash": "5efb1579",
+        "author": "weigao chen",
+        "date": "2022-04-29",
+        "subject": "Update notifier.md"
+      },
+      {
+        "hash": "72d136bd",
+        "author": "weigao chen",
+        "date": "2022-04-29",
+        "subject": "Create notifier.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/computer-systems/linux/kernel/core-concepts/pthread": {
     "filePath": "computer-systems/linux/kernel/core-concepts/pthread.md",
@@ -765,10 +2379,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/computer-systems/linux/kernel/device-drivers/i2c": {
     "filePath": "computer-systems/linux/kernel/device-drivers/i2c.md",
@@ -778,10 +2410,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "fb9c0835",
+        "author": "weigao chen",
+        "date": "2022-04-21",
+        "subject": "Update basic.md"
+      },
+      {
+        "hash": "93943a9c",
+        "author": "weigao chen",
+        "date": "2022-04-21",
+        "subject": "Create basic.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/computer-systems/linux/kernel/memory-management/THP": {
     "filePath": "computer-systems/linux/kernel/memory-management/THP.md",
@@ -791,10 +2453,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "561939d1",
+        "author": "xiaocheng",
+        "date": "2025-07-01",
+        "subject": "vault backup: 2025-07-01 10:56:12"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "54de0c0a",
+        "author": "weigao",
+        "date": "2025-04-20",
+        "subject": "vault backup: 2025-04-20 20:48:40"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "6a06855a",
+        "author": "weigao",
+        "date": "2025-04-01",
+        "subject": "vault backup: 2025-04-01 13:10:24"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
+      },
+      {
+        "hash": "e0e51611",
+        "author": "weigao",
+        "date": "2025-03-19",
+        "subject": "vault backup: 2025-03-19 17:25:23"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/linux/kernel/process-scheduling/idle": {
     "filePath": "computer-systems/linux/kernel/process-scheduling/idle.md",
@@ -804,10 +2520,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "d17b91e5",
+        "author": "chenweigao",
+        "date": "2023-06-25",
+        "subject": "update blog"
+      },
+      {
+        "hash": "91aa26de",
+        "author": "weigao chen",
+        "date": "2023-06-25",
+        "subject": "Update idle.md"
+      },
+      {
+        "hash": "b9762692",
+        "author": "weigao chen",
+        "date": "2023-05-12",
+        "subject": "Update idle.md"
+      },
+      {
+        "hash": "c717f2b4",
+        "author": "weigao chen",
+        "date": "2023-03-16",
+        "subject": "Create idle.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/computer-systems/linux/kernel/process-scheduling/idle_tick": {
     "filePath": "computer-systems/linux/kernel/process-scheduling/idle_tick.md",
@@ -817,10 +2575,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "b213bc30",
+        "author": "chenweigao",
+        "date": "2023-07-18",
+        "subject": "make some update"
+      },
+      {
+        "hash": "d17b91e5",
+        "author": "chenweigao",
+        "date": "2023-06-25",
+        "subject": "update blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/computer-systems/linux/kernel/process-scheduling/rcu": {
     "filePath": "computer-systems/linux/kernel/process-scheduling/rcu.md",
@@ -830,10 +2612,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "d17b91e5",
+        "author": "chenweigao",
+        "date": "2023-06-25",
+        "subject": "update blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/computer-systems/linux/kernel/thermal-management/thermal": {
     "filePath": "computer-systems/linux/kernel/thermal-management/thermal.md",
@@ -843,10 +2643,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "b213bc30",
+        "author": "chenweigao",
+        "date": "2023-07-18",
+        "subject": "make some update"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "11843bfa",
+        "author": "chenweigao",
+        "date": "2022-04-28",
+        "subject": "update blog"
+      },
+      {
+        "hash": "dd1878af",
+        "author": "weigao chen",
+        "date": "2022-04-28",
+        "subject": "Update thermal.md"
+      },
+      {
+        "hash": "53ff0acf",
+        "author": "weigao chen",
+        "date": "2022-04-28",
+        "subject": "Update thermal.md"
+      },
+      {
+        "hash": "074b4331",
+        "author": "weigao chen",
+        "date": "2022-04-26",
+        "subject": "Create thermal.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/linux/kernel/thermal-management/thermal_init": {
     "filePath": "computer-systems/linux/kernel/thermal-management/thermal_init.md",
@@ -856,10 +2710,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "b213bc30",
+        "author": "chenweigao",
+        "date": "2023-07-18",
+        "subject": "make some update"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "4b0148ba",
+        "author": "weigao chen",
+        "date": "2022-04-28",
+        "subject": "Create thermal_init.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/computer-systems/linux/kernel/thermal-management/thermal_init_h": {
     "filePath": "computer-systems/linux/kernel/thermal-management/thermal_init_h.md",
@@ -869,10 +2759,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "65f0d268",
+        "author": "weigao",
+        "date": "2025-04-09",
+        "subject": "vault backup: 2025-04-09 15:31:38"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "950097f2",
+        "author": "weigao chen",
+        "date": "2022-05-05",
+        "subject": "Update init_h.md"
+      },
+      {
+        "hash": "11843bfa",
+        "author": "chenweigao",
+        "date": "2022-04-28",
+        "subject": "update blog"
+      },
+      {
+        "hash": "7591002f",
+        "author": "weigao chen",
+        "date": "2022-04-27",
+        "subject": "Update init_h.md"
+      },
+      {
+        "hash": "8faef3ea",
+        "author": "weigao chen",
+        "date": "2022-04-27",
+        "subject": "Update init_h.md"
+      },
+      {
+        "hash": "ad92672e",
+        "author": "weigao chen",
+        "date": "2022-04-26",
+        "subject": "Create init_h.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/computer-systems/linux/system-administration/apt": {
     "filePath": "computer-systems/linux/system-administration/apt.md",
@@ -882,10 +2826,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "02721492",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update some blog"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "9f96ab6b",
+        "author": "chenweigao",
+        "date": "2022-02-12",
+        "subject": "重构一些博客"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/computer-systems/linux/system-programming/README": {
     "filePath": "computer-systems/linux/system-programming/README.md",
@@ -895,10 +2887,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update linux program labels"
+      },
+      {
+        "hash": "85f047d3",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/computer-systems/linux/system-programming/c-pointer": {
     "filePath": "computer-systems/linux/system-programming/c-pointer.md",
@@ -908,10 +2924,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update linux program labels"
+      },
+      {
+        "hash": "85f047d3",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "dce4b345",
+        "author": "chenweigao",
+        "date": "2022-03-29",
+        "subject": "update linux blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/computer-systems/linux/system-programming/cmake": {
     "filePath": "computer-systems/linux/system-programming/cmake.md",
@@ -921,10 +2967,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update linux program labels"
+      },
+      {
+        "hash": "85f047d3",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "ebdba802",
+        "author": "chenweigao",
+        "date": "2023-03-14",
+        "subject": "update code and color theme"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "92eeedba",
+        "author": "weigao chen",
+        "date": "2022-05-07",
+        "subject": "Update cmake.md"
+      },
+      {
+        "hash": "1889c51f",
+        "author": "weigao chen",
+        "date": "2022-05-06",
+        "subject": "Create cmake.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/computer-systems/linux/system-programming/cmake_makefile": {
     "filePath": "computer-systems/linux/system-programming/cmake_makefile.md",
@@ -934,10 +3022,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update linux program labels"
+      },
+      {
+        "hash": "85f047d3",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "49f72466",
+        "author": "weigao chen",
+        "date": "2022-05-17",
+        "subject": "Update cmake_makefile.md"
+      },
+      {
+        "hash": "182ff4e4",
+        "author": "weigao chen",
+        "date": "2022-05-17",
+        "subject": "Update cmake_makefile.md"
+      },
+      {
+        "hash": "9eedb7b4",
+        "author": "weigao chen",
+        "date": "2022-05-14",
+        "subject": "Update cmake_makefile.md"
+      },
+      {
+        "hash": "9663ad5b",
+        "author": "weigao chen",
+        "date": "2022-05-14",
+        "subject": "Create cmake_makefile.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/computer-systems/linux/system-programming/linkers_loaders": {
     "filePath": "computer-systems/linux/system-programming/linkers_loaders.md",
@@ -947,10 +3083,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update linux program labels"
+      },
+      {
+        "hash": "85f047d3",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "dd30b444",
+        "author": "weigao chen",
+        "date": "2022-10-11",
+        "subject": "Update linkers_loaders.md"
+      },
+      {
+        "hash": "f684915f",
+        "author": "weigao chen",
+        "date": "2022-08-26",
+        "subject": "Update linkers_loaders.md"
+      },
+      {
+        "hash": "14dad0a5",
+        "author": "weigao chen",
+        "date": "2022-08-25",
+        "subject": "Update linkers_loaders.md"
+      },
+      {
+        "hash": "40bac5f0",
+        "author": "chenweigao",
+        "date": "2022-08-24",
+        "subject": "add some post"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/computer-systems/linux/system-programming/size_t": {
     "filePath": "computer-systems/linux/system-programming/size_t.md",
@@ -960,10 +3144,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "update linux program labels"
+      },
+      {
+        "hash": "85f047d3",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new label"
+      },
+      {
+        "hash": "8c9b28e8",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "5d0df82d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move linux files to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "c4156000",
+        "author": "weigao chen",
+        "date": "2022-04-22",
+        "subject": "Create size_t.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/cloud-server/Docker": {
     "filePath": "development-tools/cloud-server/Docker.md",
@@ -973,10 +3187,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "e014780d",
+        "author": "chenweigao",
+        "date": "2022-09-25",
+        "subject": "update some images"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/development-tools/cloud-server/design-pattern": {
     "filePath": "development-tools/cloud-server/design-pattern.md",
@@ -986,10 +3242,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/cloud-server/gc": {
     "filePath": "development-tools/cloud-server/gc.md",
@@ -999,10 +3285,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "40bac5f0",
+        "author": "chenweigao",
+        "date": "2022-08-24",
+        "subject": "add some post"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/development-tools/cloud-server/huawei_cloud": {
     "filePath": "development-tools/cloud-server/huawei_cloud.md",
@@ -1012,10 +3316,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/cloud-server/index": {
     "filePath": "development-tools/cloud-server/index.md",
@@ -1038,10 +3372,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "ebdba802",
+        "author": "chenweigao",
+        "date": "2023-03-14",
+        "subject": "update code and color theme"
+      },
+      {
+        "hash": "f5ba669a",
+        "author": "weigao chen",
+        "date": "2022-10-27",
+        "subject": "Update jvm.md"
+      },
+      {
+        "hash": "9f21db20",
+        "author": "weigao chen",
+        "date": "2022-10-21",
+        "subject": "Update jvm.md"
+      },
+      {
+        "hash": "e9181594",
+        "author": "chenweigao",
+        "date": "2022-10-19",
+        "subject": "update java"
+      },
+      {
+        "hash": "135ab991",
+        "author": "weigao chen",
+        "date": "2022-10-19",
+        "subject": "Update jvm.md"
+      },
+      {
+        "hash": "34976162",
+        "author": "weigao chen",
+        "date": "2022-10-19",
+        "subject": "Create jvm.md"
+      },
+      {
+        "hash": "75cd6155",
+        "author": "chenweigao",
+        "date": "2022-10-13",
+        "subject": "update theme coloe"
+      },
+      {
+        "hash": "d5c00976",
+        "author": "chenweigao",
+        "date": "2022-10-09",
+        "subject": "Update jvm.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/development-tools/cloud-server/jvm_art": {
     "filePath": "development-tools/cloud-server/jvm_art.md",
@@ -1051,10 +3439,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "6a9549fc",
+        "author": "weigao chen",
+        "date": "2022-10-27",
+        "subject": "Update jvm_art.md"
+      },
+      {
+        "hash": "701e20ab",
+        "author": "weigao chen",
+        "date": "2022-10-21",
+        "subject": "Update jvm_art.md"
+      },
+      {
+        "hash": "e9181594",
+        "author": "chenweigao",
+        "date": "2022-10-19",
+        "subject": "update java"
+      },
+      {
+        "hash": "bd6b28bd",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "Update jvm_art.md"
+      },
+      {
+        "hash": "64470d9f",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "update llvm_art.md"
+      },
+      {
+        "hash": "01d13278",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "update some blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/development-tools/cloud-server/kernel": {
     "filePath": "development-tools/cloud-server/kernel.md",
@@ -1064,10 +3494,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/cloud-server/kvm": {
     "filePath": "development-tools/cloud-server/kvm.md",
@@ -1077,10 +3543,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/cloud-server/linux_os": {
     "filePath": "development-tools/cloud-server/linux_os.md",
@@ -1090,10 +3586,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/cloud-server/nginx": {
     "filePath": "development-tools/cloud-server/nginx.md",
@@ -1103,10 +3635,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/cloud-server/openresty": {
     "filePath": "development-tools/cloud-server/openresty.md",
@@ -1116,10 +3684,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/cloud-server/snap": {
     "filePath": "development-tools/cloud-server/snap.md",
@@ -1129,10 +3733,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/database/index": {
     "filePath": "development-tools/database/index.md",
@@ -1155,10 +3789,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/database/mysql": {
     "filePath": "development-tools/database/mysql.md",
@@ -1174,10 +3844,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 2
+    "totalCommits": 7
   },
   "/development-tools/database/peewee": {
     "filePath": "development-tools/database/peewee.md",
@@ -1187,10 +3887,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/database/redis": {
     "filePath": "development-tools/database/redis.md",
@@ -1200,10 +3930,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/frameworks/celery": {
     "filePath": "development-tools/frameworks/celery.md",
@@ -1213,10 +3979,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/frameworks/flask": {
     "filePath": "development-tools/frameworks/flask.md",
@@ -1226,10 +4028,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/frameworks/index": {
     "filePath": "development-tools/frameworks/index.md",
@@ -1252,10 +4090,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "6ac7fb8c",
+        "author": "weigao chen",
+        "date": "2022-04-12",
+        "subject": "Update spring.md"
+      },
+      {
+        "hash": "5a1e5b48",
+        "author": "weigao chen",
+        "date": "2022-04-08",
+        "subject": "Update spring.md"
+      },
+      {
+        "hash": "063ef1c5",
+        "author": "chenweigao",
+        "date": "2022-03-31",
+        "subject": "update post"
+      },
+      {
+        "hash": "bcd3906c",
+        "author": "chenweigao",
+        "date": "2022-03-25",
+        "subject": "update"
+      },
+      {
+        "hash": "32aa7d00",
+        "author": "chenweigao",
+        "date": "2022-03-25",
+        "subject": "增加搜索插件"
+      },
+      {
+        "hash": "6a5a33d2",
+        "author": "chenweigao",
+        "date": "2022-03-24",
+        "subject": "update"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/development-tools/frontend/chartsjs": {
     "filePath": "development-tools/frontend/chartsjs.md",
@@ -1265,10 +4151,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/frontend/css": {
     "filePath": "development-tools/frontend/css.md",
@@ -1278,10 +4200,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/frontend/index": {
     "filePath": "development-tools/frontend/index.md",
@@ -1304,10 +4262,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/frontend/node_install": {
     "filePath": "development-tools/frontend/node_install.md",
@@ -1317,10 +4311,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/frontend/vue": {
     "filePath": "development-tools/frontend/vue.md",
@@ -1330,10 +4360,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/index": {
     "filePath": "development-tools/index.md",
@@ -1356,10 +4422,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "e014780d",
+        "author": "chenweigao",
+        "date": "2022-09-25",
+        "subject": "update some images"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/development-tools/networks/http": {
     "filePath": "development-tools/networks/http.md",
@@ -1369,10 +4477,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "8e770608",
+        "author": "weigao",
+        "date": "2025-02-18",
+        "subject": "update"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/networks/index": {
     "filePath": "development-tools/networks/index.md",
@@ -1395,10 +4539,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "8e770608",
+        "author": "weigao",
+        "date": "2025-02-18",
+        "subject": "update"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "d9540f4a",
+        "author": "chenweigao",
+        "date": "2022-09-25",
+        "subject": "update dev- new dev version"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/development-tools/others/code_life": {
     "filePath": "development-tools/others/code_life.md",
@@ -1408,10 +4600,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/others/new": {
     "filePath": "development-tools/others/new.md",
@@ -1421,10 +4649,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/others/paper_report": {
     "filePath": "development-tools/others/paper_report.md",
@@ -1434,10 +4698,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/others/soft_skills": {
     "filePath": "development-tools/others/soft_skills.md",
@@ -1447,10 +4747,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/others/thoughts-2018": {
     "filePath": "development-tools/others/thoughts-2018.md",
@@ -1460,10 +4790,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/others/worklog": {
     "filePath": "development-tools/others/worklog.md",
@@ -1473,10 +4839,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/others/zen_of_python": {
     "filePath": "development-tools/others/zen_of_python.md",
@@ -1486,10 +4888,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/tools/bat_win": {
     "filePath": "development-tools/tools/bat_win.md",
@@ -1499,10 +4937,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "a1220a45",
+        "author": "weigao chen",
+        "date": "2023-04-13",
+        "subject": "Update bat_win.md"
+      },
+      {
+        "hash": "0ed1d452",
+        "author": "weigao chen",
+        "date": "2023-03-08",
+        "subject": "Update bat_win.md"
+      },
+      {
+        "hash": "7c1c020c",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Update bat_win.md"
+      },
+      {
+        "hash": "f172bfcd",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "Create bat_win.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/development-tools/tools/git": {
     "filePath": "development-tools/tools/git.md",
@@ -1512,10 +4980,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "e668745d",
+        "author": "weigao chen",
+        "date": "2022-05-06",
+        "subject": "Update git.md"
+      },
+      {
+        "hash": "00876d85",
+        "author": "weigao chen",
+        "date": "2022-05-06",
+        "subject": "Update git.md"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "9f96ab6b",
+        "author": "chenweigao",
+        "date": "2022-02-12",
+        "subject": "重构一些博客"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/development-tools/tools/index": {
     "filePath": "development-tools/tools/index.md",
@@ -1538,10 +5054,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "9f96ab6b",
+        "author": "chenweigao",
+        "date": "2022-02-12",
+        "subject": "重构一些博客"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/development-tools/tools/vps": {
     "filePath": "development-tools/tools/vps.md",
@@ -1551,10 +5103,22 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 3
   },
   "/index": {
     "filePath": "index.md",
@@ -1596,10 +5160,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "adc4ee24",
+        "author": "weigao chen",
+        "date": "2023-06-25",
+        "subject": "Update README.md"
+      },
+      {
+        "hash": "c97d4bc8",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Rename readme.md to README.md"
+      },
+      {
+        "hash": "4359afb2",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update readme.md name"
+      },
+      {
+        "hash": "3cb36e1a",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update to new version"
+      },
+      {
+        "hash": "c5ead0fb",
+        "author": "weigao chen",
+        "date": "2023-01-14",
+        "subject": "Update readme.md"
+      },
+      {
+        "hash": "6ac81a0a",
+        "author": "chenweigao",
+        "date": "2022-10-27",
+        "subject": "add java dir"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/programming-languages/java/android/adb": {
     "filePath": "programming-languages/java/android/adb.md",
@@ -1609,10 +5215,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "d17b91e5",
+        "author": "chenweigao",
+        "date": "2023-06-25",
+        "subject": "update blog"
+      },
+      {
+        "hash": "ebdba802",
+        "author": "chenweigao",
+        "date": "2023-03-14",
+        "subject": "update code and color theme"
+      },
+      {
+        "hash": "b047daff",
+        "author": "weigao chen",
+        "date": "2023-03-08",
+        "subject": "Update adb.md"
+      },
+      {
+        "hash": "c4896ad6",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Update adb.md"
+      },
+      {
+        "hash": "1a220649",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Update adb.md"
+      },
+      {
+        "hash": "e7f7675d",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "update blog arch"
+      },
+      {
+        "hash": "6ab584f7",
+        "author": "weigao chen",
+        "date": "2023-02-18",
+        "subject": "Update adb.md"
+      },
+      {
+        "hash": "e6ea30aa",
+        "author": "weigao chen",
+        "date": "2023-02-06",
+        "subject": "Update adb.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/programming-languages/java/android/binder": {
     "filePath": "programming-languages/java/android/binder.md",
@@ -1622,10 +5282,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "277661bf",
+        "author": "weigao chen",
+        "date": "2023-06-25",
+        "subject": "Update binder.md"
+      },
+      {
+        "hash": "62eb5ace",
+        "author": "weigao chen",
+        "date": "2023-06-09",
+        "subject": "Create binder.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/programming-languages/java/android/binder_01": {
     "filePath": "programming-languages/java/android/binder_01.md",
@@ -1635,10 +5313,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "d17b91e5",
+        "author": "chenweigao",
+        "date": "2023-06-25",
+        "subject": "update blog"
+      },
+      {
+        "hash": "5df509d2",
+        "author": "weigao chen",
+        "date": "2023-06-25",
+        "subject": "Create binder_01.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/programming-languages/java/android/binder_02": {
     "filePath": "programming-languages/java/android/binder_02.md",
@@ -1648,10 +5344,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "b213bc30",
+        "author": "chenweigao",
+        "date": "2023-07-18",
+        "subject": "make some update"
+      },
+      {
+        "hash": "1286bc40",
+        "author": "weigao chen",
+        "date": "2023-07-18",
+        "subject": "Update binder_02.md"
+      },
+      {
+        "hash": "0cb30d12",
+        "author": "weigao chen",
+        "date": "2023-07-18",
+        "subject": "Create binder_02.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/programming-languages/java/android/ipc": {
     "filePath": "programming-languages/java/android/ipc.md",
@@ -1661,10 +5381,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "d17b91e5",
+        "author": "chenweigao",
+        "date": "2023-06-25",
+        "subject": "update blog"
+      },
+      {
+        "hash": "6be970eb",
+        "author": "weigao chen",
+        "date": "2023-06-20",
+        "subject": "Create ipc.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/programming-languages/java/android/parcel": {
     "filePath": "programming-languages/java/android/parcel.md",
@@ -1674,10 +5412,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e5586be0",
+        "author": "weigao chen",
+        "date": "2024-08-29",
+        "subject": "Update parcel.md"
+      },
+      {
+        "hash": "62dedce5",
+        "author": "weigao chen",
+        "date": "2023-07-31",
+        "subject": "Create parcel.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/programming-languages/java/art/art_create": {
     "filePath": "programming-languages/java/art/art_create.md",
@@ -1687,10 +5443,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "223375d1",
+        "author": "weigao",
+        "date": "2024-12-14",
+        "subject": "update the vp version"
+      },
+      {
+        "hash": "c14229f6",
+        "author": "chenweigao",
+        "date": "2023-03-08",
+        "subject": "update project"
+      },
+      {
+        "hash": "e7f7675d",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "update blog arch"
+      },
+      {
+        "hash": "c99981ee",
+        "author": "weigao chen",
+        "date": "2022-10-28",
+        "subject": "Update art_create.md"
+      },
+      {
+        "hash": "5baf8984",
+        "author": "weigao chen",
+        "date": "2022-10-28",
+        "subject": "Create art_create.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/programming-languages/java/art/art_dex2oat": {
     "filePath": "programming-languages/java/art/art_dex2oat.md",
@@ -1700,10 +5492,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "223375d1",
+        "author": "weigao",
+        "date": "2024-12-14",
+        "subject": "update the vp version"
+      },
+      {
+        "hash": "c14229f6",
+        "author": "chenweigao",
+        "date": "2023-03-08",
+        "subject": "update project"
+      },
+      {
+        "hash": "e7f7675d",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "update blog arch"
+      },
+      {
+        "hash": "2ac0b6db",
+        "author": "weigao chen",
+        "date": "2022-10-28",
+        "subject": "Update art_dex2oat.md"
+      },
+      {
+        "hash": "c22535ac",
+        "author": "weigao chen",
+        "date": "2022-10-28",
+        "subject": "Create art_dex2oat.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/programming-languages/java/art/art_jni": {
     "filePath": "programming-languages/java/art/art_jni.md",
@@ -1713,10 +5541,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e7f7675d",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "update blog arch"
+      },
+      {
+        "hash": "3cb36e1a",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update to new version"
+      },
+      {
+        "hash": "31b3922a",
+        "author": "weigao chen",
+        "date": "2022-10-28",
+        "subject": "Update art_jni.md"
+      },
+      {
+        "hash": "b9e4e354",
+        "author": "chenweigao",
+        "date": "2022-10-27",
+        "subject": "update code"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/programming-languages/java/art/gc_art_01": {
     "filePath": "programming-languages/java/art/gc_art_01.md",
@@ -1726,10 +5584,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "3d787621",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update post and fonts"
+      },
+      {
+        "hash": "223375d1",
+        "author": "weigao",
+        "date": "2024-12-14",
+        "subject": "update the vp version"
+      },
+      {
+        "hash": "3c62abe1",
+        "author": "weigao chen",
+        "date": "2024-09-05",
+        "subject": "Update art_gc_01.md"
+      },
+      {
+        "hash": "b83941ce",
+        "author": "weigao chen",
+        "date": "2024-09-05",
+        "subject": "Update art_gc_01.md"
+      },
+      {
+        "hash": "d17b91e5",
+        "author": "chenweigao",
+        "date": "2023-06-25",
+        "subject": "update blog"
+      },
+      {
+        "hash": "9b9d567d",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Update art_gc_01.md"
+      },
+      {
+        "hash": "e7f7675d",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "update blog arch"
+      },
+      {
+        "hash": "2ea03173",
+        "author": "weigao chen",
+        "date": "2023-02-18",
+        "subject": "Update and rename art_gc.md to art_gc_01.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/programming-languages/java/index": {
     "filePath": "programming-languages/java/index.md",
@@ -1752,10 +5664,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "c712fd14",
+        "author": "xiaocheng",
+        "date": "2025-05-12",
+        "subject": "do update blog"
+      },
+      {
+        "hash": "3ee98f6d",
+        "author": "weigao",
+        "date": "2025-05-06",
+        "subject": "update blog and fix some problems"
+      },
+      {
+        "hash": "df9268b7",
+        "author": "weigao",
+        "date": "2025-04-20",
+        "subject": "vault backup: 2025-04-20 21:18:05"
+      },
+      {
+        "hash": "54de0c0a",
+        "author": "weigao",
+        "date": "2025-04-20",
+        "subject": "vault backup: 2025-04-20 20:48:40"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
+      },
+      {
+        "hash": "e0e51611",
+        "author": "weigao",
+        "date": "2025-03-19",
+        "subject": "vault backup: 2025-03-19 17:25:23"
+      },
+      {
+        "hash": "8e770608",
+        "author": "weigao",
+        "date": "2025-02-18",
+        "subject": "update"
+      },
+      {
+        "hash": "f088eb54",
+        "author": "weigao",
+        "date": "2025-02-10",
+        "subject": "update much things"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/programming-languages/java/jvm/gc_g1": {
     "filePath": "programming-languages/java/jvm/gc_g1.md",
@@ -1765,10 +5731,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "8e770608",
+        "author": "weigao",
+        "date": "2025-02-18",
+        "subject": "update"
+      },
+      {
+        "hash": "f088eb54",
+        "author": "weigao",
+        "date": "2025-02-10",
+        "subject": "update much things"
+      },
+      {
+        "hash": "dc6c3b3f",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update"
+      },
+      {
+        "hash": "3d787621",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update post and fonts"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/programming-languages/java/jvm/jvm_inst": {
     "filePath": "programming-languages/java/jvm/jvm_inst.md",
@@ -1778,10 +5774,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "3d787621",
+        "author": "weigao",
+        "date": "2025-02-08",
+        "subject": "update post and fonts"
+      },
+      {
+        "hash": "51142178",
+        "author": "weigao chen",
+        "date": "2024-09-05",
+        "subject": "Update jvm_inst.md"
+      },
+      {
+        "hash": "45c46ca9",
+        "author": "weigao chen",
+        "date": "2024-08-29",
+        "subject": "Update jvm_inst.md"
+      },
+      {
+        "hash": "12fabbec",
+        "author": "weigao chen",
+        "date": "2024-08-29",
+        "subject": "Create jvm_inst.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/programming-languages/java/jvm/reflection": {
     "filePath": "programming-languages/java/jvm/reflection.md",
@@ -1791,10 +5817,22 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "54de0c0a",
+        "author": "weigao",
+        "date": "2025-04-20",
+        "subject": "vault backup: 2025-04-20 20:48:40"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 3
   },
   "/programming-languages/java/jvm": {
     "filePath": "programming-languages/java/jvm.md",
@@ -1804,10 +5842,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "ebdba802",
+        "author": "chenweigao",
+        "date": "2023-03-14",
+        "subject": "update code and color theme"
+      },
+      {
+        "hash": "f5ba669a",
+        "author": "weigao chen",
+        "date": "2022-10-27",
+        "subject": "Update jvm.md"
+      },
+      {
+        "hash": "9f21db20",
+        "author": "weigao chen",
+        "date": "2022-10-21",
+        "subject": "Update jvm.md"
+      },
+      {
+        "hash": "e9181594",
+        "author": "chenweigao",
+        "date": "2022-10-19",
+        "subject": "update java"
+      },
+      {
+        "hash": "135ab991",
+        "author": "weigao chen",
+        "date": "2022-10-19",
+        "subject": "Update jvm.md"
+      },
+      {
+        "hash": "34976162",
+        "author": "weigao chen",
+        "date": "2022-10-19",
+        "subject": "Create jvm.md"
+      },
+      {
+        "hash": "75cd6155",
+        "author": "chenweigao",
+        "date": "2022-10-13",
+        "subject": "update theme coloe"
+      },
+      {
+        "hash": "d5c00976",
+        "author": "chenweigao",
+        "date": "2022-10-09",
+        "subject": "Update jvm.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/programming-languages/java/jvm_art": {
     "filePath": "programming-languages/java/jvm_art.md",
@@ -1817,10 +5909,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "6a9549fc",
+        "author": "weigao chen",
+        "date": "2022-10-27",
+        "subject": "Update jvm_art.md"
+      },
+      {
+        "hash": "701e20ab",
+        "author": "weigao chen",
+        "date": "2022-10-21",
+        "subject": "Update jvm_art.md"
+      },
+      {
+        "hash": "e9181594",
+        "author": "chenweigao",
+        "date": "2022-10-19",
+        "subject": "update java"
+      },
+      {
+        "hash": "bd6b28bd",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "Update jvm_art.md"
+      },
+      {
+        "hash": "64470d9f",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "update llvm_art.md"
+      },
+      {
+        "hash": "01d13278",
+        "author": "chenweigao",
+        "date": "2022-10-18",
+        "subject": "update some blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/programming-languages/python/index": {
     "filePath": "programming-languages/python/index.md",
@@ -1843,10 +5977,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "1d9be872",
+        "author": "weigao chen",
+        "date": "2022-09-20",
+        "subject": "Update coroutines.md"
+      },
+      {
+        "hash": "3af859f9",
+        "author": "weigao chen",
+        "date": "2022-09-20",
+        "subject": "Update coroutines.md"
+      },
+      {
+        "hash": "b5b9910b",
+        "author": "weigao chen",
+        "date": "2022-08-10",
+        "subject": "Update coroutines.md"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/programming-languages/python/language/crontab": {
     "filePath": "programming-languages/python/language/crontab.md",
@@ -1856,10 +6044,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/programming-languages/python/language/effective-python": {
     "filePath": "programming-languages/python/language/effective-python.md",
@@ -1869,10 +6099,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "79858423",
+        "author": "xiaocheng",
+        "date": "2025-07-14",
+        "subject": "update"
+      },
+      {
+        "hash": "407ee263",
+        "author": "chenweigao",
+        "date": "2022-03-29",
+        "subject": "update python files"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/programming-languages/python/language/hash": {
     "filePath": "programming-languages/python/language/hash.md",
@@ -1882,10 +6136,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "561939d1",
+        "author": "xiaocheng",
+        "date": "2025-07-01",
+        "subject": "vault backup: 2025-07-01 10:56:12"
+      },
+      {
+        "hash": "eaab7d18",
+        "author": "weigao chen",
+        "date": "2023-04-27",
+        "subject": "Update hash.md"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3a898018",
+        "author": "weigao chen",
+        "date": "2022-09-26",
+        "subject": "Update hash.md"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/programming-languages/python/language/io": {
     "filePath": "programming-languages/python/language/io.md",
@@ -1895,10 +6203,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/programming-languages/python/language/itertools": {
     "filePath": "programming-languages/python/language/itertools.md",
@@ -1908,10 +6258,58 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "7957cbf4",
+        "author": "weigao chen",
+        "date": "2022-10-08",
+        "subject": "Update itertools.md"
+      },
+      {
+        "hash": "fe0c78f4",
+        "author": "weigao chen",
+        "date": "2022-09-28",
+        "subject": "Update itertools.md"
+      },
+      {
+        "hash": "5f5e1ece",
+        "author": "weigao chen",
+        "date": "2022-09-28",
+        "subject": "Update itertools.md"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "c63fc084",
+        "author": "weigao chen",
+        "date": "2022-09-27",
+        "subject": "Update itertools.md"
+      },
+      {
+        "hash": "1bc8dd34",
+        "author": "weigao chen",
+        "date": "2022-09-27",
+        "subject": "Create itertools.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 9
   },
   "/programming-languages/python/language/log": {
     "filePath": "programming-languages/python/language/log.md",
@@ -1921,10 +6319,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "56438a10",
+        "author": "weigao chen",
+        "date": "2022-09-20",
+        "subject": "Update log.md"
+      },
+      {
+        "hash": "8052d98e",
+        "author": "weigao chen",
+        "date": "2022-09-20",
+        "subject": "Create log.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/programming-languages/python/language/pandas": {
     "filePath": "programming-languages/python/language/pandas.md",
@@ -1934,10 +6356,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "61b99614",
+        "author": "weigao chen",
+        "date": "2023-01-14",
+        "subject": "Update pandas.md"
+      },
+      {
+        "hash": "4204c598",
+        "author": "weigao chen",
+        "date": "2022-10-08",
+        "subject": "Update pandas.md"
+      },
+      {
+        "hash": "391aae2a",
+        "author": "weigao chen",
+        "date": "2022-09-28",
+        "subject": "Create pandas.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/programming-languages/python/language/pip": {
     "filePath": "programming-languages/python/language/pip.md",
@@ -1947,10 +6399,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "02721492",
+        "author": "chenweigao",
+        "date": "2023-02-11",
+        "subject": "update some blog"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "9f96ab6b",
+        "author": "chenweigao",
+        "date": "2022-02-12",
+        "subject": "重构一些博客"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/programming-languages/python/language/py-data-struct": {
     "filePath": "programming-languages/python/language/py-data-struct.md",
@@ -1960,10 +6442,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "2640a046",
+        "author": "weigao chen",
+        "date": "2022-04-27",
+        "subject": "Update py-data-struct.md"
+      },
+      {
+        "hash": "407ee263",
+        "author": "chenweigao",
+        "date": "2022-03-29",
+        "subject": "update python files"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/programming-languages/python/language/py-file": {
     "filePath": "programming-languages/python/language/py-file.md",
@@ -1973,10 +6479,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "61841e25",
+        "author": "weigao chen",
+        "date": "2023-03-08",
+        "subject": "Update py-file.md"
+      },
+      {
+        "hash": "fe1875bd",
+        "author": "weigao chen",
+        "date": "2023-03-01",
+        "subject": "Update py-file.md"
+      },
+      {
+        "hash": "4567093a",
+        "author": "weigao chen",
+        "date": "2023-02-23",
+        "subject": "Update py-file.md"
+      },
+      {
+        "hash": "cde81f45",
+        "author": "weigao chen",
+        "date": "2022-09-20",
+        "subject": "Update py-file.md"
+      },
+      {
+        "hash": "f29d3102",
+        "author": "weigao chen",
+        "date": "2022-09-20",
+        "subject": "Update py-file.md"
+      },
+      {
+        "hash": "b4e9cae0",
+        "author": "weigao chen",
+        "date": "2022-09-02",
+        "subject": "Update py-file.md"
+      },
+      {
+        "hash": "c09b167b",
+        "author": "weigao chen",
+        "date": "2022-08-10",
+        "subject": "Update py-file.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/programming-languages/python/language/pytest": {
     "filePath": "programming-languages/python/language/pytest.md",
@@ -1992,10 +6552,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "407ee263",
+        "author": "chenweigao",
+        "date": "2022-03-29",
+        "subject": "update python files"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "1c238077",
+        "author": "weigao chen",
+        "date": "2022-03-07",
+        "subject": "Update pytest.md"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 2
+    "totalCommits": 8
   },
   "/programming-languages/python/language/python-function": {
     "filePath": "programming-languages/python/language/python-function.md",
@@ -2005,10 +6601,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "407ee263",
+        "author": "chenweigao",
+        "date": "2022-03-29",
+        "subject": "update python files"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/programming-languages/python/language/python-oo": {
     "filePath": "programming-languages/python/language/python-oo.md",
@@ -2018,10 +6644,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/programming-languages/python/language/python_c": {
     "filePath": "programming-languages/python/language/python_c.md",
@@ -2031,10 +6699,34 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "9d31c331",
+        "author": "weigao chen",
+        "date": "2022-07-07",
+        "subject": "Update python_c.md"
+      },
+      {
+        "hash": "fd73da28",
+        "author": "weigao chen",
+        "date": "2022-07-07",
+        "subject": "Create python_c.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 5
   },
   "/programming-languages/python/tools/py-tools": {
     "filePath": "programming-languages/python/tools/py-tools.md",
@@ -2044,10 +6736,28 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "407ee263",
+        "author": "chenweigao",
+        "date": "2022-03-29",
+        "subject": "update python files"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 4
   },
   "/programming-languages/python/tools/virtualenv": {
     "filePath": "programming-languages/python/tools/virtualenv.md",
@@ -2057,10 +6767,52 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fd22f62a",
+        "author": "xiaocheng",
+        "date": "2025-08-13",
+        "subject": "update"
+      },
+      {
+        "hash": "561939d1",
+        "author": "xiaocheng",
+        "date": "2025-07-01",
+        "subject": "vault backup: 2025-07-01 10:56:12"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 8
   },
   "/research-projects/index": {
     "filePath": "research-projects/index.md",
@@ -2083,10 +6835,22 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 3
   },
   "/research-projects/papers/vp_hpca14": {
     "filePath": "research-projects/papers/vp_hpca14.md",
@@ -2096,10 +6860,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "53c42d54",
+        "author": "chenweigao",
+        "date": "2022-08-24",
+        "subject": "add new dir: architecture"
+      },
+      {
+        "hash": "9fbdb034",
+        "author": "weigao chen",
+        "date": "2022-07-12",
+        "subject": "Update hpca14.md"
+      },
+      {
+        "hash": "bd0f1046",
+        "author": "weigao chen",
+        "date": "2022-07-04",
+        "subject": "Update hpca14.md"
+      },
+      {
+        "hash": "76540954",
+        "author": "weigao chen",
+        "date": "2022-07-02",
+        "subject": "Update hpca14.md"
+      },
+      {
+        "hash": "127ee50b",
+        "author": "weigao chen",
+        "date": "2022-06-29",
+        "subject": "Update hpca14.md"
+      },
+      {
+        "hash": "c3e89b5a",
+        "author": "weigao chen",
+        "date": "2022-06-28",
+        "subject": "Update hpca14.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/research-projects/papers/vp_value_prediction": {
     "filePath": "research-projects/papers/vp_value_prediction.md",
@@ -2109,10 +6927,64 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "9dd73ff4",
+        "author": "weigao",
+        "date": "2025-03-28",
+        "subject": "vault backup: 2025-03-28 17:43:46"
+      },
+      {
+        "hash": "5fb0b638",
+        "author": "chenweigao",
+        "date": "2023-02-28",
+        "subject": "refactor the blog"
+      },
+      {
+        "hash": "53c42d54",
+        "author": "chenweigao",
+        "date": "2022-08-24",
+        "subject": "add new dir: architecture"
+      },
+      {
+        "hash": "88cf51d2",
+        "author": "weigao chen",
+        "date": "2022-06-29",
+        "subject": "Update value_prediction.md"
+      },
+      {
+        "hash": "a142482d",
+        "author": "weigao chen",
+        "date": "2022-06-24",
+        "subject": "Update value_prediction.md"
+      },
+      {
+        "hash": "172a1b64",
+        "author": "weigao chen",
+        "date": "2022-06-24",
+        "subject": "Update value_prediction.md"
+      },
+      {
+        "hash": "fc08910c",
+        "author": "weigao chen",
+        "date": "2022-06-23",
+        "subject": "Update value_prediction.md"
+      },
+      {
+        "hash": "263df591",
+        "author": "chenweigao",
+        "date": "2022-06-22",
+        "subject": "Update value_prediction.md"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 10
   },
   "/research-projects/projects/blog_plan": {
     "filePath": "research-projects/projects/blog_plan.md",
@@ -2122,10 +6994,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/research-projects/projects/jekyll": {
     "filePath": "research-projects/projects/jekyll.md",
@@ -2135,10 +7037,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/research-projects/projects/kilo": {
     "filePath": "research-projects/projects/kilo.md",
@@ -2148,10 +7080,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/projects/qqbot": {
     "filePath": "research-projects/projects/qqbot.md",
@@ -2161,10 +7129,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/research-projects/projects/vueblog": {
     "filePath": "research-projects/projects/vueblog.md",
@@ -2174,10 +7172,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/research/ArrayTrack": {
     "filePath": "research-projects/research/ArrayTrack.md",
@@ -2187,10 +7221,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/research-projects/research/RF-Pose": {
     "filePath": "research-projects/research/RF-Pose.md",
@@ -2200,10 +7264,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/research-projects/research/cnn": {
     "filePath": "research-projects/research/cnn.md",
@@ -2213,10 +7307,22 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 3
   },
   "/research-projects/research/csitool": {
     "filePath": "research-projects/research/csitool.md",
@@ -2226,10 +7332,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/research/cvpr": {
     "filePath": "research-projects/research/cvpr.md",
@@ -2239,10 +7381,22 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 3
   },
   "/research-projects/research/face_recognition": {
     "filePath": "research-projects/research/face_recognition.md",
@@ -2252,10 +7406,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/research/information_theory": {
     "filePath": "research-projects/research/information_theory.md",
@@ -2265,10 +7455,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/research/latex": {
     "filePath": "research-projects/research/latex.md",
@@ -2278,10 +7504,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/research/mnist": {
     "filePath": "research-projects/research/mnist.md",
@@ -2291,10 +7553,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/research/opencv": {
     "filePath": "research-projects/research/opencv.md",
@@ -2304,10 +7602,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/research-projects/research/splicer": {
     "filePath": "research-projects/research/splicer.md",
@@ -2317,10 +7645,46 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "e4c6887f",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update code"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 7
   },
   "/research-projects/research/tensorflow": {
     "filePath": "research-projects/research/tensorflow.md",
@@ -2330,10 +7694,40 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   },
   "/research-projects/research/tensorflowio": {
     "filePath": "research-projects/research/tensorflowio.md",
@@ -2343,9 +7737,39 @@
         "author": "xiaocheng",
         "date": "2025-08-15",
         "subject": "new struct for lblogs"
+      },
+      {
+        "hash": "c8535a0d",
+        "author": "xiaocheng",
+        "date": "2025-08-15",
+        "subject": "move blogs to docs"
+      },
+      {
+        "hash": "fb4b5915",
+        "author": "chenweigao",
+        "date": "2022-09-27",
+        "subject": "update fix: timeline error"
+      },
+      {
+        "hash": "3c14689f",
+        "author": "chenweigao",
+        "date": "2022-04-17",
+        "subject": "update Date"
+      },
+      {
+        "hash": "b770fc25",
+        "author": "chenweigao",
+        "date": "2022-03-23",
+        "subject": "init v3"
+      },
+      {
+        "hash": "505f81b0",
+        "author": "chenweigao",
+        "date": "2022-02-07",
+        "subject": "init v2"
       }
     ],
     "lastUpdated": "2025-08-15",
-    "totalCommits": 1
+    "totalCommits": 6
   }
 }

@@ -16,7 +16,8 @@ export async function getRealtimeGitHistory(filePath, maxEntries = 10) {
     try {
       const repoRoot = path.resolve(__dirname, '../../../')
       const repoRelativePath = `docs/${filePath}`
-      const gitCommand = `git log --format="%h|%an|%ad|%s" --date=short -${maxEntries} -- "${repoRelativePath}"`
+      // 添加 --follow 参数以追踪文件移动历史
+      const gitCommand = `git log --follow --format="%h|%an|%ad|%s" --date=short -${maxEntries} -- "${repoRelativePath}"`
       
       const output = execSync(gitCommand, { 
         cwd: repoRoot, 
