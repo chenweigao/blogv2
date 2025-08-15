@@ -26,7 +26,7 @@ export default defineConfig({
     // 导航栏 - 根据实际文档分类更新
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'AI', link: '/artificial-intelligence/' },
+      { text: 'AI Infra', link: '/artificial-intelligence/' },
       { 
         text: 'Computer Systems',
         items: [
@@ -104,6 +104,15 @@ export default defineConfig({
           ]
         },
         {
+          text: 'GPU Computing & Architecture',
+          collapsed: false,
+          items: [
+            { text: 'GPU Architecture', link: '/artificial-intelligence/gpu-computing/gpu_arch' },
+            { text: 'GPU Communication', link: '/artificial-intelligence/gpu-computing/gpu_communication' },
+            { text: 'SAC - ISCA 23', link: '/artificial-intelligence/gpu-computing/SAC - ISCA 23' }
+          ]
+        },
+        {
           text: 'AI Profiling & Performance',
           collapsed: false,
           items: [
@@ -153,16 +162,6 @@ export default defineConfig({
           items: [
             { text: 'NUMA 与 Socket', link: '/computer-systems/cpu-gpu/numa_socket' },
             { text: 'IBS 指令采样', link: '/computer-systems/cpu-gpu/ibs' }
-          ]
-        },
-        {
-          text: 'GPU 与 AI 加速',
-          collapsed: false,
-          items: [
-            { text: 'GPU-AI 概述', link: '/computer-systems/cpu-gpu/gpu-ai/' },
-            { text: 'GPU 架构', link: '/computer-systems/cpu-gpu/gpu-ai/gpu_arch' },
-            { text: 'GPU 通信', link: '/computer-systems/cpu-gpu/gpu-ai/gpu_communication' },
-            { text: 'SAC - ISCA 23', link: '/computer-systems/cpu-gpu/gpu-ai/SAC - ISCA 23' }
           ]
         },
         {
