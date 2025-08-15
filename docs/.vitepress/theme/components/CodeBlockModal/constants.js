@@ -40,15 +40,59 @@ export const languageConfig = {
   'apache': { name: 'Apache', color: '#d22128', icon: '🪶' }
 }
 
-// 可用主题 - 使用 Shiki 官方支持的主题
+// 可用主题 - 扩展了更多 Shiki 官方支持的主题
 export const themes = [
+  // GitHub 系列
   'github-light',
   'github-dark',
+  'github-light-default',
+  'github-dark-default',
+  'github-dark-dimmed',
+  
+  // VS Code 系列
+  'dark-plus',
+  'light-plus',
   'monokai',
-  'nord',
-  'one-dark-pro',
+  'solarized-dark',
+  'solarized-light',
+  
+  // 流行的暗色主题
   'dracula',
-  'material-theme-palenight'
+  'dracula-soft',
+  'one-dark-pro',
+  'nord',
+  'night-owl',
+  'material-theme-darker',
+  'material-theme-ocean',
+  'material-theme-palenight',
+  'material-theme-lighter',
+  'tokyo-night',
+  'catppuccin-latte',
+  'catppuccin-frappe',
+  'catppuccin-macchiato',
+  'catppuccin-mocha',
+  
+  // 经典主题
+  'min-light',
+  'min-dark',
+  'slack-ochin',
+  'slack-dark',
+  'vitesse-light',
+  'vitesse-dark',
+  'vitesse-black',
+  
+  // 高对比度主题
+  'hc_light',
+  'hc_black',
+  
+  // 其他优秀主题
+  'rose-pine',
+  'rose-pine-moon',
+  'rose-pine-dawn',
+  'synthwave-84',
+  'poimandres',
+  'red',
+  'css-variables'
 ]
 
 // 支持的语言列表
