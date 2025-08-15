@@ -1,4 +1,3 @@
-## Here's my code: 
 <template>
   <Teleport to="body">
     <Transition name="modal" appear>
@@ -116,7 +115,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
-import { getHighlighter } from 'shiki'
+import { createHighlighter } from 'shiki'
 
 const props = defineProps({
   visible: {
@@ -258,22 +257,10 @@ const highlightedCode = computed(() => {
   }
 })
 
-// HTML转义函数
-const escapeHtml = (text) => {
-  const map = {
-    '&': '&',
-    '<': '<',
-    '>': '>',
-    '"': '"',
-    "'": '&#39;'
-  }
-  return text.replace(/[&<>"']/g, (m) => map[m])
-}
-
-// 初始化 Shiki
+// 初始化 Shiki 高亮器
 const initHighlighter = async () => {
   try {
-    highlighter.value = await getHighlighter({
+    highlighter.value = await createHighlighter({
       themes: themes,
       langs: [
         'javascript', 'typescript', 'python', 'java', 'cpp', 'c',
@@ -285,11 +272,39 @@ const initHighlighter = async () => {
       ]
     })
   } catch (error) {
-    console.error('Failed to initialize Shiki:', error)
+    console.error('Failed to initialize Shiki highlighter:', error)
   }
 }
 
-// 事件处理函数
+// 工具函数
+const escapeHtml = (text) => {
+  const div = document.createElement('div')
+  div.textContent = text
+  return div.innerHTML
+}
+
+// 切换行号显示
+const toggleLineNumbers = () => {
+  showLineNumbers.value = !showLineNumbers.value
+  nextTick(() => {
+    syncScroll()
+  })
+}
+
+// 切换主题
+const toggleTheme = () => {
+  const currentIndex = themes.indexOf(currentTheme.value)
+  const nextIndex = (currentIndex + 1) % themes.length
+  currentTheme.value = themes[nextIndex]
+}
+
+// 切换全屏模式
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value
+  emit('fullscreen', isFullscreen.value)
+}
+
+// 复制代码
 const copyCode = async () => {
   try {
     await navigator.clipboard.writeText(props.code)
@@ -300,149 +315,86 @@ const copyCode = async () => {
   } catch (err) {
     console.error('复制失败:', err)
     // 降级方案
-    fallbackCopyTextToClipboard(props.code)
+    const textArea = document.createElement('textarea')
+    textArea.value = props.code
+    document.body.appendChild(textArea)
+    textArea.select()
+    try {
+      document.execCommand('copy')
+      isCopied.value = true
+      setTimeout(() => {
+        isCopied.value = false
+      }, 2000)
+    } catch (fallbackErr) {
+      console.error('降级复制也失败:', fallbackErr)
+    }
+    document.body.removeChild(textArea)
   }
 }
 
-const fallbackCopyTextToClipboard = (text) => {
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  textArea.style.position = 'fixed'
-  textArea.style.left = '-999999px'
-  textArea.style.top = '-999999px'
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-  
-  try {
-    document.execCommand('copy')
-    isCopied.value = true
-    setTimeout(() => {
-      isCopied.value = false
-    }, 2000)
-  } catch (err) {
-    console.error('降级复制也失败了:', err)
-  }
-  
-  document.body.removeChild(textArea)
-}
-
+// 下载代码
 const downloadCode = () => {
-  const filename = props.filename || `code.${props.language}`
   const blob = new Blob([props.code], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = filename
+  a.download = props.filename || `code.${props.language}`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
   URL.revokeObjectURL(url)
 }
 
-const toggleLineNumbers = () => {
-  showLineNumbers.value = !showLineNumbers.value
-}
-
-const toggleTheme = () => {
-  const currentIndex = themes.indexOf(currentTheme.value)
-  const nextIndex = (currentIndex + 1) % themes.length
-  currentTheme.value = themes[nextIndex]
-}
-
-const toggleFullscreen = () => {
-  isFullscreen.value = !isFullscreen.value
-  emit('fullscreen', isFullscreen.value)
-}
-
+// 关闭模态框
 const closeModal = () => {
   isVisible.value = false
-  isFullscreen.value = false
-  document.body.style.overflow = ''
   emit('close')
 }
 
+// 同步滚动
 const syncScroll = () => {
   if (lineNumbersRef.value && codeContentRef.value) {
-    const codeElement = codeContentRef.value.querySelector('.shiki-container')
-    if (codeElement) {
-      lineNumbersRef.value.scrollTop = codeElement.scrollTop
+    const codeContainer = codeContentRef.value.querySelector('.shiki-container')
+    if (codeContainer) {
+      lineNumbersRef.value.scrollTop = codeContainer.scrollTop
     }
   }
 }
 
 // 键盘事件处理
 const handleKeydown = (e) => {
-  if (!isVisible.value) return
-  
-  switch (e.key) {
-    case 'Escape':
-      if (isFullscreen.value) {
-        toggleFullscreen()
-      } else {
-        closeModal()
-      }
-      break
-    case 'c':
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault()
-        copyCode()
-      }
-      break
-    case 'l':
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault()
-        toggleLineNumbers()
-      }
-      break
-    case 'f':
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault()
-        toggleFullscreen()
-      }
-      break
-    case 't':
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault()
-        toggleTheme()
-      }
-      break
+  if (e.key === 'Escape') {
+    closeModal()
+  } else if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault()
+    copyCode()
+  } else if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault()
+    toggleFullscreen()
+  } else if (e.key === 'l' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault()
+    toggleLineNumbers()
   }
 }
 
-// 监听器
+// 监听 props 变化
 watch(() => props.visible, (newVal) => {
   isVisible.value = newVal
   if (newVal) {
-    document.body.style.overflow = 'hidden'
     nextTick(() => {
       syncScroll()
     })
-  } else {
-    document.body.style.overflow = ''
-    isFullscreen.value = false
-  }
-})
-
-watch(isVisible, (newVal) => {
-  if (newVal) {
-    document.addEventListener('keydown', handleKeydown)
-  } else {
-    document.removeEventListener('keydown', handleKeydown)
   }
 })
 
 // 生命周期
 onMounted(async () => {
   await initHighlighter()
-  if (isVisible.value) {
-    document.addEventListener('keydown', handleKeydown)
-  }
+  document.addEventListener('keydown', handleKeydown)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
-  document.body.style.overflow = ''
 })
 </script>
 
