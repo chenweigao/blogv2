@@ -83,7 +83,7 @@ export default defineConfig({
       }
     ],
 
-    // 侧边栏配置 - 自动生成
+    // 侧边栏配置 - 根据实际文件结构修正
     sidebar: {
       '/algorithms/': [
         {
@@ -91,12 +91,28 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Overview', link: '/algorithms/' },
-            { text: 'Data Structures', link: '/algorithms/data-structures' },
-            { text: 'Sorting Algorithms', link: '/algorithms/sorting' },
-            { text: 'Search Algorithms', link: '/algorithms/searching' },
-            { text: 'Graph Algorithms', link: '/algorithms/graph' },
-            { text: 'Dynamic Programming', link: '/algorithms/dynamic-programming' },
-            { text: 'Complexity Analysis', link: '/algorithms/complexity' }
+            { text: 'README', link: '/algorithms/README' },
+            { text: 'Backtrack', link: '/algorithms/backtrack' },
+            { text: 'Sliding Window', link: '/algorithms/slide_window' },
+            { text: 'DFS & BFS', link: '/algorithms/dfs_bfs' },
+            { text: 'Binary Tree', link: '/algorithms/binary_tree' },
+            { text: 'Binary Search', link: '/algorithms/binary_search' },
+            { text: 'Dynamic Programming', link: '/algorithms/dp' },
+            { text: 'Sorting', link: '/algorithms/sort' },
+            { text: 'LCS', link: '/algorithms/lcs' },
+            { text: 'Prefix Sum', link: '/algorithms/presum' }
+          ]
+        },
+        {
+          text: 'Data Structures',
+          collapsed: false,
+          items: [
+            { text: 'Data Structures README', link: '/algorithms/data_struct/readme' },
+            { text: 'Stack', link: '/algorithms/data_struct/stack' },
+            { text: 'HashMap', link: '/algorithms/data_struct/hashmap' },
+            { text: 'String', link: '/algorithms/data_struct/string' },
+            { text: 'Tree', link: '/algorithms/data_struct/tree' },
+            { text: 'Linked List', link: '/algorithms/data_struct/linkedlist' }
           ]
         }
       ],
@@ -112,37 +128,19 @@ export default defineConfig({
           text: 'Hardware Acceleration',
           collapsed: false,
           items: [
-            { text: 'Hardware Overview', link: '/artificial-intelligence/hardware-acceleration/' },
             { text: 'GPU Architecture', link: '/artificial-intelligence/gpu-computing/gpu_arch' },
             { text: 'GPU Communication', link: '/artificial-intelligence/gpu-computing/gpu_communication' },
             { text: 'Intel AMX & OpenVINO', link: '/artificial-intelligence/AMX/openvino' }
           ]
         },
         {
-          text: 'Training & Inference',
-          collapsed: false,
-          items: [
-            { text: 'Training Frameworks', link: '/artificial-intelligence/training-frameworks/' },
-            { text: 'Inference Engines', link: '/artificial-intelligence/inference-engines/' },
-            { text: 'Distributed Training', link: '/artificial-intelligence/distributed-training/' }
-          ]
-        },
-        {
-          text: 'Optimization & Deployment',
-          collapsed: false,
-          items: [
-            { text: 'Model Optimization', link: '/artificial-intelligence/model-optimization/' },
-            { text: 'Deployment & Serving', link: '/artificial-intelligence/deployment-serving/' },
-            { text: 'AI Profiling', link: '/artificial-intelligence/profiling/AI Profiling' }
-          ]
-        },
-        {
           text: 'Infrastructure & Operations',
           collapsed: false,
           items: [
-            { text: 'Storage & Data', link: '/artificial-intelligence/storage-data/' },
+            { text: 'Model Optimization', link: '/artificial-intelligence/model-optimization/' },
             { text: 'Monitoring & Operations', link: '/artificial-intelligence/monitoring-ops/' },
-            { text: 'Cloud Platforms', link: '/artificial-intelligence/cloud-platforms/' }
+            { text: 'Cloud Platforms', link: '/artificial-intelligence/cloud-platforms/' },
+            { text: 'Training Frameworks', link: '/artificial-intelligence/training-frameworks/' }
           ]
         },
         {
@@ -196,15 +194,6 @@ export default defineConfig({
             { text: 'NUMA 与 Socket', link: '/computer-systems/cpu-gpu/cpu-architecture/memory-systems/numa_socket' },
             { text: 'IBS 指令采样', link: '/computer-systems/cpu-gpu/cpu-architecture/pipeline-performance/ibs' }
           ]
-        },
-        {
-          text: '学术论文',
-          collapsed: true,
-          items: [
-            { text: '论文概述', link: '/computer-systems/cpu-gpu/papers/' },
-            { text: 'Value Prediction', link: '/computer-systems/cpu-gpu/papers/vp_value_prediction' },
-            { text: 'VP HPCA 14', link: '/computer-systems/cpu-gpu/papers/vp_hpca14' }
-          ]
         }
       ],
       '/computer-systems/linux/': [
@@ -217,19 +206,53 @@ export default defineConfig({
           ]
         },
         {
-          text: 'Linux 内核',
-          collapsed: false,
-          items: [
-            { text: '内核模块', link: '/computer-systems/linux/kernel-modules' },
-            { text: '内核配置', link: '/computer-systems/linux/kernel-config' }
-          ]
-        },
-        {
           text: 'Linux 工具',
           collapsed: false,
           items: [
-            { text: '命令行工具', link: '/computer-systems/linux/command-line-tools' },
-            { text: '文件系统', link: '/computer-systems/linux/file-systems' }
+            { text: '命令行工具', link: '/computer-systems/linux/commands-tools/command' }
+          ]
+        },
+        {
+          text: 'Linux 内核',
+          collapsed: false,
+          items: [
+            { text: '内核 README', link: '/computer-systems/linux/kernel/README' },
+            { text: 'RCU', link: '/computer-systems/linux/kernel/process-scheduling/rcu' },
+            { text: 'Idle Tick', link: '/computer-systems/linux/kernel/process-scheduling/idle_tick' },
+            { text: 'Idle', link: '/computer-systems/linux/kernel/process-scheduling/idle' },
+            { text: 'I2C 驱动', link: '/computer-systems/linux/kernel/device-drivers/i2c' },
+            { text: 'BL31', link: '/computer-systems/linux/kernel/architecture/BL31' },
+            { text: 'THP', link: '/computer-systems/linux/kernel/memory-management/THP' },
+            { text: 'Notifier', link: '/computer-systems/linux/kernel/core-concepts/notifier' },
+            { text: 'Pthread', link: '/computer-systems/linux/kernel/core-concepts/pthread' },
+            { text: 'Thermal Init', link: '/computer-systems/linux/kernel/thermal-management/thermal_init' },
+            { text: 'Thermal', link: '/computer-systems/linux/kernel/thermal-management/thermal' }
+          ]
+        },
+        {
+          text: '系统编程',
+          collapsed: false,
+          items: [
+            { text: '系统编程 README', link: '/computer-systems/linux/system-programming/README' },
+            { text: 'Linkers & Loaders', link: '/computer-systems/linux/system-programming/linkers_loaders' },
+            { text: 'size_t', link: '/computer-systems/linux/system-programming/size_t' },
+            { text: 'C Pointer', link: '/computer-systems/linux/system-programming/c-pointer' },
+            { text: 'CMake', link: '/computer-systems/linux/system-programming/cmake' },
+            { text: 'CMake Makefile', link: '/computer-systems/linux/system-programming/cmake_makefile' }
+          ]
+        },
+        {
+          text: '系统管理',
+          collapsed: false,
+          items: [
+            { text: 'APT', link: '/computer-systems/linux/system-administration/apt' }
+          ]
+        },
+        {
+          text: '教育资源',
+          collapsed: false,
+          items: [
+            { text: 'XV6', link: '/computer-systems/linux/educational/xv6' }
           ]
         }
       ],
@@ -281,13 +304,22 @@ export default defineConfig({
           text: 'Python Programming',
           collapsed: false,
           items: [
-            { text: 'Overview', link: '/programming-languages/python/' },
-            { text: 'Python Basics', link: '/programming-languages/python/basics' },
-            { text: 'Advanced Features', link: '/programming-languages/python/advanced' },
-            { text: 'Data Science', link: '/programming-languages/python/data-science' },
-            { text: 'Web Development', link: '/programming-languages/python/web-development' },
-            { text: 'Testing & Debugging', link: '/programming-languages/python/testing' },
-            { text: 'Best Practices', link: '/programming-languages/python/best-practices' }
+            { text: 'Hash', link: '/programming-languages/python/language/hash' },
+            { text: 'Effective Python', link: '/programming-languages/python/language/effective-python' },
+            { text: 'Pytest', link: '/programming-languages/python/language/pytest' },
+            { text: 'Python C', link: '/programming-languages/python/language/python_c' },
+            { text: 'Itertools', link: '/programming-languages/python/language/itertools' },
+            { text: 'Python Function', link: '/programming-languages/python/language/python-function' },
+            { text: 'Python Data Structure', link: '/programming-languages/python/language/py-data-struct' },
+            { text: 'Pip', link: '/programming-languages/python/language/pip' }
+          ]
+        },
+        {
+          text: 'Python Tools',
+          collapsed: false,
+          items: [
+            { text: 'Virtual Environment', link: '/programming-languages/python/tools/virtualenv' },
+            { text: 'Python Tools', link: '/programming-languages/python/tools/py-tools' }
           ]
         }
       ],
@@ -296,8 +328,11 @@ export default defineConfig({
           text: '常用工具',
           collapsed: false,
           items: [
-            { text: 'Git', link: '/development-tools/tools/git' },
-            { text: 'Docker', link: '/development-tools/tools/docker' }
+            { text: 'Tools Overview', link: '/development-tools/tools/' },
+            { text: 'Vim', link: '/development-tools/tools/vim' },
+            { text: 'VPS', link: '/development-tools/tools/vps' },
+            { text: 'Batch Windows', link: '/development-tools/tools/bat_win' },
+            { text: 'Git', link: '/development-tools/tools/git' }
           ]
         }
       ],
@@ -316,8 +351,11 @@ export default defineConfig({
           text: '数据库',
           collapsed: false,
           items: [
+            { text: 'Database Overview', link: '/development-tools/database/' },
+            { text: 'Redis', link: '/development-tools/database/redis' },
+            { text: 'Peewee', link: '/development-tools/database/peewee' },
             { text: 'MySQL', link: '/development-tools/database/mysql' },
-            { text: 'PostgreSQL', link: '/development-tools/database/postgresql' }
+            { text: 'MongoDB', link: '/development-tools/database/mongodb' }
           ]
         }
       ],
@@ -378,9 +416,16 @@ export default defineConfig({
           text: '研究方向',
           collapsed: false,
           items: [
-            { text: 'Overview', link: '/research-projects/research/' },
-            { text: 'Direction 1', link: '/research-projects/research/direction-1' },
-            { text: 'Direction 2', link: '/research-projects/research/direction-2' }
+            { text: 'RF-Pose', link: '/research-projects/research/RF-Pose' },
+            { text: 'Information Theory', link: '/research-projects/research/information_theory' },
+            { text: 'Face Recognition', link: '/research-projects/research/face_recognition' },
+            { text: 'MNIST', link: '/research-projects/research/mnist' },
+            { text: 'LaTeX', link: '/research-projects/research/latex' },
+            { text: 'CSI Tool', link: '/research-projects/research/csitool' },
+            { text: 'CVPR', link: '/research-projects/research/cvpr' },
+            { text: 'ArrayTrack', link: '/research-projects/research/ArrayTrack' },
+            { text: 'TensorFlow', link: '/research-projects/research/tensorflow' },
+            { text: 'CNN', link: '/research-projects/research/cnn' }
           ]
         }
       ]
