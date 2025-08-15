@@ -70,7 +70,7 @@ tag:
 
 更进一步，64 位系统使用 4 级页表的结构如下[^3]：
 
-![pages kernel](./images/pages_kernel.png)
+![pages kernel](../images/pages_kernel.png)
 
 <!-- ![image](https://github.com/user-attachments/assets/9afb65e2-758a-4c23-8ab8-db04bbba5f8d) -->
 
@@ -205,7 +205,7 @@ TLB 失效的原因可能是：
 
 ### 5.3. TLB and L1 ICache (VIPT)
 
-![alt text](./pics/20241213105941.jpg)
+<!-- ![alt text](./pics/20241213105941.jpg) -->
 
 如图所示，解释一下 L1 ICache VIPT：
 

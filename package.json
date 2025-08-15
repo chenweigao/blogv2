@@ -25,18 +25,18 @@
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.10.0",
+    "@types/node": "^24.3.0",
     "chokidar": "^4.0.3",
     "concurrently": "^9.2.0",
-    "nodemon": "^3.0.0",
-    "vitepress": "^1.0.0-rc.31"
+    "nodemon": "^3.1.10",
+    "vitepress": "^1.6.4"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
     "medium-zoom": "^1.1.0",
     "prismjs": "^1.30.0",
-    "shiki": "^0.14.7",
-    "vue": "^3.3.8"
+    "shiki": "^3.9.2",
+    "vue": "^3.5.18"
   },
   "engines": {
     "node": ">=18.0.0",

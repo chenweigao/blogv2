@@ -82,7 +82,7 @@ AOT 存在着一些挑战：
 
 如何判断 JVM 是用的解释器模式、编译器模式或者混合模式呢？我们可以求助于 `java -version` 来帮助解答这个问题。下面是运行该命令后的输出：
 
-![image-20221019222303732](../../.vuepress/public/image-20221019222303732.png)
+<!-- ![image-20221019222303732](../../.vuepress/public/image-20221019222303732.png) -->
 
 再提一下，sharing 表示 class data sharing. Server 编译器也叫 C2 编译器，与之对应的 Clinet 叫做 C1 编译器。
 
@@ -336,7 +336,7 @@ cp_info { // u1表示该域对应一个字节长度，u 表示 unsigned
 
 了解 class 文件是怎么解析的，需要首先了解一下 JVM 的基本结构：
 
-![image-20221019220125896](../../.vuepress/public/image-20221019220125896.png)
+<!-- ![image-20221019220125896](../../.vuepress/public/image-20221019220125896.png) -->
 
 :::tip JAVA 虚拟机
 
@@ -444,13 +444,13 @@ JAVA 中通过 `new()` 可以创建一个新的对象，对象分配后存在于
 
 下图可以比较清晰的说明 Java 的内存构成：
 
-![jvm_mem](../../.vuepress/public/jvm_mem.svg)
+<!-- ![jvm_mem](../../.vuepress/public/jvm_mem.svg) -->
 
 JAVA 的内存对象布局分为两种：第一种是普通的 JAVA 对象实例，第二种是 JAVA 数组实例，数组实例中会存储 length 元素。
 
 对于这几个内存区域具体的大小，我们以 32 HotSpot 中的 `java.lang.Integer` 存储为例，其在内存中的布局大小如下图所示：
 
-![jvm_mem2](../../.vuepress/public/jvm_mem2.svg)
+<!-- ![jvm_mem2](../../.vuepress/public/jvm_mem2.svg) -->
 
 对象头固定大小为 8 个字节，接下来就会存储对象中的实际数据，后面的 padding 视情况而定。
 

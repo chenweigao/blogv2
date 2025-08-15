@@ -118,7 +118,7 @@ IR 有三种形式：
 
 如下图所示：
 
-![llvm_ir](../../.vuepress/public/llvm_ir.svg)
+<!-- ![llvm_ir](../../.vuepress/public/llvm_ir.svg) -->
 
 这是一个简单的示意图，从上图中我们可以知道，存在着以下的模块：
 
