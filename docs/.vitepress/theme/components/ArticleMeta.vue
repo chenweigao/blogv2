@@ -128,16 +128,92 @@ const formattedDate = computed(() => {
 
 // 计算字数
 const wordCount = computed(() => {
-  if (!page.value.content) return 0
-  // 简单的中英文字数统计
-  const content = page.value.content.replace(/[^\u4e00-\u9fa5\w]/g, '')
-  return content.length
+  if (!page.value.content) {
+    // 在开发模式下，使用可用的信息来估算字数
+    let estimatedWords = 0
+    
+    // 基于标题估算
+    if (frontmatter.value.title) {
+      estimatedWords += frontmatter.value.title.length
+    }
+    
+    // 基于描述估算
+    if (frontmatter.value.description) {
+      estimatedWords += frontmatter.value.description.length
+    }
+    
+    // 基于文件路径深度估算内容复杂度
+    const pathDepth = page.value.filePath ? page.value.filePath.split('/').length : 1
+    const baseEstimate = Math.max(500, pathDepth * 200) // 基础估算
+    
+    estimatedWords += baseEstimate
+    
+    return estimatedWords
+  }
+  
+  let content = page.value.content
+  
+  // 移除 markdown 语法标记
+  content = content
+    // 移除代码块
+    .replace(/```[\s\S]*?```/g, '')
+    // 移除行内代码
+    .replace(/`[^`]*`/g, '')
+    // 移除链接
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    // 移除图片
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    // 移除标题标记
+    .replace(/^#{1,6}\s+/gm, '')
+    // 移除列表标记
+    .replace(/^[\s]*[-*+]\s+/gm, '')
+    .replace(/^[\s]*\d+\.\s+/gm, '')
+    // 移除引用标记
+    .replace(/^>\s+/gm, '')
+    // 移除粗体和斜体标记
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    // 移除删除线
+    .replace(/~~([^~]+)~~/g, '$1')
+    // 移除HTML标签
+    .replace(/<[^>]*>/g, '')
+    // 移除多余的空白字符
+    .replace(/\s+/g, ' ')
+    .trim()
+  
+  console.log('Debug - cleaned content length:', content.length)
+  console.log('Debug - cleaned content preview:', content.substring(0, 200))
+  
+  if (!content) return 0
+  
+  // 分别统计中文字符和英文单词
+  const chineseChars = (content.match(/[\u4e00-\u9fa5]/g) || []).length
+  const englishWords = (content.match(/[a-zA-Z]+/g) || []).length
+  const numbers = (content.match(/\d+/g) || []).join('').length
+  
+  console.log('Debug - chineseChars:', chineseChars)
+  console.log('Debug - englishWords:', englishWords)
+  console.log('Debug - numbers:', numbers)
+  
+  // 中文按字符计算，英文按单词计算，数字按字符计算
+  const totalCount = chineseChars + englishWords + Math.ceil(numbers / 3)
+  console.log('Debug - totalCount:', totalCount)
+  
+  return totalCount
 })
 
 // 估算阅读时间
 const estimatedReadTime = computed(() => {
-  const wordsPerMinute = 200 // 平均阅读速度
-  return Math.ceil(wordCount.value / wordsPerMinute) || 1
+  if (wordCount.value === 0) return 1
+  
+  // 中文阅读速度约 300-500 字/分钟，英文约 200-250 词/分钟
+  // 这里使用一个综合的阅读速度
+  const wordsPerMinute = 350
+  const minutes = Math.ceil(wordCount.value / wordsPerMinute)
+  
+  return Math.max(minutes, 1) // 最少显示1分钟
 })
 
 // 标签点击事件
@@ -405,7 +481,7 @@ onMounted(() => {
 .tag:hover {
   background-color: var(--vp-c-bg-alt);
   border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
+  color: --vp-c-brand-1);
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
