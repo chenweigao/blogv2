@@ -7,6 +7,8 @@ export function useModal(props, emit) {
   // 关闭模态框
   const closeModal = () => {
     isVisible.value = false
+    // 关闭时重置全屏状态
+    isFullscreen.value = false
     emit('close')
   }
 
@@ -29,6 +31,10 @@ export function useModal(props, emit) {
   // 监听 props 变化
   watch(() => props.visible, (newVal) => {
     isVisible.value = newVal
+    // 每次打开时重置全屏状态
+    if (newVal) {
+      isFullscreen.value = false
+    }
   })
 
   // 生命周期
