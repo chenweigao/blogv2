@@ -4,45 +4,46 @@ layout: home
 hero:
   name: "Knowledge Wiki"
   text: "Personal Knowledge Base"
-  tagline: "Documenting work and study insights across AI, CPU, Java, Algorithms, and Python"
+  tagline: "Comprehensive documentation across Computer Science, Programming, AI, and System Architecture"
   image:
     src: /logo.svg
     alt: Knowledge Wiki
   actions:
     - theme: brand
       text: Get Started
-      link: /ai/
+      link: /algorithms/
     - theme: alt
       text: View on GitHub
       link: https://github.com
 
 features:
-  - icon: 🤖
-    title: Artificial Intelligence
-    details: Machine Learning, Deep Learning, NLP, Computer Vision, and AI frameworks
-    link: /ai/
-  - icon: 🔧
-    title: CPU & Architecture
-    details: Computer architecture, instruction sets, cache systems, and performance optimization
-    link: /cpu/
-  - icon: ☕
-    title: Java Programming
-    details: Core concepts, OOP, collections, concurrency, JVM, Spring framework, and best practices
-    link: /java/
   - icon: 📊
     title: Algorithms & Data Structures
-    details: Sorting, searching, graph algorithms, dynamic programming, and complexity analysis
-    link: /algorithm/
-  - icon: 🐍
-    title: Python Programming
-    details: Python basics, advanced features, data science, web development, and testing
-    link: /python/
+    details: Comprehensive coverage of sorting, searching, graph algorithms, dynamic programming, and complexity analysis
+    link: /algorithms/
+  - icon: 🖥️
+    title: Computer Systems
+    details: Deep dive into CPU/GPU architecture, operating systems, memory management, and performance optimization
+    link: /computer-systems/
+  - icon: 💻
+    title: Programming Languages
+    details: In-depth coverage of Java, Python, JVM internals, language features, and best practices
+    link: /programming-languages/
+  - icon: 🤖
+    title: Artificial Intelligence
+    details: Machine learning, deep learning, AI frameworks, and practical AI implementation guides
+    link: /artificial-intelligence/
+  - icon: 🔧
+    title: Development Tools
+    details: Cloud services, databases, frameworks, frontend technologies, and development workflows
+    link: /development-tools/
   - icon: 📚
-    title: Comprehensive Documentation
-    details: Well-organized knowledge base with automatic navigation and search functionality
+    title: Research & Projects
+    details: Academic papers, research findings, and practical project implementations
+    link: /research-projects/
   - icon: 🔍
-    title: Easy Search
-    details: Built-in search functionality to quickly find the information you need
+    title: Advanced Search
+    details: Built-in search functionality to quickly find the information you need across all categories
   - icon: 📱
     title: Responsive Design
     details: Wiki-style design that works perfectly on desktop, tablet, and mobile devices
@@ -50,22 +51,47 @@ features:
 
 ## Welcome to Knowledge Wiki
 
-This is your personal knowledge base for documenting insights, learnings, and best practices across various technology domains. The wiki is organized into five main categories:
+This is your comprehensive personal knowledge base, now reorganized with a clearer and more logical structure. The wiki covers six main domains of computer science and software engineering:
 
-### 🤖 [Artificial Intelligence](/ai/)
-Explore the world of AI, from basic machine learning concepts to advanced deep learning architectures. Covers natural language processing, computer vision, and popular AI frameworks.
+### 📊 [Algorithms & Data Structures](/algorithms/)
+Essential algorithms and data structures including:
+- **Core Algorithms**: Sorting, searching, graph traversal (DFS/BFS)
+- **Advanced Techniques**: Dynamic programming, backtracking, sliding window
+- **Data Structures**: Trees, graphs, hash maps, stacks, linked lists
+- **Algorithm Analysis**: Time/space complexity and optimization strategies
 
-### 🔧 [CPU & Computer Architecture](/cpu/)
-Deep dive into computer architecture, CPU design, instruction sets, memory hierarchies, and performance optimization techniques.
+### 🖥️ [Computer Systems](/computer-systems/)
+Deep dive into computer architecture and systems:
+- **CPU & GPU**: Architecture, instruction sets, pipeline design, cache systems
+- **Operating Systems**: Linux kernel, memory management, process scheduling
+- **Performance**: NUMA, memory optimization, system-level performance tuning
+- **Hardware**: ARM architecture, x86 instructions, hardware-software interaction
 
-### ☕ [Java Programming](/java/)
-Comprehensive Java documentation covering core language features, object-oriented programming, collections framework, concurrency, JVM internals, and enterprise frameworks like Spring.
+### 💻 [Programming Languages](/programming-languages/)
+Comprehensive programming language documentation:
+- **Java**: Core concepts, JVM internals, garbage collection, concurrency
+- **Python**: Language features, advanced techniques, best practices
+- **Language Design**: Memory models, type systems, runtime optimization
 
-### 📊 [Algorithms & Data Structures](/algorithm/)
-Essential algorithms and data structures, including sorting and searching algorithms, graph theory, dynamic programming, and computational complexity analysis.
+### 🤖 [Artificial Intelligence](/artificial-intelligence/)
+AI and machine learning resources:
+- **Machine Learning**: Algorithms, model training, optimization techniques
+- **Deep Learning**: Neural networks, frameworks, practical implementations
+- **AI Tools**: Profiling, optimization, deployment strategies
 
-### 🐍 [Python Programming](/python/)
-Python programming from basics to advanced topics, including data science libraries, web development frameworks, testing methodologies, and best practices.
+### 🔧 [Development Tools](/development-tools/)
+Essential development and operations tools:
+- **Cloud & Server**: Docker, Kubernetes, cloud platforms, server management
+- **Databases**: SQL/NoSQL databases, optimization, data modeling
+- **Frontend**: React, modern web development, UI/UX best practices
+- **Frameworks**: Spring, web frameworks, development patterns
+- **DevOps**: CI/CD, monitoring, deployment automation
+
+### 📚 [Research & Projects](/research-projects/)
+Academic and practical research:
+- **Papers**: Computer architecture, systems, and AI research papers
+- **Projects**: Practical implementations and case studies
+- **Research**: Experimental findings and technical investigations
 
 ---
 
@@ -76,13 +102,12 @@ Python programming from basics to advanced topics, including data science librar
 3. **Navigate**: Each article includes a table of contents for easy navigation
 4. **Contribute**: Add your own insights and learnings to build your knowledge base
 
-## Features
+## Key Improvements in This Reorganization
 
-- **Wiki-style Design**: Clean, professional layout inspired by Wikipedia
-- **Automatic Navigation**: Sidebar navigation automatically generated from your content structure
-- **Table of Contents**: In-page navigation for long articles
-- **Search Functionality**: Full-text search across all documentation
-- **Responsive Design**: Works seamlessly on all devices
-- **Dark Mode Support**: Toggle between light and dark themes
+- **Clearer Categories**: Six well-defined domains instead of mixed classifications
+- **Logical Grouping**: Related content is now properly grouped together
+- **Consistent Structure**: Standardized naming and organization across all categories
+- **Better Navigation**: Hierarchical structure makes finding content easier
+- **Reduced Redundancy**: Eliminated duplicate content across different sections
 
-Start exploring your knowledge wiki today! 🚀
+Start exploring your newly organized knowledge wiki today! 🚀
