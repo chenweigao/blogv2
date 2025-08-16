@@ -1,10 +1,11 @@
-/* Wiki-style Custom Theme with Advanced Animations */
+/* Wiki-style Custom Theme with Advanced Animations - 优化版 */
 :root {
   /* Wiki-inspired color palette */
   --vp-c-brand-1: #0645ad;
   --vp-c-brand-2: #0645ad;
   --vp-c-brand-3: #0645ad;
   --vp-c-brand-soft: rgba(6, 69, 173, 0.14);
+  --vp-c-brand-rgb: 6, 69, 173;
   
   /* Wiki background colors */
   --vp-c-bg: #ffffff;
@@ -19,22 +20,26 @@
   
   /* Wiki border colors */
   --vp-c-border: #a2a9b1;
+  --vp-c-border-hover: #8aa4af;
   --vp-c-divider: #a2a9b1;
   --vp-c-gutter: #a2a9b1;
   
   /* Wiki-style spacing */
   --vp-layout-max-width: 1200px;
   
-  /* Animation variables */
+  /* 优化后的动画变量 - 添加回退值 */
   --animation-duration-fast: 0.2s;
   --animation-duration-normal: 0.3s;
   --animation-duration-slow: 0.5s;
   --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
-  /* Page transition variables */
+  /* 页面过渡变量 */
   --page-transition-duration: 0.4s;
   --page-transition-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* 性能优化：减少重绘 */
+  --transform-gpu: translateZ(0);
 }
 
 /* Dark theme adjustments */
@@ -49,56 +54,81 @@
   --vp-c-text-3: #656d76;
   
   --vp-c-border: #30363d;
+  --vp-c-border-hover: #484f58;
   --vp-c-divider: #21262d;
 }
 
-/* ===== PAGE TRANSITION ANIMATIONS ===== */
+/* ===== 性能优化的基础样式 ===== */
 
-/* 页面切换过渡效果 */
+/* 启用硬件加速的通用类 */
+.gpu-accelerated {
+  transform: var(--transform-gpu);
+  will-change: transform, opacity;
+}
+
+/* 统一的过渡效果基类 */
+.transition-fast {
+  transition: all var(--animation-duration-fast, 0.2s) var(--animation-easing, ease);
+}
+
+.transition-normal {
+  transition: all var(--animation-duration-normal, 0.3s) var(--animation-easing, ease);
+}
+
+.transition-slow {
+  transition: all var(--animation-duration-slow, 0.5s) var(--animation-easing, ease);
+}
+
+/* ===== 页面过渡动画优化 ===== */
+
+/* 页面切换过渡效果 - 使用 GPU 加速 */
 .VPContent {
-  transition: all var(--page-transition-duration) var(--page-transition-easing);
+  transition: all var(--page-transition-duration, 0.4s) var(--page-transition-easing, ease);
+  transform: var(--transform-gpu);
   transform-origin: center top;
 }
 
-/* 页面内容淡入淡出 */
 .VPDoc {
-  transition: all var(--page-transition-duration) var(--page-transition-easing);
+  transition: all var(--page-transition-duration, 0.4s) var(--page-transition-easing, ease);
+  transform: var(--transform-gpu);
   transform-origin: center top;
 }
 
-/* 页面切换时的内容动画 */
 .vp-doc {
-  transition: all var(--page-transition-duration) var(--page-transition-easing);
+  transition: all var(--page-transition-duration, 0.4s) var(--page-transition-easing, ease);
 }
 
-/* 页面加载状态 */
+/* 页面加载状态优化 */
 .page-loading .VPContent {
   opacity: 0.7;
-  transform: translateY(10px);
+  transform: translateY(10px) var(--transform-gpu);
   filter: blur(1px);
 }
 
 .page-loading .VPDoc {
   opacity: 0.5;
-  transform: scale(0.98) translateY(20px);
+  transform: scale(0.98) translateY(20px) var(--transform-gpu);
 }
 
-/* 链接点击时的即时反馈 */
+/* 链接交互优化 */
+.vp-link-interactive {
+  position: relative;
+  transition: all var(--animation-duration-fast, 0.2s) var(--animation-easing, ease);
+  transform: var(--transform-gpu);
+}
+
 .VPNavBarMenuLink,
 .VPSidebarItem .link,
 .vp-doc a {
-  position: relative;
-  transition: all var(--animation-duration-fast) var(--animation-easing);
+  @extend .vp-link-interactive;
 }
 
-.VPNavBarMenuLink:active,
-.VPSidebarItem .link:active,
-.vp-doc a:active {
-  transform: scale(0.98);
+.vp-link-interactive:active {
+  transform: scale(0.98) var(--transform-gpu);
   opacity: 0.8;
 }
 
-/* 页面切换时的加载指示器 */
+/* 页面切换加载指示器优化 */
 .page-transition-indicator {
   position: fixed;
   top: 0;
@@ -107,11 +137,12 @@
   height: 2px;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    var(--vp-c-brand-1) 50%, 
+    var(--vp-c-brand-1, #0645ad) 50%, 
     transparent 100%);
   z-index: 9998;
   animation: pageTransitionProgress 1s ease-in-out;
   transform-origin: left center;
+  will-change: transform, opacity;
 }
 
 @keyframes pageTransitionProgress {
@@ -129,79 +160,79 @@
   }
 }
 
-/* ===== GLOBAL ANIMATIONS ===== */
+/* ===== 优化后的全局动画 ===== */
 
-/* Page load animation */
+/* 页面加载动画 - GPU 加速 */
 @keyframes pageLoad {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(20px) var(--transform-gpu);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) var(--transform-gpu);
   }
 }
 
 @keyframes slideInFromLeft {
   from {
     opacity: 0;
-    transform: translateX(-50px);
+    transform: translateX(-50px) var(--transform-gpu);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) var(--transform-gpu);
   }
 }
 
 @keyframes slideInFromRight {
   from {
     opacity: 0;
-    transform: translateX(50px);
+    transform: translateX(50px) var(--transform-gpu);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) var(--transform-gpu);
   }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(30px) var(--transform-gpu);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) var(--transform-gpu);
   }
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.9) var(--transform-gpu);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) var(--transform-gpu);
   }
 }
 
 @keyframes pulse {
   0%, 100% {
-    transform: scale(1);
+    transform: scale(1) var(--transform-gpu);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.05) var(--transform-gpu);
   }
 }
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0px) var(--transform-gpu);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-10px) var(--transform-gpu);
   }
 }
 
@@ -216,20 +247,20 @@
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 5px var(--vp-c-brand-1);
+    box-shadow: 0 0 5px var(--vp-c-brand-1, #0645ad);
   }
   50% {
-    box-shadow: 0 0 20px var(--vp-c-brand-1), 0 0 30px var(--vp-c-brand-1);
+    box-shadow: 0 0 20px var(--vp-c-brand-1, #0645ad), 0 0 30px var(--vp-c-brand-1, #0645ad);
   }
 }
 
-/* ===== LAYOUT ANIMATIONS ===== */
+/* ===== 布局动画优化 ===== */
 
 /* Wiki-style layout adjustments */
 .Layout {
   background-color: var(--vp-c-bg);
-  animation: pageLoad var(--animation-duration-slow) var(--animation-easing);
-  transition: all var(--page-transition-duration) var(--page-transition-easing);
+  animation: pageLoad var(--animation-duration-slow, 0.5s) var(--animation-easing, ease);
+  transition: all var(--page-transition-duration, 0.4s) var(--page-transition-easing, ease);
 }
 
 /* Wiki-style navigation */
@@ -237,71 +268,51 @@
   background-color: var(--vp-c-bg);
   border-bottom: 1px solid var(--vp-c-border);
   backdrop-filter: blur(10px);
-  transition: all var(--animation-duration-normal) var(--animation-easing);
+  transition: all var(--animation-duration-normal, 0.3s) var(--animation-easing, ease);
 }
 
 .VPNavBar {
   background-color: var(--vp-c-bg);
-  transition: all var(--animation-duration-normal) var(--animation-easing);
+  transition: all var(--animation-duration-normal, 0.3s) var(--animation-easing, ease);
 }
 
 .VPNavBarTitle {
-  transition: all var(--animation-duration-normal) var(--animation-easing);
+  transition: all var(--animation-duration-normal, 0.3s) var(--animation-easing, ease);
 }
 
-/* ===== CODE BLOCK CLICK FUNCTIONALITY ===== */
+/* ===== 性能优化 ===== */
 
-/* 可点击的代码块样式 */
-.clickable-code-block {
-  cursor: pointer !important;
-  position: relative;
-  transition: all var(--animation-duration-fast) var(--animation-easing);
-}
-
-.clickable-code-block:active {
-  transform: scale(0.99);
-}
-
-/* 代码块容器悬停效果 */
-.main pre:has(.clickable-code-block) {
-  transition: all var(--animation-duration-fast) var(--animation-easing);
-  border-radius: 8px;
-  overflow: visible;
-  position: relative;
-  cursor: pointer;
-}
-
-.main pre:has(.clickable-code-block):hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
-  overflow: visible;
-}
-
-/* 暗色主题下的代码块样式调整 */
-.dark .main pre:has(.clickable-code-block):hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-/* 代码块点击动画 */
-@keyframes codeBlockClick {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(0.98);
-  }
-  100% {
-    transform: scale(1);
+/* 减少重绘的优化 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-.clickable-code-block.clicked {
-  animation: codeBlockClick 0.2s ease-out;
-}
-
-/* 响应式设计 */
+/* 移动设备优化 */
 @media (max-width: 768px) {
-  .main pre:has(.clickable-code-block):hover {
-    transform: none;
+  :root {
+    --animation-duration-fast: 0.15s;
+    --animation-duration-normal: 0.2s;
+    --animation-duration-slow: 0.3s;
+    --page-transition-duration: 0.3s;
+  }
+  
+  /* 移动设备上禁用一些复杂动画 */
+  .page-loading .VPContent,
+  .page-loading .VPDoc {
+    filter: none; /* 移除模糊效果以提升性能 */
+  }
+}
+
+/* 高分辨率屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .page-transition-indicator {
+    height: 1px; /* 高分辨率屏幕上使用更细的指示器 */
   }
 }

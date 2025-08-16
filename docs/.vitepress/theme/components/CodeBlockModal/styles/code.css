@@ -1,13 +1,13 @@
 /* 行号样式 */
 .line-numbers {
-  background: var(--vp-c-bg-soft);
-  border-right: 1px solid var(--vp-c-border);
+  background: var(--vp-c-bg-soft, #f8f9fa);
+  border-right: 1px solid var(--vp-c-border, #a2a9b1);
   padding: 20px 0;
   min-width: 60px;
   overflow-y: auto;
   overflow-x: hidden;
   user-select: none;
-  font-family: var(--vp-font-family-mono);
+  font-family: var(--vp-font-family-mono, 'Menlo', 'Monaco', 'Consolas', monospace);
   font-size: 13px;
   line-height: 1.5;
   flex-shrink: 0;
@@ -15,15 +15,15 @@
 
 .line-number {
   padding: 0 16px;
-  color: var(--vp-c-text-3);
+  color: var(--vp-c-text-3, #777777);
   text-align: right;
   transition: color 0.2s ease;
   white-space: nowrap;
 }
 
 .line-number.highlighted {
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft, rgba(6, 69, 173, 0.14));
+  color: var(--vp-c-brand-1, #0645ad);
   font-weight: 600;
 }
 
@@ -40,12 +40,12 @@
   position: relative;
 }
 
-/* Shiki 样式覆盖 */
-:deep(.shiki) {
+/* Shiki 样式覆盖 - 移除 !important，使用更具体的选择器 */
+.code-modal-container :deep(.shiki) {
   margin: 0;
   padding: 20px 24px;
-  background: transparent !important;
-  font-family: var(--vp-font-family-mono);
+  background: transparent;
+  font-family: var(--vp-font-family-mono, 'Menlo', 'Monaco', 'Consolas', monospace);
   font-size: 14px;
   line-height: 1.5;
   overflow: visible; /* 让内容自然流动 */
@@ -54,7 +54,7 @@
   box-sizing: border-box;
 }
 
-:deep(.shiki code) {
+.code-modal-container :deep(.shiki code) {
   background: transparent;
   padding: 0;
   font-size: inherit;
@@ -64,7 +64,7 @@
   width: 100%;
 }
 
-:deep(.shiki pre) {
+.code-modal-container :deep(.shiki pre) {
   margin: 0;
   padding: 0;
   background: transparent;
@@ -73,12 +73,12 @@
   word-wrap: normal;
 }
 
-:deep(.highlighted-line) {
-  background: var(--vp-c-brand-soft);
+.code-modal-container :deep(.highlighted-line) {
+  background: var(--vp-c-brand-soft, rgba(6, 69, 173, 0.14));
   display: block;
   margin: 0 -24px;
   padding: 0 24px;
-  border-left: 3px solid var(--vp-c-brand-1);
+  border-left: 3px solid var(--vp-c-brand-1, #0645ad);
 }
 
 /* 确保代码容器有正确的高度 */
@@ -96,7 +96,7 @@
   min-height: 0; /* 确保可以收缩 */
 }
 
-/* 滚动条样式 */
+/* 滚动条样式优化 */
 .shiki-container::-webkit-scrollbar,
 .line-numbers::-webkit-scrollbar,
 .code-content::-webkit-scrollbar {
@@ -107,21 +107,22 @@
 .shiki-container::-webkit-scrollbar-track,
 .line-numbers::-webkit-scrollbar-track,
 .code-content::-webkit-scrollbar-track {
-  background: var(--vp-c-bg-soft);
+  background: var(--vp-c-bg-soft, #f8f9fa);
   border-radius: 4px;
 }
 
 .shiki-container::-webkit-scrollbar-thumb,
 .line-numbers::-webkit-scrollbar-thumb,
 .code-content::-webkit-scrollbar-thumb {
-  background: var(--vp-c-text-3);
+  background: var(--vp-c-text-3, #777777);
   border-radius: 4px;
+  transition: background 0.2s ease;
 }
 
 .shiki-container::-webkit-scrollbar-thumb:hover,
 .line-numbers::-webkit-scrollbar-thumb:hover,
 .code-content::-webkit-scrollbar-thumb:hover {
-  background: var(--vp-c-text-2);
+  background: var(--vp-c-text-2, #555555);
 }
 
 /* Firefox 滚动条样式 */
@@ -129,10 +130,10 @@
 .line-numbers,
 .code-content {
   scrollbar-width: thin;
-  scrollbar-color: var(--vp-c-text-3) var(--vp-c-bg-soft);
+  scrollbar-color: var(--vp-c-text-3, #777777) var(--vp-c-bg-soft, #f8f9fa);
 }
 
-/* 响应式设计 */
+/* 响应式设计优化 */
 @media (max-width: 768px) {
   .line-numbers {
     min-width: 50px;
@@ -143,7 +144,7 @@
     padding: 0 12px;
   }
   
-  :deep(.shiki) {
+  .code-modal-container :deep(.shiki) {
     padding: 16px 20px;
     font-size: 13px;
   }
@@ -159,8 +160,33 @@
     font-size: 12px;
   }
   
-  :deep(.shiki) {
+  .code-modal-container :deep(.shiki) {
     padding: 16px;
     font-size: 12px;
   }
+}
+
+/* 深色主题适配 */
+.dark .line-numbers {
+  background: var(--vp-c-bg-soft, #161b22);
+  border-right-color: var(--vp-c-border, #30363d);
+}
+
+.dark .line-number {
+  color: var(--vp-c-text-3, #656d76);
+}
+
+.dark .line-number.highlighted {
+  background: var(--vp-c-brand-soft, rgba(100, 108, 255, 0.14));
+  color: var(--vp-c-brand-1, #646cff);
+}
+
+/* 性能优化 */
+.code-modal-container {
+  contain: layout style paint;
+}
+
+.shiki-container,
+.line-numbers {
+  will-change: scroll-position;
 }

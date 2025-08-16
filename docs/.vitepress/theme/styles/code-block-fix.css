@@ -1,231 +1,227 @@
-/* 修复代码块点击后悬停样式变化的问题 */
+/* 优化后的代码块样式 - 减少 !important 使用，简化选择器结构 */
 
-/* 统一代码块的 hover 和 focus 样式，确保点击前后悬停效果一致 */
+/* 基础样式重置 */
 pre, 
 code, 
-.language-text,
 [class*="language-"],
 .shiki,
 .code-block,
-.markdown-preview-view pre,
-.markdown-preview-view code,
 .clickable-code-block {
-  /* 移除默认的 focus outline */
-  outline: none !important;
-  
-  /* 确保所有状态的过渡效果一致 */
-  transition: all 0.2s ease !important;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
-/* 代码块 hover 状态 - 只对最外层容器应用悬停效果，避免嵌套冲突 */
-/* 优先级：容器 > pre > code，避免双重效果 */
+/* 统一的代码块容器样式 */
+.code-block-container,
+div[class*="language-"],
+.code-block,
+.highlight,
+.highlighter-rouge {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-alt);
+  transition: all 0.2s ease;
+}
+
+/* 悬停效果 - 统一应用到容器级别 */
+.code-block-container:hover,
 div[class*="language-"]:hover,
 .code-block:hover,
 .highlight:hover,
-.code-container:hover,
-.code-wrapper:hover,
 .highlighter-rouge:hover {
-  /* 使用统一的 hover 样式 */
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+  border-color: var(--vp-c-border-hover, #e2e8f0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  background-color: var(--vp-c-bg-soft);
 }
 
-/* 对于没有容器包裹的 pre 元素，但排除嵌套在语言容器内的 pre */
-pre:hover:not(div[class*="language-"] pre):not(.code-block pre):not(.highlight pre) {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+/* 对于没有容器包裹的独立 pre 元素 */
+pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre) {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-alt);
+  transition: all 0.2s ease;
 }
 
-/* 对于独立的 code 元素（不在 pre 内），但排除嵌套的 code */
-code:hover:not(pre code):not(div[class*="language-"] code) {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre):hover {
+  border-color: var(--vp-c-border-hover, #e2e8f0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  background-color: var(--vp-c-bg-soft);
 }
 
-/* 特殊处理：VitePress 和 Markdown 预览的代码块 */
-.vp-doc pre:hover:not(div[class*="language-"] pre),
-.markdown-preview-view pre:hover:not(.code-block pre) {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+/* 对于独立的行内 code 元素 */
+code:not(pre code):not([class*="language-"] code) {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 4px;
+  background-color: var(--vp-c-bg-alt);
+  padding: 2px 6px;
+  transition: all 0.2s ease;
 }
 
-/* 可点击代码块的悬停效果 */
-.clickable-code-block:hover {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+code:not(pre code):not([class*="language-"] code):hover {
+  border-color: var(--vp-c-border-hover, #e2e8f0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--vp-c-bg-soft);
 }
 
-/* 禁用嵌套元素的悬停效果，防止双重效果 */
-div[class*="language-"] pre:hover,
-div[class*="language-"] code:hover,
-.code-block pre:hover,
-.code-block code:hover,
-.highlight pre:hover,
-.highlight code:hover,
-pre code:hover {
-  /* 重置嵌套元素的悬停效果 */
-  border-color: inherit !important;
-  box-shadow: none !important;
-  transform: none !important;
-  background-color: inherit !important;
-}
-
-/* Focus 状态 - 应用相同的逻辑 */
+/* Focus 状态 - 复用 hover 样式 */
+.code-block-container:focus,
 div[class*="language-"]:focus,
 .code-block:focus,
 .highlight:focus,
-.code-container:focus,
-.code-wrapper:focus,
-.highlighter-rouge:focus {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
-  outline: none !important;
+.highlighter-rouge:focus,
+pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre):focus,
+code:not(pre code):not([class*="language-"] code):focus {
+  border-color: var(--vp-c-border-hover, #e2e8f0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  background-color: var(--vp-c-bg-soft);
+  outline: none;
 }
 
-pre:focus:not(div[class*="language-"] pre):not(.code-block pre):not(.highlight pre) {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
-  outline: none !important;
+/* 可点击代码块的特殊样式 */
+.clickable-code-block {
+  cursor: pointer;
+  position: relative;
 }
 
-code:focus:not(pre code):not(div[class*="language-"] code) {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
-  outline: none !important;
+.clickable-code-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: all 0.2s ease;
 }
 
-.clickable-code-block:focus {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
-  outline: none !important;
+.clickable-code-block:hover::after {
+  background: rgba(var(--vp-c-brand-rgb, 100, 108, 255), 0.05);
 }
 
-/* 禁用嵌套元素的 focus 效果 */
-div[class*="language-"] pre:focus,
-div[class*="language-"] code:focus,
-.code-block pre:focus,
-.code-block code:focus,
-.highlight pre:focus,
-.highlight code:focus,
-pre code:focus {
-  border-color: inherit !important;
-  box-shadow: none !important;
-  transform: none !important;
-  background-color: inherit !important;
-  outline: none !important;
-}
-
-/* Focus-visible 状态处理 */
-div[class*="language-"]:focus-visible,
-.code-block:focus-visible,
-.highlight:focus-visible,
-pre:focus-visible:not(div[class*="language-"] pre):not(.code-block pre),
-code:focus-visible:not(pre code):not(div[class*="language-"] code),
-.clickable-code-block:focus-visible {
-  outline: none !important;
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
-}
-
-/* Active 状态处理 */
-div[class*="language-"]:active,
-.code-block:active,
-.highlight:active,
-pre:active:not(div[class*="language-"] pre):not(.code-block pre),
-code:active:not(pre code):not(div[class*="language-"] code),
-.clickable-code-block:active {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
-  outline: none !important;
-}
-
-/* 特别处理可能的代码块容器 */
-.code-container,
-.code-wrapper,
-.highlighter-rouge {
-  outline: none !important;
-}
-
-/* 移除浏览器默认的蓝色 focus ring */
-*:focus {
-  outline: none !important;
-}
-
-/* 为可访问性保留键盘导航的 focus 指示 */
-*:focus-visible {
-  outline: 2px solid var(--vp-c-brand-1, #646cff) !important;
-  outline-offset: 2px !important;
-}
-
-/* 但对于代码块，即使是键盘导航也使用统一样式 */
-div[class*="language-"]:focus-visible,
-.code-block:focus-visible,
-.highlight:focus-visible,
-.clickable-code-block:focus-visible {
-  outline: none !important;
-}
-
-/* 确保点击后立即失去焦点时的样式重置 */
+/* 点击动画效果 */
 .clickable-code-block.clicked {
-  animation: resetFocus 0.1s ease-out;
+  animation: clickFeedback 0.15s ease-out;
 }
 
-@keyframes resetFocus {
+@keyframes clickFeedback {
   0% {
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1);
+  }
+  50% {
+    transform: translateY(0) scale(0.98);
   }
   100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-/* VitePress 特定的代码块样式修复 */
+/* 禁用嵌套元素的交互效果，防止冲突 */
+div[class*="language-"] pre,
+div[class*="language-"] code,
+.code-block pre,
+.code-block code,
+.highlight pre,
+.highlight code {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+
+div[class*="language-"] pre:hover,
+div[class*="language-"] pre:focus,
+div[class*="language-"] code:hover,
+div[class*="language-"] code:focus,
+.code-block pre:hover,
+.code-block pre:focus,
+.code-block code:hover,
+.code-block code:focus,
+.highlight pre:hover,
+.highlight pre:focus,
+.highlight code:hover,
+.highlight code:focus {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  outline: none;
+}
+
+/* VitePress 特定优化 */
+.vp-doc div[class*="language-"],
+.vp-doc .code-block {
+  margin: 16px 0;
+}
+
 .vp-doc div[class*="language-"]:hover,
 .vp-doc .code-block:hover {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
+  border-color: var(--vp-c-border-hover, #e2e8f0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  background-color: var(--vp-c-bg-soft);
 }
 
-.vp-doc div[class*="language-"]:focus,
-.vp-doc .code-block:focus {
-  border-color: var(--vp-c-border-hover, var(--border-color, #e2e8f0)) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-  background-color: var(--vp-c-bg-soft, #f8f9fa) !important;
-  outline: none !important;
+/* 确保嵌套元素不会覆盖容器样式 */
+.vp-doc div[class*="language-"] pre,
+.vp-doc div[class*="language-"] code,
+.vp-doc .code-block pre,
+.vp-doc .code-block code {
+  background: transparent;
+  border: none;
+  margin: 0;
 }
 
-/* 确保嵌套在 VitePress 容器内的元素不触发悬停效果 */
-.vp-doc div[class*="language-"] pre:hover,
-.vp-doc div[class*="language-"] code:hover,
-.vp-doc .code-block pre:hover,
-.vp-doc .code-block code:hover {
-  border-color: inherit !important;
-  box-shadow: none !important;
-  transform: none !important;
-  background-color: inherit !important;
+/* 移除所有默认的 focus outline */
+*:focus {
+  outline: none;
+}
+
+/* 为可访问性保留键盘导航的 focus 指示，但使用统一样式 */
+*:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1, #646cff);
+  outline-offset: 2px;
+}
+
+/* 代码块的键盘导航使用统一的悬停样式而不是默认 outline */
+.code-block-container:focus-visible,
+div[class*="language-"]:focus-visible,
+.code-block:focus-visible,
+.highlight:focus-visible,
+.clickable-code-block:focus-visible {
+  outline: none;
+  border-color: var(--vp-c-brand-1, #646cff);
+  box-shadow: 0 0 0 2px rgba(var(--vp-c-brand-rgb, 100, 108, 255), 0.2);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .code-block-container:hover,
+  div[class*="language-"]:hover,
+  .code-block:hover,
+  .highlight:hover {
+    transform: none; /* 移动设备上禁用 transform 效果 */
+  }
+}
+
+/* 深色主题适配 */
+.dark .code-block-container,
+.dark div[class*="language-"],
+.dark .code-block,
+.dark .highlight {
+  border-color: var(--vp-c-border);
+  background-color: var(--vp-c-bg-alt);
+}
+
+.dark .code-block-container:hover,
+.dark div[class*="language-"]:hover,
+.dark .code-block:hover,
+.dark .highlight:hover {
+  border-color: var(--vp-c-border-hover, #30363d);
+  background-color: var(--vp-c-bg-soft);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
