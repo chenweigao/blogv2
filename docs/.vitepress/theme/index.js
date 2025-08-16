@@ -1,6 +1,7 @@
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
 import './styles/code-block-fix.css'
+import './styles/sidebar-effects.css'
 import ArticleMeta from './components/ArticleMeta.vue'
 import PageTransition from './components/PageTransition.vue'
 import ScrollAnimations from './components/ScrollAnimations.vue'
