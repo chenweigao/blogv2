@@ -306,7 +306,7 @@ export default {
           JSON.parse(codeText)
           return 'json'
         } catch (e) {
-          // 不是有效的JSON
+          // 不是有效的JSON 1
         }
       }
       
