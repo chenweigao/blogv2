@@ -12,7 +12,9 @@ import GitHistoryButton from './components/GitHistoryButton.vue'
 import GitHistoryModal from './components/GitHistoryModal.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
 import { h } from 'vue'
-import mediumZoom from 'medium-zoom'
+// 正确导入 vitepress-plugin-image-viewer
+import 'viewerjs/dist/viewer.min.css'
+import imageViewer from 'vitepress-plugin-image-viewer'
 import { onMounted, watch, nextTick, ref } from 'vue'
 import { useRoute } from 'vitepress'
 
@@ -44,16 +46,8 @@ export default {
   setup() {
     const route = useRoute()
     
-    const initZoom = () => {
-      // 等待 DOM 更新完成后初始化 medium-zoom
-      nextTick(() => {
-        mediumZoom('.main img', {
-          background: 'rgba(0, 0, 0, 0.8)',
-          scrollOffset: 0,
-          margin: 24
-        })
-      })
-    }
+    // 使用 vitepress-plugin-image-viewer，按照官方文档的正确方式
+    imageViewer(route)
     
     const initCodeBlockClick = () => {
       // 等待 DOM 更新完成后初始化代码块点击事件
@@ -309,7 +303,6 @@ export default {
     // 监听路由变化，重新初始化功能
     watch(() => route.path, () => {
       setTimeout(() => {
-        initZoom()
         initCodeBlockClick()
       }, 100)
     }, { immediate: true })
