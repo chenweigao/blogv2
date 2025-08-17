@@ -1,14 +1,25 @@
 <template>
   <Layout>
-    <!-- 在文档内容前添加文章元信息 -->
+    <!-- 在文档内容前添加文章元信息和历史记录的组合布局 -->
     <template #doc-before>
-      <ArticleMeta v-if="isDocPage" />
-    </template>
-    
-    <!-- 在文档内容后添加 Git 历史记录按钮 -->
-    <template #doc-after>
-      <div v-if="isDocPage" class="doc-footer-actions">
-        <GitHistoryButton />
+      <div v-if="isDocPage" class="doc-header-container">
+        <!-- 文章元信息（标题、日期、分类、作者、标签） -->
+        <div class="meta-section">
+          <ArticleMeta :show-reading-stats="false" />
+        </div>
+        
+        <!-- 阅读统计和历史记录同行 -->
+        <div class="stats-history-row">
+          <!-- 左侧：阅读统计 -->
+          <div class="reading-stats-section">
+            <ReadingStats />
+          </div>
+          
+          <!-- 右侧：历史记录按钮 -->
+          <div class="history-section">
+            <GitHistoryButton />
+          </div>
+        </div>
       </div>
     </template>
   </Layout>
@@ -22,6 +33,7 @@ import { computed } from 'vue'
 import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import ArticleMeta from './components/ArticleMeta.vue'
+import ReadingStats from './components/ReadingStats.vue'
 import GitHistoryButton from './components/GitHistoryButton.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
 
@@ -54,18 +66,59 @@ const isDocPage = computed(() => {
 </script>
 
 <style scoped>
-.doc-footer-actions {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--vp-c-divider);
+.doc-header-container {
+  margin-bottom: 2rem;
+}
+
+.meta-section {
+  margin-bottom: 1.5rem;
+}
+
+.stats-history-row {
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--vp-c-divider);
+  gap: 2rem;
+}
+
+.reading-stats-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.history-section {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .stats-history-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .reading-stats-section {
+    width: 100%;
+  }
+  
+  .history-section {
+    align-self: flex-end;
+  }
 }
 
 @media (max-width: 640px) {
-  .doc-footer-actions {
-    justify-content: center;
+  .stats-history-row {
+    gap: 0.75rem;
+  }
+  
+  .history-section {
+    align-self: center;
   }
 }
 </style>

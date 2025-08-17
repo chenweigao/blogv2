@@ -75,18 +75,6 @@
           </div>
         </div>
       </div>
-      
-      <!-- 阅读统计 -->
-      <div class="reading-stats" v-if="showStats">
-        <div class="stat-item">
-          <div class="stat-icon">📖</div>
-          <span class="stat-text">{{ estimatedReadTime }} 分钟阅读</span>
-        </div>
-        <div class="stat-item">
-          <div class="stat-icon">📝</div>
-          <span class="stat-text">{{ wordCount }} 字</span>
-        </div>
-      </div>
     </div>
     
     <!-- 装饰性元素 -->
@@ -97,11 +85,18 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useData } from 'vitepress'
 
-const { frontmatter, page } = useData()
-const showStats = ref(true)
+// Props
+const props = defineProps({
+  showReadingStats: {
+    type: Boolean,
+    default: true
+  }
+})
+
+const { frontmatter } = useData()
 
 // 检查是否显示元数据
 const showMeta = computed(() => {
@@ -124,96 +119,6 @@ const formattedDate = computed(() => {
     month: 'long',
     day: 'numeric'
   })
-})
-
-// 计算字数
-const wordCount = computed(() => {
-  if (!page.value.content) {
-    // 在开发模式下，使用可用的信息来估算字数
-    let estimatedWords = 0
-    
-    // 基于标题估算
-    if (frontmatter.value.title) {
-      estimatedWords += frontmatter.value.title.length
-    }
-    
-    // 基于描述估算
-    if (frontmatter.value.description) {
-      estimatedWords += frontmatter.value.description.length
-    }
-    
-    // 基于文件路径深度估算内容复杂度
-    const pathDepth = page.value.filePath ? page.value.filePath.split('/').length : 1
-    const baseEstimate = Math.max(500, pathDepth * 200) // 基础估算
-    
-    estimatedWords += baseEstimate
-    
-    return estimatedWords
-  }
-  
-  let content = page.value.content
-  
-  // 移除 markdown 语法标记
-  content = content
-    // 移除代码块
-    .replace(/```[\s\S]*?```/g, '')
-    // 移除行内代码
-    .replace(/`[^`]*`/g, '')
-    // 移除链接
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    // 移除图片
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
-    // 移除标题标记
-    .replace(/^#{1,6}\s+/gm, '')
-    // 移除列表标记
-    .replace(/^[\s]*[-*+]\s+/gm, '')
-    .replace(/^[\s]*\d+\.\s+/gm, '')
-    // 移除引用标记
-    .replace(/^>\s+/gm, '')
-    // 移除粗体和斜体标记
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/\*([^*]+)\*/g, '$1')
-    .replace(/__([^_]+)__/g, '$1')
-    .replace(/_([^_]+)_/g, '$1')
-    // 移除删除线
-    .replace(/~~([^~]+)~~/g, '$1')
-    // 移除HTML标签
-    .replace(/<[^>]*>/g, '')
-    // 移除多余的空白字符
-    .replace(/\s+/g, ' ')
-    .trim()
-  
-  console.log('Debug - cleaned content length:', content.length)
-  console.log('Debug - cleaned content preview:', content.substring(0, 200))
-  
-  if (!content) return 0
-  
-  // 分别统计中文字符和英文单词
-  const chineseChars = (content.match(/[\u4e00-\u9fa5]/g) || []).length
-  const englishWords = (content.match(/[a-zA-Z]+/g) || []).length
-  const numbers = (content.match(/\d+/g) || []).join('').length
-  
-  console.log('Debug - chineseChars:', chineseChars)
-  console.log('Debug - englishWords:', englishWords)
-  console.log('Debug - numbers:', numbers)
-  
-  // 中文按字符计算，英文按单词计算，数字按字符计算
-  const totalCount = chineseChars + englishWords + Math.ceil(numbers / 3)
-  console.log('Debug - totalCount:', totalCount)
-  
-  return totalCount
-})
-
-// 估算阅读时间
-const estimatedReadTime = computed(() => {
-  if (wordCount.value === 0) return 1
-  
-  // 中文阅读速度约 300-500 字/分钟，英文约 200-250 词/分钟
-  // 这里使用一个综合的阅读速度
-  const wordsPerMinute = 350
-  const minutes = Math.ceil(wordCount.value / wordsPerMinute)
-  
-  return Math.max(minutes, 1) // 最少显示1分钟
 })
 
 // 标签点击事件
@@ -253,9 +158,9 @@ onMounted(() => {
 
 <style scoped>
 .article-meta {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--vp-c-divider);
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
   position: relative;
   overflow: hidden;
   opacity: 0;
@@ -481,7 +386,7 @@ onMounted(() => {
 .tag:hover {
   background-color: var(--vp-c-bg-alt);
   border-color: var(--vp-c-brand-1);
-  color: --vp-c-brand-1);
+  color: var(--vp-c-brand-1);
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
@@ -498,53 +403,6 @@ onMounted(() => {
 
 .tag:hover .tag-glow {
   left: 100%;
-}
-
-/* 阅读统计 */
-.reading-stats {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--vp-c-divider);
-  animation: statsSlide 0.8s ease-out 0.7s forwards;
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-@keyframes statsSlide {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  color: var(--vp-c-text-3);
-  transition: all 0.3s ease;
-}
-
-.stat-item:hover {
-  color: var(--vp-c-brand-1);
-  transform: scale(1.05);
-}
-
-.stat-icon {
-  font-size: 1rem;
-  animation: iconPulse 2s ease-in-out infinite;
-}
-
-@keyframes iconPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
 }
 
 /* 装饰性元素 */
@@ -597,11 +455,6 @@ onMounted(() => {
   .tag-list {
     width: 100%;
   }
-  
-  .reading-stats {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
 }
 
 /* 暗色主题适配 */
@@ -624,18 +477,13 @@ onMounted(() => {
   .article-meta,
   .meta-item,
   .category-tag,
-  .tag,
-  .reading-stats {
+  .tag {
     animation: none;
     opacity: 1;
     transform: none;
   }
   
   .title-text {
-    animation: none;
-  }
-  
-  .stat-icon {
     animation: none;
   }
   
