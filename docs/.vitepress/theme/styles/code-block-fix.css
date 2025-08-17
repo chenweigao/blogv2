@@ -1,4 +1,4 @@
-/* 优化后的代码块样式 - 减少 !important 使用，简化选择器结构 */
+/* 优化后的代码块样式 - 统一悬停阴影效果 */
 
 /* 基础样式重置 */
 pre, 
@@ -8,7 +8,7 @@ code,
 .code-block,
 .clickable-code-block {
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 统一的代码块容器样式 */
@@ -20,18 +20,18 @@ div[class*="language-"],
   border: 1px solid var(--vp-c-border);
   border-radius: 8px;
   background-color: var(--vp-c-bg-alt);
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 悬停效果 - 统一应用到容器级别 */
+/* 统一的悬停效果 - 应用到所有代码容器 */
 .code-block-container:hover,
 div[class*="language-"]:hover,
 .code-block:hover,
 .highlight:hover,
 .highlighter-rouge:hover {
-  border-color: var(--vp-c-border-hover, #e2e8f0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
   background-color: var(--vp-c-bg-soft);
 }
 
@@ -40,29 +40,31 @@ pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre) {
   border: 1px solid var(--vp-c-border);
   border-radius: 8px;
   background-color: var(--vp-c-bg-alt);
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre):hover {
-  border-color: var(--vp-c-border-hover, #e2e8f0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
   background-color: var(--vp-c-bg-soft);
 }
 
-/* 对于独立的行内 code 元素 */
+/* 统一的行内代码悬停效果 */
 code:not(pre code):not([class*="language-"] code) {
   border: 1px solid var(--vp-c-border);
   border-radius: 4px;
   background-color: var(--vp-c-bg-alt);
   padding: 2px 6px;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 code:not(pre code):not([class*="language-"] code):hover {
-  border-color: var(--vp-c-border-hover, #e2e8f0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  background-color: var(--vp-c-bg-soft);
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 2px 8px rgba(6, 69, 173, 0.15);
+  background-color: rgba(6, 69, 173, 0.05);
+  color: var(--vp-c-brand-1);
+  transform: translateY(-1px);
 }
 
 /* Focus 状态 - 复用 hover 样式 */
@@ -73,11 +75,17 @@ div[class*="language-"]:focus,
 .highlighter-rouge:focus,
 pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre):focus,
 code:not(pre code):not([class*="language-"] code):focus {
-  border-color: var(--vp-c-border-hover, #e2e8f0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
   background-color: var(--vp-c-bg-soft);
   outline: none;
+}
+
+/* 行内代码的 focus 状态 */
+code:not(pre code):not([class*="language-"] code):focus {
+  box-shadow: 0 2px 8px rgba(6, 69, 173, 0.15);
+  transform: translateY(-1px);
 }
 
 /* 可点击代码块的特殊样式 */
@@ -95,11 +103,7 @@ code:not(pre code):not([class*="language-"] code):focus {
   bottom: 0;
   pointer-events: none;
   border-radius: inherit;
-  transition: all 0.2s ease;
-}
-
-.clickable-code-block:hover::after {
-  background: rgba(var(--vp-c-brand-rgb, 100, 108, 255), 0.05);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 点击动画效果 */
@@ -160,9 +164,9 @@ div[class*="language-"] code:focus,
 
 .vp-doc div[class*="language-"]:hover,
 .vp-doc .code-block:hover {
-  border-color: var(--vp-c-border-hover, #e2e8f0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
   background-color: var(--vp-c-bg-soft);
 }
 
@@ -221,7 +225,7 @@ div[class*="language-"]:focus-visible,
 .dark div[class*="language-"]:hover,
 .dark .code-block:hover,
 .dark .highlight:hover {
-  border-color: var(--vp-c-border-hover, #30363d);
+  border-color: rgba(6, 69, 173, 0.2);
   background-color: var(--vp-c-bg-soft);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
