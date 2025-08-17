@@ -1,4 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
+import Layout from './Layout.vue'
 import './custom.css'
 import './styles/code-block-fix.css'
 import './styles/sidebar-effects.css'
@@ -26,6 +27,7 @@ const codeModalState = {
 
 export default {
   extends: DefaultTheme,
+  Layout,
   enhanceApp({ app }) {
     // 注册全局组件
     app.component('ArticleMeta', ArticleMeta)
@@ -249,121 +251,69 @@ export default {
         'makefile', 'cmake', 'gradle', 'maven', 'ant', 'properties',
         'ini', 'toml', 'conf', 'config', 'log', 'diff', 'patch'
       ]
-      return validLanguages.includes(lang.toLowerCase())
+      return validLanguages.includes(lang)
     }
     
     // 从代码内容推断语言类型
-    const inferLanguageFromContent = (codeText) => {
-      const content = codeText.toLowerCase().trim()
+    const inferLanguageFromContent = (content) => {
+      const trimmedContent = content.trim()
       
-      // JavaScript/TypeScript
-      if (content.includes('function ') || content.includes('const ') || 
-          content.includes('let ') || content.includes('var ') ||
-          content.includes('=>') || content.includes('console.log')) {
-        return content.includes('interface ') || content.includes(': string') || 
-               content.includes(': number') ? 'typescript' : 'javascript'
+      // JavaScript/TypeScript 特征
+      if (/^(import|export|const|let|var|function|class)\s/.test(trimmedContent) ||
+          /console\.log|require\(|module\.exports/.test(trimmedContent)) {
+        return 'javascript'
       }
       
-      // Python
-      if (content.includes('def ') || content.includes('import ') || 
-          content.includes('from ') || content.includes('print(') ||
-          content.includes('if __name__')) {
+      // Python 特征
+      if (/^(def|class|import|from|if __name__|print\(|#!)/.test(trimmedContent) ||
+          /:\s*$/.test(trimmedContent.split('\n')[0])) {
         return 'python'
       }
       
-      // Java
-      if (content.includes('public class ') || content.includes('private ') ||
-          content.includes('system.out.println') || content.includes('public static void main')) {
+      // Java 特征
+      if (/^(public|private|protected|class|interface|package|import)/.test(trimmedContent) ||
+          /System\.out\.println|public static void main/.test(trimmedContent)) {
         return 'java'
       }
       
-      // PHP
-      if (content.includes('<?php') || content.includes('echo ') || 
-          content.includes('$_') || content.startsWith('<?')) {
-        return 'php'
-      }
-      
-      // C/C++
-      if (content.includes('#include') || content.includes('printf(') ||
-          content.includes('int main(') || content.includes('cout <<')) {
-        return content.includes('cout') || content.includes('std::') ? 'cpp' : 'c'
-      }
-      
-      // CSS
-      if (content.includes('{') && content.includes('}') && 
-          (content.includes(':') && content.includes(';'))) {
+      // CSS 特征
+      if (/^[.#]?[\w-]+\s*\{/.test(trimmedContent) ||
+          /@(media|import|keyframes)/.test(trimmedContent)) {
         return 'css'
       }
       
-      // HTML
-      if (content.includes('<html') || content.includes('<!doctype') ||
-          content.includes('<div') || content.includes('<span')) {
+      // HTML 特征
+      if (/^<!DOCTYPE|^<html|^<\w+/.test(trimmedContent)) {
         return 'html'
       }
       
-      // JSON
-      if ((content.startsWith('{') && content.endsWith('}')) ||
-          (content.startsWith('[') && content.endsWith(']'))) {
+      // JSON 特征
+      if (/^[\{\[]/.test(trimmedContent) && /[\}\]]$/.test(trimmedContent)) {
         try {
-          JSON.parse(codeText)
+          JSON.parse(trimmedContent)
           return 'json'
         } catch (e) {
-          // 不是有效的JSON 1
+          // 不是有效的 JSON
         }
       }
       
-      // Shell/Bash
-      if (content.includes('#!/bin/bash') || content.includes('#!/bin/sh') ||
-          content.includes('echo ') || content.includes('grep ') ||
-          content.includes('awk ') || content.includes('sed ')) {
+      // Shell/Bash 特征
+      if (/^#!/.test(trimmedContent) || /^\$/.test(trimmedContent) ||
+          /^(cd|ls|mkdir|rm|cp|mv|grep|awk|sed)\s/.test(trimmedContent)) {
         return 'bash'
-      }
-      
-      // SQL
-      if (content.includes('select ') || content.includes('insert ') ||
-          content.includes('update ') || content.includes('delete ') ||
-          content.includes('create table')) {
-        return 'sql'
       }
       
       return 'text'
     }
     
-    onMounted(() => {
-      console.log('[CodeBlock] 组件已挂载，初始化功能')
-      initZoom()
-      initCodeBlockClick()
-    })
-    
-    watch(
-      () => route.path,
-      () => {
-        console.log('[CodeBlock] 路由变化，重新初始化')
+    // 监听路由变化，重新初始化功能
+    watch(() => route.path, () => {
+      setTimeout(() => {
         initZoom()
-        // 延迟一点时间确保DOM更新完成
-        setTimeout(() => {
-          initCodeBlockClick()
-        }, 500)
-      },
-      { flush: 'post' }
-    )
-  },
-  Layout() {
-    const closeCodeModal = () => {
-      console.log('[CodeBlock] 关闭弹窗')
-      codeModalState.visible.value = false
-    }
+        initCodeBlockClick()
+      }, 100)
+    }, { immediate: true })
     
-    return h(PageTransition, null, {
-      default: () => h(DefaultTheme.Layout, null, {
-        // 在页面底部添加代码块弹窗组件
-        'layout-bottom': () => h(CodeBlockModal, {
-          visible: codeModalState.visible.value,
-          code: codeModalState.data.value.code,
-          language: codeModalState.data.value.language,
-          onClose: closeCodeModal
-        })
-      })
-    })
+    return {}
   }
 }
