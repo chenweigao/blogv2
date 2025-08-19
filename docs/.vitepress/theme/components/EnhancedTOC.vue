@@ -239,9 +239,17 @@ const updateActiveHeading = () => {
 const scrollToHeading = (anchor, event) => {
   event.preventDefault()
   
-  // 立即移除焦点，清除点击边框
-  if (event.target) {
-    event.target.blur()
+  // 改进焦点移除逻辑：找到真正的链接元素
+  const linkElement = event.currentTarget || event.target.closest('a')
+  if (linkElement) {
+    linkElement.blur()
+    // 强制移除焦点状态
+    setTimeout(() => {
+      linkElement.blur()
+      if (document.activeElement === linkElement) {
+        document.activeElement.blur()
+      }
+    }, 0)
   }
   
   const element = document.getElementById(anchor)

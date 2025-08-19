@@ -138,10 +138,7 @@ export default defineConfig({
     },
 
     // 大纲配置
-    outline: {
-      level: [2, 3],
-      label: 'On this page'
-    }
+    outline: false
   },
 
   // Markdown 配置
