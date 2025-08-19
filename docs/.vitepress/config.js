@@ -7,26 +7,26 @@ import { sidebar } from './config/sidebar/index.js'
 export default defineConfig({
   title: 'Knowledge Wiki',
   description: 'Personal Knowledge Base - Work & Study Documentation',
-  
+
   // 忽略死链接检查，避免构建失败
   ignoreDeadLinks: true,
-  
+
   // 构建钩子 - 在构建前生成 timeline 数据和 git 历史记录
   buildStart() {
     console.log('Generating timeline data...')
     writeTimelineData()
-    
+
     console.log('Generating git history data for modal...')
     writeGitHistoryData()
   },
-  
+
   // Vite 配置 - 添加实时 git 历史记录 API 插件
   vite: {
     plugins: [
       createGitHistoryAPI()
     ]
   },
-  
+
   // 网站图标
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
@@ -38,12 +38,12 @@ export default defineConfig({
   themeConfig: {
     // 网站logo
     logo: '/logo.svg',
-    
+
     // 导航栏 - 根据实际文档分类更新
     nav: [
       { text: 'Home', link: '/' },
       { text: 'AI Infra', link: '/artificial-intelligence/' },
-      { 
+      {
         text: 'Computer Systems',
         items: [
           { text: 'CPU & GPU', link: '/computer-systems/cpu-gpu/' },
@@ -92,7 +92,7 @@ export default defineConfig({
 
     // 社交链接
     socialLinks: [
-      { icon: 'github', link: 'https://github.com' }
+      { icon: 'github', link: 'https://github.com/chenweigao' }
     ],
 
     // 搜索
@@ -119,7 +119,7 @@ export default defineConfig({
     // 页脚
     footer: {
       message: 'Personal Knowledge Wiki',
-      copyright: 'Copyright © 2024'
+      copyright: 'Copyright © 2025'
     },
 
     // 编辑链接
@@ -146,10 +146,15 @@ export default defineConfig({
 
   // Markdown 配置
   markdown: {
-    lineNumbers: true,
+    lineNumbers: false,
     theme: {
       light: 'github-light',
       dark: 'github-dark'
+    },
+    math: true,
+    image: {
+      // 默认禁用；设置为 true 可为所有图片启用懒加载。
+      lazyLoading: true
     }
   },
 
@@ -162,12 +167,12 @@ export default defineConfig({
   transformPageData(pageData) {
     // 处理页面的 front matter 数据
     const frontmatter = pageData.frontmatter
-    
+
     // 如果有 title，使用 front matter 中的 title 覆盖默认标题
     if (frontmatter.title) {
       pageData.title = frontmatter.title
     }
-    
+
     // 处理日期格式
     if (frontmatter.date) {
       // 确保日期格式正确
@@ -180,7 +185,7 @@ export default defineConfig({
         })
       }
     }
-    
+
     // 处理分类信息
     if (frontmatter.category) {
       // 确保 category 是数组格式
@@ -188,7 +193,7 @@ export default defineConfig({
         frontmatter.category = [frontmatter.category]
       }
     }
-    
+
     return pageData
   }
 })
