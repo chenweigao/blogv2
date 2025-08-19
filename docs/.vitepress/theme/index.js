@@ -1,6 +1,7 @@
 import DefaultTheme from 'vitepress/theme'
 import Layout from './Layout.vue'
 import './custom.css'
+import './enhanced-toc.css'
 import './styles/code-block-fix.css'
 import './styles/sidebar-effects.css'
 import './styles/hover-effects.css'
@@ -11,6 +12,7 @@ import ParticleBackground from './components/ParticleBackground.vue'
 import GitHistoryButton from './components/GitHistoryButton.vue'
 import GitHistoryModal from './components/GitHistoryModal.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
+import EnhancedTOC from './components/EnhancedTOC.vue'
 import { h } from 'vue'
 // 正确导入 vitepress-plugin-image-viewer
 import 'viewerjs/dist/viewer.min.css'
@@ -39,6 +41,7 @@ export default {
     app.component('GitHistoryButton', GitHistoryButton)
     app.component('GitHistoryModal', GitHistoryModal)
     app.component('CodeBlockModal', CodeBlockModal)
+    app.component('EnhancedTOC', EnhancedTOC)
     
     // 提供全局的代码块弹窗状态
     app.provide('codeModalState', codeModalState)
@@ -50,6 +53,11 @@ export default {
     imageViewer(route)
     
     const initCodeBlockClick = () => {
+      // 检查是否在客户端环境
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return
+      }
+      
       // 等待 DOM 更新完成后初始化代码块点击事件
       nextTick(() => {
         // 更广泛的选择器，包括VitePress的各种代码块格式
@@ -90,6 +98,11 @@ export default {
     }
     
     const handleCodeBlockClick = (event) => {
+      // 检查是否在客户端环境
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return
+      }
+      
       console.log('[CodeBlock] 代码块被点击')
       event.preventDefault()
       event.stopPropagation()
@@ -249,64 +262,68 @@ export default {
     }
     
     // 从代码内容推断语言类型
-    const inferLanguageFromContent = (content) => {
-      const trimmedContent = content.trim()
+    const inferLanguageFromContent = (code) => {
+      const trimmedCode = code.trim()
       
       // JavaScript/TypeScript 特征
-      if (/^(import|export|const|let|var|function|class)\s/.test(trimmedContent) ||
-          /console\.log|require\(|module\.exports/.test(trimmedContent)) {
+      if (/^(import|export|const|let|var|function|class|\{|\[)/.test(trimmedCode) ||
+          /\.(js|ts|jsx|tsx)$/.test(trimmedCode) ||
+          /console\.log|require\(|module\.exports/.test(trimmedCode)) {
         return 'javascript'
       }
       
       // Python 特征
-      if (/^(def|class|import|from|if __name__|print\(|#!)/.test(trimmedContent) ||
-          /:\s*$/.test(trimmedContent.split('\n')[0])) {
+      if (/^(def|class|import|from|if __name__|print\(|#!)/.test(trimmedCode) ||
+          /\.py$/.test(trimmedCode)) {
         return 'python'
       }
       
       // Java 特征
-      if (/^(public|private|protected|class|interface|package|import)/.test(trimmedContent) ||
-          /System\.out\.println|public static void main/.test(trimmedContent)) {
+      if (/^(public|private|protected|class|interface|package|import)/.test(trimmedCode) ||
+          /System\.out\.println|\.java$/.test(trimmedCode)) {
         return 'java'
       }
       
+      // Shell/Bash 特征 - 修复 shebang 语法错误
+      if (/^(\x23\x21\/bin\/bash|\x23\x21\/bin\/sh|\$|#)/.test(trimmedCode) ||
+          /\.(sh|bash)$/.test(trimmedCode)) {
+        return 'bash'
+      }
+      
       // CSS 特征
-      if (/^[.#]?[\w-]+\s*\{/.test(trimmedContent) ||
-          /@(media|import|keyframes)/.test(trimmedContent)) {
+      if (/^(\.|#|\*|@|:)/.test(trimmedCode) ||
+          /\.(css|scss|sass|less)$/.test(trimmedCode) ||
+          /{[^}]*}/.test(trimmedCode)) {
         return 'css'
       }
       
       // HTML 特征
-      if (/^<!DOCTYPE|^<html|^<\w+/.test(trimmedContent)) {
+      if (/^<!DOCTYPE|^<html|^<\w+/.test(trimmedCode) ||
+          /\.(html|htm)$/.test(trimmedCode)) {
         return 'html'
       }
       
       // JSON 特征
-      if (/^[\{\[]/.test(trimmedContent) && /[\}\]]$/.test(trimmedContent)) {
-        try {
-          JSON.parse(trimmedContent)
-          return 'json'
-        } catch (e) {
-          // 不是有效的 JSON
-        }
-      }
-      
-      // Shell/Bash 特征
-      if (/^#!/.test(trimmedContent) || /^\$/.test(trimmedContent) ||
-          /^(cd|ls|mkdir|rm|cp|mv|grep|awk|sed)\s/.test(trimmedContent)) {
-        return 'bash'
+      if (/^[\{\[]/.test(trimmedCode) && /[\}\]]$/.test(trimmedCode) ||
+          /\.(json)$/.test(trimmedCode)) {
+        return 'json'
       }
       
       return 'text'
     }
     
-    // 监听路由变化，重新初始化功能
-    watch(() => route.path, () => {
-      setTimeout(() => {
+    // 只在客户端环境中初始化
+    if (typeof window !== 'undefined') {
+      onMounted(() => {
         initCodeBlockClick()
-      }, 100)
-    }, { immediate: true })
-    
-    return {}
+      })
+      
+      // 监听路由变化，重新初始化代码块点击事件
+      watch(() => route.path, () => {
+        setTimeout(() => {
+          initCodeBlockClick()
+        }, 100)
+      })
+    }
   }
 }

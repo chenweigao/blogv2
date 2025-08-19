@@ -24,6 +24,9 @@
     </template>
   </Layout>
   
+  <!-- 增强版 TOC 组件 - 在所有页面中显示 -->
+  <EnhancedTOC v-if="isDocPage" />
+  
   <!-- 全局模态框组件 -->
   <CodeBlockModal />
 </template>
@@ -36,6 +39,7 @@ import ArticleMeta from './components/ArticleMeta.vue'
 import ReadingStats from './components/ReadingStats.vue'
 import GitHistoryButton from './components/GitHistoryButton.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
+import EnhancedTOC from './components/EnhancedTOC.vue'
 
 const Layout = DefaultTheme.Layout
 const { page } = useData()
