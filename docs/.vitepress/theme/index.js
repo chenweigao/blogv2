@@ -284,8 +284,9 @@ export default {
         return 'java'
       }
       
-      // Shell/Bash 特征 - 修复 shebang 语法错误
-      if (/^(\x23\x21\/bin\/bash|\x23\x21\/bin\/sh|\$|#)/.test(trimmedCode) ||
+      // Shell/Bash 特征
+      if (/^(#!\/bin\/|npm |yarn |git |docker |kubectl |curl |wget )/.test(trimmedCode) ||
+          /^\$\s+/.test(trimmedCode) ||
           /\.(sh|bash)$/.test(trimmedCode)) {
         return 'bash'
       }
