@@ -1,23 +1,18 @@
 <template>
   <div class="enhanced-toc-container" :class="{ 'is-mobile': isMobile, 'is-pinned': isPinned }">
-    <!-- TOC Toggle Button with Drag Support -->
+    <!-- TOC Toggle Button with Integrated Progress Ring -->
     <TOCToggleButton
       :is-active="isVisible"
       :heading-count="headings.length"
       :is-draggable="true"
       :position="dragPosition"
+      :reading-progress="readingProgress"
+      :show-progress="!isMobile && showProgressRing"
       @click="toggleTOC"
       @drag-start="handleDragStart"
       @drag-move="handleDragMove"
       @drag-end="handleDragEnd"
       ref="toggleButton"
-    />
-
-    <!-- Reading Progress Ring -->
-    <TOCProgressRing
-      v-if="!isMobile && showProgressRing"
-      :progress="readingProgress"
-      :show-progress="true"
     />
 
     <!-- TOC Panel -->
@@ -77,7 +72,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useData } from 'vitepress'
 import TOCToggleButton from './toc/TOCToggleButton.vue'
-import TOCProgressRing from './toc/TOCProgressRing.vue'
 import TOCPanel from './toc/TOCPanel.vue'
 import { useTOC } from '../composables/useTOC.js'
 import { useDragAndDrop } from '../composables/useDragAndDrop.js'
