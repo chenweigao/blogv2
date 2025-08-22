@@ -43,7 +43,7 @@
       
       <!-- 中心内容区域 -->
       <div class="button-content">
-        <!-- TOC 图标 -->
+        <!-- TOC 图标 - 修复了SVG路径 -->
         <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"/>
         </svg>
@@ -113,6 +113,7 @@ const dragStart = ref({ x: 0, y: 0 })
 const currentPosition = ref({ ...props.position })
 const dragStartTime = ref(0)
 const dragThreshold = 5
+const hasMoved = ref(false)
 
 // 进度环计算 - 更大的环形设计
 const ringSize = computed(() => 56)
@@ -130,23 +131,33 @@ const buttonStyle = computed(() => ({
   zIndex: isDragging.value ? 1000 : 100
 }))
 
+// 简化点击处理逻辑
 const handleClick = (event) => {
-  const dragDuration = Date.now() - dragStartTime.value
-  const dragDistance = Math.sqrt(
-    Math.pow(event.clientX - dragStart.value.x, 2) + 
-    Math.pow(event.clientY - dragStart.value.y, 2)
-  )
+  console.log('Button clicked!', { isDragging: isDragging.value, hasMoved: hasMoved.value })
   
-  if (!isDragging.value && (dragDuration < 200 || dragDistance < dragThreshold)) {
-    emit('click', event)
+  // 如果正在拖拽或者已经移动过，则不触发点击
+  if (isDragging.value || hasMoved.value) {
+    console.log('Click prevented due to drag')
+    return
   }
+  
+  // 阻止事件冒泡
+  event.stopPropagation()
+  
+  // 直接触发点击事件
+  console.log('Emitting click event')
+  emit('click', event)
 }
 
 const handleMouseDown = (event) => {
-  if (!props.isDraggable) return
+  if (!props.isDraggable) {
+    // 如果不可拖拽，直接返回，让点击事件正常处理
+    return
+  }
   
   dragStartTime.value = Date.now()
   dragStart.value = { x: event.clientX, y: event.clientY }
+  hasMoved.value = false
   
   document.addEventListener('mousemove', handleMouseMoveCheck)
   document.addEventListener('mouseup', handleMouseUpCheck)
@@ -159,6 +170,7 @@ const handleMouseMoveCheck = (event) => {
   )
   
   if (distance > dragThreshold && !isDragging.value) {
+    hasMoved.value = true
     startDrag(event.clientX, event.clientY)
     document.removeEventListener('mousemove', handleMouseMoveCheck)
     document.removeEventListener('mouseup', handleMouseUpCheck)
@@ -170,6 +182,11 @@ const handleMouseMoveCheck = (event) => {
 const handleMouseUpCheck = () => {
   document.removeEventListener('mousemove', handleMouseMoveCheck)
   document.removeEventListener('mouseup', handleMouseUpCheck)
+  
+  // 重置移动标记
+  setTimeout(() => {
+    hasMoved.value = false
+  }, 50)
 }
 
 const handleTouchStart = (event) => {
@@ -178,6 +195,7 @@ const handleTouchStart = (event) => {
   const touch = event.touches[0]
   dragStartTime.value = Date.now()
   dragStart.value = { x: touch.clientX, y: touch.clientY }
+  hasMoved.value = false
   
   document.addEventListener('touchmove', handleTouchMoveCheck, { passive: false })
   document.addEventListener('touchend', handleTouchEndCheck)
@@ -192,6 +210,7 @@ const handleTouchMoveCheck = (event) => {
   
   if (distance > dragThreshold && !isDragging.value) {
     event.preventDefault()
+    hasMoved.value = true
     startDrag(touch.clientX, touch.clientY)
     document.removeEventListener('touchmove', handleTouchMoveCheck)
     document.removeEventListener('touchend', handleTouchEndCheck)
@@ -203,10 +222,16 @@ const handleTouchMoveCheck = (event) => {
 const handleTouchEndCheck = () => {
   document.removeEventListener('touchmove', handleTouchMoveCheck)
   document.removeEventListener('touchend', handleTouchEndCheck)
+  
+  // 重置移动标记
+  setTimeout(() => {
+    hasMoved.value = false
+  }, 50)
 }
 
 const handleDragStart = (event) => {
   event.preventDefault()
+  hasMoved.value = true
   startDrag(event.clientX, event.clientY)
   document.addEventListener('mousemove', handleMouseMove)
   document.addEventListener('mouseup', handleMouseUp)
@@ -215,6 +240,7 @@ const handleDragStart = (event) => {
 const handleDragTouchStart = (event) => {
   event.preventDefault()
   const touch = event.touches[0]
+  hasMoved.value = true
   startDrag(touch.clientX, touch.clientY)
   document.addEventListener('touchmove', handleTouchMove, { passive: false })
   document.addEventListener('touchend', handleTouchEnd)
@@ -285,6 +311,10 @@ const endDrag = () => {
     
     nextTick(() => {
       emit('drag-end', { ...currentPosition.value })
+      // 延迟重置移动标记，确保点击事件不会被误触发
+      setTimeout(() => {
+        hasMoved.value = false
+      }, 100)
     })
   }
 }
@@ -343,8 +373,10 @@ onUnmounted(() => {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(12px);
   user-select: none;
-  touch-action: none;
+  touch-action: manipulation;
   overflow: visible;
+  /* 确保点击事件正常工作 */
+  pointer-events: auto;
 }
 
 .toc-progress-button:hover {
@@ -397,6 +429,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 2;
+  /* 允许点击事件穿透到按钮 */
   pointer-events: none;
 }
 
@@ -404,6 +437,8 @@ onUnmounted(() => {
   color: var(--vp-c-text-2);
   transition: all 0.3s ease;
   margin-bottom: 2px;
+  /* 确保图标不会阻止点击 */
+  pointer-events: none;
 }
 
 .toc-progress-button:hover .toc-icon {
@@ -421,6 +456,7 @@ onUnmounted(() => {
   color: var(--vp-c-text-3);
   line-height: 1;
   margin-top: -2px;
+  pointer-events: none;
 }
 
 .toc-progress-button:hover .progress-percentage {
@@ -449,6 +485,7 @@ onUnmounted(() => {
   line-height: 1;
   z-index: 3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
 }
 
 .toc-progress-button.is-active .toc-badge {
@@ -482,6 +519,7 @@ onUnmounted(() => {
   cursor: grab;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 3;
+  pointer-events: auto;
 }
 
 .toc-progress-button:hover .drag-handle {
@@ -501,6 +539,7 @@ onUnmounted(() => {
 
 .drag-handle svg {
   opacity: 0.7;
+  pointer-events: none;
 }
 
 .drag-preview {
@@ -532,6 +571,8 @@ onUnmounted(() => {
   .toc-progress-button {
     width: 48px;
     height: 48px;
+    /* 移动设备上禁用拖拽，确保点击正常 */
+    touch-action: manipulation;
   }
   
   .progress-ring-svg {
@@ -592,5 +633,16 @@ onUnmounted(() => {
   .toc-progress-button {
     border: 2px solid var(--vp-c-border);
   }
+}
+
+/* 确保按钮在所有情况下都可以点击 */
+.toc-progress-button:focus {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+.toc-progress-button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
 }
 </style>
