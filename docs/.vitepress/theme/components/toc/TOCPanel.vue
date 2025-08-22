@@ -8,6 +8,7 @@
         'is-compact': isCompactMode,
         'is-mobile': isMobile 
       }"
+      :style="panelStyle"
     >
       <!-- TOC Header -->
       <div class="toc-header">
@@ -162,6 +163,10 @@ const props = defineProps({
   timeRemaining: {
     type: Number,
     default: 0
+  },
+  panelPosition: {
+    type: Object,
+    default: () => ({ x: 0, y: 0 })
   }
 })
 
@@ -182,6 +187,21 @@ const tocNavigation = ref(null)
 
 const headingCount = computed(() => props.headings.length)
 const filteredCount = computed(() => props.filteredHeadings.length)
+
+// 计算面板样式，支持动态定位
+const panelStyle = computed(() => {
+  if (props.isMobile) {
+    // 移动端使用固定定位
+    return {}
+  }
+  
+  return {
+    position: 'fixed',
+    left: `${props.panelPosition.x}px`,
+    top: `${props.panelPosition.y}px`,
+    zIndex: 200
+  }
+})
 
 const handleSearchEnter = (event) => {
   // Focus first filtered heading
@@ -235,7 +255,6 @@ defineExpose({
 
 <style scoped>
 .toc-panel {
-  position: relative;
   width: 320px;
   max-height: 75vh;
   background: var(--vp-c-bg);
@@ -244,41 +263,47 @@ defineExpose({
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(16px);
   overflow: hidden;
-  margin-left: auto;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  pointer-events: auto; /* 确保面板可以接收事件 */
 }
 
-.toc-panel.is-compact {
-  width: 280px;
-  max-height: 60vh;
-}
-
-.toc-panel.is-pinned {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: var(--vp-c-brand-1);
-}
-
+/* 移动端样式 */
 .toc-panel.is-mobile {
-  position: fixed;
-  top: 4rem;
-  right: 1rem;
-  left: 1rem;
-  width: auto;
-  max-height: calc(100vh - 8rem);
-  z-index: 1001;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  z-index: 1000 !important;
 }
 
-/* ===== TOC 头部 ===== */
+/* 固定模式样式 */
+.toc-panel.is-pinned {
+  position: fixed !important;
+  top: 6rem !important;
+  right: 2rem !important;
+  left: auto !important;
+  z-index: 200 !important;
+}
+
+/* 紧凑模式样式 */
+.toc-panel.is-compact {
+  max-height: 50vh;
+}
+
+/* TOC 头部 */
 .toc-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: flex-start;
   padding: 1rem 1.25rem 0.75rem;
   border-bottom: 1px solid var(--vp-c-divider);
   background: var(--vp-c-bg-soft);
-  flex-shrink: 0;
 }
 
 .toc-title-section {
@@ -287,19 +312,16 @@ defineExpose({
 }
 
 .toc-title {
-  margin: 0;
-  font-size: 0.875rem;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--vp-c-text-1);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .toc-meta {
   display: flex;
   gap: 1rem;
-  margin-top: 0.25rem;
   font-size: 0.75rem;
   color: var(--vp-c-text-3);
 }
@@ -307,7 +329,7 @@ defineExpose({
 .toc-controls {
   display: flex;
   gap: 0.5rem;
-  flex-shrink: 0;
+  margin-left: 1rem;
 }
 
 .toc-control-btn {
@@ -316,31 +338,32 @@ defineExpose({
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  color: var(--vp-c-text-3);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 6px;
+  color: var(--vp-c-text-2);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .toc-control-btn:hover {
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
+  background: var(--vp-c-brand-soft);
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
 }
 
 .toc-control-btn.is-active,
 .toc-control-btn.is-pinned {
-  color: var(--vp-c-brand-1);
   background: var(--vp-c-brand-soft);
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
 }
 
-/* ===== TOC 底部 ===== */
+/* TOC 底部 */
 .toc-footer {
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.25rem 1rem;
   border-top: 1px solid var(--vp-c-divider);
   background: var(--vp-c-bg-soft);
-  flex-shrink: 0;
 }
 
 .toc-actions {
@@ -374,6 +397,7 @@ defineExpose({
 .toc-stats {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.75rem;
   color: var(--vp-c-text-3);
 }
@@ -386,7 +410,7 @@ defineExpose({
   opacity: 0.8;
 }
 
-/* ===== 过渡动画 ===== */
+/* 过渡动画 */
 .toc-slide-enter-active,
 .toc-slide-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -394,67 +418,56 @@ defineExpose({
 
 .toc-slide-enter-from {
   opacity: 0;
-  transform: translateX(20px) scale(0.95);
+  transform: translateY(-20px) scale(0.95);
 }
 
 .toc-slide-leave-to {
   opacity: 0;
-  transform: translateX(20px) scale(0.95);
+  transform: translateY(-20px) scale(0.95);
 }
 
-/* ===== 响应式适配 ===== */
-@media (max-width: 1280px) {
-  .toc-panel {
-    width: 260px;
-  }
+/* 暗色主题适配 */
+.dark .toc-panel {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
-@media (max-width: 1024px) {
-  .toc-panel {
-    width: 240px;
-  }
-}
-
+/* 响应式设计 */
 @media (max-width: 768px) {
-  .toc-meta {
-    flex-direction: column;
-    gap: 0.25rem;
+  .toc-panel {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .toc-header {
+    padding: 1rem;
+  }
+  
+  .toc-footer {
+    padding: 1rem;
   }
   
   .toc-actions {
-    flex-wrap: wrap;
+    flex-direction: column;
   }
   
   .toc-action-btn {
-    min-width: 0;
-    flex: 1 1 auto;
+    justify-content: flex-start;
   }
 }
 
-/* ===== 暗色主题适配 ===== */
-.dark .toc-panel {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+/* 性能优化 */
+.toc-panel {
+  will-change: transform, opacity;
+  contain: layout style paint;
 }
 
-/* ===== 减少动画 ===== */
+/* 减少动画以提升性能 */
 @media (prefers-reduced-motion: reduce) {
+  .toc-panel,
   .toc-slide-enter-active,
-  .toc-slide-leave-active,
-  .toc-control-btn,
-  .toc-action-btn {
+  .toc-slide-leave-active {
     transition: none !important;
-  }
-}
-
-/* ===== 高对比度模式 ===== */
-@media (prefers-contrast: high) {
-  .toc-panel {
-    border-width: 2px;
-  }
-  
-  .toc-control-btn,
-  .toc-action-btn {
-    border-width: 2px;
   }
 }
 </style>

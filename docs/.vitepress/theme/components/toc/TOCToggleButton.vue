@@ -108,11 +108,8 @@ const props = defineProps({
 
 const emit = defineEmits(['click', 'drag-start', 'drag-move', 'drag-end'])
 
+// 简化状态管理，移除内部拖拽逻辑
 const isDragging = ref(false)
-const dragStart = ref({ x: 0, y: 0 })
-const currentPosition = ref({ ...props.position })
-const dragStartTime = ref(0)
-const dragThreshold = 5
 const hasMoved = ref(false)
 
 // 进度环计算 - 更大的环形设计
@@ -126,7 +123,7 @@ const ringOffset = computed(() => {
 })
 
 const buttonStyle = computed(() => ({
-  transform: `translate(${currentPosition.value.x}px, ${currentPosition.value.y}px)`,
+  transform: `translate(${props.position.x}px, ${props.position.y}px)`,
   transition: isDragging.value ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   zIndex: isDragging.value ? 1000 : 100
 }))
@@ -149,206 +146,55 @@ const handleClick = (event) => {
   emit('click', event)
 }
 
-const handleMouseDown = (event) => {
-  if (!props.isDraggable) {
-    // 如果不可拖拽，直接返回，让点击事件正常处理
-    return
-  }
-  
-  dragStartTime.value = Date.now()
-  dragStart.value = { x: event.clientX, y: event.clientY }
-  hasMoved.value = false
-  
-  document.addEventListener('mousemove', handleMouseMoveCheck)
-  document.addEventListener('mouseup', handleMouseUpCheck)
-}
-
-const handleMouseMoveCheck = (event) => {
-  const distance = Math.sqrt(
-    Math.pow(event.clientX - dragStart.value.x, 2) + 
-    Math.pow(event.clientY - dragStart.value.y, 2)
-  )
-  
-  if (distance > dragThreshold && !isDragging.value) {
-    hasMoved.value = true
-    startDrag(event.clientX, event.clientY)
-    document.removeEventListener('mousemove', handleMouseMoveCheck)
-    document.removeEventListener('mouseup', handleMouseUpCheck)
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
-  }
-}
-
-const handleMouseUpCheck = () => {
-  document.removeEventListener('mousemove', handleMouseMoveCheck)
-  document.removeEventListener('mouseup', handleMouseUpCheck)
-  
-  // 重置移动标记
-  setTimeout(() => {
-    hasMoved.value = false
-  }, 50)
-}
-
-const handleTouchStart = (event) => {
-  if (!props.isDraggable) return
-  
-  const touch = event.touches[0]
-  dragStartTime.value = Date.now()
-  dragStart.value = { x: touch.clientX, y: touch.clientY }
-  hasMoved.value = false
-  
-  document.addEventListener('touchmove', handleTouchMoveCheck, { passive: false })
-  document.addEventListener('touchend', handleTouchEndCheck)
-}
-
-const handleTouchMoveCheck = (event) => {
-  const touch = event.touches[0]
-  const distance = Math.sqrt(
-    Math.pow(touch.clientX - dragStart.value.x, 2) + 
-    Math.pow(touch.clientY - dragStart.value.y, 2)
-  )
-  
-  if (distance > dragThreshold && !isDragging.value) {
-    event.preventDefault()
-    hasMoved.value = true
-    startDrag(touch.clientX, touch.clientY)
-    document.removeEventListener('touchmove', handleTouchMoveCheck)
-    document.removeEventListener('touchend', handleTouchEndCheck)
-    document.addEventListener('touchmove', handleTouchMove, { passive: false })
-    document.addEventListener('touchend', handleTouchEnd)
-  }
-}
-
-const handleTouchEndCheck = () => {
-  document.removeEventListener('touchmove', handleTouchMoveCheck)
-  document.removeEventListener('touchend', handleTouchEndCheck)
-  
-  // 重置移动标记
-  setTimeout(() => {
-    hasMoved.value = false
-  }, 50)
-}
-
+// 拖拽开始处理（由外部 useDragAndDrop 调用）
 const handleDragStart = (event) => {
   event.preventDefault()
-  hasMoved.value = true
-  startDrag(event.clientX, event.clientY)
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
-}
-
-const handleDragTouchStart = (event) => {
-  event.preventDefault()
-  const touch = event.touches[0]
-  hasMoved.value = true
-  startDrag(touch.clientX, touch.clientY)
-  document.addEventListener('touchmove', handleTouchMove, { passive: false })
-  document.addEventListener('touchend', handleTouchEnd)
-}
-
-const startDrag = (clientX, clientY) => {
   isDragging.value = true
-  dragStart.value = {
-    x: clientX - currentPosition.value.x,
-    y: clientY - currentPosition.value.y
-  }
+  hasMoved.value = true
+  emit('drag-start', { x: props.position.x, y: props.position.y })
+}
+
+// 拖拽移动处理（由外部 useDragAndDrop 调用）
+const handleDragMove = (position) => {
+  emit('drag-move', position)
+}
+
+// 拖拽结束处理（由外部 useDragAndDrop 调用）
+const handleDragEnd = (position) => {
+  isDragging.value = false
+  emit('drag-end', position)
   
-  document.body.style.userSelect = 'none'
-  document.body.style.cursor = 'grabbing'
-  
-  emit('drag-start', { x: currentPosition.value.x, y: currentPosition.value.y })
+  // 延迟重置移动标记，确保点击事件不会被误触发
+  setTimeout(() => {
+    hasMoved.value = false
+  }, 100)
 }
 
-const handleMouseMove = (event) => {
-  if (!isDragging.value) return
-  event.preventDefault()
-  updatePosition(event.clientX, event.clientY)
-}
-
-const handleTouchMove = (event) => {
-  if (!isDragging.value) return
-  event.preventDefault()
-  const touch = event.touches[0]
-  updatePosition(touch.clientX, touch.clientY)
-}
-
-const updatePosition = (clientX, clientY) => {
-  const newX = clientX - dragStart.value.x
-  const newY = clientY - dragStart.value.y
-  
-  const buttonSize = ringSize.value
-  const margin = 10
-  
-  const maxX = window.innerWidth - buttonSize - margin
-  const maxY = window.innerHeight - buttonSize - margin
-  
-  currentPosition.value = {
-    x: Math.max(margin, Math.min(newX, maxX)),
-    y: Math.max(margin, Math.min(newY, maxY))
-  }
-  
-  emit('drag-move', { ...currentPosition.value })
-}
-
-const handleMouseUp = () => {
-  endDrag()
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mouseup', handleMouseUp)
-}
-
-const handleTouchEnd = () => {
-  endDrag()
-  document.removeEventListener('touchmove', handleTouchMove)
-  document.removeEventListener('touchend', handleTouchEnd)
-}
-
-const endDrag = () => {
-  if (isDragging.value) {
-    isDragging.value = false
-    
-    document.body.style.userSelect = ''
-    document.body.style.cursor = ''
-    
-    nextTick(() => {
-      emit('drag-end', { ...currentPosition.value })
-      // 延迟重置移动标记，确保点击事件不会被误触发
-      setTimeout(() => {
-        hasMoved.value = false
-      }, 100)
-    })
-  }
-}
-
+// 外部调用的位置更新方法
 const setPosition = (newPosition) => {
-  currentPosition.value = { ...newPosition }
+  // 位置由外部 useDragAndDrop 管理，这里只是为了兼容性
+  emit('drag-move', newPosition)
 }
 
 const resetPosition = () => {
-  currentPosition.value = { x: 0, y: 0 }
+  emit('drag-move', { x: 0, y: 0 })
 }
 
 defineExpose({
   updatePosition: setPosition,
-  resetPosition
+  resetPosition,
+  handleDragStart,
+  handleDragMove,
+  handleDragEnd,
+  element: ref(null) // 暴露元素引用给外部拖拽系统
 })
 
 onMounted(() => {
-  currentPosition.value = { ...props.position }
+  // 移除内部拖拽事件监听，完全依赖外部系统
 })
 
 onUnmounted(() => {
-  // 清理所有事件监听器
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mouseup', handleMouseUp)
-  document.removeEventListener('mousemove', handleMouseMoveCheck)
-  document.removeEventListener('mouseup', handleMouseUpCheck)
-  document.removeEventListener('touchmove', handleTouchMove)
-  document.removeEventListener('touchend', handleTouchEnd)
-  document.removeEventListener('touchmove', handleTouchMoveCheck)
-  document.removeEventListener('touchend', handleTouchEndCheck)
-  
-  document.body.style.userSelect = ''
-  document.body.style.cursor = ''
+  // 清理工作已由外部 useDragAndDrop 处理
 })
 </script>
 

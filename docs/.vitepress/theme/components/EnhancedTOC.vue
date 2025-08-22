@@ -29,6 +29,7 @@
       :reading-progress="readingProgress"
       :estimated-reading-time="estimatedReadingTime"
       :time-remaining="timeRemaining"
+      :panel-position="panelPosition"
       @close="hideTOC"
       @toggle-pin="togglePin"
       @toggle-compact="toggleCompactMode"
@@ -69,7 +70,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useData } from 'vitepress'
 import TOCToggleButton from './toc/TOCToggleButton.vue'
 import TOCPanel from './toc/TOCPanel.vue'
@@ -100,15 +101,28 @@ const {
   clearSearch
 } = useTOC()
 
+// 计算默认位置（右侧中间）
+const getDefaultPosition = () => {
+  if (typeof window !== 'undefined') {
+    return {
+      x: window.innerWidth - 120, // 距离右边120px
+      y: window.innerHeight / 2 - 28 // 垂直居中（按钮高度的一半）
+    }
+  }
+  return { x: 0, y: 0 }
+}
+
 // Drag and drop functionality
 const {
   isDragging,
-  position: dragPosition
+  position: dragPosition,
+  createDragHandlers,
+  setPosition
 } = useDragAndDrop({
   storageKey: 'enhanced-toc-position',
-  defaultPosition: { x: 0, y: 0 },
+  defaultPosition: getDefaultPosition(),
   constrainToViewport: true,
-  snapToEdges: true,
+  snapToEdges: false,
   snapThreshold: 30
 })
 
@@ -119,6 +133,52 @@ const isCompactMode = ref(false)
 const isMobile = ref(false)
 const showShortcuts = ref(false)
 const showProgressRing = ref(true)
+
+// 计算TOC面板的最佳显示位置
+const panelPosition = computed(() => {
+  if (isMobile.value) {
+    // 移动端固定位置
+    return { x: 0, y: 0 }
+  }
+  
+  const buttonX = dragPosition.x
+  const buttonY = dragPosition.y
+  const buttonSize = 56
+  const panelWidth = 320
+  const panelHeight = 500 // 估算面板高度
+  const margin = 16
+  
+  let panelX = buttonX + buttonSize + margin // 默认显示在按钮右侧
+  let panelY = buttonY - 50 // 稍微向上偏移
+  
+  // 检查右侧空间是否足够
+  if (panelX + panelWidth > window.innerWidth - margin) {
+    // 右侧空间不足，显示在按钮左侧
+    panelX = buttonX - panelWidth - margin
+  }
+  
+  // 检查左侧空间是否足够
+  if (panelX < margin) {
+    // 左侧空间也不足，居中显示
+    panelX = Math.max(margin, (window.innerWidth - panelWidth) / 2)
+  }
+  
+  // 检查垂直位置
+  if (panelY + panelHeight > window.innerHeight - margin) {
+    // 底部空间不足，向上调整
+    panelY = window.innerHeight - panelHeight - margin
+  }
+  
+  if (panelY < margin) {
+    // 顶部空间不足，向下调整
+    panelY = margin
+  }
+  
+  return {
+    x: Math.round(panelX),
+    y: Math.round(panelY)
+  }
+})
 
 // Computed properties
 const tocTitle = computed(() => 'Table of Contents')
@@ -193,13 +253,13 @@ const handleCopyTOC = async () => {
   return await copyTOC()
 }
 
-// Drag handlers
+// 简化的拖拽处理 - 只传递事件，实际拖拽由 useDragAndDrop 处理
 const handleDragStart = (position) => {
   console.log('Drag started at:', position)
 }
 
 const handleDragMove = (position) => {
-  // Position is automatically updated by the drag composable
+  console.log('Drag moved to:', position)
 }
 
 const handleDragEnd = (position) => {
@@ -213,6 +273,13 @@ const checkMobile = () => {
 
 const handleResize = () => {
   checkMobile()
+  
+  // 如果没有保存的位置，重新计算默认位置
+  const savedPosition = localStorage.getItem('enhanced-toc-position')
+  if (!savedPosition && !isMobile.value) {
+    const newDefaultPosition = getDefaultPosition()
+    setPosition(newDefaultPosition)
+  }
 }
 
 const handleKeydown = (event) => {
@@ -241,11 +308,39 @@ const handleKeydown = (event) => {
   }
 }
 
+// 设置拖拽处理器
+const setupDragHandlers = () => {
+  if (toggleButton.value && toggleButton.value.$el) {
+    const buttonElement = toggleButton.value.$el.querySelector('.toc-progress-button')
+    if (buttonElement) {
+      const { handleMouseDown, handleTouchStart } = createDragHandlers(buttonElement)
+      
+      // 绑定拖拽事件
+      buttonElement.addEventListener('mousedown', handleMouseDown)
+      buttonElement.addEventListener('touchstart', handleTouchStart)
+      
+      console.log('Drag handlers set up for button element')
+    }
+  }
+}
+
 // Lifecycle
 onMounted(() => {
   if (!isDocPage.value) return
   
   checkMobile()
+  
+  // 设置拖拽处理器
+  nextTick(() => {
+    setupDragHandlers()
+  })
+  
+  // 如果是首次访问且没有保存的位置，设置默认位置
+  const savedPosition = localStorage.getItem('enhanced-toc-position')
+  if (!savedPosition && !isMobile.value) {
+    const defaultPos = getDefaultPosition()
+    setPosition(defaultPos)
+  }
   
   // Restore saved states
   const savedPinState = localStorage.getItem('toc-pinned')
@@ -274,13 +369,14 @@ onUnmounted(() => {
 /* ===== TOC 容器样式 ===== */
 .enhanced-toc-container {
   position: fixed;
-  top: 50%;
-  right: 2rem;
-  transform: translateY(-50%);
+  top: 0;
+  left: 0;
   z-index: 100;
   max-width: 320px;
   font-family: var(--vp-font-family-base);
   transition: all 0.3s ease;
+  /* 移除原来的 right 和 transform 定位，改为从左上角开始 */
+  pointer-events: none; /* 容器本身不拦截事件 */
 }
 
 .enhanced-toc-container.is-mobile {
@@ -292,6 +388,7 @@ onUnmounted(() => {
   transform: none;
   max-width: none;
   z-index: 1000;
+  pointer-events: auto; /* 移动端恢复事件响应 */
 }
 
 .enhanced-toc-container.is-pinned {
@@ -373,19 +470,24 @@ onUnmounted(() => {
 /* ===== 响应式设计 ===== */
 @media (max-width: 1280px) {
   .enhanced-toc-container {
-    right: 1rem;
+    /* 移除右侧边距限制 */
   }
 }
 
 @media (max-width: 1024px) {
   .enhanced-toc-container {
-    right: 0.5rem;
+    /* 移除右侧边距限制 */
   }
 }
 
 @media (max-width: 768px) {
   .enhanced-toc-container {
+    /* 移动端保持原有行为 */
     right: 1rem;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: auto;
   }
 }
 
