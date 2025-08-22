@@ -77,6 +77,9 @@ import TOCPanel from './toc/TOCPanel.vue'
 import { useTOC } from '../composables/useTOC.js'
 import { useDragAndDrop } from '../composables/useDragAndDrop.js'
 
+// 检查是否在浏览器环境
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+
 // VitePress data
 const { page, frontmatter } = useData()
 
@@ -101,15 +104,16 @@ const {
   clearSearch
 } = useTOC()
 
-// 计算默认位置（右侧中间）
+// 计算默认位置（右侧中间）- 添加浏览器环境检查
 const getDefaultPosition = () => {
-  if (typeof window !== 'undefined') {
-    return {
-      x: window.innerWidth - 120, // 距离右边120px
-      y: window.innerHeight / 2 - 28 // 垂直居中（按钮高度的一半）
-    }
+  if (!isBrowser) {
+    return { x: 0, y: 0 }
   }
-  return { x: 0, y: 0 }
+  
+  return {
+    x: window.innerWidth - 120, // 距离右边120px
+    y: window.innerHeight / 2 - 28 // 垂直居中（按钮高度的一半）
+  }
 }
 
 // Drag and drop functionality
@@ -134,8 +138,12 @@ const isMobile = ref(false)
 const showShortcuts = ref(false)
 const showProgressRing = ref(true)
 
-// 计算TOC面板的最佳显示位置
+// 计算TOC面板的最佳显示位置 - 添加浏览器环境检查
 const panelPosition = computed(() => {
+  if (!isBrowser) {
+    return { x: 0, y: 0 }
+  }
+  
   if (isMobile.value) {
     // 移动端固定位置
     return { x: 0, y: 0 }
@@ -223,12 +231,16 @@ const hideTOC = () => {
 
 const togglePin = () => {
   isPinned.value = !isPinned.value
-  localStorage.setItem('toc-pinned', isPinned.value.toString())
+  if (isBrowser) {
+    localStorage.setItem('toc-pinned', isPinned.value.toString())
+  }
 }
 
 const toggleCompactMode = () => {
   isCompactMode.value = !isCompactMode.value
-  localStorage.setItem('toc-compact', isCompactMode.value.toString())
+  if (isBrowser) {
+    localStorage.setItem('toc-compact', isCompactMode.value.toString())
+  }
 }
 
 const handleSearch = (query) => {
@@ -266,12 +278,18 @@ const handleDragEnd = (position) => {
   console.log('Drag ended at:', position)
 }
 
-// Utility functions
+// Utility functions - 添加浏览器环境检查
 const checkMobile = () => {
+  if (!isBrowser) {
+    isMobile.value = false
+    return
+  }
   isMobile.value = window.innerWidth < 768
 }
 
 const handleResize = () => {
+  if (!isBrowser) return
+  
   checkMobile()
   
   // 如果没有保存的位置，重新计算默认位置
@@ -283,6 +301,8 @@ const handleResize = () => {
 }
 
 const handleKeydown = (event) => {
+  if (!isBrowser) return
+  
   if (event.key === 'Escape' && isVisible.value) {
     hideTOC()
   }
@@ -308,25 +328,25 @@ const handleKeydown = (event) => {
   }
 }
 
-// 设置拖拽处理器
+// 设置拖拽处理器 - 添加浏览器环境检查
 const setupDragHandlers = () => {
-  if (toggleButton.value && toggleButton.value.$el) {
-    const buttonElement = toggleButton.value.$el.querySelector('.toc-progress-button')
-    if (buttonElement) {
-      const { handleMouseDown, handleTouchStart } = createDragHandlers(buttonElement)
-      
-      // 绑定拖拽事件
-      buttonElement.addEventListener('mousedown', handleMouseDown)
-      buttonElement.addEventListener('touchstart', handleTouchStart)
-      
-      console.log('Drag handlers set up for button element')
-    }
+  if (!isBrowser || !toggleButton.value) return
+  
+  const buttonElement = toggleButton.value.$el?.querySelector('.toc-progress-button')
+  if (buttonElement) {
+    const { handleMouseDown, handleTouchStart } = createDragHandlers(buttonElement)
+    
+    // 绑定拖拽事件
+    buttonElement.addEventListener('mousedown', handleMouseDown)
+    buttonElement.addEventListener('touchstart', handleTouchStart)
+    
+    console.log('Drag handlers set up for button element')
   }
 }
 
 // Lifecycle
 onMounted(() => {
-  if (!isDocPage.value) return
+  if (!isBrowser || !isDocPage.value) return
   
   checkMobile()
   
@@ -360,6 +380,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (!isBrowser) return
+  
   window.removeEventListener('resize', handleResize)
   window.removeEventListener('keydown', handleKeydown)
 })

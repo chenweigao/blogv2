@@ -1,5 +1,8 @@
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 
+// 检查是否在浏览器环境
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+
 export function useDragAndDrop(options = {}) {
   const {
     storageKey = 'toc-position',
@@ -14,11 +17,49 @@ export function useDragAndDrop(options = {}) {
   const position = reactive({ ...defaultPosition })
   const dragStart = reactive({ x: 0, y: 0 })
   
-  // Drag handlers
+  // Performance optimization variables
   let currentElement = null
+  let animationFrameId = null
+  let pendingUpdate = false
+  let lastUpdateTime = 0
+  const updateThrottle = 16 // ~60fps
   
+  // Pending position for smooth updates
+  let pendingPosition = { x: 0, y: 0 }
+  
+  // Performance optimized position update
+  const schedulePositionUpdate = (newX, newY) => {
+    if (!isBrowser) return
+    
+    pendingPosition.x = newX
+    pendingPosition.y = newY
+    
+    if (!pendingUpdate) {
+      pendingUpdate = true
+      
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+      
+      animationFrameId = requestAnimationFrame(() => {
+        const now = performance.now()
+        
+        // Throttle updates to maintain 60fps
+        if (now - lastUpdateTime >= updateThrottle) {
+          position.x = pendingPosition.x
+          position.y = pendingPosition.y
+          lastUpdateTime = now
+        }
+        
+        pendingUpdate = false
+        animationFrameId = null
+      })
+    }
+  }
+  
+  // Optimized drag start with GPU acceleration setup
   const startDrag = (element, clientX, clientY) => {
-    if (!element) return
+    if (!isBrowser || !element) return
     
     currentElement = element
     isDragging.value = true
@@ -26,14 +67,25 @@ export function useDragAndDrop(options = {}) {
     dragStart.x = clientX - position.x
     dragStart.y = clientY - position.y
     
-    // Add dragging class
+    // Add dragging class and GPU acceleration
     element.classList.add('is-dragging')
+    
+    // Enable GPU acceleration and optimize for dragging
+    element.style.willChange = 'transform'
+    element.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`
+    
+    // Optimize document for dragging
     document.body.style.userSelect = 'none'
     document.body.style.cursor = 'grabbing'
+    document.body.style.touchAction = 'none' // Prevent scrolling on touch devices
+    
+    // Add visual feedback
+    element.style.transition = 'none'
+    element.style.zIndex = '1000'
   }
   
   const updatePosition = (clientX, clientY) => {
-    if (!isDragging.value) return
+    if (!isBrowser || !isDragging.value) return
     
     let newX = clientX - dragStart.x
     let newY = clientY - dragStart.y
@@ -65,103 +117,161 @@ export function useDragAndDrop(options = {}) {
       }
     }
     
-    position.x = newX
-    position.y = newY
+    // Use optimized position update
+    schedulePositionUpdate(newX, newY)
+    
+    // Immediately update transform for smooth visual feedback
+    if (currentElement) {
+      currentElement.style.transform = `translate3d(${newX}px, ${newY}px, 0)`
+    }
   }
   
   const endDrag = () => {
-    if (!isDragging.value) return
+    if (!isBrowser || !isDragging.value) return
     
     isDragging.value = false
     
-    if (currentElement) {
-      currentElement.classList.remove('is-dragging')
+    // Cancel any pending animation frame
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId)
+      animationFrameId = null
     }
     
+    if (currentElement) {
+      currentElement.classList.remove('is-dragging')
+      
+      // Reset GPU acceleration hints
+      currentElement.style.willChange = 'auto'
+      currentElement.style.transition = ''
+      currentElement.style.zIndex = ''
+      
+      // Ensure final position is set
+      currentElement.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`
+    }
+    
+    // Reset document styles
     document.body.style.userSelect = ''
     document.body.style.cursor = ''
+    document.body.style.touchAction = ''
     
     // Save position
     savePosition()
     
     currentElement = null
+    pendingUpdate = false
   }
 
-  // Mouse events
+  // Optimized mouse events with passive listeners where possible
   const handleMouseMove = (event) => {
-    if (!isDragging.value) return
+    if (!isBrowser || !isDragging.value) return
     event.preventDefault()
     updatePosition(event.clientX, event.clientY)
   }
   
-  const handleMouseUp = () => {
-    endDrag()
-  }
-  
-  // Touch events
-  const handleTouchMove = (event) => {
-    if (!isDragging.value) return
-    event.preventDefault()
-    const touch = event.touches[0]
-    updatePosition(touch.clientX, touch.clientY)
-  }
-  
-  const handleTouchEnd = () => {
-    endDrag()
-  }
-  
-  // Keyboard events
-  const handleKeyDown = (event) => {
-    if (!isDragging.value) return
-    
-    if (event.key === 'Escape') {
+  const handleMouseUp = (event) => {
+    if (!isBrowser) return
+    if (isDragging.value) {
+      event.preventDefault()
       endDrag()
     }
   }
   
-  // Position management
+  // Optimized touch events
+  const handleTouchMove = (event) => {
+    if (!isBrowser || !isDragging.value) return
+    event.preventDefault()
+    const touch = event.touches[0]
+    if (touch) {
+      updatePosition(touch.clientX, touch.clientY)
+    }
+  }
+  
+  const handleTouchEnd = (event) => {
+    if (!isBrowser) return
+    if (isDragging.value) {
+      event.preventDefault()
+      endDrag()
+    }
+  }
+  
+  // Keyboard events
+  const handleKeyDown = (event) => {
+    if (!isBrowser || !isDragging.value) return
+    
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      endDrag()
+    }
+  }
+  
+  // Optimized position management
   const savePosition = () => {
-    if (storageKey) {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(position))
-      } catch (error) {
-        console.warn('Failed to save position:', error)
-      }
+    if (!isBrowser || !storageKey) return
+    
+    try {
+      // Use a microtask to avoid blocking the main thread
+      queueMicrotask(() => {
+        localStorage.setItem(storageKey, JSON.stringify({
+          x: position.x,
+          y: position.y,
+          timestamp: Date.now()
+        }))
+      })
+    } catch (error) {
+      console.warn('Failed to save position:', error)
     }
   }
   
   const loadPosition = () => {
-    if (storageKey) {
-      try {
-        const saved = localStorage.getItem(storageKey)
-        if (saved) {
-          const savedPosition = JSON.parse(saved)
-          position.x = savedPosition.x || defaultPosition.x
-          position.y = savedPosition.y || defaultPosition.y
+    if (!isBrowser || !storageKey) {
+      // Fallback to default position for SSR
+      position.x = defaultPosition.x
+      position.y = defaultPosition.y
+      return false
+    }
+    
+    try {
+      const saved = localStorage.getItem(storageKey)
+      if (saved) {
+        const savedData = JSON.parse(saved)
+        // Check if saved position is not too old (optional)
+        const isRecent = !savedData.timestamp || (Date.now() - savedData.timestamp < 7 * 24 * 60 * 60 * 1000) // 7 days
+        
+        if (isRecent && typeof savedData.x === 'number' && typeof savedData.y === 'number') {
+          position.x = savedData.x
+          position.y = savedData.y
           return true
         }
-      } catch (error) {
-        console.warn('Failed to load position:', error)
       }
+    } catch (error) {
+      console.warn('Failed to load position:', error)
     }
+    
+    // Fallback to default position
+    position.x = defaultPosition.x
+    position.y = defaultPosition.y
     return false
   }
   
   const resetPosition = () => {
     position.x = defaultPosition.x
     position.y = defaultPosition.y
-    savePosition()
+    if (isBrowser) {
+      savePosition()
+    }
   }
   
   const setPosition = (newPosition) => {
     position.x = newPosition.x
     position.y = newPosition.y
-    savePosition()
+    if (isBrowser) {
+      savePosition()
+    }
   }
   
-  // Viewport constraint check
+  // Optimized viewport constraint check
   const constrainToCurrentViewport = () => {
-    if (!constrainToViewport) return
+    if (!isBrowser || !constrainToViewport) return
     
     const elementWidth = currentElement?.offsetWidth || 60
     const elementHeight = currentElement?.offsetHeight || 60
@@ -179,20 +289,45 @@ export function useDragAndDrop(options = {}) {
     }
   }
   
-  // Window resize handler
+  // Debounced window resize handler
+  let resizeTimeout = null
   const handleResize = () => {
-    constrainToCurrentViewport()
+    if (!isBrowser) return
+    
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout)
+    }
+    
+    resizeTimeout = setTimeout(() => {
+      constrainToCurrentViewport()
+      resizeTimeout = null
+    }, 100)
   }
   
-  // Drag API
+  // Enhanced drag API with better performance
   const createDragHandlers = (element) => {
+    if (!isBrowser) {
+      return {
+        handleMouseDown: () => {},
+        handleTouchStart: () => {}
+      }
+    }
+    
     const handleMouseDown = (event) => {
+      // Only handle left mouse button
+      if (event.button !== 0) return
+      
       event.preventDefault()
+      event.stopPropagation()
       startDrag(element, event.clientX, event.clientY)
     }
     
     const handleTouchStart = (event) => {
+      // Only handle single touch
+      if (event.touches.length !== 1) return
+      
       event.preventDefault()
+      event.stopPropagation()
       const touch = event.touches[0]
       startDrag(element, touch.clientX, touch.clientY)
     }
@@ -203,39 +338,82 @@ export function useDragAndDrop(options = {}) {
     }
   }
   
-  // Lifecycle
+  // Lifecycle with better cleanup
   const initialize = () => {
+    if (!isBrowser) return
+    
     // Load saved position
     loadPosition()
     
-    // Add global event listeners
-    document.addEventListener('mousemove', handleMouseMove, { passive: false })
-    document.addEventListener('mouseup', handleMouseUp)
-    document.addEventListener('touchmove', handleTouchMove, { passive: false })
-    document.addEventListener('touchend', handleTouchEnd)
-    document.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('resize', handleResize)
+    // Add global event listeners with optimized options
+    document.addEventListener('mousemove', handleMouseMove, { 
+      passive: false,
+      capture: true 
+    })
+    document.addEventListener('mouseup', handleMouseUp, {
+      passive: false,
+      capture: true
+    })
+    document.addEventListener('touchmove', handleTouchMove, { 
+      passive: false,
+      capture: true 
+    })
+    document.addEventListener('touchend', handleTouchEnd, {
+      passive: false,
+      capture: true
+    })
+    document.addEventListener('keydown', handleKeyDown, {
+      passive: false
+    })
+    window.addEventListener('resize', handleResize, {
+      passive: true
+    })
     
-    // Constrain to viewport on load
-    setTimeout(constrainToCurrentViewport, 100)
+    // Constrain to viewport on load with a slight delay for layout
+    requestAnimationFrame(() => {
+      setTimeout(constrainToCurrentViewport, 50)
+    })
   }
   
   const cleanup = () => {
+    if (!isBrowser) return
+    
     // Clean up any ongoing drag
     endDrag()
     
+    // Clear timeouts
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout)
+      resizeTimeout = null
+    }
+    
+    // Cancel animation frames
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId)
+      animationFrameId = null
+    }
+    
     // Remove global event listeners
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
-    document.removeEventListener('touchmove', handleTouchMove)
-    document.removeEventListener('touchend', handleTouchEnd)
+    document.removeEventListener('mousemove', handleMouseMove, { capture: true })
+    document.removeEventListener('mouseup', handleMouseUp, { capture: true })
+    document.removeEventListener('touchmove', handleTouchMove, { capture: true })
+    document.removeEventListener('touchend', handleTouchEnd, { capture: true })
     document.removeEventListener('keydown', handleKeyDown)
     window.removeEventListener('resize', handleResize)
   }
   
-  // Auto initialize
-  onMounted(initialize)
-  onUnmounted(cleanup)
+  // Auto initialize - only on client side
+  onMounted(() => {
+    if (isBrowser) {
+      initialize()
+    }
+  })
+  
+  onUnmounted(() => {
+    if (isBrowser) {
+      cleanup()
+    }
+  })
   
   return {
     // State
@@ -250,11 +428,10 @@ export function useDragAndDrop(options = {}) {
     loadPosition,
     resetPosition,
     setPosition,
-    createDragHandlers,
     constrainToCurrentViewport,
+    createDragHandlers,
     
-    // Lifecycle
-    initialize,
+    // Cleanup
     cleanup
   }
 }

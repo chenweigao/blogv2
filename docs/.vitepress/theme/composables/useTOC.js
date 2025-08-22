@@ -1,6 +1,9 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter, useData } from 'vitepress'
 
+// 检查是否在浏览器环境
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+
 export function useTOC() {
   // Reactive state
   const headings = ref([])
@@ -13,10 +16,13 @@ export function useTOC() {
   const router = useRouter()
   const { page } = useData()
   
-  // Computed properties
+  // Computed properties with SSR safety
   const estimatedReadingTime = computed(() => {
+    if (!isBrowser) return 1
+    
     const wordsPerMinute = 200
-    const contentLength = document.querySelector('.vp-doc')?.textContent?.length || 0
+    const contentElement = document.querySelector('.vp-doc')
+    const contentLength = contentElement?.textContent?.length || 0
     const words = contentLength / 5
     return Math.ceil(words / wordsPerMinute) || 1
   })
@@ -30,8 +36,10 @@ export function useTOC() {
   // Intersection Observer for heading visibility
   let headingObserver = null
   
-  // Methods
+  // Methods with SSR safety
   const updateHeadings = () => {
+    if (!isBrowser) return
+    
     const headingElements = document.querySelectorAll('.vp-doc h1, .vp-doc h2, .vp-doc h3, .vp-doc h4, .vp-doc h5, .vp-doc h6')
     
     headings.value = Array.from(headingElements).map((el, index) => {
@@ -88,9 +96,14 @@ export function useTOC() {
   }
   
   const updateHeadingVisibility = () => {
+    if (!isBrowser) return
+    
     if (headingObserver) {
       headingObserver.disconnect()
     }
+    
+    // Check if IntersectionObserver is available
+    if (typeof IntersectionObserver === 'undefined') return
     
     headingObserver = new IntersectionObserver(
       (entries) => {
@@ -114,6 +127,8 @@ export function useTOC() {
   }
   
   const updateActiveHeading = () => {
+    if (!isBrowser) return
+    
     const visibleHeadings = headings.value.filter(h => h.isVisible)
     
     if (visibleHeadings.length === 0) {
@@ -159,6 +174,8 @@ export function useTOC() {
   }
   
   const scrollToHeading = (anchor, smooth = true) => {
+    if (!isBrowser) return
+    
     const element = document.getElementById(anchor)
     if (element) {
       activeHeading.value = anchor
@@ -172,7 +189,9 @@ export function useTOC() {
         behavior: smooth ? 'smooth' : 'instant'
       })
       
-      history.replaceState(null, null, `#${anchor}`)
+      if (typeof history !== 'undefined') {
+        history.replaceState(null, null, `#${anchor}`)
+      }
       
       setTimeout(() => {
         updateActiveHeading()
@@ -181,14 +200,20 @@ export function useTOC() {
   }
   
   const scrollToTop = () => {
+    if (!isBrowser) return
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   
   const scrollToBottom = () => {
+    if (!isBrowser) return
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
   }
   
   const copyTOC = async () => {
+    if (!isBrowser || typeof navigator === 'undefined' || !navigator.clipboard) {
+      return false
+    }
+    
     const tocText = headings.value
       .map(h => '  '.repeat(h.level - 1) + '- ' + h.title)
       .join('\n')
@@ -220,6 +245,8 @@ export function useTOC() {
   }
   
   const updateReadingProgress = () => {
+    if (!isBrowser) return
+    
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop
     const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
     const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0
@@ -230,11 +257,14 @@ export function useTOC() {
   
   // Event handlers
   const handleScroll = () => {
+    if (!isBrowser) return
     updateReadingProgress()
   }
   
   // Lifecycle
   const initialize = () => {
+    if (!isBrowser) return
+    
     nextTick(() => {
       updateHeadings()
       updateReadingProgress()
@@ -249,22 +279,34 @@ export function useTOC() {
           updateHeadings()
           activeHeading.value = ''
           readingProgress.value = 0
-          clearSearch()
         })
       }
     }
   }
   
   const cleanup = () => {
-    window.removeEventListener('scroll', handleScroll)
+    if (!isBrowser) return
+    
     if (headingObserver) {
       headingObserver.disconnect()
+      headingObserver = null
     }
+    
+    window.removeEventListener('scroll', handleScroll)
   }
   
-  // Auto initialize on mount
-  onMounted(initialize)
-  onUnmounted(cleanup)
+  // Auto initialize - only on client side
+  onMounted(() => {
+    if (isBrowser) {
+      initialize()
+    }
+  })
+  
+  onUnmounted(() => {
+    if (isBrowser) {
+      cleanup()
+    }
+  })
   
   return {
     // State
@@ -273,19 +315,17 @@ export function useTOC() {
     activeHeading,
     readingProgress,
     searchQuery,
-    
-    // Computed
     estimatedReadingTime,
     timeRemaining,
     
     // Methods
-    updateHeadings,
     scrollToHeading,
     scrollToTop,
     scrollToBottom,
     copyTOC,
     filterHeadings,
     clearSearch,
+    updateHeadings,
     updateReadingProgress,
     
     // Lifecycle

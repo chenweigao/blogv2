@@ -20,11 +20,34 @@ export default defineConfig({
     writeGitHistoryData()
   },
 
+  // SSR 配置 - 解决客户端组件的 SSR 问题
+  ssr: {
+    noExternal: ['vue', '@vue/shared']
+  },
+
   // Vite 配置 - 添加实时 git 历史记录 API 插件
   vite: {
     plugins: [
       createGitHistoryAPI()
-    ]
+    ],
+    // 优化构建配置
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'toc-components': [
+              './docs/.vitepress/theme/components/EnhancedTOC.vue',
+              './docs/.vitepress/theme/components/toc/TOCToggleButton.vue',
+              './docs/.vitepress/theme/components/toc/TOCPanel.vue'
+            ]
+          }
+        }
+      }
+    },
+    // 定义全局变量以避免 SSR 问题
+    define: {
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
+    }
   },
 
   // 网站图标
@@ -137,8 +160,11 @@ export default defineConfig({
       }
     },
 
-    // 大纲配置
-    outline: false
+    // 大纲配置 - 启用大纲以支持 TOC 功能
+    outline: {
+      level: [2, 3],
+      label: 'On this page'
+    }
   },
 
   // Markdown 配置

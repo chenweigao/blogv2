@@ -123,9 +123,10 @@ const ringOffset = computed(() => {
 })
 
 const buttonStyle = computed(() => ({
-  transform: `translate(${props.position.x}px, ${props.position.y}px)`,
+  transform: `translate3d(${props.position.x}px, ${props.position.y}px, 0)`,
   transition: isDragging.value ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-  zIndex: isDragging.value ? 1000 : 100
+  zIndex: isDragging.value ? 1000 : 100,
+  willChange: isDragging.value ? 'transform' : 'auto'
 }))
 
 // 简化点击处理逻辑
@@ -223,6 +224,14 @@ onUnmounted(() => {
   overflow: visible;
   /* 确保点击事件正常工作 */
   pointer-events: auto;
+  
+  /* GPU 加速优化 */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  
+  /* 拖拽优化 */
+  will-change: auto;
 }
 
 .toc-progress-button:hover {
@@ -241,6 +250,29 @@ onUnmounted(() => {
   z-index: 1000;
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
   transform: scale(1.1);
+  
+  /* 拖拽时的 GPU 加速 */
+  will-change: transform;
+  backface-visibility: hidden;
+  
+  /* 拖拽时的视觉效果 */
+  filter: brightness(1.1);
+  transition: none !important;
+}
+
+/* 拖拽时的额外视觉反馈 */
+.toc-progress-button.is-dragging::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border: 2px solid var(--vp-c-brand-1);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: dragPulse 1.5s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .progress-ring-svg {
@@ -249,6 +281,10 @@ onUnmounted(() => {
   left: 0;
   transform: rotate(-90deg);
   pointer-events: none;
+  
+  /* GPU 加速 */
+  will-change: auto;
+  backface-visibility: hidden;
 }
 
 .progress-ring-bg {
@@ -262,6 +298,9 @@ onUnmounted(() => {
   stroke-linecap: round;
   transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
   filter: drop-shadow(0 0 4px rgba(var(--vp-c-brand-rgb), 0.3));
+  
+  /* 优化 SVG 渲染 */
+  shape-rendering: geometricPrecision;
 }
 
 .toc-progress-button.is-active .progress-ring-fill {
@@ -277,6 +316,9 @@ onUnmounted(() => {
   z-index: 2;
   /* 允许点击事件穿透到按钮 */
   pointer-events: none;
+  
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
 }
 
 .toc-icon {
@@ -285,6 +327,9 @@ onUnmounted(() => {
   margin-bottom: 2px;
   /* 确保图标不会阻止点击 */
   pointer-events: none;
+  
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
 }
 
 .toc-progress-button:hover .toc-icon {
@@ -303,6 +348,9 @@ onUnmounted(() => {
   line-height: 1;
   margin-top: -2px;
   pointer-events: none;
+  
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
 }
 
 .toc-progress-button:hover .progress-percentage {
@@ -332,6 +380,9 @@ onUnmounted(() => {
   z-index: 3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   pointer-events: none;
+  
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
 }
 
 .toc-progress-button.is-active .toc-badge {
@@ -366,6 +417,9 @@ onUnmounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 3;
   pointer-events: auto;
+  
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
 }
 
 .toc-progress-button:hover .drag-handle {
@@ -399,6 +453,9 @@ onUnmounted(() => {
   opacity: 0.6;
   pointer-events: none;
   animation: dragPulse 1.5s ease-in-out infinite;
+  
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
 }
 
 @keyframes dragPulse {
@@ -467,6 +524,10 @@ onUnmounted(() => {
     transition: none !important;
     animation: none !important;
   }
+  
+  .toc-progress-button.is-dragging::before {
+    animation: none !important;
+  }
 }
 
 /* 高对比度模式 */
@@ -490,5 +551,20 @@ onUnmounted(() => {
 .toc-progress-button:focus-visible {
   outline: 2px solid var(--vp-c-brand-1);
   outline-offset: 2px;
+}
+
+/* 性能优化：减少重绘和回流 */
+.toc-progress-button * {
+  box-sizing: border-box;
+}
+
+/* 拖拽时的性能优化 */
+.toc-progress-button.is-dragging * {
+  pointer-events: none;
+}
+
+/* 确保拖拽时的流畅性 */
+.toc-progress-button.is-dragging {
+  contain: layout style paint;
 }
 </style>
