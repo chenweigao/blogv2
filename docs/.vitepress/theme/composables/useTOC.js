@@ -1,4 +1,4 @@
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRouter, useData } from 'vitepress'
 
 // 检查是否在浏览器环境
@@ -271,17 +271,6 @@ export function useTOC() {
     })
     
     window.addEventListener('scroll', handleScroll, { passive: true })
-    
-    // Listen for route changes
-    if (router.onAfterRouteChanged) {
-      router.onAfterRouteChanged = () => {
-        nextTick(() => {
-          updateHeadings()
-          activeHeading.value = ''
-          readingProgress.value = 0
-        })
-      }
-    }
   }
   
   const cleanup = () => {
@@ -307,6 +296,32 @@ export function useTOC() {
       cleanup()
     }
   })
+  
+  // Watch for page changes to update TOC
+  if (isBrowser) {
+    watch(
+      () => page.value.filePath,
+      (newPath, oldPath) => {
+        if (newPath !== oldPath) {
+          // Reset state
+          headings.value = []
+          activeHeading.value = ''
+          readingProgress.value = 0
+          searchQuery.value = ''
+          filteredHeadings.value = []
+          
+          // Update headings after DOM is ready
+          nextTick(() => {
+            setTimeout(() => {
+              updateHeadings()
+              updateReadingProgress()
+            }, 100) // Small delay to ensure DOM is fully rendered
+          })
+        }
+      },
+      { immediate: false }
+    )
+  }
   
   return {
     // State
