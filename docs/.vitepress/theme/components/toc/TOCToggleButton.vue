@@ -57,19 +57,6 @@
       <!-- 标题数量徽章 -->
       <span class="toc-badge" v-if="headingCount > 0">{{ headingCount }}</span>
       
-      <!-- 拖拽手柄 -->
-      <div 
-        class="drag-handle" 
-        v-if="isDraggable"
-        @mousedown.stop="handleDragStart"
-        @touchstart.stop="handleDragTouchStart"
-        :title="'Drag to move'"
-      >
-        <svg viewBox="0 0 24 24" width="10" height="10">
-          <path d="M9,3H11V5H9V3M13,3H15V5H13V3M9,7H11V9H9V7M13,7H15V9H13V7M9,11H11V13H9V11M13,11H15V13H13V11M9,15H11V17H9V15M13,15H15V17H13V15M9,19H11V21H9V19M13,19H15V21H13V19Z"/>
-        </svg>
-      </div>
-      
       <!-- 拖拽预览 -->
       <div class="drag-preview" v-if="isDragging"></div>
     </button>
@@ -399,49 +386,6 @@ onUnmounted(() => {
   }
 }
 
-.drag-handle {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 14px;
-  height: 14px;
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: grab;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 3;
-  pointer-events: auto;
-  
-  /* GPU 加速 */
-  transform: translate3d(0, 0, 0);
-}
-
-.toc-progress-button:hover .drag-handle {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.drag-handle:hover {
-  background: var(--vp-c-brand-soft);
-  border-color: var(--vp-c-brand-1);
-}
-
-.drag-handle:active {
-  cursor: grabbing;
-  transform: scale(0.9);
-}
-
-.drag-handle svg {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
 .drag-preview {
   position: absolute;
   top: -3px;
@@ -487,16 +431,6 @@ onUnmounted(() => {
     width: 16px;
     height: 16px;
   }
-  
-  .progress-percentage {
-    font-size: 0.55rem;
-  }
-  
-  .drag-handle {
-    opacity: 0.8;
-    width: 12px;
-    height: 12px;
-  }
 }
 
 /* 暗色主题 */
@@ -517,7 +451,6 @@ onUnmounted(() => {
 @media (prefers-reduced-motion: reduce) {
   .toc-progress-button,
   .toc-icon,
-  .drag-handle,
   .drag-preview,
   .progress-ring-fill,
   .toc-badge {
