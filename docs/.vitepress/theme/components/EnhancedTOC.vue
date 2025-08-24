@@ -413,10 +413,15 @@ onUnmounted(() => {
   pointer-events: auto; /* 移动端恢复事件响应 */
 }
 
+/* 修复固定模式样式 - 移除强制的top位置设置，避免与动态panelPosition冲突 */
 .enhanced-toc-container.is-pinned {
-  position: fixed;
-  top: 6rem;
-  transform: none;
+  /* 移除强制的 top: 6rem，让位置完全由动态计算的 panelPosition 决定 */
+  /* 保持其他固定模式的视觉效果 */
+  z-index: 200;
+  /* 完全禁用过渡动画，避免位移 */
+  transition: none !important;
+  animation: none !important;
+  transform: none !important;
 }
 
 /* ===== 背景遮罩 ===== */

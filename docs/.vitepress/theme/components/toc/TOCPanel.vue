@@ -1,5 +1,6 @@
 <template>
-  <Transition name="toc-slide" appear>
+  <!-- 在固定模式下禁用Vue过渡，避免位置偏移 -->
+  <Transition :name="isPinned ? '' : 'toc-slide'" appear>
     <div 
       v-if="isVisible" 
       class="toc-panel" 
@@ -263,7 +264,8 @@ defineExpose({
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(16px);
   overflow: hidden;
-  transition: all 0.3s ease;
+  /* 只对不影响位置的属性进行过渡 */
+  transition: opacity 0.3s ease;
   display: flex;
   flex-direction: column;
   pointer-events: auto; /* 确保面板可以接收事件 */
@@ -282,13 +284,33 @@ defineExpose({
   z-index: 1000 !important;
 }
 
-/* 固定模式样式 */
+/* 固定模式样式 - 完全静态，位置由外部panelPosition控制 */
 .toc-panel.is-pinned {
-  position: fixed !important;
-  top: 6rem !important;
-  right: 2rem !important;
-  left: auto !important;
+  /* 位置完全由外部 panelPosition 控制，不在这里强制设置 */
   z-index: 200 !important;
+  /* 添加固定模式的视觉效果 */
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2) !important;
+  /* 使用 outline 替代 border，避免影响面板尺寸和位置 */
+  outline: 2px solid var(--vp-c-brand-1) !important;
+  outline-offset: -1px !important;
+  /* 添加固定状态的背景效果 */
+  background: var(--vp-c-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  /* 完全禁用所有过渡和动画效果，避免任何位移 */
+  transition: none !important;
+  animation: none !important;
+  transform: none !important;
+  /* 确保位置稳定 */
+  will-change: auto !important;
+}
+
+/* 暗色主题下的固定模式 - 完全静态 */
+.dark .toc-panel.is-pinned {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5) !important;
+  outline-color: var(--vp-c-brand-1) !important;
+  /* 确保无动画 */
+  animation: none !important;
+  transition: none !important;
 }
 
 /* 紧凑模式样式 */
