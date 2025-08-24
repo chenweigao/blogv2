@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--animation-duration-fast, 0.2s) var(--animation-easing, ease);
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
   pointer-events: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 101;
@@ -42,7 +42,7 @@
 
 .toc-toggle .toc-icon {
   fill: currentColor;
-  transition: transform var(--animation-duration-fast, 0.2s) var(--animation-easing, ease);
+  transition: transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .toc-toggle.is-active .toc-icon {
@@ -123,7 +123,7 @@
   justify-content: center;
   cursor: pointer;
   color: var(--vp-c-text-2);
-  transition: all var(--animation-duration-fast, 0.2s) var(--animation-easing, ease);
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .toc-pin:hover,
@@ -187,7 +187,7 @@
   text-decoration: none;
   font-size: 13px;
   line-height: 1.4;
-  transition: all var(--animation-duration-fast, 0.2s) var(--animation-easing, ease);
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
   border-left: 3px solid transparent;
   position: relative;
 }
@@ -211,7 +211,7 @@
   background: var(--vp-c-text-3);
   margin-right: 12px;
   flex-shrink: 0;
-  transition: all var(--animation-duration-fast, 0.2s) var(--animation-easing, ease);
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
   opacity: 0.6;
 }
 
@@ -250,17 +250,43 @@
 
 .toc-level-4 .toc-link {
   padding-left: 56px;
-  font-size: 12px;
+  font-size: 11px;
+  opacity: 0.8;
 }
 
 .toc-level-5 .toc-link {
   padding-left: 68px;
   font-size: 11px;
+  opacity: 0.7;
 }
 
 .toc-level-6 .toc-link {
   padding-left: 80px;
-  font-size: 11px;
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .toc-panel {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .toc-toggle {
+    top: 70px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .toc-panel {
+    top: 70px;
+    right: 16px;
+    width: calc(100vw - 32px);
+    max-height: calc(100vh - 100px);
+  }
 }
 
 /* TOC Footer */
@@ -339,40 +365,6 @@
 
 .dark .reading-progress {
   background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .toc-panel {
-    width: calc(100vw - 20px);
-    right: 10px;
-  }
-  
-  .toc-toggle {
-    right: 15px;
-    top: 60px;
-  }
-}
-
-@media (max-width: 480px) {
-  .toc-level-3 .toc-link,
-  .toc-level-4 .toc-link,
-  .toc-level-5 .toc-link,
-  .toc-level-6 .toc-link {
-    font-size: 12px;
-  }
-  
-  .toc-level-4 .toc-link {
-    padding-left: 44px;
-  }
-  
-  .toc-level-5 .toc-link {
-    padding-left: 56px;
-  }
-  
-  .toc-level-6 .toc-link {
-    padding-left: 68px;
-  }
 }
 
 /* Animation Performance Optimizations */

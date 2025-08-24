@@ -1,6 +1,23 @@
 /* VitePress Enhanced Custom Theme - 模块化版本 */
 
-/* 导入所有样式模块 */
+/* 
+ * 导入顺序说明：
+ * 1. variables.css - 必须最先导入，提供所有CSS变量
+ * 2. base.css - 基础样式和性能优化类
+ * 3. layout.css - VitePress布局增强（基础布局）
+ * 4. content.css - 文档内容增强样式
+ * 5. components.css - 自定义组件样式
+ * 6. animations.css - 动画定义
+ * 7. responsive.css - 响应式设计
+ * 8. accessibility.css - 可访问性增强
+ * 9. utilities.css - 实用工具类（最后导入，优先级最高）
+ * 
+ * 注意：以下文件已整合到上述模块中，避免重复导入：
+ * - sidebar-effects.css 的功能已整合到 layout.css
+ * - code-block-fix.css 的功能已整合到 content.css  
+ * - hover-effects.css 的功能已分散到各个相关模块
+ */
+
 @import './styles/variables.css';
 @import './styles/base.css';
 @import './styles/layout.css';

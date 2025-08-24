@@ -2,9 +2,10 @@ import DefaultTheme from 'vitepress/theme'
 import Layout from './Layout.vue'
 import './custom.css'
 import './enhanced-toc.css'
-import './styles/code-block-fix.css'
-import './styles/sidebar-effects.css'
-import './styles/hover-effects.css'
+// 注意：以下CSS文件已整合到 custom.css 的模块化结构中，避免重复导入
+// import './styles/code-block-fix.css'     // 已整合到 content.css
+// import './styles/sidebar-effects.css'   // 已整合到 layout.css  
+// import './styles/hover-effects.css'     // 已分散到各个相关模块
 import ArticleMeta from './components/ArticleMeta.vue'
 import PageTransition from './components/PageTransition.vue'
 import ScrollAnimations from './components/ScrollAnimations.vue'
