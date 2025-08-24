@@ -20,6 +20,7 @@ import imageViewer from 'vitepress-plugin-image-viewer'
 import { onMounted, watch, ref } from 'vue'
 import { useRoute } from 'vitepress'
 import { createCodeBlockHandler } from './utils/codeBlockHandler.js'
+import { useMermaid } from './composables/useMermaid.js'
 
 // 创建一个全局的代码块弹窗状态
 const codeModalState = {
@@ -56,16 +57,24 @@ export default {
     // 创建代码块处理器
     const codeBlockHandler = createCodeBlockHandler(codeModalState)
     
+    // 使用 mermaid composable
+    const { setupMermaid } = useMermaid()
+    
     // 只在客户端环境中初始化
     if (typeof window !== 'undefined') {
-      onMounted(() => {
+      onMounted(async () => {
+        // 初始化代码块点击事件
         codeBlockHandler.initCodeBlockClick()
+        
+        // 初始化 mermaid
+        await setupMermaid()
       })
       
-      // 监听路由变化，重新初始化代码块点击事件
-      watch(() => route.path, () => {
-        setTimeout(() => {
+      // 监听路由变化，重新初始化代码块点击事件和 mermaid
+      watch(() => route.path, async () => {
+        setTimeout(async () => {
           codeBlockHandler.initCodeBlockClick()
+          await setupMermaid()
         }, 100)
       })
     }
