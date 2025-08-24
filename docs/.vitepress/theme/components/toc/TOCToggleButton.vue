@@ -10,8 +10,6 @@
         'has-progress': showProgress && readingProgress > 0
       }"
       @click="handleClick"
-      @mousedown="handleMouseDown"
-      @touchstart="handleTouchStart"
       :title="`${isActive ? 'Hide' : 'Show'} TOC - ${Math.round(readingProgress)}% read`"
       :aria-label="`${isActive ? 'Hide' : 'Show'} table of contents - ${Math.round(readingProgress)}% read`"
       :aria-expanded="isActive"
@@ -43,7 +41,7 @@
       
       <!-- 中心内容区域 -->
       <div class="button-content">
-        <!-- TOC 图标 - 修复了SVG路径 -->
+        <!-- TOC 图标 -->
         <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2zM9,7H11V9H9V7M13,7H15V9H13V7M9,11H11V13H9V11M13,11H15V13H13V11M9,15H11V17H9V15M13,15H15V17H13V15M9,19H11V21H9V19M13,19H15V21H13V19Z"/>
         </svg>
@@ -209,7 +207,6 @@ onUnmounted(() => {
   user-select: none;
   touch-action: manipulation;
   overflow: visible;
-  /* 确保点击事件正常工作 */
   pointer-events: auto;
   
   /* GPU 加速优化 */
@@ -430,6 +427,10 @@ onUnmounted(() => {
   .toc-icon {
     width: 16px;
     height: 16px;
+  }
+  
+  .progress-percentage {
+    font-size: 0.55rem;
   }
 }
 
