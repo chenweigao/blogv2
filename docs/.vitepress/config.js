@@ -161,6 +161,9 @@ export default defineConfig({
     },
 
     // 大纲配置 - 启用大纲以支持 TOC 功能
+    // outline: {
+    //   level: [2, 3]
+    // }
     outline: false
   },
 
