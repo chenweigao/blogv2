@@ -1,0 +1,138 @@
+/* 文档内容增强样式 */
+
+/* 标题增强 */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4,
+.vp-doc h5,
+.vp-doc h6 {
+  position: relative;
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.vp-doc h1:hover,
+.vp-doc h2:hover,
+.vp-doc h3:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.vp-doc h1::before,
+.vp-doc h2::before,
+.vp-doc h3::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 0;
+  background: var(--vp-c-brand-gradient);
+  border-radius: 2px;
+  transition: height var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.vp-doc h1:hover::before {
+  height: 2rem;
+}
+
+.vp-doc h2:hover::before {
+  height: 1.5rem;
+}
+
+.vp-doc h3:hover::before {
+  height: 1.25rem;
+}
+
+/* 链接增强 */
+.vp-doc a {
+  position: relative;
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  border-bottom: 1px solid transparent;
+}
+
+.vp-doc a:hover {
+  color: var(--vp-c-brand-darker);
+  border-bottom-color: var(--vp-c-brand-1);
+}
+
+.vp-doc a:active {
+  transform: scale(0.98);
+}
+
+/* 代码块增强 */
+.vp-doc div[class*="language-"] {
+  position: relative;
+  border-radius: var(--vp-border-radius-medium);
+  box-shadow: var(--vp-shadow-2);
+  transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  overflow: hidden;
+}
+
+.vp-doc div[class*="language-"]:hover {
+  box-shadow: var(--vp-shadow-3);
+}
+
+.vp-doc div[class*="language-"]::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem 1rem;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-bottom-left-radius: var(--vp-border-radius-small);
+  z-index: 1;
+}
+
+/* 表格增强 */
+.vp-doc table {
+  border-radius: var(--vp-border-radius-medium);
+  overflow: hidden;
+  box-shadow: var(--vp-shadow-1);
+  transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.vp-doc table:hover {
+  box-shadow: var(--vp-shadow-2);
+}
+
+.vp-doc th {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+.vp-doc tr:hover {
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* 引用块增强 */
+.vp-doc blockquote {
+  position: relative;
+  border-left: 4px solid var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  border-radius: 0 var(--vp-border-radius-medium) var(--vp-border-radius-medium) 0;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.vp-doc blockquote:hover {
+  transform: translateX(4px);
+  box-shadow: var(--vp-shadow-2);
+}
+
+.vp-doc blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  font-size: 3rem;
+  color: var(--vp-c-brand-1);
+  opacity: 0.3;
+  font-family: serif;
+}

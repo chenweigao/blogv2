@@ -1,0 +1,49 @@
+/* 基础样式和性能优化 */
+
+/* GPU 加速优化 */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* 统一过渡效果 */
+.transition-fast {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.transition-normal {
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.transition-slow {
+  transition: all var(--vp-animation-duration-slow) var(--vp-animation-easing);
+}
+
+.transition-smooth {
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+}
+
+/* 性能优化 */
+.doc-header-container,
+.related-item,
+.quick-toc-preview {
+  contain: layout style paint;
+}
+
+/* 滚动性能优化 */
+.quick-toc-content,
+.vp-doc {
+  scroll-behavior: smooth;
+}
+
+/* 图像优化 */
+.vp-doc img {
+  transition: transform var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  border-radius: var(--vp-border-radius-medium);
+}
+
+.vp-doc img:hover {
+  transform: scale(1.02);
+  box-shadow: var(--vp-shadow-3);
+}

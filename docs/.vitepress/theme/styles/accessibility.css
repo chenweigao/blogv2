@@ -1,0 +1,74 @@
+/* 可访问性增强 */
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  :root {
+    --vp-c-border: #000000;
+    --vp-c-text-3: #333333;
+  }
+  
+  .dark {
+    --vp-c-border: #ffffff;
+    --vp-c-text-3: #cccccc;
+  }
+  
+  .doc-header-container,
+  .related-item,
+  .quick-toc-preview {
+    border-width: 2px;
+  }
+}
+
+/* 减少动画模式 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .doc-header-container:hover,
+  .related-item:hover,
+  .article-tag:hover,
+  .quick-toc-item:hover {
+    transform: none !important;
+  }
+}
+
+/* Focus 可见性增强 */
+.breadcrumb-link:focus-visible,
+.article-tag:focus-visible,
+.quick-toc-item:focus-visible,
+.related-item:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: var(--vp-border-radius-small);
+}
+
+/* 打印样式优化 */
+@media print {
+  .doc-header-container,
+  .related-articles,
+  .quick-toc-preview {
+    break-inside: avoid;
+  }
+  
+  .doc-header-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+  
+  .article-tag {
+    background: transparent !important;
+    border: 1px solid #ccc !important;
+    color: #000 !important;
+  }
+  
+  .related-item {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}

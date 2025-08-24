@@ -1,0 +1,68 @@
+/* VitePress 布局增强 */
+
+/* 主布局容器 */
+.Layout {
+  background-color: var(--vp-c-bg);
+  transition: background-color var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+/* 导航栏增强 */
+.VPNav {
+  background-color: var(--vp-c-bg);
+  border-bottom: 1px solid var(--vp-c-divider);
+  backdrop-filter: blur(12px);
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  box-shadow: var(--vp-shadow-1);
+}
+
+.VPNavBar {
+  background-color: var(--vp-c-bg);
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.VPNavBarTitle {
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.VPNavBarTitle:hover {
+  color: var(--vp-c-brand-1);
+}
+
+/* 侧边栏增强 */
+.VPSidebar {
+  background-color: var(--vp-c-bg-soft);
+  border-right: 1px solid var(--vp-c-divider);
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.VPSidebarItem .link {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  border-radius: var(--vp-border-radius-small);
+  margin: 2px 0;
+}
+
+.VPSidebarItem .link:hover {
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  transform: translateX(2px);
+}
+
+.VPSidebarItem.is-active .link {
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 500;
+  border-left: 3px solid var(--vp-c-brand-1);
+}
+
+/* 内容区域增强 */
+.VPContent {
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.VPDoc {
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.vp-doc {
+  transition: opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
