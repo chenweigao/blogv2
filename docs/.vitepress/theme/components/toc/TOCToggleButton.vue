@@ -45,7 +45,7 @@
       <div class="button-content">
         <!-- TOC 图标 - 修复了SVG路径 -->
         <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-          <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"/>
+          <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2zM9,7H11V9H9V7M13,7H15V9H13V7M9,11H11V13H9V11M13,11H15V13H13V11M9,15H11V17H9V15M13,15H15V17H13V15M9,19H11V21H9V19M13,19H15V21H13V19Z"/>
         </svg>
         
         <!-- 进度百分比文字（小字体，在图标下方） -->
@@ -544,13 +544,26 @@ onUnmounted(() => {
 
 /* 确保按钮在所有情况下都可以点击 */
 .toc-progress-button:focus {
-  outline: 2px solid var(--vp-c-brand-1);
-  outline-offset: 2px;
+  /* 移除方形的 outline，使用圆形的 box-shadow 替代 */
+  outline: none;
+  box-shadow: 0 0 0 2px var(--vp-c-brand-1), 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .toc-progress-button:focus-visible {
-  outline: 2px solid var(--vp-c-brand-1);
-  outline-offset: 2px;
+  /* 移除方形的 outline，使用圆形的 box-shadow 替代 */
+  outline: none;
+  box-shadow: 0 0 0 2px var(--vp-c-brand-1), 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* 添加点击时的反馈效果 */
+.toc-progress-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 确保拖拽时不受点击效果影响 */
+.toc-progress-button.is-dragging:active {
+  transform: scale(1.1); /* 保持拖拽时的缩放 */
 }
 
 /* 性能优化：减少重绘和回流 */
