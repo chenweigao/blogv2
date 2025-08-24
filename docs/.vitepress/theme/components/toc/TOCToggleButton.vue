@@ -43,7 +43,7 @@
       <div class="button-content">
         <!-- TOC 图标 -->
         <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-          <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2zM9,7H11V9H9V7M13,7H15V9H13V7M9,11H11V13H9V11M13,11H15V13H13V11M9,15H11V17H9V15M13,15H15V17H13V15M9,19H11V21H9V19M13,19H15V21H13V19Z"/>
+          <path fill="currentColor" d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2zM9,7H11V9H9V7M13,7H15V9H13V7M9,11H11V13H9V11M13,11H15V13H13V11M9,15H11V17H9V15M13,15H15V17H13V15M9,19H11V21H9V19M13,19H15V21H13V19Z"/>
         </svg>
         
         <!-- 进度百分比文字（小字体，在图标下方） -->
@@ -434,7 +434,7 @@ onUnmounted(() => {
   }
 }
 
-/* 暗色主题 */
+/* 暗色主题适配 */
 .dark .toc-progress-button {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
@@ -448,70 +448,28 @@ onUnmounted(() => {
   opacity: 0.5;
 }
 
-/* 减少动画 */
-@media (prefers-reduced-motion: reduce) {
-  .toc-progress-button,
-  .toc-icon,
-  .drag-preview,
-  .progress-ring-fill,
-  .toc-badge {
-    transition: none !important;
-    animation: none !important;
-  }
-  
-  .toc-progress-button.is-dragging::before {
-    animation: none !important;
-  }
+/* 暗色主题下的图标颜色优化 */
+.dark .toc-icon {
+  color: var(--vp-c-text-1);
 }
 
-/* 高对比度模式 */
-@media (prefers-contrast: high) {
-  .progress-ring-bg,
-  .progress-ring-fill {
-    stroke-width: 5px;
-  }
-  
-  .toc-progress-button {
-    border: 2px solid var(--vp-c-border);
-  }
+.dark .toc-progress-button:hover .toc-icon {
+  color: var(--vp-c-brand-1);
 }
 
-/* 确保按钮在所有情况下都可以点击 */
-.toc-progress-button:focus {
-  /* 移除方形的 outline，使用圆形的 box-shadow 替代 */
-  outline: none;
-  box-shadow: 0 0 0 2px var(--vp-c-brand-1), 0 4px 16px rgba(0, 0, 0, 0.1);
+.dark .toc-progress-button.is-active .toc-icon {
+  color: var(--vp-c-brand-1);
 }
 
-.toc-progress-button:focus-visible {
-  /* 移除方形的 outline，使用圆形的 box-shadow 替代 */
-  outline: none;
-  box-shadow: 0 0 0 2px var(--vp-c-brand-1), 0 4px 16px rgba(0, 0, 0, 0.1);
+.dark .progress-percentage {
+  color: var(--vp-c-text-2);
 }
 
-/* 添加点击时的反馈效果 */
-.toc-progress-button:active {
-  transform: scale(0.95);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+.dark .toc-progress-button:hover .progress-percentage {
+  color: var(--vp-c-brand-1);
 }
 
-/* 确保拖拽时不受点击效果影响 */
-.toc-progress-button.is-dragging:active {
-  transform: scale(1.1); /* 保持拖拽时的缩放 */
-}
-
-/* 性能优化：减少重绘和回流 */
-.toc-progress-button * {
-  box-sizing: border-box;
-}
-
-/* 拖拽时的性能优化 */
-.toc-progress-button.is-dragging * {
-  pointer-events: none;
-}
-
-/* 确保拖拽时的流畅性 */
-.toc-progress-button.is-dragging {
-  contain: layout style paint;
+.dark .toc-progress-button.is-active .progress-percentage {
+  color: var(--vp-c-brand-1);
 }
 </style>
