@@ -90,10 +90,15 @@
 
 /* 表格增强 */
 .vp-doc table {
+  display: table !important; /* 修复display: block导致的额外卡片问题 */
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
   border-radius: var(--vp-border-radius-medium);
   overflow: hidden;
   box-shadow: var(--vp-shadow-1);
   transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  margin: 1rem 0;
 }
 
 .vp-doc table:hover {
@@ -104,45 +109,63 @@
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
   font-weight: 600;
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: none;
+  transition: background-color var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .vp-doc th:hover {
   background: var(--vp-c-brand-1);
   color: var(--vp-c-bg);
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .vp-doc td {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  padding: 0.75rem 1rem;
+  border: none;
+  border-top: 1px solid var(--vp-c-divider);
+  transition: background-color var(--vp-animation-duration-fast) var(--vp-animation-easing);
   position: relative;
 }
 
-.vp-doc td:hover {
+.vp-doc tbody tr:hover td {
   background-color: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1;
 }
 
-.vp-doc tr:hover {
-  background-color: var(--vp-c-bg-soft);
+.vp-doc tbody tr:hover td:first-child {
+  position: relative;
 }
 
-/* 表格单元格悬停时的特殊效果 */
-.vp-doc td:hover::before {
+.vp-doc tbody tr:hover td:first-child::before {
   content: '';
   position: absolute;
-  top: 0;
   left: 0;
-  right: 0;
+  top: 0;
   bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, var(--vp-c-brand-1) 50%, transparent 70%);
-  opacity: 0.1;
-  pointer-events: none;
-  animation: shimmer 1.5s ease-in-out;
+  width: 3px;
+  background: var(--vp-c-brand-1);
+}
+
+/* 表格响应式处理 */
+@media (max-width: 768px) {
+  .vp-doc table {
+    font-size: 0.875rem;
+  }
+  
+  .vp-doc th,
+  .vp-doc td {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Shimmer 动画定义 */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* 引用块增强 */
