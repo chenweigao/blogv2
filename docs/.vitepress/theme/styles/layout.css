@@ -52,6 +52,7 @@
   color: var(--vp-c-brand-1);
   font-weight: 500;
   border-left: 3px solid var(--vp-c-brand-1);
+  padding-left: 12px; /* 增加左内边距，让蓝色竖线和文字有间距 */
 }
 
 /* 内容区域增强 */
