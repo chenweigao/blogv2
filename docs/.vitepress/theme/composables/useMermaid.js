@@ -1,25 +1,82 @@
-import { nextTick, onMounted, onUnmounted } from 'vue'
+import { nextTick, ref, watch } from 'vue'
+import { useData } from 'vitepress'
 
 let mermaidInstance = null
 
+// 主题配置映射
+const THEME_CONFIG = {
+  light: {
+    theme: 'default',
+    themeVariables: {
+      primaryColor: '#3b82f6',
+      primaryTextColor: '#1f2937',
+      primaryBorderColor: '#e5e7eb',
+      lineColor: '#6b7280',
+      sectionBkgColor: '#f9fafb',
+      altSectionBkgColor: '#ffffff',
+      gridColor: '#e5e7eb',
+      secondaryColor: '#f3f4f6',
+      tertiaryColor: '#ffffff'
+    }
+  },
+  dark: {
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#60a5fa',
+      primaryTextColor: '#f9fafb',
+      primaryBorderColor: '#374151',
+      lineColor: '#9ca3af',
+      sectionBkgColor: '#1f2937',
+      altSectionBkgColor: '#111827',
+      gridColor: '#374151',
+      secondaryColor: '#374151',
+      tertiaryColor: '#1f2937'
+    }
+  }
+}
+
 export function useMermaid() {
-  const initMermaid = async () => {
-    if (typeof window === 'undefined') return
+  const { isDark } = useData()
+  const isInitialized = ref(false)
+  
+  // 获取当前主题配置
+  const getCurrentThemeConfig = () => {
+    const currentTheme = isDark.value ? 'dark' : 'light'
+    return THEME_CONFIG[currentTheme]
+  }
+
+  const initMermaid = async (forceReinit = false) => {
+    if (typeof window === 'undefined') return null
     
     try {
       // 动态导入 mermaid
       const mermaid = await import('mermaid')
       mermaidInstance = mermaid.default
       
+      // 获取当前主题配置
+      const themeConfig = getCurrentThemeConfig()
+      
       // 初始化 mermaid
       mermaidInstance.initialize({
         startOnLoad: false,
-        theme: 'default',
+        ...themeConfig,
         securityLevel: 'loose',
-        fontFamily: 'monospace'
+        fontFamily: 'monospace',
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true
+        },
+        sequence: {
+          useMaxWidth: true,
+          wrap: true
+        },
+        gantt: {
+          useMaxWidth: true
+        }
       })
       
-      console.log('[Mermaid] 初始化完成')
+      isInitialized.value = true
+      console.log(`[Mermaid] 初始化完成 - 主题: ${themeConfig.theme}`)
       return mermaidInstance
     } catch (error) {
       console.error('[Mermaid] 初始化失败:', error)
@@ -27,8 +84,20 @@ export function useMermaid() {
     }
   }
 
+  const clearRenderedCharts = () => {
+    // 清除已渲染的图表，恢复原始代码块
+    const renderedElements = document.querySelectorAll('.language-mermaid.mermaid-rendered')
+    renderedElements.forEach(element => {
+      const originalCode = element.dataset.originalCode
+      if (originalCode) {
+        element.innerHTML = `<pre><code>${originalCode}</code></pre>`
+        element.classList.remove('mermaid-rendered')
+      }
+    })
+  }
+
   const renderMermaidCharts = async () => {
-    if (typeof window === 'undefined' || !mermaidInstance) return
+    if (typeof window === 'undefined' || !mermaidInstance || !isInitialized.value) return
     
     await nextTick()
     
@@ -55,6 +124,8 @@ export function useMermaid() {
           // 替换代码块为 SVG
           const wrapper = element.closest('.language-mermaid')
           if (wrapper) {
+            // 保存原始代码以便主题切换时恢复
+            wrapper.dataset.originalCode = code
             wrapper.innerHTML = svg
             wrapper.classList.add('mermaid-rendered')
           }
@@ -77,9 +148,35 @@ export function useMermaid() {
     }
   }
 
+  const reinitializeWithTheme = async () => {
+    if (!mermaidInstance) return
+    
+    console.log('[Mermaid] 主题变化，重新初始化...')
+    
+    // 清除已渲染的图表
+    clearRenderedCharts()
+    
+    // 重新初始化 mermaid
+    await initMermaid(true)
+    
+    // 重新渲染图表
+    await renderMermaidCharts()
+  }
+
+  // 监听主题变化
+  if (typeof window !== 'undefined') {
+    watch(isDark, async (newValue, oldValue) => {
+      if (oldValue !== undefined && newValue !== oldValue) {
+        await reinitializeWithTheme()
+      }
+    })
+  }
+
   return {
     initMermaid,
     renderMermaidCharts,
-    setupMermaid
+    setupMermaid,
+    reinitializeWithTheme,
+    getCurrentThemeConfig
   }
 }
