@@ -111,7 +111,7 @@ const getDefaultPosition = () => {
   }
   
   return {
-    x: window.innerWidth - 120, // 距离右边120px
+    x: window.innerWidth - 76, // 距离右边20px（按钮宽度56px + 20px边距）
     y: window.innerHeight / 2 - 28 // 垂直居中（按钮高度的一半）
   }
 }
