@@ -269,6 +269,7 @@
   },
   "active": "dd4bc62fb12bd4a0",
   "lastOpenFiles": [
+    "docs/development-tools/tools/image-size-guide.md",
     "训练任务 CPU 频率优化.md",
     "read-lifeifei.md",
     "others/tmp/6.6.md",
@@ -296,7 +297,6 @@
     "python/language/hash.md",
     "python/language/effective-python.md",
     "python/language/crontab.md",
-    "python/language/coroutines.md",
     "python/language",
     "python/AI",
     "architecture/images/amx-1750062373190.png",
