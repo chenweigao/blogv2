@@ -1,6 +1,10 @@
 {
   "recentFiles": [
     {
+      "basename": "训练任务 CPU 频率优化",
+      "path": "训练任务 CPU 频率优化.md"
+    },
+    {
       "basename": "pipline",
       "path": "architecture/pipline.md"
     },
@@ -195,10 +199,6 @@
     {
       "basename": "20250305-1209-JVM AI 参数调优思考",
       "path": "notes/20250305-1209-JVM AI 参数调优思考.md"
-    },
-    {
-      "basename": "outliner-20250305120435",
-      "path": "notes/outliner-20250305120435.md"
     }
   ],
   "omittedPaths": [],

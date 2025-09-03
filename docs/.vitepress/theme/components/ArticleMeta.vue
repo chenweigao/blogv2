@@ -54,7 +54,7 @@
         </div>
         
         <!-- 标签信息 -->
-        <div class="meta-item tags" v-if="frontmatter.tags && frontmatter.tags.length">
+        <div class="meta-item tags" v-if="computedTags.length > 0">
           <div class="meta-icon-wrapper">
             <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
@@ -64,7 +64,7 @@
           <div class="tag-list">
             <span 
               class="tag" 
-              v-for="(tag, index) in frontmatter.tags" 
+              v-for="(tag, index) in computedTags" 
               :key="tag"
               :style="{ animationDelay: `${index * 0.05}s` }"
               @click="onTagClick(tag)"
@@ -98,13 +98,35 @@ const props = defineProps({
 
 const { frontmatter } = useData()
 
+// 计算标签列表（支持 tag 和 tags 两种格式）
+const computedTags = computed(() => {
+  const frontmatterValue = frontmatter.value || {}
+  
+  // 尝试从 tags 或 tag 字段获取标签
+  let tagsData = frontmatterValue.tags || frontmatterValue.tag
+  
+  if (!tagsData) return []
+  
+  // 如果是数组，直接返回
+  if (Array.isArray(tagsData)) {
+    return tagsData
+  }
+  
+  // 如果是字符串，按逗号分割
+  if (typeof tagsData === 'string') {
+    return tagsData.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+  }
+  
+  return []
+})
+
 // 检查是否显示元数据
 const showMeta = computed(() => {
   return frontmatter.value.title || 
          frontmatter.value.date || 
          frontmatter.value.category || 
          frontmatter.value.author || 
-         frontmatter.value.tags
+         computedTags.value.length > 0
 })
 
 // 格式化日期

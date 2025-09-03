@@ -47,18 +47,6 @@
           <div class="article-meta-section">
             <ArticleMeta :show-reading-stats="false" />
           </div>
-          
-          <!-- 文章标签 -->
-          <div v-if="frontmatter.tags" class="article-tags">
-            <span class="tags-label">Tags:</span>
-            <span 
-              v-for="tag in parseTags(frontmatter.tags)" 
-              :key="tag" 
-              class="article-tag"
-            >
-              {{ tag }}
-            </span>
-          </div>
         </div>
         
         <!-- 统计信息和操作按钮行 -->
@@ -249,12 +237,6 @@ const formatDate = (date) => {
   })
 }
 
-const parseTags = (tags) => {
-  if (!tags) return []
-  if (Array.isArray(tags)) return tags
-  return tags.split(',').map(tag => tag.trim())
-}
-
 const toggleQuickTOC = () => {
   showQuickTOC.value = !showQuickTOC.value
   if (showQuickTOC.value) {
@@ -414,37 +396,6 @@ onUnmounted(() => {
 
 .article-meta-section {
   margin-bottom: 1rem;
-}
-
-.article-tags {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.tags-label {
-  font-size: 0.875rem;
-  color: var(--vp-c-text-3);
-  font-weight: 500;
-}
-
-.article-tag {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.article-tag:hover {
-  background: var(--vp-c-brand-1);
-  color: white;
-  transform: translateY(-1px);
 }
 
 /* ===== 文档操作栏 ===== */
