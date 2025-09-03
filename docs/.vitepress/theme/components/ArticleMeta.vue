@@ -205,13 +205,21 @@ onMounted(() => {
 
 /* 增强的标题样式 */
 .article-title {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  margin: 1.5rem 0 1rem 0;
   color: var(--vp-c-text-1);
   position: relative;
   overflow: hidden;
+  padding-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .article-title {
+    font-size: 1.8rem;
+    margin: 1rem 0 0.8rem 0;
+  }
 }
 
 .title-text {

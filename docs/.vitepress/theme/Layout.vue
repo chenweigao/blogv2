@@ -219,8 +219,22 @@ const breadcrumbs = computed(() => {
   
   // 添加当前页面
   if (pathParts.length > 0) {
-    const currentTitle = frontmatter.value?.title || 
+    // 从完整标题中提取简化版本用于面包屑
+    let currentTitle = frontmatter.value?.title || 
       pathParts[pathParts.length - 1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    
+    // 如果标题太长，提取关键词或使用简化版本
+    if (currentTitle && currentTitle.length > 30) {
+      // 尝试提取主要关键词（取第一部分，通常是核心概念）
+      const titleParts = currentTitle.split(/[-–—:：]/)
+      if (titleParts.length > 1) {
+        currentTitle = titleParts[0].trim()
+      } else {
+        // 如果没有分隔符，截取前30个字符
+        currentTitle = currentTitle.substring(0, 30) + '...'
+      }
+    }
+    
     crumbs.push({ text: currentTitle })
   }
   
@@ -352,6 +366,20 @@ onUnmounted(() => {
 /* ===== 面包屑导航 ===== */
 .doc-breadcrumb {
   margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--vp-c-divider-light);
+  position: relative;
+}
+
+.doc-breadcrumb::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), transparent);
+  border-radius: 1px;
 }
 
 .breadcrumb-list {
@@ -362,11 +390,21 @@ onUnmounted(() => {
   list-style: none;
   font-size: 0.875rem;
   color: var(--vp-c-text-3);
+  gap: 0.25rem;
 }
 
 .breadcrumb-item {
   display: flex;
   align-items: center;
+  transition: all 0.2s ease;
+}
+
+.breadcrumb-item:last-child {
+  font-weight: 600;
+}
+
+.breadcrumb-item:hover {
+  transform: translateY(-1px);
 }
 
 .breadcrumb-link {
@@ -382,6 +420,12 @@ onUnmounted(() => {
 .breadcrumb-current {
   color: var(--vp-c-text-1);
   font-weight: 500;
+  font-size: 0.85rem;
+  opacity: 0.9;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .breadcrumb-separator {

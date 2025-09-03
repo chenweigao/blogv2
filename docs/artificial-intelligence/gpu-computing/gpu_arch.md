@@ -9,8 +9,6 @@ tags:
 description: 深入探讨GPU架构设计原理、SIMT编程模型、SM核心组件及其在AI计算中的应用
 ---
 
-# GPU 架构深度解析
-
 ## 1. GPU 架构概述
 
 ### 1.1 GPU vs CPU：设计理念的差异

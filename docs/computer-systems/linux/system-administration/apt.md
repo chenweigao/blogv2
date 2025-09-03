@@ -3,8 +3,6 @@ title: apt source
 date: 2018-09-08
 ---
 
-# apt source
-
 Source:[USTC](http://mirrors.ustc.edu.cn/)
 
 ```bash
