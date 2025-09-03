@@ -36,6 +36,7 @@
   "dependencies": {
     "js-yaml": "^4.1.0",
     "prismjs": "^1.30.0",
+    "reading-time-estimator": "^1.14.0",
     "shiki": "^3.9.2",
     "viewerjs": "^1.11.7",
     "vitepress-plugin-image-viewer": "^1.1.6",
