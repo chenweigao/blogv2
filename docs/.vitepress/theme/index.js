@@ -3,6 +3,7 @@ import Layout from './Layout.vue'
 import './custom.css'
 import './enhanced-toc.css'
 import './styles/responsive-images.css'
+import './styles/navbar-animations.css'
 // 注意：以下CSS文件已整合到 custom.css 的模块化结构中，避免重复导入
 // import './styles/code-block-fix.css'     // 已整合到 content.css
 // import './styles/sidebar-effects.css'   // 已整合到 layout.css  
@@ -15,6 +16,7 @@ import GitHistoryButton from './components/GitHistoryButton.vue'
 import GitHistoryModal from './components/GitHistoryModal.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
 import EnhancedTOC from './components/EnhancedTOC.vue'
+import NavbarEnhancer from './components/NavbarEnhancer.vue'
 import { h } from 'vue'
 // 正确导入 vitepress-plugin-image-viewer
 import 'viewerjs/dist/viewer.min.css'
@@ -23,6 +25,7 @@ import { onMounted, watch, ref } from 'vue'
 import { useRoute } from 'vitepress'
 import { createCodeBlockHandler } from './utils/codeBlockHandler.js'
 import { useMermaid } from './composables/useMermaid.js'
+import { setupSidebarNavbarSync } from './utils/sidebarNavbarSync.js'
 
 // 创建一个全局的代码块弹窗状态
 const codeModalState = {
@@ -46,6 +49,7 @@ export default {
     app.component('GitHistoryModal', GitHistoryModal)
     app.component('CodeBlockModal', CodeBlockModal)
     app.component('EnhancedTOC', EnhancedTOC)
+    app.component('NavbarEnhancer', NavbarEnhancer)
     
     // 提供全局的代码块弹窗状态
     app.provide('codeModalState', codeModalState)
@@ -70,6 +74,21 @@ export default {
         
         // 初始化 mermaid
         await setupMermaid()
+        
+        // 设置侧边栏与导航栏同步
+        const cleanupSidebarSync = setupSidebarNavbarSync()
+        
+        // 在组件卸载时清理
+        const cleanup = () => {
+          if (cleanupSidebarSync) {
+            cleanupSidebarSync()
+          }
+        }
+        
+        // 注册清理函数（VitePress会在适当时候调用）
+        if (typeof window !== 'undefined') {
+          window.__vitepress_sidebar_cleanup = cleanup
+        }
       })
       
       // 监听路由变化，重新初始化代码块点击事件和 mermaid
@@ -77,6 +96,11 @@ export default {
         setTimeout(async () => {
           codeBlockHandler.initCodeBlockClick()
           await setupMermaid()
+          
+          // 刷新导航栏高亮状态
+          if (window.__refreshNavbarHighlight) {
+            window.__refreshNavbarHighlight()
+          }
         }, 100)
       })
     }

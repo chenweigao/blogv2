@@ -1,19 +1,22 @@
 <template>
   <div class="page-transition-wrapper">
-    <!-- 轻量级顶部进度条 -->
+    <!-- 简化的顶部进度条 -->
     <div v-if="isTransitioning" class="page-loading-bar">
       <div class="loading-progress" :style="{ width: `${progress}%` }"></div>
     </div>
     
-    <!-- 页面内容过渡 -->
+    <!-- 页面内容过渡容器 -->
     <Transition 
       name="page-content" 
       mode="out-in"
       @before-enter="onBeforeEnter"
       @enter="onEnter"
       @leave="onLeave"
+      @after-enter="onAfterEnter"
     >
-      <slot />
+      <div :key="routeKey" class="page-content-wrapper">
+        <slot />
+      </div>
     </Transition>
   </div>
 </template>

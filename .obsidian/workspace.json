@@ -36,20 +36,6 @@
             }
           },
           {
-            "id": "dd4bc62fb12bd4a0",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "训练任务 CPU 频率优化.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "训练任务 CPU 频率优化"
-            }
-          },
-          {
             "id": "ddea9329be37a99b",
             "type": "leaf",
             "state": {
@@ -76,7 +62,7 @@
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -207,13 +193,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "训练任务 CPU 频率优化.md",
+                "file": "others/tmp/6.6.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "训练任务 CPU 频率优化 的大纲"
+              "title": "6.6 的大纲"
             }
           },
           {
@@ -267,10 +253,10 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "dd4bc62fb12bd4a0",
+  "active": "e38381a963ea1cc8",
   "lastOpenFiles": [
-    "docs/development-tools/tools/image-size-guide.md",
     "训练任务 CPU 频率优化.md",
+    "docs/development-tools/tools/image-size-guide.md",
     "read-lifeifei.md",
     "others/tmp/6.6.md",
     "未命名 1.md",

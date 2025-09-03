@@ -1,0 +1,318 @@
+/* 导航栏动画增强 - 性能优化版本 */
+
+/* ===== 导航栏主要样式 ===== */
+.VPNav {
+  position: relative;
+  background-color: var(--vp-c-bg);
+  border-bottom: 1px solid var(--vp-c-divider);
+  backdrop-filter: blur(12px);
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  box-shadow: var(--vp-shadow-1);
+}
+
+/* 导航栏悬停效果 */
+.VPNav:hover {
+  box-shadow: var(--vp-shadow-2);
+}
+
+/* ===== 导航栏菜单项增强 ===== */
+.VPNavBarMenu .VPNavBarMenuLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px; /* 固定高度 */
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  padding: 0 1rem;
+  border-radius: var(--vp-border-radius-small);
+  color: var(--vp-c-text-1);
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1;
+  overflow: hidden;
+}
+
+/* 活跃状态基础样式 */
+.VPNavBarMenu .VPNavBarMenuLink.active {
+  color: var(--vp-c-brand-1);
+  background-color: var(--vp-c-brand-soft);
+  font-weight: 600;
+}
+
+/* 悬停效果 */
+.VPNavBarMenu .VPNavBarMenuLink:hover {
+  color: var(--vp-c-brand-1);
+  background-color: var(--vp-c-brand-soft);
+}
+
+/* ===== 活跃指示器动画 ===== */
+.VPNavBarMenu .VPNavBarMenuLink::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  border-radius: 1px;
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transform: translateX(-50%);
+}
+
+/* 活跃状态的下划线 */
+.VPNavBarMenu .VPNavBarMenuLink.active::before {
+  width: 80%;
+}
+
+/* 悬停时的下划线预览 */
+.VPNavBarMenu .VPNavBarMenuLink:hover::before {
+  width: 60%;
+  opacity: 0.6;
+}
+
+/* ===== 下拉菜单增强 ===== */
+.VPNavBarMenuGroup .VPNavBarMenuGroupButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px; /* 与普通链接相同的高度 */
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  padding: 0 1rem;
+  border-radius: var(--vp-border-radius-small);
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1;
+  gap: 0.5rem; /* 文字和箭头之间的间距 */
+}
+
+.VPNavBarMenuGroup .VPNavBarMenuGroupButton:hover {
+  color: var(--vp-c-brand-1);
+  background-color: var(--vp-c-brand-soft);
+}
+
+/* 下拉菜单箭头动画 */
+.VPNavBarMenuGroup .VPNavBarMenuGroupButton .VPNavBarMenuGroupButtonIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  transition: transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.VPNavBarMenuGroup.open .VPNavBarMenuGroupButton .VPNavBarMenuGroupButtonIcon {
+  transform: rotate(180deg);
+}
+
+/* 下拉菜单按钮文字 */
+.VPNavBarMenuGroup .VPNavBarMenuGroupButton .VPNavBarMenuGroupButtonText {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* ===== 下拉面板动画 ===== */
+.VPNavBarMenuGroup .VPNavBarMenuGroupItems {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius-medium);
+  box-shadow: var(--vp-shadow-2);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.VPNavBarMenuGroup.open .VPNavBarMenuGroupItems {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* 下拉菜单项 */
+.VPNavBarMenuGroup .VPNavBarMenuGroupItem {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  border-radius: var(--vp-border-radius-small);
+  margin: 2px 0;
+}
+
+.VPNavBarMenuGroup .VPNavBarMenuGroupItem:hover {
+  background-color: var(--vp-c-brand-soft);
+  transform: translateX(4px);
+}
+
+.VPNavBarMenuGroup .VPNavBarMenuGroupItem .VPNavBarMenuGroupItemLink {
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  padding: 0.5rem 0.75rem;
+  display: block;
+}
+
+.VPNavBarMenuGroup .VPNavBarMenuGroupItem:hover .VPNavBarMenuGroupItemLink {
+  color: var(--vp-c-brand-1);
+}
+
+/* ===== 导航栏标题动画 ===== */
+.VPNavBarTitle {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.VPNavBarTitle:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.VPNavBarTitle .title {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+/* Logo 动画 */
+.VPNavBarTitle .logo {
+  transition: transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.VPNavBarTitle:hover .logo {
+  transform: scale(1.05);
+}
+
+/* ===== 汉堡菜单动画 ===== */
+.VPNavBarHamburger {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.VPNavBarHamburger:hover {
+  background-color: var(--vp-c-brand-soft);
+}
+
+.VPNavBarHamburger .hamburger {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.VPNavBarHamburger .hamburger span {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.VPNavBarHamburger.active .hamburger span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.VPNavBarHamburger.active .hamburger span:nth-child(2) {
+  opacity: 0;
+}
+
+.VPNavBarHamburger.active .hamburger span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* ===== 搜索框增强 ===== */
+.VPNavBarSearch .DocSearch-Button {
+  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  border-radius: var(--vp-border-radius-medium);
+  background-color: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.VPNavBarSearch .DocSearch-Button:hover {
+  background-color: var(--vp-c-brand-soft);
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-1px);
+  box-shadow: var(--vp-shadow-1);
+}
+
+/* ===== 路由切换指示器 ===== */
+.nav-route-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  transition: all var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* ===== 响应式优化 ===== */
+@media (max-width: 768px) {
+  /* 移动端导航优化 */
+  .VPNavBarMenu .VPNavBarMenuLink {
+    height: 44px; /* 移动端增加高度 */
+    padding: 0 1rem;
+  }
+  
+  .VPNavBarMenuGroup .VPNavBarMenuGroupButton {
+    height: 44px; /* 保持一致的高度 */
+    padding: 0 1rem;
+  }
+  
+  .VPNavBarMenu .VPNavBarMenuLink::before {
+    height: 3px;
+  }
+  
+  /* 移动端下拉菜单 */
+  .VPNavBarMenuGroup .VPNavBarMenuGroupItems {
+    position: fixed;
+    top: var(--vp-nav-height);
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--vp-nav-height));
+    overflow-y: auto;
+    border-radius: 0;
+    margin-top: 0;
+  }
+}
+
+/* ===== 导航项对齐优化 ===== */
+.VPNavBarMenu {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.VPNavBarMenu > * {
+  display: flex;
+  align-items: center;
+  height: 40px; /* 统一所有导航项高度 */
+}
+
+/* 确保下拉菜单与普通链接完全对齐 */
+.VPNavBarMenu .VPNavBarMenuLink,
+.VPNavBarMenu .VPNavBarMenuGroup .VPNavBarMenuGroupButton {
+  min-height: 40px;
+  max-height: 40px;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+/* ===== 动画降级支持 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .VPNavBarMenu .VPNavBarMenuLink,
+  .VPNavBarMenuGroup .VPNavBarMenuGroupButton,
+  .VPNavBarMenuGroup .VPNavBarMenuGroupItems,
+  .VPNavBarTitle,
+  .nav-route-indicator {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ===== 高对比度模式 ===== */
+@media (prefers-contrast: high) {
+  .VPNavBarMenu .VPNavBarMenuLink.active {
+    background-color: var(--vp-c-brand-1);
+    color: var(--vp-c-bg);
+  }
+  
+  .VPNavBarMenu .VPNavBarMenuLink::before {
+    background: var(--vp-c-brand-1);
+  }
+}
+
+/* ===== 暗色模式增强 ===== */
+.dark .VPNav {
+  background-color: var(--vp-c-bg);
+  border-bottom-color: var(--vp-c-divider);
+}
+
+.dark .VPNavBarMenuGroup .VPNavBarMenuGroupItems {
+  background: var(--vp-c-bg);
+  border-color: var(--vp-c-divider);
+  box-shadow: var(--vp-shadow-3);
+}

@@ -12,6 +12,11 @@
       </div>
     </template>
 
+    <!-- 导航栏增强组件 -->
+    <template #nav-screen-content-after>
+      <NavbarEnhancer />
+    </template>
+
     <!-- 侧边栏导航前的内容 -->
     <template #sidebar-nav-before>
       <div v-if="isDocPage" class="sidebar-doc-info">
@@ -160,6 +165,7 @@ import ReadingStats from './components/ReadingStats.vue'
 import GitHistoryButton from './components/GitHistoryButton.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
 import EnhancedTOC from './components/EnhancedTOC.vue'
+import NavbarEnhancer from './components/NavbarEnhancer.vue'
 
 const Layout = DefaultTheme.Layout
 const { page, frontmatter } = useData()
@@ -329,6 +335,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   margin-left: 1rem;
+  height: 40px; /* 与导航项保持一致 */
 }
 
 /* ===== 侧边栏文档信息 ===== */
