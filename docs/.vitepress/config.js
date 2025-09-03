@@ -3,6 +3,7 @@ import { writeTimelineData } from './utils/generateTimeline.js'
 import { writeGitHistoryData } from './utils/generateGitHistoryData.js'
 import { createGitHistoryAPI } from './utils/gitHistoryAPI.js'
 import { sidebar } from './config/sidebar/index.js'
+import markdownItMark from 'markdown-it-mark'
 
 export default defineConfig({
   title: 'Knowledge Wiki',
@@ -178,6 +179,10 @@ export default defineConfig({
     image: {
       // 默认禁用；设置为 true 可为所有图片启用懒加载。
       lazyLoading: true
+    },
+    config: (md) => {
+      // 使用 markdown-it-mark 插件启用 ==高亮== 语法
+      md.use(markdownItMark)
     }
   },
 

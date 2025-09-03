@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
+    "markdown-it-mark": "^4.0.0",
     "prismjs": "^1.30.0",
     "reading-time-estimator": "^1.14.0",
     "shiki": "^3.9.2",
