@@ -11,6 +11,7 @@
  * 7. responsive.css - 响应式设计
  * 8. accessibility.css - 可访问性增强
  * 9. utilities.css - 实用工具类（最后导入，优先级最高）
+ * 10. hide-aside.css - 隐藏右侧 aside，给文章主体更多空间（已优化，使用安全选择器）
  * 
  * 注意：以下文件已整合到上述模块中，避免重复导入：
  * - sidebar-effects.css 的功能已整合到 layout.css
@@ -27,3 +28,4 @@
 @import './styles/responsive.css';
 @import './styles/accessibility.css';
 @import './styles/utilities.css';
+@import './styles/hide-aside.css';

@@ -130,7 +130,8 @@
       </div>
     </template>
 
-    <!-- 大纲前的增强内容 -->
+    <!-- 大纲前的增强内容 - 已禁用，隐藏右侧 aside -->
+    <!-- 
     <template #aside-outline-before>
       <div v-if="isDocPage" class="outline-enhancements">
         <div class="doc-progress-indicator">
@@ -138,8 +139,10 @@
         </div>
       </div>
     </template>
+    -->
 
-    <!-- 大纲后的增强内容 -->
+    <!-- 大纲后的增强内容 - 已禁用，隐藏右侧 aside -->
+    <!-- 
     <template #aside-outline-after>
       <div v-if="isDocPage" class="outline-footer">
         <div class="outline-stats">
@@ -147,9 +150,10 @@
         </div>
       </div>
     </template>
+    -->
   </Layout>
   
-  <!-- 增强版 TOC 组件 -->
+  <!-- 增强版 TOC 组件 - 保留浮动 TOC 功能 -->
   <EnhancedTOC v-if="isDocPage" />
   
   <!-- 全局模态框组件 -->

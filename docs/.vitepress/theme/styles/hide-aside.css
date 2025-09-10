@@ -1,0 +1,48 @@
+/* 安全的隐藏右侧 aside 区域 - 保守版本 */
+
+/* 只隐藏 VitePress 默认的文档 aside 区域 */
+.VPDoc .VPDocAside {
+  display: none !important;
+}
+
+/* 隐藏文档大纲容器 */
+.VPDocAsideOutline {
+  display: none !important;
+}
+
+/* 调整文档内容区域的右边距 */
+@media (min-width: 960px) {
+  .VPDoc .content {
+    margin-right: 0 !important;
+  }
+}
+
+/* 确保文档主体内容占用全部可用宽度 */
+.vp-doc,
+.VPDoc .vp-doc {
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* 调整文档布局容器 */
+.Layout,
+.VPContent {
+  --vp-layout-max-width: 100% !important;
+}
+
+/* 移除右侧边距，让内容扩展到全宽 */
+@media (min-width: 960px) {
+  .VPDoc:not(.has-sidebar) .content,
+  .VPDoc.has-aside .content {
+    margin-right: 0 !important;
+    padding-right: 32px !important;
+  }
+}
+
+/* 确保我们的 EnhancedTOC 组件仍然可见 */
+.enhanced-toc-container {
+  display: block !important;
+}
