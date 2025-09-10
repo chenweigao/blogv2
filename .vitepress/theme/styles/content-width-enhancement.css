@@ -1,0 +1,114 @@
+/* 文章主要内容区域宽度增强样式 */
+
+/* 进一步扩展内容区域宽度 - 针对 VitePress 布局优化 */
+@media (min-width: 960px) {
+  /* 扩展主要内容容器 */
+  .VPDoc .container {
+    max-width: 100% !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  
+  /* 调整文档内容的最大宽度 */
+  .VPDoc .content .content-container {
+    max-width: none !important;
+  }
+  
+  /* 确保文档主体区域占用更多空间 */
+  .VPDoc .content-container,
+  .VPDoc .vp-doc {
+    max-width: calc(100vw - 48px) !important;
+    width: 100% !important;
+  }
+  
+  /* 移除 VitePress 默认的内容宽度限制 */
+  .VPDoc .content {
+    max-width: none !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  
+  /* 确保文档容器占用全宽 */
+  .VPDoc .container,
+  .VPDoc .content,
+  .VPDoc .content-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* 针对大屏幕进一步优化 */
+@media (min-width: 1280px) {
+  .VPDoc .container {
+    max-width: 100% !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+  
+  .VPDoc .content-container,
+  .VPDoc .vp-doc {
+    max-width: calc(100vw - 64px) !important;
+  }
+  
+  .VPDoc .content {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+}
+
+/* 超大屏幕优化 */
+@media (min-width: 1440px) {
+  .VPDoc .container,
+  .VPDoc .content {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+  
+  .VPDoc .content-container,
+  .VPDoc .vp-doc {
+    max-width: calc(100vw - 96px) !important;
+  }
+}
+
+/* 移除可能的布局约束 */
+.VPContent.is-home,
+.VPContent.has-sidebar {
+  padding-right: 0 !important;
+}
+
+/* 确保内容在没有侧边栏时占用全宽 */
+.VPContent:not(.has-sidebar) .VPDoc {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* 移除可能的右侧空白区域 */
+.VPDoc .aside {
+  display: none !important;
+}
+
+/* 调整 VitePress 默认的布局变量 */
+:root {
+  --vp-layout-max-width: 100% !important;
+}
+
+/* 确保文档主体内容占用全部可用宽度 */
+.vp-doc,
+.VPDoc .vp-doc {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* 针对文档页面的特殊处理 */
+.VPDoc[class*="VPDoc"] {
+  max-width: 100% !important;
+}
+
+/* 确保内容区域不受 aside 影响 */
+.VPDoc .content-container {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
