@@ -36,6 +36,18 @@
             }
           },
           {
+            "id": "1e682bf382a590fe",
+            "type": "leaf",
+            "state": {
+              "type": "excalidraw",
+              "state": {
+                "file": "Excalidraw/Drawing 2025-09-09 10.21.09.excalidraw.md"
+              },
+              "icon": "excalidraw-icon",
+              "title": "Drawing 2025-09-09 10.21.09.excalidraw"
+            }
+          },
+          {
             "id": "ddea9329be37a99b",
             "type": "leaf",
             "state": {
@@ -62,7 +74,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -129,7 +141,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 243.50390243530273
   },
   "right": {
     "id": "f32917b31d21f23f",
@@ -193,13 +205,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "others/tmp/6.6.md",
+                "file": "Excalidraw/Drawing 2025-09-09 10.21.09.excalidraw.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "6.6 的大纲"
+              "title": "Drawing 2025-09-09 10.21.09.excalidraw 的大纲"
             }
           },
           {
@@ -241,6 +253,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:创建新数据库": false,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
@@ -253,12 +266,13 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "e38381a963ea1cc8",
+  "active": "1e682bf382a590fe",
   "lastOpenFiles": [
+    "others/tmp/6.6.md",
+    "Excalidraw/Drawing 2025-09-09 10.21.09.excalidraw.md",
     "训练任务 CPU 频率优化.md",
     "docs/development-tools/tools/image-size-guide.md",
     "read-lifeifei.md",
-    "others/tmp/6.6.md",
     "未命名 1.md",
     "others/tmp/Marketing.md",
     "Excalidraw/Drawing 2025-07-18 10.37.43.excalidraw.md",
@@ -282,7 +296,6 @@
     "python/language/io.md",
     "python/language/hash.md",
     "python/language/effective-python.md",
-    "python/language/crontab.md",
     "python/language",
     "python/AI",
     "architecture/images/amx-1750062373190.png",
