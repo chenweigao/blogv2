@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { writeTimelineData } from './utils/generateTimeline.js'
 import { writeGitHistoryData } from './utils/generateGitHistoryData.js'
 import { createGitHistoryAPI } from './utils/gitHistoryAPI.js'
+import { generateAndWriteSidebar } from './utils/generateSidebar.js'
 import { sidebar } from './config/sidebar/index.js'
 import markdownItMark from 'markdown-it-mark'
 import imageSizePlugin from './theme/utils/markdown-it-image-size.js'
@@ -13,8 +14,11 @@ export default defineConfig({
   // 忽略死链接检查，避免构建失败
   ignoreDeadLinks: true,
 
-  // 构建钩子 - 在构建前生成 timeline 数据和 git 历史记录
+  // 构建钩子 - 在构建前生成 timeline 数据、git 历史记录和侧边栏配置
   buildStart() {
+    console.log('Generating sidebar configuration...')
+    generateAndWriteSidebar()
+
     console.log('Generating timeline data...')
     writeTimelineData()
 

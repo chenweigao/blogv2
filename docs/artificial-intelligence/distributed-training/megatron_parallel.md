@@ -24,3 +24,16 @@ export EP_SIZE=8
 ### 1.2. TP
 
 `MP_SIZE=4` 标识了 TP 的配置。
+
+
+## 2. debug
+
+### 2.1. NCCL debug
+
+```bash
+export TORCH_SHOW_CPP_STACKTRACES=1
+export CUDA_LAUNCH_BLOCKING=1
+export TORCH_DISTRIBUTED_DEBUG=DETAIL
+export NCCL_DEBUG=INFO
+export NCCL_ASYNC_ERROR_HANDLING=1
+```
