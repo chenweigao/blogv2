@@ -40,18 +40,24 @@
   position: relative;
 }
 
-/* Shiki 样式覆盖 - 移除 !important，使用更具体的选择器 */
-.code-modal-container :deep(.shiki) {
-  margin: 0;
-  padding: 20px 24px;
-  background: transparent;
-  font-family: var(--vp-font-family-mono, 'Menlo', 'Monaco', 'Consolas', monospace);
-  font-size: 14px;
-  line-height: 1.5;
-  overflow: visible; /* 让内容自然流动 */
-  min-height: 100%;
-  width: 100%;
-  box-sizing: border-box;
+/* Shiki 样式覆盖 - 支持自动换行 - 使用更高优先级 */
+.code-modal-container :deep(.shiki),
+.code-modal-container :deep(pre.shiki),
+.code-modal-container :deep(.shiki pre) {
+  margin: 0 !important;
+  padding: 20px 24px !important;
+  background: transparent !important;
+  font-family: var(--vp-font-family-mono, 'Menlo', 'Monaco', 'Consolas', monospace) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  overflow: visible !important; /* 让内容自然流动 */
+  min-height: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
 }
 
 .code-modal-container :deep(.shiki code) {
@@ -59,7 +65,10 @@
   padding: 0;
   font-size: inherit;
   color: inherit;
-  white-space: pre;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
   display: block;
   width: 100%;
 }
@@ -69,8 +78,10 @@
   padding: 0;
   background: transparent;
   overflow: visible;
-  white-space: pre;
-  word-wrap: normal;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
 }
 
 .code-modal-container :deep(.highlighted-line) {
@@ -79,6 +90,26 @@
   margin: 0 -24px;
   padding: 0 24px;
   border-left: 3px solid var(--vp-c-brand-1, #0645ad);
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+
+.code-modal-container :deep(.shiki *) {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 确保代码行也支持自动换行 */
+.code-modal-container :deep(.line) {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
 }
 
 /* 确保代码容器有正确的高度 */
@@ -189,4 +220,22 @@
 .shiki-container,
 .line-numbers {
   will-change: scroll-position;
+}
+
+/* 强制代码弹窗自动换行 - 终极解决方案 */
+.code-modal-container * {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 针对 Shiki 生成的所有元素 */
+.code-modal-container pre,
+.code-modal-container code,
+.code-modal-container span {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
 }
