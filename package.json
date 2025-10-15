@@ -22,7 +22,7 @@
     "knowledge-base",
     "vitepress"
   ],
-  "author": "Your Name",
+  "author": "weigaochen",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.3.0",
