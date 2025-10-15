@@ -6,6 +6,10 @@ tags:
   - 高性能通信
 ---
 
+# nccl-test benchmark
+
+本文主要介绍 NCCL 测试工具 nccl-test，以及其安装、运行方式；除此之外，分析、学习 nccl-test 的运行原理。
+
 ## 1. Install
 
 ```bash
