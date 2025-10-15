@@ -175,7 +175,8 @@ export default defineConfig({
 
   // Markdown 配置
   markdown: {
-    lineNumbers: false,
+    lineNumbers: true,
+    codeCopyButtonTitle: true,
     theme: {
       light: 'github-light',
       dark: 'github-dark'

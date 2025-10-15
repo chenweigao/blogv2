@@ -88,6 +88,40 @@
   z-index: 1;
 }
 
+/* 代码块自动换行功能 */
+.vp-doc div[class*="language-"] pre {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+.vp-doc div[class*="language-"] code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 行内代码自动换行 */
+.vp-doc p code,
+.vp-doc li code,
+.vp-doc td code,
+.vp-doc th code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 保持代码块的基本格式，但允许长行换行 */
+.vp-doc div[class*="language-"] .line {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
 /* 表格增强 */
 .vp-doc table {
   display: table !important; /* 修复display: block导致的额外卡片问题 */
