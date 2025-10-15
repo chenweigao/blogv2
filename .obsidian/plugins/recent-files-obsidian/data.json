@@ -1,6 +1,10 @@
 {
   "recentFiles": [
     {
+      "basename": "nccl-test",
+      "path": "docs/artificial-intelligence/distributed-training/nccl-test.md"
+    },
+    {
       "basename": "megatron_parallel",
       "path": "docs/artificial-intelligence/distributed-training/megatron_parallel.md"
     },
@@ -195,10 +199,6 @@
     {
       "basename": "BL31",
       "path": "linux/kernel/BL31.md"
-    },
-    {
-      "basename": "gc_art_01",
-      "path": "java/art/gc_art_01.md"
     }
   ],
   "omittedPaths": [],
