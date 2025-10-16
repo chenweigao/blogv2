@@ -150,11 +150,13 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   position: relative;
 }
 
-.action-button:hover {
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-1);
-  border-color: var(--vp-c-brand-1);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .action-button:hover {
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-1);
+    border-color: var(--vp-c-brand-1);
+    transform: translateY(-1px);
+  }
 }
 
 .action-button.active {
@@ -180,10 +182,12 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   justify-content: center;
 }
 
-.copy-button:hover {
-  background: var(--vp-c-brand-2);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--vp-c-brand-1), 0.3);
+@media (hover: hover) {
+  .copy-button:hover {
+    background: var(--vp-c-brand-2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--vp-c-brand-1), 0.3);
+  }
 }
 
 .copy-button.copied {
@@ -204,10 +208,12 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.close-button:hover {
-  background: #fee2e2;
-  color: #dc2626;
-  border-color: #fecaca;
+@media (hover: hover) {
+  .close-button:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fecaca;
+  }
 }
 
 .icon-text {
@@ -304,26 +310,39 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   }
 }
 
-/* 透明度与强制颜色降级，提升可访问性 */
-@media (prefers-reduced-transparency: reduce) {
-  .code-modal-header {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-    background: var(--vp-c-bg-alt) !important;
-    box-shadow: var(--vp-shadow-1) !important;
-  }
-}
-@media (forced-colors: active) {
+/* 无障碍降级：减少动画与透明度、强制颜色支持 */
+@media (prefers-reduced-motion: reduce) {
   .code-modal-header,
   .action-button,
   .copy-button,
   .close-button {
-    background: Canvas !important;
-    color: CanvasText !important;
-    border-color: CanvasText !important;
-    outline: 2px solid CanvasText !important;
-    outline-offset: 2px !important;
-    box-shadow: none !important;
+    transition: none;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .code-modal-header {
+    backdrop-filter: none;
+  }
+  .action-button,
+  .copy-button,
+  .close-button {
+    box-shadow: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .action-button,
+  .close-button {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid ButtonText;
+  }
+  .copy-button {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
   }
 }
 </style>

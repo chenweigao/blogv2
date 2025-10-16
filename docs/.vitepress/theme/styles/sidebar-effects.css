@@ -174,9 +174,6 @@
   }
 }
 
-.VPSidebar::-webkit-scrollbar-thumb:hover {
-  background: var(--vp-c-brand-1, #0645ad);
-}
 
 /* 动画关键帧 */
 @keyframes shimmer {
@@ -223,9 +220,6 @@
 .VPSidebarItem:nth-child(n+6) { animation-delay: 0.35s; }
 
 /* 深色主题适配 */
-.dark .VPSidebarItem .link:hover {
-  background-color: var(--vp-c-bg-soft, #161b22);
-}
 
 .dark .VPSidebarItem.is-active .link,
 .dark .VPSidebarItem .link.active {
@@ -262,34 +256,52 @@
 /* 减少动画的用户偏好支持 */
 @media (prefers-reduced-motion: reduce) {
   .VPSidebarItem,
-  .VPSidebarItem .link,
-  .VPSidebarGroup .title,
-  .VPSidebarGroup .items {
-    transition: none;
-  }
-  .VPSidebarItem,
   .VPSidebarItem .link::before,
   .VPSidebarItem .link::after,
-  .VPSidebarGroup .items {
-    animation: none !important;
-    transform: none !important;
+  .VPSidebarItem.is-active .link {
+    animation: none;
+    transform: none;
+    transition: none;
+  }
+  .VPSidebarGroup.collapsible .items {
+    transition: none;
   }
 }
 
-/* 减少动画的用户偏好支持：禁用动画与变换 */
-@media (prefers-reduced-motion: reduce) {
-  .VPSidebarItem,
+@media (prefers-reduced-transparency: reduce) {
   .VPSidebarItem .link,
-  .VPSidebarGroup .title,
-  .VPSidebarGroup .items {
-    transition: none;
+  .VPSidebarItem.is-active .link {
+    background: var(--vp-c-bg, #fff);
+    box-shadow: none;
   }
-  .VPSidebarItem,
-  .VPSidebarItem .link::before,
-  .VPSidebarItem .link::after,
-  .VPSidebarGroup .items {
-    animation: none !important;
-    transform: none !important;
+  .VPSidebarItem.is-active .link::before {
+    background: none;
+  }
+  .VPSidebarItem.is-active .link::after {
+    background: var(--vp-c-text-1, #000);
+  }
+}
+
+@media (forced-colors: active) {
+  .VPSidebarItem .link {
+    background: Canvas;
+    color: CanvasText !important;
+    box-shadow: none;
+    border: 1px solid ButtonBorder;
+  }
+  .VPSidebarItem.is-active .link {
+    background: ButtonFace;
+    color: ButtonText !important;
+    border-inline-start: 4px solid ButtonText;
+  }
+  .VPSidebarItem.is-active .link::before {
+    background: none;
+  }
+  .VPSidebarItem.is-active .link::after {
+    background: CanvasText;
+  }
+  .VPSidebar::-webkit-scrollbar-thumb {
+    background: CanvasText;
   }
 }
 

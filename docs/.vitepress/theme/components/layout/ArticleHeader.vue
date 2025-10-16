@@ -86,10 +86,12 @@ defineEmits(['toggle-quick-toc'])
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
-.tocQuickToggle:hover {
-  background: var(--vp-c-brand-soft);
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
+@media (hover: hover) {
+  .tocQuickToggle:hover {
+    background: var(--vp-c-brand-soft);
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+  }
 }
 
 @media (max-width: 768px) {

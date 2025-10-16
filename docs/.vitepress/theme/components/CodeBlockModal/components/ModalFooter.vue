@@ -75,10 +75,6 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.footer-button:hover {
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-}
 
 .footer-button:focus-visible {
   outline: 2px solid var(--vp-c-brand-1);

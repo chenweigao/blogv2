@@ -91,8 +91,10 @@ defineEmits(['close'])
   transition: color 0.2s ease;
 }
 
-.quickTocClose:hover {
-  color: var(--vp-c-text-1);
+@media (hover: hover) {
+  .quickTocClose:hover {
+    color: var(--vp-c-text-1);
+  }
 }
 
 .quickTocContent {
@@ -112,10 +114,12 @@ defineEmits(['close'])
   border-inline-start: 2px solid transparent;
 }
 
-.quickTocItem:hover {
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  border-inline-start-color: var(--vp-c-brand-1);
+@media (hover: hover) {
+  .quickTocItem:hover {
+    background: var(--vp-c-bg);
+    color: var(--vp-c-text-1);
+    border-inline-start-color: var(--vp-c-brand-1);
+  }
 }
 
 .level2 {

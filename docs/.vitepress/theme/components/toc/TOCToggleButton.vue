@@ -218,10 +218,12 @@ onUnmounted(() => {
   will-change: auto;
 }
 
-.toc-progress-button:hover {
-  background: var(--vp-c-bg-soft);
-  transform: scale(1.05);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+@media (hover: hover) {
+  .toc-progress-button:hover {
+    background: var(--vp-c-bg-soft);
+    transform: scale(1.05);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .toc-progress-button.is-active {
@@ -492,20 +494,25 @@ onUnmounted(() => {
 /* 透明度与强制颜色降级，提升可访问性 */
 @media (prefers-reduced-transparency: reduce) {
   .toc-progress-button {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-    background: var(--vp-c-bg) !important;
-    box-shadow: var(--vp-shadow-1) !important;
+    backdrop-filter: none;
+    box-shadow: none;
   }
 }
+
 @media (forced-colors: active) {
   .toc-progress-button {
-    background: Canvas !important;
-    color: CanvasText !important;
-    border-color: CanvasText !important;
-    outline: 2px solid CanvasText !important;
-    outline-offset: 2px !important;
-    box-shadow: none !important;
+    background: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+    box-shadow: none;
+  }
+}
+
+/* 无障碍降级：减少动画与透明度、强制颜色支持 */
+@media (prefers-reduced-motion: reduce) {
+  .toc-progress-button {
+    transition: none;
+    transform: none;
   }
 }
 </style>
