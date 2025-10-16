@@ -261,28 +261,25 @@
       height: auto !important;
     }
 
-    /* 统一页面边距设置 */
-    @page {
-      margin: 20mm;
-    }
   }
 
   /* 跳转到正文（Skip Link） */
   .skip-to-content {
     position: absolute;
-    top: 0;
-    left: -9999px;
+    top: -1000px;
+    left: -1000px;
+    padding: 0.5rem 0.75rem;
     background: var(--vp-c-bg);
-    color: var(--vp-c-brand-1);
-    padding: var(--vp-space-8) var(--vp-space-16);
-    border: 1px solid var(--vp-c-divider);
+    color: var(--vp-c-text-1);
     border-radius: var(--vp-border-radius-small);
-    z-index: var(--vp-z-index-nav);
+    border: 2px solid transparent;
+    box-shadow: var(--vp-shadow-2);
   }
   .skip-to-content:focus-visible {
-    left: var(--vp-space-16);
-    top: var(--vp-space-16);
-    box-shadow: var(--vp-shadow-2);
+    top: 1rem;
+    left: 1rem;
+    z-index: 10000;
+    border-color: var(--vp-c-brand-1);
   }
 
   /* 触控设备：禁用 hover 位移与阴影，避免伪 hover 干扰 */

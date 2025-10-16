@@ -1,4 +1,4 @@
-@layer base, components, utilities, overrides;\n\n/* 基础样式和性能优化 */
+@layer base, theme, components, utilities, overrides;\n\n/* 基础样式和性能优化 */
 
 /* GPU 加速优化 */
 .gpu-accelerated {
@@ -9,19 +9,19 @@
 
 /* 统一过渡效果 */
 .transition-fast {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .transition-normal {
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
 }
 
 .transition-slow {
-  transition: all var(--vp-animation-duration-slow) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-slow) var(--vp-animation-easing), background-color var(--vp-animation-duration-slow) var(--vp-animation-easing), border-color var(--vp-animation-duration-slow) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-slow) var(--vp-animation-easing), transform var(--vp-animation-duration-slow) var(--vp-animation-easing), opacity var(--vp-animation-duration-slow) var(--vp-animation-easing);
 }
 
 .transition-smooth {
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), transform var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
 }
 
 /* 将潜在的 transition: all 替换为具体属性过渡（若存在命中则应用以下示例形式） */
@@ -53,9 +53,11 @@
   border-radius: var(--vp-border-radius-medium);
 }
 
-.vp-doc img:hover {
-  transform: scale(1.02);
-  box-shadow: var(--vp-shadow-3);
+@media (hover: hover) {
+  .vp-doc img:hover {
+    transform: scale(1.02);
+    box-shadow: var(--vp-shadow-3);
+  }
 }
 
 /* 文本选中配色统一 */

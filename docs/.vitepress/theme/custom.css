@@ -1,6 +1,6 @@
 /* VitePress Enhanced Custom Theme - 模块化版本 */
 /* 新增：CSS 层，降低选择器竞争并提升维护性 */
-@layer base, theme, components, utilities;
+@layer base, theme, components, utilities, overrides;
 
 /* 
  * 导入顺序说明：
@@ -19,13 +19,16 @@
 
 /* 原先的普通 @import 改为带层级的导入 */
 @import url('./styles/variables.css');
-@import url('./styles/new-base.css');
-@import url('./styles/new-layout.css');
-@import url('./styles/new-content.css');
+@import url('./styles/base.css');
+@import url('./styles/layout.css');
+@import url('./styles/content.css');
 @import url('./styles/components.css');
+@import url('./styles/responsive-images.css');
 @import url('./styles/animations.css');
-@import url('./styles/new-responsive.css');
-@import url('./styles/new-accessibility.css');
+@import url('./styles/navbar-animations.css');
+@import url('./styles/responsive.css');
+@import url('./styles/accessibility.css');
 @import url('./styles/utilities.css');
-@import url('./styles/new-style.css');
-@import url('./styles/new-content-width-enhancement.css');
+@import url('./styles/hide-aside.css');
+@import url('./styles/content-width-enhancement.css');
+@import url('./styles/print.css');

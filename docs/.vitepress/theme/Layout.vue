@@ -2,7 +2,7 @@
   <Layout>
     <!-- 全局顶部内容 -->
     <template #layout-top>
-      <a href="#main-content" class="skip-to-content">跳转到正文</a>
+      <a href="#main-content" class="skip-to-content visually-hidden-focusable">跳转到正文</a>
       <LayoutEnhancementIndicator />
     </template>
 
@@ -92,7 +92,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { useData } from 'vitepress'
+import { useData } from 'vitepress/client'
 import DefaultTheme from 'vitepress/theme'
 
 // 导入拆分后的组件
