@@ -9,6 +9,9 @@
   --motion-ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
   --motion-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.12);
   --motion-shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.14);
+  --motion-lift-1: 3px;
+  --motion-lift-2: 4px;
+  --motion-scale-hover: 1.02;
 }
 
 /* Utility for GPU compositing on common animated properties */
@@ -180,20 +183,286 @@
 .theme-container h1,
 .theme-container h2,
 .theme-container h3 {
-  animation: riseIn var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  animation: riseInTitle var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  view-transition-name: page-title;
+}
+.theme-container h2 { animation-delay: 40ms; }
+.theme-container h3 { animation-delay: 60ms; }
+
+@keyframes riseInTitle {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.theme-container h1:focus-visible,
-.theme-container h2:focus-visible,
-.theme-container h3:focus-visible {
-  outline: 2px solid var(--interactive-accent, #409EFF);
-  outline-offset: 2px;
+// 更“灵动”的强度覆盖（变量后置覆盖）
+:root {
+  --motion-lift-1: 3px;
+  --motion-lift-2: 4px;
+  --motion-scale-hover: 1.02;
 }
 
+// 深化页面级过渡：为封面与章节标题定义命名视图过渡
+@supports (view-transition-name: none) {
+  // 文章封面（hero）视图过渡
+  ::view-transition-old(hero),
+  ::view-transition-new(hero) {
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-decelerate);
+  }
+  // 章节标题视图过渡
+  ::view-transition-old(section-title),
+  ::view-transition-new(section-title) {
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-emphasized);
+  }
+}
+// 给可能的封面元素指定视图过渡名称（多选择器兼容不同主题）
+.theme-container .hero,
+.theme-container .page .hero,
+.theme-container .hero img {
+  view-transition-name: hero;
+}
+// 为章节标题指定视图过渡名称
+.theme-container h2,
+.theme-container h3 {
+  view-transition-name: section-title;
+}
+
+// 更“灵动”的标题入场覆盖（最后优先）
+@keyframes riseInTitle {
+  from { opacity: 0; transform: translateY(8px) scale(0.995); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.theme-container h1 {
+  animation: riseInTitle var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  view-transition-name: page-title;
+}
+.theme-container h2 {
+  animation: riseInTitle var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  animation-delay: 40ms;
+}
+.theme-container h3 {
+  animation: riseInTitle var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  animation-delay: 60ms;
+}
+
+// 内容模块交错入场（首屏层次增强）
+@keyframes riseInSection {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.theme-container .content__default > * {
+  animation: riseInSection var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+}
+.theme-container .content__default > *:nth-child(1) { animation-delay: 40ms; }
+.theme-container .content__default > *:nth-child(2) { animation-delay: 80ms; }
+.theme-container .content__default > *:nth-child(3) { animation-delay: 120ms; }
+.theme-container .content__default > *:nth-child(4) { animation-delay: 160ms; }
+.theme-container .content__default > *:nth-child(5) { animation-delay: 200ms; }
+.theme-container .content__default > *:nth-child(6) { animation-delay: 240ms; }
+
+// Reduced Motion 降级（统一禁用新增动画）
 @media (prefers-reduced-motion: reduce) {
+  .theme-container .hero,
+  .theme-container .page .hero,
+  .theme-container .hero img {
+    /* 视图过渡在 JS 层已降级，此处无需额外处理 */
+  }
   .theme-container h1,
   .theme-container h2,
   .theme-container h3 {
     animation: none !important;
+  }
+  .theme-container .content__default > * {
+    animation: none !important;
+  }
+}
+
+// View Transitions：明确动画名与关键帧
+@supports (view-transition-name: none) {
+  // 根页面切换使用柔和淡入淡出
+  @keyframes vtFadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes vtFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  ::view-transition-old(root) {
+    animation-name: vtFadeOut;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-decelerate);
+  }
+  ::view-transition-new(root) {
+    animation-name: vtFadeIn;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-decelerate);
+  }
+
+  // 标题切换使用轻微上移与缩放
+  @keyframes vtTitleOut {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(-6px) scale(0.995); }
+  }
+  @keyframes vtTitleIn {
+    from { opacity: 0; transform: translateY(6px) scale(0.995); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  ::view-transition-old(page-title) {
+    animation-name: vtTitleOut;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-emphasized);
+  }
+  ::view-transition-new(page-title) {
+    animation-name: vtTitleIn;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-emphasized);
+  }
+
+  // 标题锚点跳转高亮（无 JS）
+  .theme-container .content__default h2,
+  .theme-container .content__default h3 {
+    position: relative;
+  }
+  .theme-container .content__default h2::after,
+  .theme-container .content__default h3::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 3px;
+    background: var(--interactive-accent, #409EFF);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--motion-duration-short) var(--motion-ease-accelerate);
+  }
+  .theme-container .content__default h2:target::after,
+  .theme-container .content__default h3:target::after {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-container .content__default h2::after,
+    .theme-container .content__default h3::after {
+      transition: none;
+    }
+  }
+
+  // 内容模块：figure 的微动与可访问性
+  .theme-container .content__default figure {
+    transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+                box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+  }
+  .theme-container .content__default figure:hover {
+    transform: translateY(calc(-1 * var(--motion-lift-1)));
+    box-shadow: var(--motion-shadow-soft);
+    will-change: transform, box-shadow;
+  }
+  .theme-container .content__default figure:focus-visible {
+    outline: 2px solid var(--interactive-accent, #409EFF);
+    outline-offset: 2px;
+    transform: none;
+    box-shadow: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-container .content__default figure {
+      transition-duration: 0.01ms !important;
+    }
+    .theme-container .content__default figure:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  // View Transitions：为 hero 指定动画名与关键帧
+  @keyframes vtHeroOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.995); }
+  }
+  @keyframes vtHeroIn {
+    from { opacity: 0; transform: scale(0.995); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  ::view-transition-old(hero) {
+    animation-name: vtHeroOut;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-decelerate);
+  }
+  ::view-transition-new(hero) {
+    animation-name: vtHeroIn;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-decelerate);
+  }
+}
+
+// 内容模块扩展：blockquote、代码块、表格
+.theme-container .content__default blockquote {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+.theme-container .content__default blockquote:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-1)));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.theme-container .content__default blockquote:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+.theme-container .content__default pre,
+.theme-container .content__default code {
+  transition: box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+.theme-container .content__default pre:hover,
+.theme-container .content__default code:hover {
+  box-shadow: var(--motion-shadow-soft);
+}
+.theme-container .content__default pre:focus-visible,
+.theme-container .content__default code:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.theme-container .content__default table {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+.theme-container .content__default table:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-1)));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.theme-container .content__default table:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 降级与性能守护
+@media (prefers-reduced-motion: reduce) {
+  .theme-container .content__default blockquote:hover,
+  .theme-container .content__default table:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .theme-container .content__default pre,
+  .theme-container .content__default code,
+  .theme-container .content__default blockquote,
+  .theme-container .content__default table {
+    transition-duration: 0.01ms !important;
   }
 }
