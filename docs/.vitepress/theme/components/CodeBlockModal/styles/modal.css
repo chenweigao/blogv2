@@ -66,10 +66,7 @@
 /* 遮罩层动画优化 */
 .code-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
@@ -133,10 +130,7 @@
 
 .code-modal-content.fullscreen {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 10000;
   background: var(--vp-c-bg, #fff);
   max-width: none;
@@ -249,22 +243,39 @@
 
 /* 减少动画的用户偏好支持 */
 @media (prefers-reduced-motion: reduce) {
+  .code-modal-overlay,
+  .code-modal-container,
+  .code-modal-content.fullscreen,
   .modal-enter-active,
   .modal-leave-active {
-    transition: opacity 0.1s ease;
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
   }
-  
-  .modal-enter-from .code-modal-container,
-  .modal-leave-to .code-modal-container {
-    transform: none;
-  }
-  
+}
+
+/* 用户偏好减少透明度：移除磨砂与降低透明度 */
+@media (prefers-reduced-transparency: reduce) {
   .code-modal-overlay {
-    backdrop-filter: none;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: rgba(0, 0, 0, 0.6) !important;
   }
-  
-  .code-modal-container:hover {
-    transform: none;
+  .code-modal-container {
+    box-shadow: var(--vp-shadow-1) !important;
+  }
+}
+
+/* Windows 强制颜色模式支持 */
+@media (forced-colors: active) {
+  .code-modal-overlay,
+  .code-modal-container {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-color: CanvasText !important;
+    outline: 2px solid CanvasText !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
   }
 }
 

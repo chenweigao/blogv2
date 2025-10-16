@@ -2,7 +2,7 @@
   <div class="toc-toggle-wrapper">
     <!-- 主要的进度环按钮 -->
     <button
-      class="toc-progress-button"
+      class="toc-progress-button u-focus-ring"
       :class="{ 
         'is-active': isActive, 
         'is-dragging': isDragging,
@@ -201,7 +201,7 @@ onUnmounted(() => {
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(12px);
   user-select: none;
@@ -410,6 +410,13 @@ onUnmounted(() => {
   }
 }
 
+/* 统一焦点可见性（与 .u-focus-ring 对齐） */
+.toc-progress-button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
 /* 移动设备优化 */
 @media (max-width: 768px) {
   .toc-progress-button {
@@ -471,5 +478,34 @@ onUnmounted(() => {
 
 .dark .toc-progress-button.is-active .progress-percentage {
   color: var(--vp-c-brand-1);
+}
+
+/* 为 hover 添加媒体门控，提升触屏设备体验 */
+@media (hover: hover) {
+  .toc-progress-button:hover {
+    background: var(--vp-c-bg-soft);
+    transform: scale(1.05);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* 透明度与强制颜色降级，提升可访问性 */
+@media (prefers-reduced-transparency: reduce) {
+  .toc-progress-button {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: var(--vp-c-bg) !important;
+    box-shadow: var(--vp-shadow-1) !important;
+  }
+}
+@media (forced-colors: active) {
+  .toc-progress-button {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-color: CanvasText !important;
+    outline: 2px solid CanvasText !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+  }
 }
 </style>

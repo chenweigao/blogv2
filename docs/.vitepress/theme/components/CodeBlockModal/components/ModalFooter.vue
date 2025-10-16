@@ -8,7 +8,7 @@
       <span class="theme">{{ currentTheme }}</span>
     </div>
     <div class="footer-actions">
-      <button @click="$emit('download')" class="footer-button" title="下载代码">
+      <button @click="$emit('download')" class="footer-button u-focus-ring" title="下载代码">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="7,10 12,15 17,10"/>
@@ -72,12 +72,18 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .footer-button:hover {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
+}
+
+.footer-button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .icon {
@@ -90,6 +96,13 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+@media (hover: hover) {
+  .footer-button:hover {
+    background: var(--vp-c-bg);
+    color: var(--vp-c-text-1);
+  }
 }
 
 @media (max-width: 768px) {

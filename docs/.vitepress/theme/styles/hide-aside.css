@@ -13,7 +13,7 @@
   /* 调整文档内容区域的右边距 */
   @media (min-width: 960px) {
     .VPDoc .content {
-      margin-right: 0 !important;
+      margin-inline-end: 0 !important;
     }
   }
 
@@ -40,8 +40,8 @@
   @media (min-width: 960px) {
     .VPDoc:not(.has-sidebar) .content,
     .VPDoc.has-aside .content {
-      margin-right: 0 !important;
-      padding-right: 32px !important;
+      margin-inline-end: 0 !important;
+      padding-inline-end: 32px !important;
     }
   }
 

@@ -85,6 +85,21 @@
       outline: 2px solid CanvasText !important;
       outline-offset: 2px !important;
     }
+    /* 强制颜色模式下增强导航的可视性 */
+    .VPNav,
+    .VPNavBarMenu .VPNavBarMenuLink,
+    .VPNavBarMenuGroup .VPNavBarMenuGroupButton,
+    .VPNavBarTitle,
+    .VPNavBarHamburger,
+    .VPNavBarSearch .DocSearch-Button {
+      background: Canvas !important;
+      color: CanvasText !important;
+      outline: 2px solid CanvasText;
+      outline-offset: 2px;
+    }
+    .VPNavBarMenu .VPNavBarMenuLink.active::before {
+      background: CanvasText !important;
+    }
   }
 
   /* 减少动画模式 */
@@ -180,40 +195,40 @@
     }
     .doc-header-container {
       box-shadow: none;
-      border: 1px solid #ccc;
+      border: 1px solid var(--vp-c-border);
     }
     .article-tag {
       background: transparent !important;
-      border: 1px solid #ccc !important;
-      color: #000 !important;
+      border: 1px solid var(--vp-c-border) !important;
+      color: var(--vp-c-text-1) !important;
     }
     .related-item {
       box-shadow: none;
-      border: 1px solid #ccc;
+      border: 1px solid var(--vp-c-border);
     }
 
     /* 新增：代码块打印优化 */
     .vp-doc div[class*="language-"] {
       box-shadow: none !important;
-      background: #fff !important;
-      border: 1px solid #ccc !important;
+      background: var(--vp-c-bg) !important;
+      border: 1px solid var(--vp-c-border) !important;
     }
     .vp-doc div[class*="language-"] pre,
     .vp-doc div[class*="language-"] code {
       white-space: pre-wrap !important;
       line-height: 1.5 !important;
-      color: #000 !important;
+      color: var(--vp-c-text-1) !important;
     }
 
     /* 新增：链接打印优化（可选显示 URL） */
     .vp-doc a {
       text-decoration: underline !important;
-      color: #000 !important;
+      color: var(--vp-c-text-1) !important;
     }
     .vp-doc a[href^="http"]::after {
       content: " (" attr(href) ") ";
       font-size: 0.8em;
-      color: #555;
+      color: var(--vp-c-text-2);
     }
 
     /* 新增：表格打印优化 */
@@ -221,8 +236,8 @@
     .vp-doc th,
     .vp-doc td {
       box-shadow: none !important;
-      background: #fff !important;
-      border: 1px solid #ccc !important;
+      background: var(--vp-c-bg) !important;
+      border: 1px solid var(--vp-c-border) !important;
     }
 
     /* 新增：标题分页与避免断裂 */
@@ -265,21 +280,39 @@
 
   /* 跳转到正文（Skip Link） */
   .skip-to-content {
-    position: absolute;
-    top: -1000px;
-    left: -1000px;
-    padding: 0.5rem 0.75rem;
+    position: fixed;
+    top: var(--vp-space-16);
+    inset-inline-start: var(--vp-space-16);
+    z-index: var(--vp-z-index-nav);
     background: var(--vp-c-bg);
     color: var(--vp-c-text-1);
+    border: 1px solid var(--vp-c-border);
     border-radius: var(--vp-border-radius-small);
-    border: 2px solid transparent;
+    padding: 0.5rem 1rem;
     box-shadow: var(--vp-shadow-2);
   }
-  .skip-to-content:focus-visible {
-    top: 1rem;
-    left: 1rem;
-    z-index: 10000;
-    border-color: var(--vp-c-brand-1);
+  @media (hover: hover) {
+    .skip-to-content:hover {
+      background: var(--vp-c-bg-soft);
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .skip-to-content {
+      background: var(--vp-c-bg) !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      box-shadow: var(--vp-shadow-1) !important;
+    }
+  }
+  @media (forced-colors: active) {
+    .skip-to-content {
+      background: Canvas !important;
+      color: CanvasText !important;
+      border-color: CanvasText !important;
+      outline: 2px solid CanvasText !important;
+      outline-offset: 2px !important;
+      box-shadow: none !important;
+    }
   }
 
   /* 触控设备：禁用 hover 位移与阴影，避免伪 hover 干扰 */

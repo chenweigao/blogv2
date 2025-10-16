@@ -66,39 +66,8 @@
 .u-radius-lg { border-radius: var(--vp-border-radius-large); }
 .u-radius-xl { border-radius: var(--vp-border-radius-xl); }
 
-/* 统一焦点样式工具类 */
-.u-focus-ring {
-  outline: 2px solid var(--vp-c-brand-1);
-  outline-offset: 2px;
-  border-radius: var(--vp-border-radius-small);
-}
 
-/* 屏幕阅读器辅助：完全隐藏但可被 SR 读取 */
-.visually-hidden,
-.sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
 
-/* 仅在聚焦或包含焦点时可见的隐藏元素 */
-.visually-hidden-focusable:not(:focus):not(:focus-within) {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
 
 /* 实用工具类 */
 @layer utilities {
@@ -171,6 +140,12 @@
 
   /* 统一焦点样式工具类 */
   .u-focus-ring {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 2px;
+    border-radius: var(--vp-border-radius-small);
+  }
+
+  .u-focus-ring:focus-visible {
     outline: 2px solid var(--vp-c-brand-1);
     outline-offset: 2px;
     border-radius: var(--vp-border-radius-small);

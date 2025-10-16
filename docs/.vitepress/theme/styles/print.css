@@ -10,8 +10,8 @@
     }
 
     body {
-      background: #fff !important;
-      color: #000 !important;
+      background: var(--vp-c-bg) !important;
+      color: var(--vp-c-text-1) !important;
     }
 
     /* 隐藏页面中不需要打印的交互组件与导航 */
@@ -35,8 +35,8 @@
     /* 代码块打印优化 */
     .vp-doc div[class*="language-"] {
       box-shadow: none !important;
-      background: #fff !important;
-      border: 1px solid #ccc !important;
+      background: var(--vp-c-bg) !important;
+      border: 1px solid var(--vp-c-border) !important;
       break-inside: avoid;
       page-break-inside: avoid;
     }
@@ -44,13 +44,22 @@
     .vp-doc div[class*="language-"] code {
       white-space: pre-wrap !important;
       line-height: 1.5 !important;
-      color: #000 !important;
+      color: var(--vp-c-text-1) !important;
+    }
+
+    /* 内联代码打印优化：仅影响非代码块的行内 code */
+    .vp-doc :not(pre) > code {
+      background: var(--vp-c-bg) !important;
+      color: var(--vp-c-text-1) !important;
+      border: 1px solid var(--vp-c-border) !important;
+      padding: 0.1rem 0.25rem;
+      border-radius: var(--vp-border-radius-small);
     }
 
     /* 链接打印优化（显示 URL） */
     .vp-doc a {
       text-decoration: underline !important;
-      color: #000 !important;
+      color: var(--vp-c-text-1) !important;
     }
     .vp-doc a[href^="http"]::after {
       content: " (" attr(href) ") ";
@@ -63,16 +72,16 @@
     .vp-doc th,
     .vp-doc td {
       box-shadow: none !important;
-      background: #fff !important;
-      border: 1px solid #ccc !important;
+      background: var(--vp-c-bg) !important;
+      border: 1px solid var(--vp-c-border) !important;
     }
 
     /* 标题分页与避免断裂 */
-    .vp-doc h1,
-    .vp-doc h2 {
+    .vp-doc h1 {
       break-before: page;
       page-break-before: always;
     }
+    .vp-doc h2,
     .vp-doc h3 {
       break-before: avoid-page;
       page-break-before: avoid;
@@ -90,6 +99,39 @@
       height: auto !important;
       break-inside: avoid;
       page-break-inside: avoid;
+    }
+
+    /* 扩展：常见块级元素避免跨页断裂与统一打印行为 */
+    .vp-doc figure,
+    .vp-doc blockquote,
+    .vp-doc pre {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .vp-doc ul,
+    .vp-doc ol {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .vp-doc li {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* 段落孤行与寡行优化 */
+    .vp-doc p {
+      orphans: 2;
+      widows: 2;
+    }
+
+    /* 标题层级进一步优化分页行为 */
+    .vp-doc h4,
+    .vp-doc h5,
+    .vp-doc h6 {
+      break-before: avoid-page;
+      page-break-before: avoid;
     }
   }
 }

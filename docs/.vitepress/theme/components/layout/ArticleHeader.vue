@@ -15,7 +15,7 @@
       <div :class="$style.actionButtons">
         <GitHistoryButton />
         <button 
-          :class="$style.tocQuickToggle"
+          :class="[$style.tocQuickToggle, 'u-focus-ring']"
           @click="$emit('toggle-quick-toc')"
           :title="showQuickTOC ? 'Hide Quick TOC' : 'Show Quick TOC'"
         >
@@ -83,7 +83,7 @@ defineEmits(['toggle-quick-toc'])
   border-radius: 6px;
   color: var(--vp-c-text-2);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .tocQuickToggle:hover {

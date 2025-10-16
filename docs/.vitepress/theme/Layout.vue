@@ -2,7 +2,7 @@
   <Layout>
     <!-- 全局顶部内容 -->
     <template #layout-top>
-      <a href="#main-content" class="skip-to-content visually-hidden-focusable">跳转到正文</a>
+      <a href="#main-content" class="skip-to-content visually-hidden-focusable u-focus-ring">跳转到正文</a>
       <LayoutEnhancementIndicator />
     </template>
 
@@ -164,7 +164,7 @@ const toggleQuickTOC = () => {
 .navEnhancement {
   display: flex;
   align-items: center;
-  margin-left: 1rem;
+  margin-inline-start: 1rem;
   height: 40px; /* 与导航项保持一致 */
 }
 

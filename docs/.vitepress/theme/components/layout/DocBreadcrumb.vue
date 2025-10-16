@@ -9,7 +9,7 @@
         <a 
           v-if="crumb.link" 
           :href="crumb.link" 
-          :class="$style.breadcrumbLink"
+          :class="[$style.breadcrumbLink, 'u-focus-ring']"
         >
           {{ crumb.text }}
         </a>
@@ -84,7 +84,7 @@ const breadcrumbs = computed(() => {
   content: '';
   position: absolute;
   bottom: -1px;
-  left: 0;
+  inset-inline-start: 0;
   width: 60px;
   height: 2px;
   background: linear-gradient(90deg, var(--vp-c-brand-1), transparent);
@@ -105,7 +105,7 @@ const breadcrumbs = computed(() => {
 .breadcrumbItem {
   display: flex;
   align-items: center;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .breadcrumbItem:last-child {

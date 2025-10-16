@@ -431,6 +431,17 @@
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+  .toc-toggle,
+  .toc-toggle:hover,
+  .toc-link,
+  .toc-indicator,
+  .reading-progress,
+  .toc-panel {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  
   .reading-progress,
   .toc-panel {
     transition: none !important;
@@ -489,4 +500,59 @@
     backdrop-filter: none;
     box-shadow: var(--vp-shadow-1);
   }
+}
+
+/* 无障碍与门控增强：reduce-motion | reduced-transparency | forced-colors */
+@media (prefers-reduced-motion: reduce) {
+  .toc-toggle,
+  .toc-toggle:hover,
+  .toc-link,
+  .toc-indicator,
+  .reading-progress,
+  .toc-panel {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .toc-panel {
+    background: var(--vp-c-bg) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    box-shadow: var(--vp-shadow-1) !important;
+  }
+  .toc-toggle {
+    background: var(--vp-c-bg) !important;
+    box-shadow: var(--vp-shadow-1) !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .toc-toggle,
+  .toc-pin,
+  .toc-close,
+  .toc-link {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-color: CanvasText !important;
+    outline: 2px solid CanvasText !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+  }
+  .toc-item.is-active .toc-link {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-inline-start-color: CanvasText !important;
+  }
+}
+
+/* 统一焦点可见性（与 .u-focus-ring 对齐） */
+.toc-toggle:focus-visible,
+.toc-pin:focus-visible,
+.toc-close:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: var(--vp-border-radius-small);
 }

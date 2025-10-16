@@ -27,8 +27,7 @@
     
     /* 图片居中显示 */
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin-inline: auto;
   }
 
   /* 小尺寸图片样式 */

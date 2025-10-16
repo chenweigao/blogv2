@@ -1,4 +1,5 @@
-@layer base, theme, components, utilities, overrides;\n\n/* 基础样式和性能优化 */
+@layer base, theme, components, utilities, overrides;
+/* 基础样式和性能优化 */
 
 /* GPU 加速优化 */
 .gpu-accelerated {
@@ -97,4 +98,10 @@ html {
 
 html {
   scroll-padding-top: calc(var(--vp-nav-height) + var(--vp-space-16));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

@@ -19,7 +19,7 @@
           v-for="article in relatedArticles" 
           :key="article.link"
           :href="article.link"
-          :class="$style.relatedItem"
+          :class="[$style.relatedItem, 'u-focus-ring']"
         >
           <div :class="$style.relatedItemTitle">{{ article.title }}</div>
           <div :class="$style.relatedItemDesc">{{ article.description }}</div>
@@ -106,7 +106,7 @@ const formatDate = (date) => {
   border: 1px solid var(--vp-c-border);
   border-radius: 8px;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 .relatedItem:hover {

@@ -22,7 +22,7 @@
         </div>
         <div class="toc-controls">
           <button
-            class="toc-control-btn toc-compact"
+            class="toc-control-btn toc-compact u-focus-ring"
             :class="{ 'is-active': isCompactMode }"
             @click="$emit('toggle-compact')"
             :title="isCompactMode ? 'Expand TOC' : 'Compact TOC'"
@@ -32,7 +32,7 @@
             </svg>
           </button>
           <button
-            class="toc-control-btn toc-pin"
+            class="toc-control-btn toc-pin u-focus-ring"
             :class="{ 'is-pinned': isPinned }"
             @click="$emit('toggle-pin')"
             :title="isPinned ? 'Unpin TOC' : 'Pin TOC'"
@@ -42,7 +42,7 @@
             </svg>
           </button>
           <button 
-            class="toc-control-btn toc-close" 
+            class="toc-control-btn toc-close u-focus-ring" 
             @click="$emit('close')" 
             :title="'Close TOC'"
           >
@@ -198,8 +198,8 @@ const panelStyle = computed(() => {
   
   return {
     position: 'fixed',
-    left: `${props.panelPosition.x}px`,
-    top: `${props.panelPosition.y}px`,
+    insetInlineStart: `${props.panelPosition.x}px`,
+    insetBlockStart: `${props.panelPosition.y}px`,
     zIndex: 200
   }
 })

@@ -19,16 +19,18 @@
 
 /* 原先的普通 @import 改为带层级的导入 */
 @import url('./styles/variables.css');
-@import url('./styles/base.css');
-@import url('./styles/layout.css');
-@import url('./styles/content.css');
-@import url('./styles/components.css');
-@import url('./styles/responsive-images.css');
-@import url('./styles/animations.css');
-@import url('./styles/navbar-animations.css');
-@import url('./styles/responsive.css');
-@import url('./styles/accessibility.css');
-@import url('./styles/utilities.css');
-@import url('./styles/hide-aside.css');
-@import url('./styles/content-width-enhancement.css');
-@import url('./styles/print.css');
+@import url('./styles/base.css') layer(base);
+@import url('./styles/layout.css') layer(theme);
+@import url('./styles/content.css') layer(theme);
+@import url('./styles/components.css') layer(components);
+@import url('./styles/responsive-images.css') layer(components);
+@import url('./styles/animations.css') layer(components);
+@import url('./styles/navbar-animations.css') layer(components);
+/* 新增滚动条样式优化 */
+@import url('./styles/scrollbars.css') layer(components);
+@import url('./styles/responsive.css') layer(theme);
+@import url('./styles/accessibility.css') layer(overrides);
+@import url('./styles/utilities.css') layer(utilities);
+@import url('./styles/hide-aside.css') layer(overrides);
+@import url('./styles/content-width-enhancement.css') layer(theme);
+@import url('./styles/print.css') layer(overrides);

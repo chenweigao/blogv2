@@ -17,7 +17,7 @@
     <div class="code-modal-actions">
       <button 
         @click="$emit('toggle-line-numbers')" 
-        class="action-button"
+        class="action-button u-focus-ring"
         :class="{ active: showLineNumbers }"
         title="切换行号"
       >
@@ -25,14 +25,14 @@
       </button>
       <button 
         @click="$emit('toggle-theme')" 
-        class="action-button"
+        class="action-button u-focus-ring"
         title="切换主题"
       >
         <span class="icon-text">🎨</span>
       </button>
       <button 
         @click="$emit('toggle-fullscreen')" 
-        class="action-button"
+        class="action-button u-focus-ring"
         :class="{ active: isFullscreen }"
         title="全屏模式"
       >
@@ -40,14 +40,14 @@
       </button>
       <button 
         @click="$emit('copy-code')" 
-        class="copy-button" 
+        class="copy-button u-focus-ring" 
         :class="{ copied: isCopied }"
         :title="isCopied ? '已复制' : '复制代码'"
       >
         <span class="icon-text">{{ isCopied ? '✓' : '⧉' }}</span>
         <span class="button-text">{{ isCopied ? '已复制' : '复制' }}</span>
       </button>
-      <button @click="$emit('close')" class="close-button" title="关闭">
+      <button @click="$emit('close')" class="close-button u-focus-ring" title="关闭">
         <span class="icon-text">×</span>
       </button>
     </div>
@@ -146,7 +146,7 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   position: relative;
 }
 
@@ -175,7 +175,7 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   min-width: 80px;
   justify-content: center;
 }
@@ -201,7 +201,7 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .close-button:hover {
@@ -222,6 +222,15 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
 
 .button-text {
   font-size: 13px;
+}
+
+/* 统一焦点可见性 */
+.action-button:focus-visible,
+.copy-button:focus-visible,
+.close-button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 /* 响应式设计 */
@@ -272,6 +281,49 @@ const displayLanguage = computed(() => getDisplayLanguage(props.language))
   
   .copy-button .button-text {
     display: none;
+  }
+}
+
+/* 为所有 hover 添加媒体门控 */
+@media (hover: hover) {
+  .action-button:hover {
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-1);
+    border-color: var(--vp-c-brand-1);
+    transform: translateY(-1px);
+  }
+  .copy-button:hover {
+    background: var(--vp-c-brand-2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--vp-c-brand-1), 0.3);
+  }
+  .close-button:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fecaca;
+  }
+}
+
+/* 透明度与强制颜色降级，提升可访问性 */
+@media (prefers-reduced-transparency: reduce) {
+  .code-modal-header {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: var(--vp-c-bg-alt) !important;
+    box-shadow: var(--vp-shadow-1) !important;
+  }
+}
+@media (forced-colors: active) {
+  .code-modal-header,
+  .action-button,
+  .copy-button,
+  .close-button {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-color: CanvasText !important;
+    outline: 2px solid CanvasText !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
   }
 }
 </style>

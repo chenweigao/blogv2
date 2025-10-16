@@ -60,7 +60,7 @@
     content: '';
     position: absolute;
     bottom: 0;
-    left: 50%;
+    inset-inline-start: 50%;
     width: 0;
     height: 2px;
     background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
@@ -311,13 +311,24 @@
 
   /* ===== 动画降级支持 ===== */
   @media (prefers-reduced-motion: reduce) {
+    .VPNav,
     .VPNavBarMenu .VPNavBarMenuLink,
+    .VPNavBarMenu .VPNavBarMenuLink::before,
     .VPNavBarMenuGroup .VPNavBarMenuGroupButton,
+    .VPNavBarMenuGroup .VPNavBarMenuGroupButton .VPNavBarMenuGroupButtonIcon,
     .VPNavBarMenuGroup .VPNavBarMenuGroupItems,
+    .VPNavBarMenuGroup .VPNavBarMenuGroupItem,
+    .VPNavBarMenuGroup .VPNavBarMenuGroupItem .VPNavBarMenuGroupItemLink,
     .VPNavBarTitle,
-    .nav-route-indicator {
+    .VPNavBarTitle .title,
+    .VPNavBarTitle .logo,
+    .VPNavBarHamburger,
+    .VPNavBarHamburger .hamburger,
+    .VPNavBarHamburger .hamburger span,
+    .VPNavBarSearch .DocSearch-Button {
       transition: none !important;
-      animation: none !important;
+      transform: none !important;
+      box-shadow: none !important;
     }
   }
 
@@ -345,4 +356,3 @@
     box-shadow: var(--vp-shadow-3);
   }
 }
-/* 在此处添加闭合，以包裹整个文件到 components 层 */

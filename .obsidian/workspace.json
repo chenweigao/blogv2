@@ -283,6 +283,7 @@
   },
   "active": "d15e5b094c10ce06",
   "lastOpenFiles": [
+    "stylelint-report.json",
     "docs/artificial-intelligence/distributed-training/megatron_parallel.md",
     "docs/artificial-intelligence/distributed-training/nccl-test.md",
     "docs/artificial-intelligence/distributed-training/index.md",
@@ -312,7 +313,6 @@
     "python/language/pip.md",
     "python/language/pandas.md",
     "python/language/log.md",
-    "python/language/itertools.md",
     "python/language",
     "python/AI",
     "architecture/images/amx-1750062373190.png",

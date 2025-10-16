@@ -3,7 +3,7 @@
     <div :class="$style.quickTocHeader">
       <h4 :class="$style.quickTocTitle">Quick Navigation</h4>
       <button 
-        :class="$style.quickTocClose" 
+        :class="[$style.quickTocClose, 'u-focus-ring']" 
         @click="$emit('close')"
         aria-label="Close Quick TOC"
       >
@@ -15,7 +15,7 @@
         v-for="heading in headings" 
         :key="heading.anchor"
         :href="`#${heading.anchor}`"
-        :class="[$style.quickTocItem, $style[`level${heading.level}`]]"
+        :class="[$style.quickTocItem, $style[`level${heading.level}`], 'u-focus-ring']"
         @click="$emit('close')"
       >
         {{ heading.title }}
@@ -108,23 +108,23 @@ defineEmits(['close'])
   text-decoration: none;
   font-size: 0.875rem;
   line-height: 1.4;
-  transition: all 0.2s ease;
-  border-left: 2px solid transparent;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  border-inline-start: 2px solid transparent;
 }
 
 .quickTocItem:hover {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
-  border-left-color: var(--vp-c-brand-1);
+  border-inline-start-color: var(--vp-c-brand-1);
 }
 
 .level2 {
-  padding-left: 1.5rem;
+  padding-inline-start: 1.5rem;
   font-size: 0.8125rem;
 }
 
 .level3 {
-  padding-left: 2rem;
+  padding-inline-start: 2rem;
   font-size: 0.75rem;
   opacity: 0.9;
 }
