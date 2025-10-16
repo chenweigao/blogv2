@@ -230,6 +230,11 @@ settings:
             height: var(--swatch-width);
             border-radius: 50%;
             border: var(--input-border-width) solid var(--background-modifier-border);
+            
+            /* palette 交互统一过渡 */
+            transition: border-color var(--motion-duration-short) var(--motion-ease-standard),
+                        box-shadow var(--motion-duration-short) var(--motion-ease-standard),
+                        transform var(--motion-duration-xshort) var(--motion-ease-decelerate);
         }
     }
 
@@ -691,4 +696,14 @@ body {
 body.pdf-plus-vim-hint-inverted {
     --pdf-plus-vim-hint-color: var(--text-on-accent);
     --pdf-plus-vim-hint-background-color: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pdf-plus-color-palette-item-inner {
+        transition-duration: 0.01ms !important;
+    }
+    .pdf-plus-color-palette-item-inner:hover {
+        transform: none;
+        box-shadow: none;
+    }
 }

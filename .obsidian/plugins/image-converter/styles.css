@@ -58,9 +58,8 @@
     transition: background-color var(--motion-duration-short) var(--motion-ease-standard),
                 transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
                 box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
-    will-change: transform;
-    /* Smooth hover effect */
-    border-bottom: 3px solid transparent;
+    /* 移除基础态的 will-change，避免长期占用合成层 */
+    /* will-change: transform; */
 }
 
 /* Remove left margin for the first tab */
@@ -74,23 +73,21 @@
 }
 
 .image-converter-tab:hover {
-    /* Remove background color on hover */
-    /* background-color: var(--background-modifier-hover); */
-
-    /* Add underline on hover */
     border-bottom-color: var(--interactive-accent);
-    /* Use an accent color for the underline */
     transform: translateY(-1px);
     box-shadow: var(--motion-shadow-soft);
+    will-change: transform;
+}
+.image-converter-tab:focus-visible {
+    /* 键盘可访问焦点：不使用 transform，采用轮廓 */
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 2px;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Active tab styling */
 .image-converter-tab-active {
-    /* Remove background color */
-    /* border-color: var(--background-modifier-border); */
-    /* border-bottom-color: var(--background-primary); */
-    /* background-color: var(--background-primary);  */
-
     font-weight: 600;
 
     /* Add underline for active tab */
@@ -118,7 +115,6 @@
     z-index: 1;
     /* Ensure preset group is above other elements */
     transition: transform var(--motion-duration-medium) var(--motion-ease-standard),
-                filter var(--motion-duration-medium) var(--motion-ease-standard),
                 opacity var(--motion-duration-medium) var(--motion-ease-standard);
     transform-origin: top center;
     transform: scale(1);
@@ -159,21 +155,19 @@
     transition: opacity var(--motion-duration-medium) var(--motion-ease-standard),
                 transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
                 box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+    /* 移除基础态的 will-change，改在交互时启用 */
+    /* will-change: transform, box-shadow; */
+}
+.image-converter-preset-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--motion-shadow-medium);
     will-change: transform, box-shadow;
-    overflow: hidden;
-    /* Prevent content from spilling out */
 }
-
-/* "Grabbing" cursor when dragging */
-.image-converter-preset-card:active {
-    cursor: grabbing;
+.image-converter-preset-card:focus-visible {
+    /* 键盘可访问焦点：轻微阴影突出，避免 transform */
+    box-shadow: var(--motion-shadow-soft);
+    transform: none;
 }
-
-/* Pointer cursor for non-add-new cards */
-.image-converter-preset-card:not(.image-converter-add-new-preset) {
-    cursor: pointer;
-}
-
 .image-converter-preset-card-header {
     display: flex;
     justify-content: space-between;
@@ -258,12 +252,30 @@
 .image-converter-active-preset {
     border-color: var(--interactive-accent);
     box-shadow: 0 0 5px var(--interactive-accent);
+    /* 统一过渡与可访问性 */
+    transition: box-shadow var(--motion-duration-medium) var(--motion-ease-standard),
+                border-color var(--motion-duration-short) var(--motion-ease-standard);
 }
-
+.image-converter-active-preset:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 2px;
+    box-shadow: none;
+}
 .image-converter-default-preset {
     background-color: var(--background-modifier-hover);
+    /* 统一过渡 */
+    transition: background-color var(--motion-duration-short) var(--motion-ease-standard),
+                box-shadow var(--motion-duration-short) var(--motion-ease-standard);
 }
-
+.image-converter-default-preset:hover {
+    /* 轻微阴影以反馈，不使用 transform */
+    box-shadow: var(--motion-shadow-soft);
+}
+.image-converter-default-preset:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 2px;
+    box-shadow: none;
+}
 /* --- Custom Variables for Default Preset Background --- */
 :root {
     --image-converter-default-bg: #f5f5f5;
@@ -599,8 +611,22 @@ html[data-theme='dark'] {
 
 @media (prefers-reduced-motion: reduce) {
     .image-converter-tab:hover,
-    .image-converter-preset-card:hover {
+    .image-converter-tab:focus-visible,
+    .image-converter-preset-card:hover,
+    .image-converter-preset-card:focus-visible {
         transform: none;
+        box-shadow: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .image-converter-active-preset,
+    .image-converter-default-preset {
+        transition-duration: 0.01ms !important;
+    }
+    .image-converter-default-preset:hover,
+    .image-converter-active-preset:focus-visible,
+    .image-converter-default-preset:focus-visible {
         box-shadow: none;
     }
 }

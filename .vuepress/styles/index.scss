@@ -69,3 +69,131 @@
     box-shadow: none;
   }
 }
+
+// 导航：灵动微动与滑动下划线
+.navbar a,
+.navbar .navbar-item {
+  transition: color var(--motion-duration-short) var(--motion-ease-standard),
+              transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+  position: relative;
+}
+
+.navbar a:hover,
+.navbar .navbar-item:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+
+.navbar a::after,
+.navbar .navbar-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: var(--interactive-accent, #409EFF);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--motion-duration-short) var(--motion-ease-accelerate);
+}
+
+.navbar a:hover::after,
+.navbar .navbar-item:hover::after,
+.navbar a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+.navbar a:focus-visible,
+.navbar .navbar-item:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar a:hover,
+  .navbar .navbar-item:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .navbar a::after,
+  .navbar .navbar-item::after {
+    transition: none;
+  }
+}
+
+// 侧边栏：链接与标题的灵动与降级
+.sidebar a,
+.sidebar-link {
+  transition: background-color var(--motion-duration-short) var(--motion-ease-standard),
+              color var(--motion-duration-short) var(--motion-ease-standard),
+              transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+
+.sidebar a:hover,
+.sidebar-link:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+
+.sidebar .sidebar-heading,
+.sidebar-heading,
+.sidebar-title {
+  transition: color var(--motion-duration-short) var(--motion-ease-standard),
+              letter-spacing var(--motion-duration-xshort) var(--motion-ease-decelerate);
+}
+
+.sidebar .sidebar-heading:hover,
+.sidebar-heading:hover,
+.sidebar-title:hover {
+  color: var(--interactive-accent, #409EFF);
+  letter-spacing: 0.2px;
+}
+
+.sidebar a:focus-visible,
+.sidebar-link:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar a:hover,
+  .sidebar-link:hover,
+  .sidebar .sidebar-heading:hover,
+  .sidebar-heading:hover,
+  .sidebar-title:hover {
+    transform: none;
+    box-shadow: none;
+    letter-spacing: normal;
+  }
+}
+
+// 标题：轻柔入场与可访问性
+.theme-container h1,
+.theme-container h2,
+.theme-container h3 {
+  animation: riseIn var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+}
+
+.theme-container h1:focus-visible,
+.theme-container h2:focus-visible,
+.theme-container h3:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-container h1,
+  .theme-container h2,
+  .theme-container h3 {
+    animation: none !important;
+  }
+}

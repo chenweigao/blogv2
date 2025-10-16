@@ -191,11 +191,6 @@ body.theme-dark {
                 color var(--motion-duration-short) var(--motion-ease-standard),
                 transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
                 box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
-    will-change: transform, box-shadow;
-    font-weight: var(--i18n-button-font-weight);
-    -webkit-user-select: none;
-    user-select: none;
-    vertical-align: middle;
     border-radius: var(--i18n-border-radius);
 }
 
@@ -212,6 +207,19 @@ button:not(.clickable-icon).i18n-button:hover {
     border-color: var(--i18n-button-hover-border-color);
     transform: translateY(-1px);
     box-shadow: var(--motion-shadow-soft);
+    will-change: transform, box-shadow;
+}
+
+button:not(.clickable-icon).i18n-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+button:not(.clickable-icon).i18n-button:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 2px;
+    transform: none;
+    box-shadow: none;
 }
 
 .i18n-button.i18n-button--default-primary {
@@ -1033,5 +1041,3 @@ button:not(.clickable-icon).i18n-edit__operate-operate-button:hover {
 .i18n-share-history__title:first-child {
    	border-top: 0px;
 }
-
-/* agreement((
