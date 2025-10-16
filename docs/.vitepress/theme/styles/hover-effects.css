@@ -22,7 +22,7 @@
 
 /* ===== 通用悬停基类 ===== */
 .hover-lift {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   transform: translateZ(0); /* GPU 加速 */
 }
 
@@ -45,7 +45,7 @@
   position: relative;
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   padding: 2px 4px;
   border-radius: 4px;
 }
@@ -60,7 +60,7 @@
 /* 导航链接 */
 .VPNavBarMenuLink,
 .VPNavBarTitle .title {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   padding: 8px 12px;
   border-radius: 6px;
   position: relative;
@@ -76,7 +76,7 @@
 /* ===== 按钮悬停效果 ===== */
 /* 主要按钮 */
 .VPButton {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   position: relative;
   overflow: hidden;
 }
@@ -90,7 +90,7 @@
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
+  inset-inline-start: -100%;
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
@@ -98,14 +98,14 @@
 }
 
 .VPButton:hover::before {
-  left: 100%;
+  inset-inline-start: 100%;
 }
 
 /* 次要按钮和图标按钮 */
 .VPButton.alt,
 .VPIconButton,
 .clickable-icon {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   border-radius: 8px;
 }
 
@@ -121,7 +121,7 @@
 .VPFeature,
 .article-card,
 .post-card {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   border: 1px solid var(--vp-c-border);
   border-radius: 12px;
   overflow: hidden;
@@ -142,8 +142,8 @@
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: 0;
   background: var(--hover-bg-light);
   pointer-events: none;
@@ -152,15 +152,15 @@
 /* ===== 导航和侧边栏悬停 ===== */
 /* 面包屑导航 */
 .VPDocAsideOutline .outline-link {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   padding: 4px 8px;
   border-radius: 4px;
-  border-left: 2px solid transparent;
+  border-inline-start: 2px solid transparent;
 }
 
 .VPDocAsideOutline .outline-link:hover {
   background-color: var(--hover-bg-light);
-  border-left-color: var(--vp-c-brand-1);
+  border-inline-start-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
   transform: translateX(4px);
 }
@@ -176,7 +176,7 @@
 
 .vp-doc table th,
 .vp-doc table td {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
 }
 
 .vp-doc table th:hover,
@@ -187,7 +187,7 @@
 
 /* ===== 代码块悬停效果 ===== */
 .vp-doc div[class*="language-"] {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   position: relative;
 }
 
@@ -198,7 +198,7 @@
 
 /* 行内代码 */
 .vp-doc code:not(pre code) {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   padding: 2px 6px;
   border-radius: 4px;
   background-color: var(--vp-c-bg-soft);
@@ -212,7 +212,7 @@
 
 /* ===== 图片悬停效果 ===== */
 .vp-doc img {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   border-radius: 8px;
 }
 
@@ -223,7 +223,7 @@
 
 /* ===== 搜索框悬停效果 ===== */
 .VPNavBarSearch .DocSearch-Button {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
 }
 
 .VPNavBarSearch .DocSearch-Button:hover {
@@ -236,7 +236,7 @@
 .VPBadge,
 .tag,
 .badge {
-  transition: all var(--hover-duration) var(--hover-easing);
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
   cursor: pointer;
 }
 

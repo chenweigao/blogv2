@@ -1,74 +1,304 @@
 /* 可访问性增强 */
+@layer overrides {
+  /* 高对比度模式 */
+  @media (prefers-contrast: high) {
+    :root {
+      --vp-c-border: #000000;
+      --vp-c-text-3: #333333;
+    }
+    
+    .dark {
+      --vp-c-border: #ffffff;
+      --vp-c-text-3: #cccccc;
+    }
+    
+    .doc-header-container,
+    .related-item,
+    .quick-toc-preview {
+      border-width: 2px;
+    }
+  }
 
-/* 高对比度模式 */
-@media (prefers-contrast: high) {
-  :root {
-    --vp-c-border: #000000;
-    --vp-c-text-3: #333333;
-  }
-  
-  .dark {
-    --vp-c-border: #ffffff;
-    --vp-c-text-3: #cccccc;
-  }
-  
-  .doc-header-container,
-  .related-item,
-  .quick-toc-preview {
-    border-width: 2px;
-  }
-}
+  /* 高对比度模式（用户偏好更高对比度） */
+  @media (prefers-contrast: more) {
+    .breadcrumb-link,
+    .article-tag,
+    .quick-toc-item,
+    .VPSidebarItem .link,
+    .vp-doc a,
+    .toc-toggle,
+    .toc-close,
+    .toc-pin,
+    .toc-link {
+      outline: 3px solid currentColor !important;
+      outline-offset: 3px !important;
+      border-color: currentColor !important;
+    }
 
-/* 减少动画模式 */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  
-  .doc-header-container:hover,
-  .related-item:hover,
-  .article-tag:hover,
-  .quick-toc-item:hover {
-    transform: none !important;
-  }
-}
+    .vp-doc a {
+      text-decoration: underline !important;
+    }
 
-/* Focus 可见性增强 */
-.breadcrumb-link:focus-visible,
-.article-tag:focus-visible,
-.quick-toc-item:focus-visible,
-.related-item:focus-visible {
-  outline: 2px solid var(--vp-c-brand-1);
-  outline-offset: 2px;
-  border-radius: var(--vp-border-radius-small);
-}
+    .vp-doc div[class*="language-"] {
+      box-shadow: none !important;
+      border: 2px solid var(--vp-c-text-2) !important;
+    }
+  }
 
-/* 打印样式优化 */
-@media print {
-  .doc-header-container,
-  .related-articles,
-  .quick-toc-preview {
-    break-inside: avoid;
+  /* 高对比度模式（Windows forced-colors）支持 */
+  @media (forced-colors: active) {
+    .breadcrumb-link,
+    .article-tag,
+    .quick-toc-item,
+    .VPSidebarItem .link,
+    .vp-doc a,
+    .toc-toggle,
+    .toc-close,
+    .toc-pin,
+    .toc-link {
+      outline: 2px solid CanvasText !important;
+      outline-offset: 2px !important;
+      border-color: CanvasText !important;
+      background: Canvas !important;
+      color: CanvasText !important;
+    }
+    .skip-to-content:focus-visible {
+      outline: 2px solid CanvasText !important;
+      box-shadow: none !important;
+    }
+    
+    /* 追加：Windows 强制颜色模式下的标题装饰与锚点可见性增强 */
+    .vp-doc h1::before,
+    .vp-doc h2::before,
+    .vp-doc h3::before {
+      background: CanvasText !important;
+      opacity: 1 !important;
+    }
+    .vp-doc .header-anchor {
+      opacity: 1 !important;
+      text-decoration: underline;
+    }
+    .vp-doc h1:target,
+    .vp-doc h2:target,
+    .vp-doc h3:target {
+      background: Canvas !important;
+      outline: 2px solid CanvasText !important;
+      outline-offset: 2px !important;
+    }
   }
-  
-  .doc-header-container {
-    box-shadow: none;
-    border: 1px solid #ccc;
+
+  /* 减少动画模式 */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    
+    .doc-header-container:hover,
+    .related-item:hover,
+    .article-tag:hover,
+    .quick-toc-item:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* 新增：导航/侧边栏/链接在降动效模式下取消位移和阴影 */
+    .VPSidebarItem .link:hover,
+    .VPSidebarItem.is-active .link,
+    .vp-doc a:hover,
+    .breadcrumb-link:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* 新增：图片在降动效模式下禁用缩放与投影 */
+    .vp-doc img:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .quick-toc-preview {
+      animation: none !important;
+      transition: none !important;
+    }
+    
+    /* 追加：在降动效模式下禁用标题装饰与锚点的过渡 */
+    .vp-doc h1::before,
+    .vp-doc h2::before,
+    .vp-doc h3::before,
+    .vp-doc .header-anchor {
+      transition: none !important;
+    }
   }
-  
-  .article-tag {
-    background: transparent !important;
-    border: 1px solid #ccc !important;
-    color: #000 !important;
+
+  /* 用户偏好减少透明：移除半透明/磨砂效果，改为不透明背景 */
+  @media (prefers-reduced-transparency: reduce) {
+    .doc-header-container,
+    .related-item,
+    .article-tag,
+    .quick-toc-item,
+    .toc-panel {
+      background: var(--vp-c-bg) !important;
+      box-shadow: var(--vp-shadow-1) !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .VPNav,
+    .VPNavBar {
+      background: var(--vp-c-bg) !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      box-shadow: var(--vp-shadow-1) !important;
+    }
   }
-  
-  .related-item {
-    box-shadow: none;
-    border: 1px solid #ccc;
+
+  /* Focus 可见性增强 */
+  .breadcrumb-link:focus-visible,
+  .article-tag:focus-visible,
+  .quick-toc-item:focus-visible,
+  .related-item:focus-visible,
+  /* 新增：侧边栏、导航与文档链接的焦点可见性 */
+  .VPSidebarItem .link:focus-visible,
+  .VPNavBarTitle:focus-visible,
+  .vp-doc a:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 2px;
+    border-radius: var(--vp-border-radius-small);
   }
+
+  /* 打印样式优化 */
+  @media print {
+    .doc-header-container,
+    .related-articles,
+    .quick-toc-preview {
+      break-inside: avoid;
+    }
+    .doc-header-container {
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+    .article-tag {
+      background: transparent !important;
+      border: 1px solid #ccc !important;
+      color: #000 !important;
+    }
+    .related-item {
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+
+    /* 新增：代码块打印优化 */
+    .vp-doc div[class*="language-"] {
+      box-shadow: none !important;
+      background: #fff !important;
+      border: 1px solid #ccc !important;
+    }
+    .vp-doc div[class*="language-"] pre,
+    .vp-doc div[class*="language-"] code {
+      white-space: pre-wrap !important;
+      line-height: 1.5 !important;
+      color: #000 !important;
+    }
+
+    /* 新增：链接打印优化（可选显示 URL） */
+    .vp-doc a {
+      text-decoration: underline !important;
+      color: #000 !important;
+    }
+    .vp-doc a[href^="http"]::after {
+      content: " (" attr(href) ") ";
+      font-size: 0.8em;
+      color: #555;
+    }
+
+    /* 新增：表格打印优化 */
+    .vp-doc table,
+    .vp-doc th,
+    .vp-doc td {
+      box-shadow: none !important;
+      background: #fff !important;
+      border: 1px solid #ccc !important;
+    }
+
+    /* 新增：标题分页与避免断裂 */
+    .vp-doc h1,
+    .vp-doc h2 {
+      break-before: page;
+      page-break-before: always;
+    }
+    .vp-doc h3 {
+      break-before: avoid-page;
+      page-break-before: avoid;
+    }
+    .vp-doc h1 + *,
+    .vp-doc h2 + *,
+    .vp-doc h3 + * {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* 新增：避免代码块与表格在打印中断裂 */
+    .vp-doc div[class*="language-"],
+    .vp-doc table {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* 避免图片、figure 与引用在打印中断裂并自适应尺寸 */
+    .vp-doc img,
+    .vp-doc figure,
+    .vp-doc blockquote {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .vp-doc img {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+
+    /* 统一页面边距设置 */
+    @page {
+      margin: 20mm;
+    }
+  }
+
+  /* 跳转到正文（Skip Link） */
+  .skip-to-content {
+    position: absolute;
+    top: 0;
+    left: -9999px;
+    background: var(--vp-c-bg);
+    color: var(--vp-c-brand-1);
+    padding: var(--vp-space-8) var(--vp-space-16);
+    border: 1px solid var(--vp-c-divider);
+    border-radius: var(--vp-border-radius-small);
+    z-index: var(--vp-z-index-nav);
+  }
+  .skip-to-content:focus-visible {
+    left: var(--vp-space-16);
+    top: var(--vp-space-16);
+    box-shadow: var(--vp-shadow-2);
+  }
+
+  /* 触控设备：禁用 hover 位移与阴影，避免伪 hover 干扰 */
+  @media (hover: none) {
+    .doc-header-container:hover,
+    .related-item:hover,
+    .article-tag:hover,
+    .quick-toc-item:hover,
+    .VPSidebarItem .link:hover,
+    .vp-doc blockquote:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /* 将潜在的 transition: all 替换为具体属性过渡（若存在命中则应用以下示例形式） */
+  /* 示例：.some-accessible-class { transition: opacity var(--vp-animation-duration-fast) var(--vp-animation-easing), color var(--vp-animation-duration-fast) var(--vp-animation-easing); } */
+  /* 如当前文件未出现 transition: all，本次编辑不改变任何现有样式 */
 }

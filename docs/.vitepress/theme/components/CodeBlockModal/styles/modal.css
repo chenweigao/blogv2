@@ -1,10 +1,10 @@
 /* 模态框动画优化 - 流畅版 */
 .modal-enter-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-leave-active {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-enter-from {
@@ -96,7 +96,7 @@
 
 /* 模态框容器优化 */
 .code-modal-container {
-  background: var(--vp-c-bg, #ffffff);
+  background: var(--vp-c-bg, #fff);
   border: 1px solid var(--vp-c-border, #a2a9b1);
   border-radius: 16px;
   box-shadow: 
@@ -138,14 +138,14 @@
   right: 0;
   bottom: 0;
   z-index: 10000;
-  background: var(--vp-c-bg, #ffffff);
+  background: var(--vp-c-bg, #fff);
   max-width: none;
   max-height: none;
   width: 100vw;
   height: 100vh;
   border-radius: 0;
   border: none;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
 }
 
 .code-block-wrapper {
@@ -191,11 +191,11 @@
   
   /* 移动设备上进一步简化动画 */
   .modal-enter-active {
-    transition: all 0.2s ease-out;
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
   }
   
   .modal-leave-active {
-    transition: all 0.15s ease-in;
+    transition: opacity 0.15s ease-in, transform 0.15s ease-in;
   }
   
   .modal-enter-from .code-modal-container {
@@ -294,7 +294,7 @@
 /* 针对高刷新率屏幕优化 */
 @media (min-resolution: 2dppx) {
   .modal-enter-active {
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
   .code-modal-container:hover {
@@ -302,7 +302,7 @@
     box-shadow: 
       0 25px 50px -12px rgba(0, 0, 0, 0.3),
       0 0 0 1px rgba(255, 255, 255, 0.08);
-    transition: all 0.25s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease;
   }
   
   .dark .code-modal-container:hover {
@@ -315,7 +315,7 @@
 /* CPU 性能检测 - 如果支持 CSS 容器查询，说明设备性能较好 */
 @supports (container-type: inline-size) {
   .modal-enter-active {
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
   .modal-enter-from .code-modal-container {
@@ -331,7 +331,7 @@
   
   @media (min-width: 769px) {
     .modal-enter-active {
-      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
   }
 }

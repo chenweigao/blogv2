@@ -11,59 +11,75 @@
   background-color: var(--vp-c-bg);
   border-bottom: 1px solid var(--vp-c-divider);
   backdrop-filter: blur(12px);
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
   box-shadow: var(--vp-shadow-1);
 }
 
 .VPNavBar {
   background-color: var(--vp-c-bg);
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
 }
 
 .VPNavBarTitle {
   transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
-.VPNavBarTitle:hover {
-  color: var(--vp-c-brand-1);
+@media (hover: hover) {
+  .VPNavBarTitle:hover {
+    color: var(--vp-c-brand-1);
+  }
 }
 
 /* 侧边栏增强 */
 .VPSidebar {
   background-color: var(--vp-c-bg-soft);
-  border-right: 1px solid var(--vp-c-divider);
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  border-inline-end: 1px solid var(--vp-c-divider);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
 }
 
 .VPSidebarItem .link {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
   border-radius: var(--vp-border-radius-small);
   margin: 2px 0;
 }
 
-.VPSidebarItem .link:hover {
-  background-color: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  transform: translateX(2px);
+@media (hover: hover) {
+  .VPSidebarItem .link:hover {
+    background-color: var(--vp-c-brand-soft);
+    color: var(--vp-c-brand-1);
+    transform: translateX(var(--vp-space-2));
+  }
+}
+
+@media (hover: hover) {
+  html[dir="rtl"] .VPSidebarItem .link:hover {
+    transform: translateX(calc(-1 * var(--vp-space-2)));
+  }
 }
 
 .VPSidebarItem.is-active .link {
   background-color: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
   font-weight: 500;
-  border-left: 3px solid var(--vp-c-brand-1);
-  padding-left: 12px; /* 增加左内边距，让蓝色竖线和文字有间距 */
+  border-inline-start: var(--vp-sidebar-active-border-width) solid var(--vp-c-brand-1);
+  padding-inline-start: var(--vp-space-12);
 }
 
 /* 内容区域增强 */
 .VPContent {
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
 }
 
 .VPDoc {
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
 }
 
 .vp-doc {
   transition: opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+/* VitePress 布局增强 */
+@layer components {
+  /* VitePress 布局增强 */
+  /* ... existing code ... */
 }

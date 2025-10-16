@@ -18,6 +18,8 @@
 }
 
 /* 确保文档主体内容占用全部可用宽度 */
+/* 删除以下对 .vp-doc 的全局强制宽度与内边距设置，交由 content-width-enhancement.css 统一管理 */
+/*
 .vp-doc,
 .VPDoc .vp-doc {
   max-width: 100% !important;
@@ -26,6 +28,7 @@
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+*/
 
 /* 调整文档布局容器 */
 .Layout,

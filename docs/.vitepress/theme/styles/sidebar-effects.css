@@ -2,7 +2,7 @@
 
 /* 侧边栏项目基础样式 */
 .VPSidebarItem {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   /* 移除 overflow: hidden 避免内容被裁剪 */
 }
@@ -13,7 +13,7 @@
   display: block;
   padding: 8px 16px;
   border-radius: 6px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateZ(0); /* 启用硬件加速 */
   /* 确保文字内容在最上层 */
   z-index: 2;
@@ -32,13 +32,13 @@
   background: linear-gradient(135deg, 
     var(--vp-c-brand-1, #0645ad) 0%, 
     var(--vp-c-brand-2, #0645ad) 100%);
-  color: #ffffff !important; /* 确保文字颜色优先级 */
+  color: #fff !important; /* 确保文字颜色优先级 */
   font-weight: 600;
   transform: translateX(6px) translateZ(0); /* 减少位移避免超出边界 */
   box-shadow: 
     0 4px 12px rgba(var(--vp-c-brand-rgb, 6, 69, 173), 0.3),
     0 2px 4px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid rgba(255, 255, 255, 0.3);
+  border-inline-start: 4px solid rgba(255, 255, 255, 0.3);
   /* 确保激活状态的文字在最上层 */
   z-index: 3;
 }
@@ -90,7 +90,7 @@
 
 /* 侧边栏组标题样式 */
 .VPSidebarGroup .title {
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
   position: relative;
   z-index: 2;
 }
@@ -102,7 +102,7 @@
 
 /* 侧边栏展开/收起动画 */
 .VPSidebarGroup.collapsible .items {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: top;
 }
 
@@ -121,26 +121,26 @@
 
 /* 嵌套项目的缩进动画 */
 .VPSidebarItem.nested {
-  margin-left: 0;
-  transition: margin-left 0.3s ease;
+  margin-inline-start: 0;
+  transition: margin-inline-start 0.3s ease;
 }
 
 .VPSidebarItem.nested .link {
-  padding-left: 32px;
+  padding-inline-start: 32px;
   position: relative;
 }
 
 .VPSidebarItem.nested .link::before {
   content: '';
   position: absolute;
-  left: 20px;
+  inset-inline-start: 20px;
   top: 50%;
   width: 4px;
   height: 4px;
-  background: var(--vp-c-text-3, #777777);
+  background: var(--vp-c-text-3, #777);
   border-radius: 50%;
   transform: translateY(-50%);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
   z-index: 1;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .VPSidebar::-webkit-scrollbar-thumb {
-  background: var(--vp-c-text-3, #777777);
+  background: var(--vp-c-text-3, #777);
   border-radius: 3px;
   transition: background 0.3s ease;
 }
@@ -222,7 +222,7 @@
   background: linear-gradient(135deg, 
     var(--vp-c-brand-1, #646cff) 0%, 
     var(--vp-c-brand-2, #646cff) 100%);
-  color: #ffffff !important;
+  color: #fff !important;
   box-shadow: 
     0 4px 12px rgba(var(--vp-c-brand-rgb, 100, 108, 255), 0.3),
     0 2px 4px rgba(0, 0, 0, 0.3);

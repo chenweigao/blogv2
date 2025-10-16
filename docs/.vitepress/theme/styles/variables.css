@@ -14,17 +14,17 @@
   --vp-c-brand-gradient: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-lighter));
   
   /* 背景色彩系统 */
-  --vp-c-bg: #ffffff;
+  --vp-c-bg: #fff;
   --vp-c-bg-alt: #f8f9fa;
-  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-elv: #fff;
   --vp-c-bg-soft: #f8f9fa;
   --vp-c-bg-mute: #f1f3f4;
   
   /* 文本色彩系统 */
-  --vp-c-text-1: #222222;
-  --vp-c-text-2: #555555;
-  --vp-c-text-3: #777777;
-  --vp-c-text-4: #999999;
+  --vp-c-text-1: #222;
+  --vp-c-text-2: #555;
+  --vp-c-text-3: #777;
+  --vp-c-text-4: #999;
   
   /* 边框和分割线 */
   --vp-c-border: #a2a9b1;
@@ -47,11 +47,35 @@
   --vp-layout-max-width: 1200px;
   --vp-nav-height: 64px;
   --vp-sidebar-width: 272px;
-  
+
   /* 字体系统 */
   --vp-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --vp-font-family-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  
+
+  /* 新增：字体刻度与行高刻度 */
+  --vp-font-size-xs: clamp(0.8125rem, 0.8rem + 0.2vw, 0.875rem);
+  --vp-font-size-s: clamp(0.875rem, 0.85rem + 0.2vw, 0.9375rem);
+  --vp-font-size-m: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  --vp-font-size-l: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+  --vp-font-size-xl: clamp(1.375rem, 1.3rem + 0.6vw, 1.75rem);
+
+  --vp-line-height-tight: 1.25;
+  --vp-line-height-normal: 1.6;
+  --vp-line-height-relaxed: 1.8;
+
+  /* 新增：间距刻度（px 基础，组件内部可按需转换为 rem） */
+  --vp-space-2: 2px;
+  --vp-space-4: 4px;
+  --vp-space-8: 8px;
+  --vp-space-12: 12px;
+  --vp-space-16: 16px;
+  --vp-space-24: 24px;
+  --vp-space-32: 32px;
+  --vp-space-48: 48px;
+
+  /* 新增：正文阅读最大宽度（理想行长 72–80ch） */
+  --vp-content-max-width: 80ch;
+
   /* 动画系统 - 优化性能 */
   --vp-animation-duration-fast: 0.15s;
   --vp-animation-duration-normal: 0.25s;
@@ -78,6 +102,9 @@
   --vp-z-index-sidebar: 20;
   --vp-z-index-modal: 100;
   --vp-z-index-toast: 200;
+  
+  /* 新增：侧边栏激活项边框宽度变量 */
+  --vp-sidebar-active-border-width: 3px;
 }
 
 /* 暗色主题变量 */
@@ -97,6 +124,9 @@
   --vp-c-border-hover: #484f58;
   --vp-c-divider: #21262d;
   --vp-c-divider-light: #30363d;
+
+  /* 新增：暗色主题下更柔和且对比合适的品牌浅色背景 */
+  --vp-c-brand-soft: rgba(var(--vp-c-brand-rgb), 0.20);
   
   /* 暗色主题阴影 */
   --vp-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.3);

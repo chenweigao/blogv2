@@ -6,7 +6,7 @@
   height: auto;
   border-radius: var(--vp-border-radius-medium);
   box-shadow: var(--vp-shadow-1);
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   display: block;
   margin: 1rem auto;
 }

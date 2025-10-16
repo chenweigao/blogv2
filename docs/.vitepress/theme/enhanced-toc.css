@@ -2,7 +2,7 @@
 .enhanced-toc-container {
   position: fixed;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   z-index: 100;
   pointer-events: none;
 }
@@ -11,7 +11,7 @@
 .toc-toggle {
   position: fixed;
   top: 80px;
-  right: 20px;
+  inset-inline-end: 20px;
   width: 44px;
   height: 44px;
   background: var(--vp-c-bg-elv);
@@ -21,17 +21,21 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
   pointer-events: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 101;
 }
 
-.toc-toggle:hover {
-  background: var(--vp-c-bg-soft);
-  border-color: var(--vp-c-brand-1);
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+@media (hover: hover) {
+  .toc-toggle:hover {
+    background: var(--vp-c-bg-soft);
+    border-color: var(--vp-c-brand-1);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .toc-toggle.is-active {
@@ -53,10 +57,12 @@
 .reading-progress {
   position: fixed;
   top: 0;
-  left: 0;
+  inset-inline-start: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  transition: width 0.3s ease;
+  transition: width var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   z-index: 102;
   pointer-events: none;
 }
@@ -65,7 +71,7 @@
 .toc-panel {
   position: fixed;
   top: 80px;
-  right: 20px;
+  inset-inline-end: 20px;
   width: 320px;
   max-width: calc(100vw - 40px);
   max-height: calc(100vh - 120px);
@@ -84,7 +90,7 @@
 .toc-panel.is-pinned {
   position: fixed;
   top: 80px;
-  right: 20px;
+  inset-inline-end: 20px;
   background: var(--vp-c-bg);
   border-color: var(--vp-c-brand-soft);
 }
@@ -123,13 +129,15 @@
   justify-content: center;
   cursor: pointer;
   color: var(--vp-c-text-2);
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
-.toc-pin:hover,
-.toc-close:hover {
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
+@media (hover: hover) {
+  .toc-pin:hover,
+  .toc-close:hover {
+    background: var(--vp-c-bg);
+    color: var(--vp-c-text-1);
+  }
 }
 
 .toc-pin.is-pinned {
@@ -187,20 +195,31 @@
   text-decoration: none;
   font-size: 13px;
   line-height: 1.4;
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
-  border-left: 3px solid transparent;
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              border-color var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  border-inline-start: 3px solid transparent;
   position: relative;
 }
 
-.toc-link:hover {
-  color: var(--vp-c-text-1);
+@media (hover: hover) {
+  .toc-link:hover {
+    color: var(--vp-c-text-1);
+    background: var(--vp-c-bg-soft);
+  }
+}
+
+.toc-link:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: var(--vp-border-radius-small);
   background: var(--vp-c-bg-soft);
 }
 
 .toc-item.is-active .toc-link {
   color: var(--vp-c-brand-1);
   background: var(--vp-c-brand-soft);
-  border-left-color: var(--vp-c-brand-1);
+  border-inline-start-color: var(--vp-c-brand-1);
   font-weight: 500;
 }
 
@@ -209,9 +228,9 @@
   height: 6px;
   border-radius: 50%;
   background: var(--vp-c-text-3);
-  margin-right: 12px;
+  margin-inline-end: 12px;
   flex-shrink: 0;
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   opacity: 0.6;
 }
 
@@ -234,17 +253,17 @@
 
 /* Heading Levels */
 .toc-level-1 .toc-link {
-  padding-left: 20px;
+  padding-inline-start: 20px;
   font-weight: 600;
   font-size: 14px;
 }
 
 .toc-level-2 .toc-link {
-  padding-left: 32px;
+  padding-inline-start: 32px;
 }
 
 .toc-level-3 .toc-link {
-  padding-left: 44px;
+  padding-inline-start: 44px;
   font-size: 12px;
 }
 
@@ -273,19 +292,24 @@
   }
 }
 
+/* 移动端适配与安全区域支持 */
 @media (max-width: 768px) {
   .toc-toggle {
-    top: 70px;
-    right: 16px;
+    top: calc(env(safe-area-inset-top) + 12px);
+    right: 12px;
     width: 40px;
     height: 40px;
+    z-index: 101;
   }
-  
   .toc-panel {
-    top: 70px;
-    right: 16px;
-    width: calc(100vw - 32px);
-    max-height: calc(100vh - 100px);
+    top: calc(env(safe-area-inset-top) + 60px);
+    right: 12px;
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 120px);
+    border-radius: 10px;
+  }
+  .reading-progress {
+    top: env(safe-area-inset-top);
   }
 }
 
@@ -306,7 +330,7 @@
 /* Transitions */
 .toc-slide-enter-active,
 .toc-slide-leave-active {
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .toc-slide-enter-from {
@@ -384,6 +408,16 @@
   outline-offset: 2px;
 }
 
+/* 键盘可访问性：统一焦点样式 */
+.toc-toggle:focus-visible,
+.toc-close:focus-visible,
+.toc-pin:focus-visible,
+.toc-link:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .toc-panel {
@@ -397,6 +431,12 @@
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+  .reading-progress,
+  .toc-panel {
+    transition: none !important;
+    animation: none !important;
+  }
+  
   .toc-toggle,
   .toc-panel,
   .toc-link,
@@ -408,5 +448,45 @@
   .toc-slide-enter-active,
   .toc-slide-leave-active {
     transition: none;
+  }
+}
+
+/* 无 backdrop-filter 支持时的降级兜底 */
+@supports not ((-webkit-backdrop-filter: blur(0)) or (backdrop-filter: blur(0))) {
+  .toc-panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--vp-c-bg);
+    box-shadow: var(--vp-shadow-1);
+  }
+}
+
+/* TOC 增强样式 */
+@layer components {
+  /* TOC 增强样式 */
+  /* ... existing code ... */
+}
+
+/* TOC Panel */
+.toc-panel {
+  position: fixed;
+  top: 80px;
+  inset-inline-end: 20px;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 120px);
+  background: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+  /* 降级兜底：在不支持 backdrop-filter 的环境下使用不透明背景 */
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .toc-panel {
+    background: var(--vp-c-bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: var(--vp-shadow-1);
   }
 }

@@ -6,7 +6,7 @@
   background-color: var(--vp-c-bg);
   border-bottom: 1px solid var(--vp-c-divider);
   backdrop-filter: blur(12px);
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   box-shadow: var(--vp-shadow-1);
 }
 
@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
   height: 40px; /* 固定高度 */
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   padding: 0 1rem;
   border-radius: var(--vp-border-radius-small);
   color: var(--vp-c-text-1);
@@ -54,7 +54,7 @@
   height: 2px;
   background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
   border-radius: 1px;
-  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
   transform: translateX(-50%);
 }
 
@@ -75,7 +75,7 @@
   display: flex;
   align-items: center;
   height: 40px; /* 与普通链接相同的高度 */
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   padding: 0 1rem;
   border-radius: var(--vp-border-radius-small);
   font-weight: 500;
@@ -115,7 +115,7 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
   border-radius: var(--vp-border-radius-medium);
@@ -132,7 +132,7 @@
 
 /* 下拉菜单项 */
 .VPNavBarMenuGroup .VPNavBarMenuGroupItem {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   border-radius: var(--vp-border-radius-small);
   margin: 2px 0;
 }
@@ -154,7 +154,7 @@
 
 /* ===== 导航栏标题动画 ===== */
 .VPNavBarTitle {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .VPNavBarTitle:hover {
@@ -162,7 +162,7 @@
 }
 
 .VPNavBarTitle .title {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 /* Logo 动画 */
@@ -176,7 +176,7 @@
 
 /* ===== 汉堡菜单动画 ===== */
 .VPNavBarHamburger {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .VPNavBarHamburger:hover {
@@ -184,11 +184,11 @@
 }
 
 .VPNavBarHamburger .hamburger {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .VPNavBarHamburger .hamburger span {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
 }
 
 .VPNavBarHamburger.active .hamburger span:nth-child(1) {
@@ -205,7 +205,7 @@
 
 /* ===== 搜索框增强 ===== */
 .VPNavBarSearch .DocSearch-Button {
-  transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
   border-radius: var(--vp-border-radius-medium);
   background-color: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
@@ -225,7 +225,7 @@
   left: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  transition: all var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1), background-color var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1), border-color var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1), box-shadow var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1), transform var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1), opacity var(--vp-animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
 }
 

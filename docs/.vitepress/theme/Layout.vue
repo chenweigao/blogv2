@@ -2,6 +2,7 @@
   <Layout>
     <!-- 全局顶部内容 -->
     <template #layout-top>
+      <a href="#main-content" class="skip-to-content">跳转到正文</a>
       <LayoutEnhancementIndicator />
     </template>
 
@@ -28,6 +29,7 @@
 
     <!-- 文档内容前的增强布局 -->
     <template #doc-before>
+      <span id="main-content"></span>
       <div v-if="isDocPage" :class="$style.docHeaderContainer">
         <!-- 文档路径导航 -->
         <DocBreadcrumb />

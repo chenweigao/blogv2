@@ -14,7 +14,8 @@
     "timeline:incremental": "node docs/.vitepress/utils/incrementalUpdate.js incremental",
     "timeline:full": "node docs/.vitepress/utils/incrementalUpdate.js full",
     "dev:watch": "concurrently \"npm run timeline:watch\" \"vitepress dev docs\"",
-    "setup:hooks": "git config core.hooksPath .githooks && chmod +x .githooks/*"
+    "setup:hooks": "git config core.hooksPath .githooks && chmod +x .githooks/*",
+    "lint:css": "stylelint \"docs/.vitepress/theme/**/*.css\""
   },
   "keywords": [
     "wiki",
@@ -31,7 +32,9 @@
     "markdown-it-mathjax3": "^4.3.2",
     "mermaid": "^11.10.1",
     "nodemon": "^3.1.10",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.0"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",

@@ -45,3 +45,161 @@
 .shadow { box-shadow: var(--vp-shadow-2); }
 .shadow-lg { box-shadow: var(--vp-shadow-3); }
 .shadow-xl { box-shadow: var(--vp-shadow-4); }
+
+/* 统一阴影工具类（复用变量） */
+.u-shadow-1 { box-shadow: var(--vp-shadow-1); }
+.u-shadow-2 { box-shadow: var(--vp-shadow-2); }
+.u-shadow-3 { box-shadow: var(--vp-shadow-3); }
+.u-shadow-4 { box-shadow: var(--vp-shadow-4); }
+
+/* 统一过渡工具类（复用变量） */
+ /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+.u-transition-fast { transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing); }
+ /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+.u-transition-normal { transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing); }
+ /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+.u-transition-slow { transition: all var(--vp-animation-duration-slow) var(--vp-animation-easing); }
+
+/* 可选：统一圆角工具类 */
+.u-radius-sm { border-radius: var(--vp-border-radius-small); }
+.u-radius-md { border-radius: var(--vp-border-radius-medium); }
+.u-radius-lg { border-radius: var(--vp-border-radius-large); }
+.u-radius-xl { border-radius: var(--vp-border-radius-xl); }
+
+/* 统一焦点样式工具类 */
+.u-focus-ring {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: var(--vp-border-radius-small);
+}
+
+/* 屏幕阅读器辅助：完全隐藏但可被 SR 读取 */
+.visually-hidden,
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* 仅在聚焦或包含焦点时可见的隐藏元素 */
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* 实用工具类 */
+@layer utilities {
+  /* 实用工具类 */
+  /* 间距工具类 */
+  .mt-1 { margin-top: 0.25rem; }
+  .mt-2 { margin-top: 0.5rem; }
+  .mt-3 { margin-top: 0.75rem; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-6 { margin-top: 1.5rem; }
+  .mt-8 { margin-top: 2rem; }
+
+  .mb-1 { margin-bottom: 0.25rem; }
+  .mb-2 { margin-bottom: 0.5rem; }
+  .mb-3 { margin-bottom: 0.75rem; }
+  .mb-4 { margin-bottom: 1rem; }
+  .mb-6 { margin-bottom: 1.5rem; }
+  .mb-8 { margin-bottom: 2rem; }
+
+  .p-1 { padding: 0.25rem; }
+  .p-2 { padding: 0.5rem; }
+  .p-3 { padding: 0.75rem; }
+  .p-4 { padding: 1rem; }
+  .p-6 { padding: 1.5rem; }
+  .p-8 { padding: 2rem; }
+
+  /* 文本工具类 */
+  .text-brand { color: var(--vp-c-brand-1); }
+  .text-muted { color: var(--vp-c-text-3); }
+  .text-success { color: var(--vp-c-success); }
+  .text-warning { color: var(--vp-c-warning); }
+  .text-danger { color: var(--vp-c-danger); }
+
+  /* 背景工具类 */
+  .bg-soft { background-color: var(--vp-c-bg-soft); }
+  .bg-mute { background-color: var(--vp-c-bg-mute); }
+  .bg-brand-soft { background-color: var(--vp-c-brand-soft); }
+
+  /* 边框工具类 */
+  .border { border: 1px solid var(--vp-c-divider); }
+  .border-brand { border-color: var(--vp-c-brand-1); }
+  .rounded { border-radius: var(--vp-border-radius-medium); }
+  .rounded-lg { border-radius: var(--vp-border-radius-large); }
+
+  /* 阴影工具类 */
+  .shadow-sm { box-shadow: var(--vp-shadow-1); }
+  .shadow { box-shadow: var(--vp-shadow-2); }
+  .shadow-lg { box-shadow: var(--vp-shadow-3); }
+  .shadow-xl { box-shadow: var(--vp-shadow-4); }
+
+  /* 统一阴影工具类（复用变量） */
+  .u-shadow-1 { box-shadow: var(--vp-shadow-1); }
+  .u-shadow-2 { box-shadow: var(--vp-shadow-2); }
+  .u-shadow-3 { box-shadow: var(--vp-shadow-3); }
+  .u-shadow-4 { box-shadow: var(--vp-shadow-4); }
+
+  /* 统一过渡工具类（复用变量） */
+ /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+  .u-transition-fast { transition: all var(--vp-animation-duration-fast) var(--vp-animation-easing); }
+ /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+  .u-transition-normal { transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing); }
+ /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+  .u-transition-slow { transition: all var(--vp-animation-duration-slow) var(--vp-animation-easing); }
+
+  /* 可选：统一圆角工具类 */
+  .u-radius-sm { border-radius: var(--vp-border-radius-small); }
+  .u-radius-md { border-radius: var(--vp-border-radius-medium); }
+  .u-radius-lg { border-radius: var(--vp-border-radius-large); }
+  .u-radius-xl { border-radius: var(--vp-border-radius-xl); }
+
+  /* 统一焦点样式工具类 */
+  .u-focus-ring {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 2px;
+    border-radius: var(--vp-border-radius-small);
+  }
+
+  /* 屏幕阅读器辅助：完全隐藏但可被 SR 读取 */
+  .visually-hidden,
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* 仅在聚焦或包含焦点时可见的隐藏元素 */
+  .visually-hidden-focusable:not(:focus):not(:focus-within) {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+}
