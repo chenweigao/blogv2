@@ -128,11 +128,9 @@ body.theme-dark {
 /* 动画 模块
 ---------------------------------------------------------------- */
 @keyframes moveAndFade {
-
     0%,
     100% {
         background-color: transparent;
-        transition: background-color 1s ease-in-out;
     }
 
     50% {
@@ -141,7 +139,13 @@ body.theme-dark {
 }
 
 .animate {
-    animation: moveAndFade 1s forwards;
+    animation: moveAndFade var(--motion-duration-medium) var(--motion-ease-standard) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate {
+        animation: none !important;
+    }
 }
 
 /* 通用 component(组件) 模块
@@ -178,7 +182,9 @@ body.theme-dark {
     text-align: center;
     box-sizing: border-box;
     outline: none;
-    transition: .1s;
+    transition: background-color var(--motion-duration-short) var(--motion-ease-standard),
+                border-color var(--motion-duration-short) var(--motion-ease-standard),
+                color var(--motion-duration-short) var(--motion-ease-standard);
     font-weight: var(--i18n-button-font-weight);
     -webkit-user-select: none;
     user-select: none;
@@ -1535,4 +1541,10 @@ input[type='text'].i18n-name__input {
 
 .i18n-contributor__rank-4 {
     color: var(--i18n-color-info);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .i18n-button {
+        transition-duration: 0.01ms !important;
+    }
 }

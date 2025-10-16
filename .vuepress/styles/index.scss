@@ -1,0 +1,22 @@
+:root {
+  --motion-duration-short: 150ms;
+  --motion-duration-medium: 250ms;
+  --motion-duration-long: 400ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-emphasized: cubic-bezier(0.32, 0, 0.67, 0);
+}
+
+/* Utility for GPU compositing on common animated properties */
+.will-change-opacity-transform {
+  will-change: opacity, transform;
+}
+
+/* Global reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable animations and minimize transition durations globally */
+  * {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
