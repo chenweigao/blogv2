@@ -100,6 +100,13 @@
     .VPNavBarMenu .VPNavBarMenuLink.active::before {
       background: CanvasText !important;
     }
+    /* 新增：通用焦点工具类在强制颜色模式下的可见性回退 */
+    .u-focus-ring:focus-visible {
+      outline: 2px solid CanvasText !important;
+      outline-offset: 2px !important;
+      box-shadow: none !important;
+      border-radius: var(--vp-border-radius-small) !important;
+    }
   }
 
   /* 减少动画模式 */
