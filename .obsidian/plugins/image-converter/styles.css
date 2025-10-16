@@ -55,7 +55,10 @@
     align-items: center;
     justify-content: center;
     font-size: var(--font-adaptive-normal);
-    transition: background-color var(--motion-duration-short) var(--motion-ease-standard);
+    transition: background-color var(--motion-duration-short) var(--motion-ease-standard),
+                transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+                box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+    will-change: transform;
     /* Smooth hover effect */
     border-bottom: 3px solid transparent;
 }
@@ -77,6 +80,8 @@
     /* Add underline on hover */
     border-bottom-color: var(--interactive-accent);
     /* Use an accent color for the underline */
+    transform: translateY(-1px);
+    box-shadow: var(--motion-shadow-soft);
 }
 
 /* Active tab styling */
@@ -151,7 +156,10 @@
     flex-direction: column;
     background-color: var(--background-primary);
     height: auto;
-    transition: opacity var(--motion-duration-medium) var(--motion-ease-standard);
+    transition: opacity var(--motion-duration-medium) var(--motion-ease-standard),
+                transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+                box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+    will-change: transform, box-shadow;
     overflow: hidden;
     /* Prevent content from spilling out */
 }
@@ -580,20 +588,19 @@ html[data-theme='dark'] {
     animation: slideDown 0.3s ease forwards;
 }
 
-
-/* --- Responsive Design --- */
-@media (max-width: 600px) {
-    .image-converter-available-variables-modal {
-        width: 95vw;
-    }
-
-    .image-converter-available-variablesHEMA
-
 /* 统一过渡变量化与降级 */
 @media (prefers-reduced-motion: reduce) {
     .image-converter-tab,
     .image-converter-preset-group,
     .image-converter-preset-card {
         transition-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .image-converter-tab:hover,
+    .image-converter-preset-card:hover {
+        transform: none;
+        box-shadow: none;
     }
 }
