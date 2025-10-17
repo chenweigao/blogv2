@@ -1,5 +1,5 @@
 <template>
-  <div class="reading-stats" v-if="showStats">
+  <div class="reading-stats auto-inview effect-blur-in" v-if="showStats">
     <div class="stat-item">
       <div class="stat-icon">📖</div>
       <span class="stat-text">{{ readingTimeText }}</span>

@@ -1,19 +1,19 @@
 <template>
   <nav :class="$style.breadcrumb" v-if="breadcrumbs.length > 0">
-    <ol :class="$style.breadcrumbList">
+    <ol :class="[$style.breadcrumbList, 'group', 'stagger-inview', 'motion-layer']">
       <li 
         v-for="(crumb, index) in breadcrumbs" 
         :key="index" 
-        :class="$style.breadcrumbItem"
+        :class="[$style.breadcrumbItem, 'auto-inview']"
       >
         <a 
           v-if="crumb.link" 
           :href="crumb.link" 
-          :class="[$style.breadcrumbLink, 'u-focus-ring']"
+          :class="[$style.breadcrumbLink, 'u-focus-ring', 'group-hover-underline', 'underline-center', 'press-active', 'hover-pop']"
         >
           {{ crumb.text }}
         </a>
-        <span v-else :class="$style.breadcrumbCurrent">{{ crumb.text }}</span>
+        <span v-else :class="[$style.breadcrumbCurrent, 'auto-inview']">{{ crumb.text }}</span>
         <span 
           v-if="index < breadcrumbs.length - 1" 
           :class="$style.breadcrumbSeparator"
@@ -105,7 +105,8 @@ const breadcrumbs = computed(() => {
 .breadcrumbItem {
   display: flex;
   align-items: center;
-  transition: transform 0.2s ease;
+  /* 统一使用全局动效变量 */
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate);
 }
 
 .breadcrumbItem:last-child {
@@ -119,7 +120,8 @@ const breadcrumbs = computed(() => {
 .breadcrumbLink {
   color: var(--vp-c-text-2);
   text-decoration: none;
-  transition: color 0.2s ease;
+  /* 统一使用全局动效变量 */
+  transition: color var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 .breadcrumbLink:hover {
@@ -146,5 +148,35 @@ const breadcrumbs = computed(() => {
   .breadcrumbList {
     flex-wrap: wrap;
   }
+}
+
+/* Reduced Motion：禁用位移动效与过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .breadcrumbItem,
+  .breadcrumbLink {
+    transition: none !important;
+  }
+  .breadcrumbItem:hover {
+    transform: none !important;
+  }
+}
+
+/* 触控设备适配：避免位移造成不适 */
+@media (pointer: coarse) {
+  .breadcrumbItem {
+    transition-duration: 140ms;
+  }
+  .breadcrumbItem:hover {
+    transform: none;
+  }
+}
+
+/* 全局性能/兼容实用类（以 :global 定义） */
+:global(.motion-layer) {
+  contain: layout paint style;
+}
+:global(.motion-accelerate) {
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 </style>

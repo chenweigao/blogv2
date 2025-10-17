@@ -2,7 +2,7 @@
   <div class="toc-toggle-wrapper">
     <!-- 主要的进度环按钮 -->
     <button
-      class="toc-progress-button u-focus-ring"
+      class="toc-progress-button u-focus-ring press-active focus-ring-animated"
       :class="{ 
         'is-active': isActive, 
         'is-dragging': isDragging,

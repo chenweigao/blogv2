@@ -1,21 +1,21 @@
 <template>
-  <div v-if="isVisible" :class="$style.quickTocPreview">
+  <div v-if="isVisible" :class="[$style.quickTocPreview, 'motion-layer']">
     <div :class="$style.quickTocHeader">
       <h4 :class="$style.quickTocTitle">Quick Navigation</h4>
       <button 
-        :class="[$style.quickTocClose, 'u-focus-ring']" 
+        :class="[$style.quickTocClose, 'u-focus-ring', 'press-active', 'hover-pop', 'focus-ring-animated']" 
         @click="$emit('close')"
         aria-label="Close Quick TOC"
       >
         ×
       </button>
     </div>
-    <div :class="$style.quickTocContent">
+    <div :class="[$style.quickTocContent, 'group', 'stagger-inview']">
       <a 
         v-for="heading in headings" 
         :key="heading.anchor"
         :href="`#${heading.anchor}`"
-        :class="[$style.quickTocItem, $style[`level${heading.level}`], 'u-focus-ring']"
+        :class="[$style.quickTocItem, $style[`level${heading.level}`], 'u-focus-ring', 'auto-inview', 'group-hover-underline', 'press-active', 'hover-pop', 'focus-ring-animated']"
         @click="$emit('close')"
       >
         {{ heading.title }}
@@ -46,7 +46,7 @@ defineEmits(['close'])
   border: 1px solid var(--vp-c-border);
   border-radius: 8px;
   overflow: hidden;
-  animation: slideDown 0.3s ease;
+  animation: slideDown var(--motion-duration-medium) var(--motion-ease-spring);
 }
 
 @keyframes slideDown {
@@ -110,7 +110,11 @@ defineEmits(['close'])
   text-decoration: none;
   font-size: 0.875rem;
   line-height: 1.4;
-  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    color var(--motion-duration-short) var(--motion-ease-standard),
+    background-color var(--motion-duration-short) var(--motion-ease-standard),
+    border-color var(--motion-duration-short) var(--motion-ease-standard),
+    transform var(--motion-duration-xshort) var(--motion-ease-decelerate);
   border-inline-start: 2px solid transparent;
 }
 
@@ -137,5 +141,32 @@ defineEmits(['close'])
   .quickTocContent {
     max-height: 150px;
   }
+}
+
+/* Reduced Motion：禁用入场动画与缩短过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .quickTocPreview {
+    animation: none !important;
+  }
+  .quickTocItem {
+    transition: none !important;
+  }
+}
+
+/* 触控设备适配：过渡更短、更克制 */
+@media (pointer: coarse) {
+  .quickTocItem {
+    transition-duration: 140ms;
+  }
+}
+
+/* 全局性能/兼容实用类（以 :global 定义） */
+:global(.motion-layer) {
+  contain: layout paint style;
+}
+/* 可选的 GPU 加速提示（谨慎使用，仅合成层过渡时可加入该类） */
+:global(.motion-accelerate) {
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 </style>

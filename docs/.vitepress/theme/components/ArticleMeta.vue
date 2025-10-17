@@ -63,11 +63,13 @@
           </div>
           <div class="tag-list">
             <span 
-              class="tag" 
+              class="tag hover-pop press-active u-focus-ring focus-ring-animated" 
               v-for="(tag, index) in computedTags" 
               :key="tag"
               :style="{ animationDelay: `${index * 0.05}s` }"
               @click="onTagClick(tag)"
+              role="button"
+              tabindex="0"
             >
               #{{ tag }}
               <div class="tag-glow"></div>
@@ -416,7 +418,7 @@ onMounted(() => {
 .tag:hover {
   background-color: var(--vp-c-bg-alt);
   border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
+  color: --vp-c-brand-1);
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }

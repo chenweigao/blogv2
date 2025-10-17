@@ -1,93 +1,91 @@
+## Here's my code: 
 <template>
   <Layout>
     <!-- 全局顶部内容 -->
     <template #layout-top>
-      <a href="#main-content" class="skip-to-content visually-hidden-focusable u-focus-ring">跳转到正文</a>
+      <a href="#main-content" class="skip-to-content visually-hidden-focusable u-focus-ring focus-ring-animated underline-center hover-pop press-active">跳转到正文</a>
       <LayoutEnhancementIndicator />
     </template>
 
     <!-- 导航栏标题后的内容 -->
     <template #nav-bar-title-after>
-      <div :class="$style.navEnhancement">
+      <div :class="$style.navEnhancement" class="group group-hover-elevate">
         <!-- 可以在这里添加导航增强功能 -->
       </div>
     </template>
 
-    <!-- 导航栏增强组件 -->
+    <!-- 导航栏增强组件：添加悬浮与按压反馈 -->
     <template #nav-screen-content-after>
-      <NavbarEnhancer />
+      <NavbarEnhancer class="hover-pop press-active" />
     </template>
 
-    <!-- 侧边栏导航前的内容 -->
+    <!-- 侧边栏导航前的内容：添加滚动入场与模糊淡入 -->
     <template #sidebar-nav-before>
       <SidebarDocInfo 
         v-if="isDocPage"
+        class="auto-inview effect-blur-in"
         :category="frontmatter.category"
         :date="frontmatter.date"
       />
     </template>
 
-    <!-- 文档内容前的增强布局 -->
+    <!-- 文档内容前的增强布局：包裹过渡，添加 3D 视差与交互反馈 -->
     <template #doc-before>
       <span id="main-content"></span>
-      <div v-if="isDocPage" :class="$style.docHeaderContainer">
-        <!-- 文档路径导航 -->
-        <DocBreadcrumb />
+      <Transition name="fade-slide">
+        <div v-if="isDocPage" :class="$style.docHeaderContainer" class="stagger-inview">
+          <!-- 文档路径导航：轻度 3D 视差与悬浮微动 -->
+          <div class="tilt-3d">
+            <div class="tilt-3d-item">
+              <DocBreadcrumb class="hover-pop" />
+            </div>
+          </div>
 
-        <!-- 文章元信息区域 -->
-        <ArticleHeader 
-          :show-quick-toc="showQuickTOC"
-          @toggle-quick-toc="toggleQuickTOC"
-        />
+          <!-- 文章元信息区域：悬浮与按压反馈 -->
+          <ArticleHeader 
+            class="hover-pop press-active"
+            :show-quick-toc="showQuickTOC"
+            @toggle-quick-toc="toggleQuickTOC"
+          />
 
-        <!-- 快速TOC预览 -->
-        <QuickTOC 
-          :is-visible="showQuickTOC"
-          :headings="quickHeadings"
-          @close="showQuickTOC = false"
-        />
-      </div>
+          <!-- 快速TOC预览：使用 v-show 包裹并添加过渡 -->
+          <Transition name="scale-fade">
+            <div v-show="showQuickTOC">
+              <QuickTOC 
+                :is-visible="showQuickTOC"
+                :headings="quickHeadings"
+                @close="showQuickTOC = false"
+              />
+            </div>
+          </Transition>
+        </div>
+      </Transition>
     </template>
 
-    <!-- 文档内容后的增强内容 -->
+    <!-- 文档内容后的增强内容：包裹过渡与滚动入场 -->
     <template #doc-after>
-      <DocFooter 
-        v-if="isDocPage"
-        :word-count="wordCount"
-        :reading-time="readingTime"
-        :last-modified="lastModified"
-        :related-articles="relatedArticles"
-      />
+      <Transition name="fade-slide">
+        <DocFooter 
+          v-if="isDocPage"
+          class="auto-inview"
+          :word-count="wordCount"
+          :reading-time="readingTime"
+          :last-modified="lastModified"
+          :related-articles="relatedArticles"
+        />
+      </Transition>
     </template>
 
-    <!-- 大纲前的增强内容 - 已禁用，隐藏右侧 aside -->
-    <!-- 
-    <template #aside-outline-before>
-      <div v-if="isDocPage" class="outline-enhancements">
-        <div class="doc-progress-indicator">
-          <div class="progress-bar" :style="{ width: readingProgress + '%' }"></div>
-        </div>
-      </div>
-    </template>
-    -->
-
-    <!-- 大纲后的增强内容 - 已禁用，隐藏右侧 aside -->
-    <!-- 
-    <template #aside-outline-after>
-      <div v-if="isDocPage" class="outline-footer">
-        <div class="outline-stats">
-          <span class="heading-count">{{ headingCount }} sections</span>
-        </div>
-      </div>
-    </template>
-    -->
+    <!-- 已禁用的右侧 aside 保持原状 -->
   </Layout>
   
-  <!-- 增强版 TOC 组件 - 保留浮动 TOC 功能 -->
-  <EnhancedTOC v-if="isDocPage" />
+  <!-- 增强版 TOC 组件 - 保留浮动 TOC 功能：包裹过渡与交互反馈 -->
+  <Transition name="fade-slide">
+    <EnhancedTOC v-if="isDocPage" class="hover-pop" />
+  </Transition>
   
-  <!-- 全局模态框组件 -->
-  <CodeBlockModal />
+  <!-- 全局模态框组件：添加细腻入场 -->
+  <CodeBlockModal class="effect-blur-in" />
 </template>
 
 <script setup>
@@ -172,5 +170,52 @@ const toggleQuickTOC = () => {
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--vp-c-divider);
   padding-bottom: 1.5rem;
+}
+</style>
+
+<!-- 新增：全局过渡样式（Vue Transition），使用 transform+opacity 高性能属性 -->
+<style>
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition:
+    transform var(--motion-duration-medium) var(--motion-ease-spring),
+    opacity var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  transform: translateY(8px);
+  opacity: 0;
+}
+.fade-slide-enter-to,
+.fade-slide-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.scale-fade-enter-active,
+.scale-fade-leave-active {
+  transition:
+    opacity var(--motion-duration-medium) var(--motion-ease-decelerate),
+    transform var(--motion-duration-medium) var(--motion-ease-spring);
+}
+.scale-fade-enter-from,
+.scale-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.98) translateY(6px);
+}
+.scale-fade-enter-to,
+.scale-fade-leave-from {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* Reduced Motion：禁用新增过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .fade-slide-enter-active,
+  .fade-slide-leave-active,
+  .scale-fade-enter-active,
+  .scale-fade-leave-active {
+    transition: none !important;
+  }
 }
 </style>

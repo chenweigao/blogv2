@@ -15,7 +15,7 @@
       <div :class="$style.actionButtons">
         <GitHistoryButton />
         <button 
-          :class="[$style.tocQuickToggle, 'u-focus-ring']"
+          :class="[$style.tocQuickToggle, 'u-focus-ring', 'press-active', 'focus-ring-animated', 'hover-pop']"
           @click="$emit('toggle-quick-toc')"
           :title="showQuickTOC ? 'Hide Quick TOC' : 'Show Quick TOC'"
         >

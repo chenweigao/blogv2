@@ -1,7 +1,7 @@
 <template>
   <div class="git-history-button-container">
     <button 
-      class="git-history-button"
+      class="git-history-button hover-pop press-active u-focus-ring focus-ring-animated"
       @click="openHistoryModal"
       :title="buttonTitle"
     >

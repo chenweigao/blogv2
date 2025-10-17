@@ -507,85 +507,109 @@
   }
 }
 
-/* 为页面中的标题文本元素指定视图过渡名称 */
-.theme-container .title-text,
-.title-text {
-  view-transition-name: title-text;
+// 页面切换：响应式距离与时长变量
+:root {
+  --pt-slide-distance: clamp(12px, 2.2vw, 24px);
+}
+@media (max-width: 640px) {
+  :root { --pt-slide-distance: clamp(10px, 3vw, 18px); }
+}
+@media (min-width: 1280px) {
+  :root { --pt-slide-distance: clamp(16px, 1.8vw, 32px); }
 }
 
+// View Transitions 根过渡（基于 [data-pt] 与 [data-nav]）
+@keyframes vtFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes vtFadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes vtSlideInLeft  { from { opacity: 0; transform: translateX(calc(-1 * var(--pt-slide-distance))); } to { opacity: 1; transform: translateX(0); } }
+@keyframes vtSlideOutLeft { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(calc(-1 * var(--pt-slide-distance))); } }
+@keyframes vtSlideInRight { from { opacity: 0; transform: translateX(var(--pt-slide-distance)); } to { opacity: 1; transform: translateX(0); } }
+@keyframes vtSlideOutRight{ from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(var(--pt-slide-distance)); } }
+@keyframes vtZoomIn  { from { opacity: 0; transform: scale(0.985); } 50% { opacity: 0.9; transform: scale(1.01); } to { opacity: 1; transform: scale(1); } }
+@keyframes vtZoomOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.985); } }
+
+/* fade 类型 */
+:root[data-pt="fade"]::view-transition-new(root) { animation: vtFadeIn var(--motion-duration-medium) var(--motion-ease-spring) both; }
+:root[data-pt="fade"]::view-transition-old(root) { animation: vtFadeOut var(--motion-duration-medium) var(--motion-ease-decelerate) both; }
+
+/* slide 类型：依据导航方向决定左右 */
+:root[data-pt="slide"][data-nav="forward"]::view-transition-new(root) { animation: vtSlideInRight var(--motion-duration-medium) var(--motion-ease-spring) both; }
+:root[data-pt="slide"][data-nav="forward"]::view-transition-old(root) { animation: vtSlideOutLeft var(--motion-duration-medium) var(--motion-ease-decelerate) both; }
+:root[data-pt="slide"][data-nav="backward"]::view-transition-new(root) { animation: vtSlideInLeft var(--motion-duration-medium) var(--motion-ease-spring) both; }
+:root[data-pt="slide"][data-nav="backward"]::view-transition-old(root) { animation: vtSlideOutRight var(--motion-duration-medium) var(--motion-ease-decelerate) both; }
+
+/* zoom 类型 */
+:root[data-pt="zoom"]::view-transition-new(root) { animation: vtZoomIn var(--motion-duration-medium) var(--motion-ease-spring) both; }
+:root[data-pt="zoom"]::view-transition-old(root) { animation: vtZoomOut var(--motion-duration-medium) var(--motion-ease-decelerate) both; }
+
+/* 共享元素示例：页面标题的命名过渡（可选，按需应用到具体元素） */
+.page-title { view-transition-name: page-title; }
+@keyframes vtTitleIn { from { opacity: 0; transform: translateY(8px) scale(0.99); } 60% { opacity: 0.95; transform: translateY(-1px) scale(1.005); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes vtTitleOut{ from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(6px) scale(0.99); } }
+:root::view-transition-new(page-title) { animation: vtTitleIn var(--motion-duration-medium) var(--motion-ease-spring) both; }
+:root::view-transition-old(page-title) { animation: vtTitleOut var(--motion-duration-medium) var(--motion-ease-decelerate) both; }
+
+/* Reduced Motion：禁用根过渡动画 */
 @media (prefers-reduced-motion: reduce) {
-  .theme-container .title-text,
-  .title-text {
-    view-transition-name: none;
+  :root::view-transition-new(root),
+  :root::view-transition-old(root),
+  :root::view-transition-new(page-title),
+  :root::view-transition-old(page-title) {
+    animation: none !important;
   }
 }
 
-// 内容模块扩展：blockquote、代码块、表格
-.theme-container .content__default blockquote {
-  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
-              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
-}
-.theme-container .content__default blockquote:hover {
-  transform: translateY(calc(-1 * var(--motion-lift-1)));
-  box-shadow: var(--motion-shadow-soft);
-  will-change: transform, box-shadow;
-}
-.theme-container .content__default blockquote:focus-visible {
-  outline: 2px solid var(--interactive-accent, #409EFF);
-  outline-offset: 2px;
-  transform: none;
-  box-shadow: none;
+/* 无视图过渡支持时的 CSS 后备：.theme-container 的入/离场类 */
+.theme-container.page-leave,
+.theme-container.page-enter {
+  transition: transform var(--motion-duration-medium) var(--motion-ease-decelerate),
+              opacity var(--motion-duration-medium) var(--motion-ease-decelerate);
 }
 
-.theme-container .content__default pre,
-.theme-container .content__default code {
-  transition: box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+/* slide 后备：方向根据 [data-nav] */
+.theme-container.page-leave[data-pt="slide"][data-nav="forward"] {
+  transform: translateX(calc(-1 * var(--pt-slide-distance)));
+  opacity: 0;
+  will-change: transform, opacity;
 }
-.theme-container .content__default pre:hover,
-.theme-container .content__default code:hover {
-  box-shadow: var(--motion-shadow-soft);
-}
-.theme-container .content__default pre:focus-visible,
-.theme-container .content__default code:focus-visible {
-  outline: 2px solid var(--interactive-accent, #409EFF);
-  outline-offset: 2px;
-  box-shadow: none;
+.theme-container.page-enter[data-pt="slide"][data-nav="forward"] {
+  transform: translateX(0);
+  opacity: 1;
 }
 
-.theme-container .content__default table {
-  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
-              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+.theme-container.page-leave[data-pt="slide"][data-nav="backward"] {
+  transform: translateX(var(--pt-slide-distance));
+  opacity: 0;
+  will-change: transform, opacity;
 }
-.theme-container .content__default table:hover {
-  transform: translateY(calc(-1 * var(--motion-lift-1)));
-  box-shadow: var(--motion-shadow-soft);
-  will-change: transform, box-shadow;
-}
-.theme-container .content__default table:focus-visible {
-  outline: 2px solid var(--interactive-accent, #409EFF);
-  outline-offset: 2px;
-  transform: none;
-  box-shadow: none;
+.theme-container.page-enter[data-pt="slide"][data-nav="backward"] {
+  transform: translateX(0);
+  opacity: 1;
 }
 
-// 降级与性能守护
+/* fade 后备 */
+.theme-container.page-leave[data-pt="fade"] { opacity: 0; will-change: opacity; }
+.theme-container.page-enter[data-pt="fade"] { opacity: 1; }
+
+/* zoom 后备 */
+.theme-container.page-leave[data-pt="zoom"] {
+  transform: scale(0.985);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.theme-container.page-enter[data-pt="zoom"] {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Reduced Motion：禁用后备动画 */
 @media (prefers-reduced-motion: reduce) {
-  .theme-container .content__default blockquote:hover,
-  .theme-container .content__default table:hover {
-    transform: none;
-    box-shadow: none;
+  .theme-container.page-leave,
+  .theme-container.page-enter {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
-  .theme-container .content__default pre,
-  .theme-container .content__default code,
-  .theme-container .content__default blockquote,
-  .theme-container .content__default table {
-    transition-duration: 0.01ms !important;
-  }
-}
-
-// 全局平滑滚动（Reduced Motion 下已回退为 auto）
-html {
-  scroll-behavior: smooth;
 }
 
 // 标题锚点：悬浮淡入与轻微上移、可访问性
@@ -963,108 +987,5 @@ pre .code-copy:focus-visible,
   }
 }
 
-// 列表项/文章卡片：悬浮微动与阴影、可访问性
-.theme-container .post-list .post-item,
-.theme-container .list .list-item,
-.theme-container .article-card,
-.theme-container .post-card {
-  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
-              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
-              background-color var(--motion-duration-short) var(--motion-ease-standard);
-}
-.theme-container .post-list .post-item:hover,
-.theme-container .list .list-item:hover,
-.theme-container .article-card:hover,
-.theme-container .post-card:hover {
-  transform: translateY(calc(-1 * var(--motion-lift-1)));
-  box-shadow: var(--motion-shadow-soft);
-  will-change: transform, box-shadow;
-}
-.theme-container .post-list .post-item:focus-visible,
-.theme-container .list .list-item:focus-visible,
-.theme-container .article-card:focus-visible,
-.theme-container .post-card:focus-visible {
-  outline: 2px solid var(--interactive-accent, #409EFF);
-  outline-offset: 2px;
-  transform: none;
-  box-shadow: none;
-}
-
-// 徽章/标签：轻微上移与阴影、可访问性
-.theme-container .badge,
-.theme-container .label {
-  display: inline-block;
-  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
-              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
-              background-color var(--motion-duration-short) var(--motion-ease-standard),
-              color var(--motion-duration-short) var(--motion-ease-standard);
-}
-.theme-container .badge:hover,
-.theme-container .label:hover {
-  transform: translateY(-1px);
- box-shadow:
-
-// 顶部页面切换进度指示（由 :root[data-loading] 驱动）
-@keyframes topProgressGrow {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(0.8); }
-}
-body::before {
-  content: "";
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 3px;
-  width: 100%;
-  background: var(--interactive-accent, #409EFF);
-  transform-origin: left;
-  transform: scaleX(0);
-  opacity: 0;
-  transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
-  pointer-events: none;
-  z-index: 9999;
-}
-:root[data-loading="true"]"} body::before {
- "} opacity: 1;
- "}HEMA{animation: topProgressGrow"}var(--motion-duration-long)}var(--motion-ease-decelerate)forwards;}
-@media (prefers-reduced-motion:")reduce") {
-
-// 3D 视差悬浮工具：父容器透视 + 子项轻微旋转与 Z 轴位移
-.tilt-3d {
-  perspective: var(--tilt-3d-perspective);
-  transform-style: preserve-3d;
-}
-.tilt-3d-item {
-  transition: transform var(--motion-duration-medium) var(--motion-ease-decelerate),
-              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
-}
-.tilt-3d:hover .tilt-3d-item,
-.tilt-3d-item:hover {
-  transform: rotateX(var(--tilt-3d-rotate)) rotateY(var(--tilt-3d-rotate)) translateZ(var(--tilt-3d-translate-z));
-  box-shadow: var(--motion-shadow-soft);
-  will-change: transform, box-shadow;
-}
-@media (max-width: 640px) {
-  :root {
-    --tilt-3d-rotate: 0.3deg;
-    --tilt-3d-translate-z: 2px;
-  }
-}
-@media (min-width: 1280px) {
-  :root {
-    --tilt-3d-rotate: 0.8deg;
-    --tilt-3d-translate-z: 6px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .tilt-3d:hover .tilt-3d-item,
-  .tilt-3d-item:hover {
-    transform: none !important;
-    box-shadow: none !important;
-  }
-}
-
-// 创意入场：Hero Ken Burns（慢速微缩放 + 轻微位移，仅大屏启用）
-@keyframes heroKenburns {
-  0%   { transform: translate3d(-1%, -1%, 0) scale(1.01); opacity: 0; }
-  40%  { %
+// 列表项/文章卡片：悬浮微动与阴影、与可访问性
+.theme-container .

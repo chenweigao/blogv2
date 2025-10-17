@@ -3,21 +3,34 @@ import type { Router } from 'vue-router'
 
 export default defineClientConfig({
   enhance({ router }: { router: Router }) {
-    if (typeof window === 'undefined') return
     const d: any = document as any
     const supportsViewTransition = typeof d.startViewTransition === 'function'
     const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    // 个性化页面切换类型：基于路由的简单映射（可按需扩展为 meta 配置）
+    const determinePageTransition = (to: any): string => {
+      const p = (to?.path || to?.fullPath || '').toLowerCase()
+      if (p === '/' || p.startsWith('/home')) return 'fade'
+      if (p.startsWith('/gallery') || p.startsWith('/image') || p.startsWith('/photos')) return 'zoom'
+      if (p.startsWith('/posts') || p.startsWith('/blog') || p.startsWith('/article')) return 'slide'
+      return 'slide'
+    }
+
+    // 在切换前设置个性化页面过渡类型（影响 CSS 与 View Transitions 动画）
+    router.beforeEach((to: any, _from: any, next: any) => {
+      document.documentElement.dataset.pt = determinePageTransition(to)
+      next()
+    })
+
     if (supportsViewTransition && !prefersReducedMotion) {
+      // 保持原有包装；CSS 将根据 [data-pt] 与 [data-nav] 应用不同动画
       const wrapWithTransition = (fn: (...args: any[]) => any) => {
         return (...args: any[]) => {
           try {
             document.documentElement.dataset.loading = 'true'
             const vt = d.startViewTransition(() => fn(...args))
             vt?.finished?.catch?.(() => {}).finally?.(() => {
-              setTimeout(() => {
-                delete document.documentElement.dataset.loading
-              }, 150)
+              setTimeout(() => { delete document.documentElement.dataset.loading }, 150)
             })
             return vt
           } catch {
@@ -30,12 +43,45 @@ export default defineClientConfig({
       router.push = wrapWithTransition(originalPush) as any
       router.replace = wrapWithTransition(originalReplace) as any
     } else {
-      // 无视图过渡时也提供 loading 标记（更简短）
-      const setLoading = () => (document.documentElement.dataset.loading = 'true')
-      const clearLoading = () => setTimeout(() => { delete document.documentElement.dataset.loading }, 150)
-      router.beforeEach?.((_to: any, _from: any, next: any) => { setLoading(); next() })
-      router.afterEach?.(() => { clearLoading() })
+      // 无视图过渡支持的后备：为 .theme-container 切换进入/离开类，CSS 将根据 [data-pt] 与 [data-nav] 差异化
+      let themeContainer: HTMLElement | null = null
+      const ensureContainer = () => {
+        if (!themeContainer) themeContainer = document.querySelector('.theme-container') as HTMLElement
+        return themeContainer
+      }
+      router.beforeEach((_to: any, _from: any, next: any) => {
+        const el = ensureContainer()
+        if (el) {
+          el.classList.remove('page-enter')
+          el.classList.add('page-leave')
+        }
+        next()
+      })
+      router.afterEach?.(() => {
+        const el = ensureContainer()
+        if (el) {
+          el.classList.remove('page-leave')
+          el.classList.add('page-enter')
+          setTimeout(() => { el.classList.remove('page-enter') }, 320)
+        }
+      })
     }
+
+    // 保持现有导航方向标记（forward/backward），以便动画方向化
+    const navStack: string[] = (window as any).__vt_nav_stack || []
+    router.beforeEach((to: any, _from: any, next: any) => {
+      const key = to.fullPath || to.path || ''
+      const idx = navStack.indexOf(key)
+      if (idx === -1) {
+        document.documentElement.dataset.nav = 'forward'
+        navStack.push(key)
+      } else {
+        document.documentElement.dataset.nav = 'backward'
+        navStack.length = idx + 1
+      }
+      ;(window as any).__vt_nav_stack = navStack
+      next()
+    })
 
     // 标记导航方向（forward/backward）保持不变
     const navStack: string[] = (window as any).__vt_nav_stack || []

@@ -16,56 +16,66 @@
     />
 
     <!-- TOC Panel -->
-    <TOCPanel
-      :is-visible="isVisible"
-      :is-pinned="isPinned"
-      :is-compact-mode="isCompactMode"
-      :is-mobile="isMobile"
-      :title="tocTitle"
-      :headings="headings"
-      :filtered-headings="filteredHeadings"
-      :active-heading="activeHeading"
-      :search-query="searchQuery"
-      :reading-progress="readingProgress"
-      :estimated-reading-time="estimatedReadingTime"
-      :time-remaining="timeRemaining"
-      :panel-position="panelPosition"
-      @close="hideTOC"
-      @toggle-pin="togglePin"
-      @toggle-compact="toggleCompactMode"
-      @search="handleSearch"
-      @clear-search="handleClearSearch"
-      @heading-click="handleHeadingClick"
-      @scroll-to-top="scrollToTop"
-      @scroll-to-bottom="scrollToBottom"
-      @copy-toc="handleCopyTOC"
-      ref="tocPanel"
-    />
+    <!-- 新增：显隐过渡，使用 v-show 以获得更平滑的显隐 -->
+    <Transition name="fade-slide">
+      <TOCPanel
+        v-show="isVisible"
+        :is-visible="isVisible"
+        :is-pinned="isPinned"
+        :is-compact-mode="isCompactMode"
+        :is-mobile="isMobile"
+        :title="tocTitle"
+        :headings="headings"
+        :filtered-headings="filteredHeadings"
+        :active-heading="activeHeading"
+        :search-query="searchQuery"
+        :reading-progress="readingProgress"
+        :estimated-reading-time="estimatedReadingTime"
+        :time-remaining="timeRemaining"
+        :panel-position="panelPosition"
+        @close="hideTOC"
+        @toggle-pin="togglePin"
+        @toggle-compact="toggleCompactMode"
+        @search="handleSearch"
+        @clear-search="handleClearSearch"
+        @heading-click="handleHeadingClick"
+        @scroll-to-top="scrollToTop"
+        @scroll-to-bottom="scrollToBottom"
+        @copy-toc="handleCopyTOC"
+        ref="tocPanel"
+      />
+    </Transition>
 
     <!-- Backdrop for Mobile -->
-    <div
-      v-if="isVisible && isMobile"
-      class="toc-backdrop"
-      @click="hideTOC"
-      role="button"
-      :aria-label="'Close table of contents'"
-    ></div>
+    <!-- 新增：移动端遮罩的显隐过渡 -->
+    <Transition name="fade-slide">
+      <div
+        v-if="isVisible && isMobile"
+        class="toc-backdrop"
+        @click="hideTOC"
+        role="button"
+        :aria-label="'Close table of contents'"
+      ></div>
+    </Transition>
 
     <!-- Keyboard Shortcuts Tooltip -->
-    <div v-if="showShortcuts" class="shortcuts-tooltip">
-      <div class="shortcuts-header">Keyboard Shortcuts</div>
-      <div class="shortcuts-list">
-        <div class="shortcut-item">
-          <kbd>Ctrl</kbd> + <kbd>K</kbd> <span>Toggle TOC</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>Esc</kbd> <span>Close TOC</span>
-        </div>
-        <div class="shortcut-item">
-          <kbd>/</kbd> <span>Search headings</span>
+    <!-- 新增：快捷键提示的显隐过渡 -->
+    <Transition name="fade-slide">
+      <div v-if="showShortcuts" class="shortcuts-tooltip">
+        <div class="shortcuts-header">Keyboard Shortcuts</div>
+        <div class="shortcuts-list">
+          <div class="shortcut-item">
+            <kbd>Ctrl</kbd> + <kbd>K</kbd> <span>Toggle TOC</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Esc</kbd> <span>Close TOC</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>/</kbd> <span>Search headings</span>
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 

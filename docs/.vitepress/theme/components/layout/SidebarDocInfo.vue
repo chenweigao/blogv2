@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.sidebarDocInfo">
+  <div :class="$style.sidebarDocInfo" class="auto-inview effect-blur-in">
     <div :class="$style.docMetaCompact">
       <div v-if="category" :class="$style.docCategory">
         {{ category }}
