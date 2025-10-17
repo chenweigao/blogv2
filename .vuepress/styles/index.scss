@@ -12,6 +12,17 @@
   --motion-lift-1: 3px;
   --motion-lift-2: 4px;
   --motion-scale-hover: 1.02;
+  --title-rise-distance: 14px;
+  --title-scale-start: 0.988;
+  --title-underline-thickness: 4px;
+  --title-underline-delay: 140ms;
+  --title-motion-duration: var(--motion-duration-medium);
+  --motion-shadow-strong: 0 10px 32px rgba(0, 0, 0, 0.20);
+  --motion-ease-spring: cubic-bezier(0.2, 0.7, 0, 1); /* 轻微弹性 */
+  --motion-ease-spring-strong: cubic-bezier(0.25, 0.8, 0, 1); /* 更明显弹性 */
+  --tilt-3d-perspective: 800px;
+  --tilt-3d-rotate: 0.6deg;
+  --tilt-3d-translate-z: 4px;
 }
 
 /* Utility for GPU compositing on common animated properties */
@@ -47,22 +58,43 @@
   box-shadow: var(--motion-shadow-soft);
 }
 
+// 悬浮强抬升与阴影（使用 --motion-shadow-strong）
+.effect-elevate-strong {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+.effect-elevate-strong:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--motion-shadow-strong);
+  will-change: transform, box-shadow;
+}
+@media (prefers-reduced-motion: reduce) {
+  .effect-elevate-strong,
+  .effect-elevate-strong:hover {
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
 // 渐入动效
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@keyframes fadeInScale {
+  0%   { opacity: 0; transform: scale(0.98); }
+  60%  { opacity: 0.85; transform: scale(1.005); }
+  100% { opacity: 1; transform: scale(1); }
 }
 .effect-fade-in {
-  animation: fadeIn var(--motion-duration-medium) var(--motion-ease-standard) both;
+  animation: fadeInScale var(--motion-duration-medium) var(--motion-ease-spring) both;
 }
 
 // 上移渐入
-@keyframes riseIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes riseInPlus {
+  0%   { opacity: 0; transform: translateY(8px); }
+  60%  { opacity: 0.95; transform: translateY(-1px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 .effect-rise-in {
-  animation: riseIn var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  animation: riseInPlus var(--motion-duration-medium) var(--motion-ease-spring) both;
 }
 
 // reduced motion 优雅降级
@@ -122,10 +154,6 @@
   .navbar .navbar-item:hover {
     transform: none;
     box-shadow: none;
-  }
-  .navbar a::after,
-  .navbar .navbar-item::after {
-    transition: none;
   }
 }
 
@@ -189,14 +217,69 @@
 .theme-container h2 { animation-delay: 40ms; }
 .theme-container h3 { animation-delay: 60ms; }
 
+// 标题动效强度变量（可调）
+:root {
+  --title-rise-distance: 14px;
+  --title-scale-start: 0.988;
+  --title-underline-thickness: 4px;
+  --title-underline-delay: 140ms;
+  --title-motion-duration: var(--motion-duration-medium);
+}
+
+// 更“灵动”的主标题入场与滑动下划线
+@keyframes underlineIn {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.theme-container h1 {
+  position: relative;
+  animation: riseInTitle var(--title-motion-duration) var(--motion-ease-emphasized) both;
+  will-change: transform, opacity;
+}
+.theme-container h1::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: var(--title-underline-thickness);
+  background: var(--interactive-accent, #409EFF);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: underlineIn var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  animation-delay: var(--title-underline-delay);
+}
+
+// 使用变量增强 riseInTitle
 @keyframes riseInTitle {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.995);
+  0%   { opacity: 0; transform: translateY(var(--title-rise-distance)) scale(var(--title-scale-start)); }
+  70%  { opacity: 1; transform: translateY(calc(var(--title-rise-distance) * -0.08)) scale(1.005); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+// 章节标题滚动入场（通过 .inview 类触发）
+@keyframes riseInHeading {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.theme-container .content__default h2.inview,
+.theme-container .content__default h3.inview {
+  animation: riseInHeading var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  will-change: transform, opacity;
+}
+
+// reduced-motion：禁用新增标题动效
+@media (prefers-reduced-motion: reduce) {
+  .theme-container h1 {
+    animation: none !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  .theme-container h1::after {
+    animation: none !important;
+    transform: none !important;
+  }
+  .theme-container .content__default h2.inview,
+  .theme-container .content__default h3.inview {
+    animation: none !important;
   }
 }
 
@@ -402,6 +485,39 @@
     animation-duration: var(--motion-duration-long);
     animation-timing-function: var(--motion-ease-decelerate);
   }
+
+  // View Transitions：为 title-text 指定动画名与关键帧
+  @keyframes vtTitleTextOut {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(-6px) scale(0.99); }
+  }
+  @keyframes vtTitleTextIn {
+    from { opacity: 0; transform: translateY(6px) scale(0.99); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  ::view-transition-old(title-text) {
+    animation-name: vtTitleTextOut;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-emphasized);
+  }
+  ::view-transition-new(title-text) {
+    animation-name: vtTitleTextIn;
+    animation-duration: var(--motion-duration-long);
+    animation-timing-function: var(--motion-ease-emphasized);
+  }
+}
+
+/* 为页面中的标题文本元素指定视图过渡名称 */
+.theme-container .title-text,
+.title-text {
+  view-transition-name: title-text;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-container .title-text,
+  .title-text {
+    view-transition-name: none;
+  }
 }
 
 // 内容模块扩展：blockquote、代码块、表格
@@ -466,3 +582,489 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+// 全局平滑滚动（Reduced Motion 下已回退为 auto）
+html {
+  scroll-behavior: smooth;
+}
+
+// 标题锚点：悬浮淡入与轻微上移、可访问性
+.theme-container .content__default .header-anchor {
+  opacity: 0;
+  transition: opacity var(--motion-duration-short) var(--motion-ease-standard),
+              transform var(--motion-duration-xshort) var(--motion-ease-decelerate);
+}
+.theme-container .content__default h1:hover .header-anchor,
+.theme-container .content__default h2:hover .header-anchor,
+.theme-container .content__default h3:hover .header-anchor,
+.theme-container .content__default h4:hover .header-anchor,
+.theme-container .content__default h5:hover .header-anchor,
+.theme-container .content__default h6:hover .header-anchor {
+  opacity: 1;
+  transform: translateY(-1px);
+  will-change: transform, opacity;
+}
+.theme-container .content__default .header-anchor:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  opacity: 1;
+  transform: none;
+}
+
+// 代码块高亮行：柔和背景与阴影过渡
+.theme-container pre .highlighted,
+.theme-container pre .line-highlight,
+pre .highlighted,
+pre .line-highlight {
+  transition: background-color var(--motion-duration-short) var(--motion-ease-standard),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+}
+.theme-container pre .highlighted:hover,
+.theme-container pre .line-highlight:hover,
+pre .highlighted:hover,
+pre .line-highlight:hover {
+  box-shadow: var(--motion-shadow-soft);
+}
+
+// Reduced Motion：禁用新增 transform 与缩短过渡
+@media (prefers-reduced-motion: reduce) {
+  .theme-container .content__default .header-anchor {
+    transition-duration: 0.01ms !important;
+  }
+  .theme-container .content__default h1:hover .header-anchor,
+  .theme-container .content__default h2:hover .header-anchor,
+  .theme-container .content__default h3:hover .header-anchor,
+  .theme-container .content__default h4:hover .header-anchor,
+  .theme-container .content__default h5:hover .header-anchor,
+  .theme-container .content__default h6:hover .header-anchor {
+    transform: none !important;
+  }
+  .theme-container pre .highlighted,
+  .theme-container pre .line-highlight,
+  pre .highlighted,
+  pre .line-highlight {
+    transition-duration: 0.01ms !important;
+    box-shadow: none !important;
+  }
+}
+
+// 标签与分类（chips）
+.theme-container .tags a,
+.theme-container .tag,
+.theme-container .category a {
+  display: inline-block;
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard),
+              color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.theme-container .tags a:hover,
+.theme-container .tag:hover,
+.theme-container .category a:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-1)));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.theme-container .tags a:focus-visible,
+.theme-container .tag:focus-visible,
+.theme-container .category a:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 分页（普适选择器，覆盖不同主题）
+.theme-container .pagination,
+.pagination {
+  --_pg-ease: var(--motion-ease-decelerate);
+}
+.theme-container .pagination a,
+.theme-container .pagination .page-number,
+.theme-container .pagination .pager,
+.pagination a,
+.pagination .page-number,
+.pagination .pager {
+  transition: background-color var(--motion-duration-short) var(--motion-ease-standard),
+              color var(--motion-duration-short) var(--motion-ease-standard),
+              transform var(--motion-duration-xshort) var(_pg-ease),
+              box-shadow var(--motion-duration-medium) var(_pg-ease);
+}
+.theme-container .pagination a:hover,
+.theme-container .pagination .page-number:hover,
+.theme-container .pagination .pager:hover,
+.pagination a:hover,
+.pagination .page-number:hover,
+.pagination .pager:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-1)));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.theme-container .pagination a:focus-visible,
+.theme-container .pagination .page-number:focus-visible,
+.theme-container .pagination .pager:focus-visible,
+.pagination a:focus-visible,
+.pagination .page-number:focus-visible,
+.pagination .pager:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 返回顶部按钮
+.back-to-top {
+  transition: opacity var(--motion-duration-short) var(--motion-ease-standard),
+              transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+  transform: translateY(4px);
+  opacity: 0;
+}
+.back-to-top.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              opacity var(--motion-duration-short) var(--motion-ease-standard);
+  will-change: transform, opacity;
+}
+.back-to-top:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-2)));
+  box-shadow: var(--motion-shadow-soft);
+  opacity: 1;
+  will-change: transform, box-shadow, opacity;
+}
+.back-to-top:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 代码复制按钮（兼容多种常见命名）
+pre .copy,
+pre .copy-code,
+pre .code-copy,
+.copy-code-button,
+[class*="copy"] .copy-button {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+pre .copy:hover,
+pre .copy-code:hover,
+pre .code-copy:hover,
+.copy-code-button:hover,
+[class*="copy"] .copy-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+pre .copy:focus-visible,
+pre .copy-code:focus-visible,
+pre .code-copy:focus-visible,
+.copy-code-button:focus-visible,
+[class*="copy"] .copy-button:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 表格行 hover 高亮与过渡
+.theme-container .content__default table tr {
+  transition: background-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.theme-container .content__default table tr:hover {
+  background-color: var(--background-modifier-hover, rgba(0,0,0,0.04));
+}
+
+// 表单控件：输入/选择/文本域的聚焦动效
+.theme-container input,
+.theme-container select,
+.theme-container textarea {
+  transition: border-color var(--motion-duration-short) var(--motion-ease-standard),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.theme-container input:focus,
+.theme-container select:focus,
+.theme-container textarea:focus {
+  border-color: var(--interactive-accent, #409EFF);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent, #409EFF) 24%, transparent);
+}
+
+// Reduced Motion 降级：统一禁用新增的 transform/box-shadow 动效
+@media (prefers-reduced-motion: reduce) {
+  .theme-container .header-anchor,
+  .theme-container .tags a,
+  .theme-container .tag,
+  .theme-container .category a,
+  .theme-container .pagination a,
+  .theme-container .pagination .page-number,
+  .theme-container .pagination .pager,
+  .pagination a,
+  .pagination .page-number,
+  .pagination .pager,
+  .back-to-top,
+  pre .copy,
+  pre .copy-code,
+  pre .code-copy,
+  .copy-code-button,
+  [class*="copy"] .copy-button {
+    transition-duration: 0.01ms !important;
+  }
+  .theme-container .tags a:hover,
+  .theme-container .tag:hover,
+  .theme-container .category a:hover,
+  .theme-container .pagination a:hover,
+  .theme-container .pagination .page-number:hover,
+  .theme-container .pagination .pager:hover,
+  .pagination a:hover,
+  .pagination .page-number:hover,
+  .pagination .pager:hover,
+  .back-to-top:hover,
+  pre .copy:hover,
+  pre .copy-code:hover,
+  pre .code-copy:hover,
+  .copy-code-button:hover,
+  [class*="copy"] .copy-button:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// 按钮：悬浮微动与阴影（覆盖通用与常见类名）
+.theme-container button,
+.theme-container .button,
+.theme-container .btn,
+.vp-button {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard),
+              color var(--motion-duration-short) var(--motion-ease-standard),
+              border-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.theme-container button:hover,
+.theme-container .button:hover,
+.theme-container .btn:hover,
+.vp-button:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-1)));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.theme-container button:focus-visible,
+.theme-container .button:focus-visible,
+.theme-container .btn:focus-visible,
+.vp-button:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 卡片：悬浮微动与阴影（覆盖常见卡片类）
+.theme-container .card,
+.theme-container .article-card,
+.theme-container .post-card {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.theme-container .card:hover,
+.theme-container .article-card:hover,
+.theme-container .post-card:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-1)));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.theme-container .card:focus-visible,
+.theme-container .article-card:focus-visible,
+.theme-container .post-card:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 社交图标：悬浮微动与透明度提升
+.theme-container .social-icons a,
+.footer .social a {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              opacity var(--motion-duration-short) var(--motion-ease-standard);
+  opacity: 0.9;
+}
+.theme-container .social-icons a:hover,
+.footer .social a:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+  will-change: transform, opacity;
+}
+.theme-container .social-icons a:focus-visible,
+.footer .social a:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+}
+
+// 导航下拉项：轻微上移与阴影（兼容不同主题结构）
+.navbar .dropdown a,
+.navbar .dropdown-menu a,
+.navbar .dropdown-item a {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard),
+              color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.navbar .dropdown a:hover,
+.navbar .dropdown-menu a:hover,
+.navbar .dropdown-item a:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.navbar .dropdown a:focus-visible,
+.navbar .dropdown-menu a:focus-visible,
+.navbar .dropdown-item a:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+}
+
+// Reduced Motion：统一为新增元素禁用 transform/box-shadow 动效
+@media (prefers-reduced-motion: reduce) {
+  .theme-container button,
+  .theme-container .button,
+  .theme-container .btn,
+  .vp-button,
+  .theme-container .card,
+  .theme-container .article-card,
+  .theme-container .post-card,
+  .theme-container .social-icons a,
+  .footer .social a,
+  .navbar .dropdown a,
+  .navbar .dropdown-menu a,
+  .navbar .dropdown-item a {
+    transition-duration: 0.01ms !important;
+  }
+  .theme-container button:hover,
+  .theme-container .button:hover,
+  .theme-container .btn:hover,
+  .vp-button:hover,
+  .theme-container .card:hover,
+  .theme-container .article-card:hover,
+  .theme-container .post-card:hover,
+  .theme-container .social-icons a:hover,
+  .footer .social a:hover,
+  .navbar .dropdown a:hover,
+  .navbar .dropdown-menu a:hover,
+  .navbar .dropdown-item a:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// 列表项/文章卡片：悬浮微动与阴影、可访问性
+.theme-container .post-list .post-item,
+.theme-container .list .list-item,
+.theme-container .article-card,
+.theme-container .post-card {
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.theme-container .post-list .post-item:hover,
+.theme-container .list .list-item:hover,
+.theme-container .article-card:hover,
+.theme-container .post-card:hover {
+  transform: translateY(calc(-1 * var(--motion-lift-1)));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+.theme-container .post-list .post-item:focus-visible,
+.theme-container .list .list-item:focus-visible,
+.theme-container .article-card:focus-visible,
+.theme-container .post-card:focus-visible {
+  outline: 2px solid var(--interactive-accent, #409EFF);
+  outline-offset: 2px;
+  transform: none;
+  box-shadow: none;
+}
+
+// 徽章/标签：轻微上移与阴影、可访问性
+.theme-container .badge,
+.theme-container .label {
+  display: inline-block;
+  transition: transform var(--motion-duration-xshort) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate),
+              background-color var(--motion-duration-short) var(--motion-ease-standard),
+              color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.theme-container .badge:hover,
+.theme-container .label:hover {
+  transform: translateY(-1px);
+ box-shadow:
+
+// 顶部页面切换进度指示（由 :root[data-loading] 驱动）
+@keyframes topProgressGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(0.8); }
+}
+body::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--interactive-accent, #409EFF);
+  transform-origin: left;
+  transform: scaleX(0);
+  opacity: 0;
+  transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
+  pointer-events: none;
+  z-index: 9999;
+}
+:root[data-loading="true"]"} body::before {
+ "} opacity: 1;
+ "}HEMA{animation: topProgressGrow"}var(--motion-duration-long)}var(--motion-ease-decelerate)forwards;}
+@media (prefers-reduced-motion:")reduce") {
+
+// 3D 视差悬浮工具：父容器透视 + 子项轻微旋转与 Z 轴位移
+.tilt-3d {
+  perspective: var(--tilt-3d-perspective);
+  transform-style: preserve-3d;
+}
+.tilt-3d-item {
+  transition: transform var(--motion-duration-medium) var(--motion-ease-decelerate),
+              box-shadow var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+.tilt-3d:hover .tilt-3d-item,
+.tilt-3d-item:hover {
+  transform: rotateX(var(--tilt-3d-rotate)) rotateY(var(--tilt-3d-rotate)) translateZ(var(--tilt-3d-translate-z));
+  box-shadow: var(--motion-shadow-soft);
+  will-change: transform, box-shadow;
+}
+@media (max-width: 640px) {
+  :root {
+    --tilt-3d-rotate: 0.3deg;
+    --tilt-3d-translate-z: 2px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --tilt-3d-rotate: 0.8deg;
+    --tilt-3d-translate-z: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tilt-3d:hover .tilt-3d-item,
+  .tilt-3d-item:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+// 创意入场：Hero Ken Burns（慢速微缩放 + 轻微位移，仅大屏启用）
+@keyframes heroKenburns {
+  0%   { transform: translate3d(-1%, -1%, 0) scale(1.01); opacity: 0; }
+  40%  { %
