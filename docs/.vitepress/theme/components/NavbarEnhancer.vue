@@ -18,29 +18,26 @@ const routeIndicator = ref(null)
 const activeNavItem = ref(null)
 const indicatorStyle = ref({})
 
+// 新增：统一的刷新调度（避免多重 setTimeout 重试）
+let scheduled = false
+let rafId = 0
+const scheduleRefresh = () => {
+  if (scheduled) return
+  scheduled = true
+  rafId = requestAnimationFrame(() => {
+    updateActiveNavItem()
+    updateIndicatorPosition()
+    scheduled = false
+  })
+}
+
 // 计算活跃的导航项
 const currentPath = computed(() => route.path)
 
-// 监听路由变化 - 优化版本
-watch(currentPath, (newPath, oldPath) => {
-  // console.log(`[NavbarEnhancer] Route changed: ${oldPath} -> ${newPath}`)
-  
-  // 使用多重尝试确保更新成功
+// 替换原有 watch：使用单通道调度
+watch(currentPath, () => {
   nextTick(() => {
-    updateActiveNavItem()
-    updateIndicatorPosition()
-    
-    // 延迟再次尝试，以应对DOM更新延迟
-    setTimeout(() => {
-      updateActiveNavItem()
-      updateIndicatorPosition()
-    }, 100)
-    
-    // 第三次尝试，确保在复杂情况下也能正常工作
-    setTimeout(() => {
-      updateActiveNavItem()
-      updateIndicatorPosition()
-    }, 300)
+    scheduleRefresh()
   })
 }, { immediate: true, flush: 'post' })
 
@@ -194,87 +191,41 @@ const calculateMatchScore = (navHref, currentPath) => {
   return fuzzyScore
 }
 
-// 回退匹配策略 - 处理没有直接匹配时的情况
+// 回退匹配策略 - 处理没有直接匹配时的情况（取消硬编码映射）
 const findFallbackMatch = (currentPath, navLinks, groupButtons) => {
   const pathParts = currentPath.split('/').filter(p => p)
   let bestFallback = { element: null, score: 0, href: '', type: 'fallback' }
-  
-  // 如果路径为空或者是根路径，返回首页
-  if (pathParts.length === 0) {
-    return bestFallback
-  }
-  
-  // 第一层级路径匹配：基于第一个路径段进行匹配
+  if (pathParts.length === 0) return bestFallback
+
   const firstPathSegment = pathParts[0]
-  
-  // 定义路径映射规则
-  const pathMappings = {
-    'artificial-intelligence': '/artificial-intelligence/',
-    'computer-systems': 'Computer Systems', // 这是下拉组标题
-    'research-projects': 'Research', // 这是下拉组标题
-    'algorithms': '/algorithms/',
-    'programming-languages': 'Programming', // 这是下拉组标题
-    'development-tools': 'Development', // 这是下拉组标题
-    'timeline': '/timeline'
-  }
-  
-  const mappedTarget = pathMappings[firstPathSegment]
-  
-  if (mappedTarget) {
-    if (mappedTarget.startsWith('/')) {
-      // 直接链接匹配
-      navLinks.forEach(link => {
-        const href = link.getAttribute('href')
-        if (href === mappedTarget) {
-          bestFallback = {
-            element: link,
-            score: 50, // 给予中等分数
-            href: mappedTarget,
-            type: 'fallback-direct'
-          }
-        }
-      })
-    } else {
-      // 下拉组匹配
-      groupButtons.forEach(button => {
-        const buttonText = button.textContent?.trim()
-        if (buttonText === mappedTarget) {
-          bestFallback = {
-            element: button,
-            score: 60, // 给予较高分数
-            href: `group-${mappedTarget}`,
-            type: 'fallback-group'
-          }
-        }
-      })
+
+  // 优先尝试顶级链接包含该段
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href') || ''
+    if (href.includes(`/${firstPathSegment}/`) || href.endsWith(`/${firstPathSegment}`)) {
+      if (bestFallback.score < 40) {
+        bestFallback = { element: link, score: 40, href, type: 'fallback-direct' }
+      }
     }
-  }
-  
-  // 如果仍然没有匹配，尝试更宽泛的匹配
+  })
+
+  // 其次尝试分组下拉中的任一子项包含该段
   if (bestFallback.score === 0) {
-    // 尝试匹配包含第一个路径段的任何导航项
     groupButtons.forEach(groupButton => {
       const group = groupButton.closest('.VPNavBarMenuGroup')
       const allDropdownLinks = group?.querySelectorAll('.VPNavBarMenuGroupItemLink, .VPNavBarMenuGroupItem .VPNavBarMenuGroupItemLink')
-      
       if (allDropdownLinks) {
-        allDropdownLinks.forEach(link => {
-          const href = link.getAttribute('href')
-          if (href && href.includes(firstPathSegment)) {
-            if (bestFallback.score < 30) {
-              bestFallback = {
-                element: groupButton,
-                score: 30,
-                href: href,
-                type: 'fallback-partial'
-              }
-            }
+        for (const link of allDropdownLinks) {
+          const href = link.getAttribute('href') || ''
+          if (href.includes(`/${firstPathSegment}/`) || href.endsWith(`/${firstPathSegment}`)) {
+            bestFallback = { element: groupButton, score: 35, href, type: 'fallback-group' }
+            break
           }
-        })
+        }
       }
     })
   }
-  
+
   return bestFallback
 }
 
@@ -388,7 +339,19 @@ onMounted(() => {
     updateActiveNavItem()
     updateIndicatorPosition()
     addNavClickAnimation()
-    
+
+    // 监听导航容器的结构变化，自动刷新
+    const navContainer = document.querySelector('.VPNavBar')
+    let mo, ro
+    if (navContainer && 'MutationObserver' in window) {
+      mo = new MutationObserver(() => scheduleRefresh())
+      mo.observe(navContainer, { childList: true, subtree: true, attributes: true })
+    }
+    if (navContainer && 'ResizeObserver' in window) {
+      ro = new ResizeObserver(() => scheduleRefresh())
+      ro.observe(navContainer)
+    }
+
     // 添加滚动效果
     const removeScrollListener = addScrollEffect()
     
@@ -420,6 +383,10 @@ onMounted(() => {
       window.removeEventListener('popstate', handlePopstate)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       removeScrollListener()
+      
+      if (mo) mo.disconnect()
+      if (ro) ro.disconnect()
+      if (rafId) cancelAnimationFrame(rafId)
       
       if (typeof window !== 'undefined') {
         delete window.__refreshNavbarHighlight

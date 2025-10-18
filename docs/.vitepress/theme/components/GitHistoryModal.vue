@@ -113,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onUnmounted } from 'vue'
 
 const props = defineProps({
   visible: {
@@ -149,12 +149,21 @@ watch(() => props.docPath, (newPath) => {
   }
 })
 
+// 键盘事件处理
+function handleKeydown(event) {
+  if (event.key === 'Escape' && isVisible.value) {
+    closeModal()
+  }
+}
+
+// 在打开时绑定键盘事件，关闭时解绑
 async function openModal() {
   isVisible.value = true
   document.body.style.overflow = 'hidden'
-  
+  if (typeof window !== 'undefined') {
+    document.addEventListener('keydown', handleKeydown)
+  }
   await nextTick()
-  
   if (props.docPath) {
     await loadHistoryData()
   }
@@ -163,8 +172,18 @@ async function openModal() {
 function closeModal() {
   isVisible.value = false
   document.body.style.overflow = ''
+  if (typeof window !== 'undefined') {
+    document.removeEventListener('keydown', handleKeydown)
+  }
   emit('close')
 }
+
+// 卸载时确保移除监听
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    document.removeEventListener('keydown', handleKeydown)
+  }
+})
 
 async function loadHistoryData() {
   if (!props.docPath) return
@@ -229,18 +248,6 @@ function formatDate(dateString) {
   } catch {
     return dateString
   }
-}
-
-// 键盘事件处理
-function handleKeydown(event) {
-  if (event.key === 'Escape' && isVisible.value) {
-    closeModal()
-  }
-}
-
-// 添加键盘事件监听
-if (typeof window !== 'undefined') {
-  document.addEventListener('keydown', handleKeydown)
 }
 </script>
 

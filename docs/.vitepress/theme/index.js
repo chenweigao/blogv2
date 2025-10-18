@@ -26,6 +26,7 @@ import { useRoute } from 'vitepress'
 import { createCodeBlockHandler } from './utils/codeBlockHandler.js'
 import { useMermaid } from './composables/useMermaid.js'
 import { setupSidebarNavbarSync } from './utils/sidebarNavbarSync.js'
+import { initAnalytics } from './utils/analytics.js'
 
 // 创建一个全局的代码块弹窗状态
 const codeModalState = {
@@ -78,6 +79,11 @@ export default {
         // 设置侧边栏与导航栏同步
         const cleanupSidebarSync = setupSidebarNavbarSync()
         
+        // 初始化隐私友好的站点分析（仅生产且显式启用）
+        if (import.meta.env.PROD) {
+          initAnalytics()
+        }
+        
         // 在组件卸载时清理
         const cleanup = () => {
           if (cleanupSidebarSync) {
@@ -88,6 +94,14 @@ export default {
         // 注册清理函数（VitePress会在适当时候调用）
         if (typeof window !== 'undefined') {
           window.__vitepress_sidebar_cleanup = cleanup
+        }
+        
+        if ('serviceWorker' in navigator && import.meta.env.PROD) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch((err) => {
+              console.warn('Service Worker registration failed:', err)
+            })
+          })
         }
       })
       

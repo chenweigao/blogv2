@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { computed, watch, onMounted, nextTick, inject } from 'vue'
+import { computed, watch, onMounted, nextTick, inject, onUnmounted } from 'vue'
 import ModalHeader from './CodeBlockModal/components/ModalHeader.vue'
 import ModalFooter from './CodeBlockModal/components/ModalFooter.vue'
 import { useShiki } from './CodeBlockModal/composables/useShiki.js'
@@ -77,9 +77,11 @@ import { useCodeActions } from './CodeBlockModal/composables/useCodeActions.js'
 // 注入全局的代码块弹窗状态
 const codeModalState = inject('codeModalState')
 
-// 添加调试信息
-console.log('[CodeBlockModal] 组件初始化')
-console.log('[CodeBlockModal] 注入的全局状态:', codeModalState)
+// 添加调试信息（仅开发）
+if (import.meta.env.DEV) {
+  console.log('[CodeBlockModal] 组件初始化')
+  console.log('[CodeBlockModal] 注入的全局状态:', codeModalState)
+}
 
 // 使用 composables
 const { currentTheme, isLoading, initHighlighter, getHighlightedCode, toggleTheme } = useShiki()
@@ -157,12 +159,6 @@ watch(() => codeModalState?.visible?.value, (newVal) => {
   }
 }, { immediate: true })
 
-// 生命周期
-onMounted(async () => {
-  console.log('[CodeBlockModal] 组件挂载完成')
-  await initHighlighter()
-})
-
 // 键盘事件处理
 const handleKeydown = (event) => {
   if (event.key === 'Escape' && codeModalState?.visible?.value) {
@@ -170,10 +166,19 @@ const handleKeydown = (event) => {
   }
 }
 
-// 添加键盘事件监听
-if (typeof window !== 'undefined') {
-  document.addEventListener('keydown', handleKeydown)
-}
+// 在挂载时注册，卸载时移除
+onMounted(async () => {
+  if (typeof window !== 'undefined') {
+    document.addEventListener('keydown', handleKeydown)
+  }
+  await initHighlighter()
+})
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    document.removeEventListener('keydown', handleKeydown)
+  }
+})
 </script>
 
 <style>

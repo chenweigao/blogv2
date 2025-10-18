@@ -1,0 +1,19 @@
+#!/bin/sh
+# 使用项目自带的 git hooks 机制执行提交前检查
+# 启用：pnpm run setup:hooks
+
+set -e
+
+PM="pnpm"
+if ! command -v pnpm >/dev/null 2>&1; then
+  PM="npm"
+fi
+
+# 优先使用 lint-staged（若未安装则回退到全量 lint）
+if $PM exec lint-staged >/dev/null 2>&1; then
+  $PM exec lint-staged
+else
+  echo "lint-staged not available, running full lint..."
+  $PM run lint || true
+  $PM run lint:css || true
+fi

@@ -43,8 +43,16 @@
         @scroll-to-bottom="scrollToBottom"
         @copy-toc="handleCopyTOC"
         ref="tocPanel"
+        :aria-labelledby="'enhanced-toc-title'"
+        role="dialog"
+        :aria-modal="(!isPinned && isVisible) ? 'true' : 'false'"
+        tabindex="-1"
       />
     </Transition>
+
+    <!-- Keyboard Shortcuts Tooltip -->
+    <!-- 给标题元素添加 id 以供 aria-labelledby 引用 -->
+    <div id="enhanced-toc-title" class="visually-hidden">Table of Contents</div>
 
     <!-- Backdrop for Mobile -->
     <!-- 新增：移动端遮罩的显隐过渡 -->
@@ -54,7 +62,8 @@
         class="toc-backdrop"
         @click="hideTOC"
         role="button"
-        :aria-label="'Close table of contents'"
+        aria-label="Close table of contents"
+        aria-hidden="false"
       ></div>
     </Transition>
 
@@ -313,7 +322,7 @@ const handleResize = () => {
 const handleKeydown = (event) => {
   if (!isBrowser) return
   
-  if (event.key === 'Escape' && isVisible.value) {
+  if (event.key === 'Escape' && isVisible.value && !isPinned.value) {
     hideTOC()
   }
   

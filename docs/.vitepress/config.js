@@ -10,6 +10,7 @@ import imageSizePlugin from './theme/utils/markdown-it-image-size.js'
 export default defineConfig({
   title: 'Knowledge Wiki',
   description: 'Personal Knowledge Base - Work & Study Documentation',
+  lang: 'zh-CN',
 
   // 忽略死链接检查，避免构建失败
   ignoreDeadLinks: true,
@@ -234,5 +235,28 @@ export default defineConfig({
     }
 
     return pageData
+  },
+
+  // 新增：根据页面与站点信息动态生成 head（canonical/OG/Twitter）
+  transformHead: ({ page, site }) => {
+    const hostname = site?.sitemap?.hostname || ''
+    const pagePath = page?.relativePath ? page.relativePath.replace(/\.md$/, '') : ''
+    const canonicalUrl = hostname && pagePath ? `${hostname}/${pagePath}` : ''
+    const title = page?.title || site?.title || 'Site'
+    const description = page?.description || site?.description || ''
+    const tags = [
+      canonicalUrl
+        ? ['link', { rel: 'canonical', href: canonicalUrl }]
+        : null,
+      ['meta', { name: 'description', content: description }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description }],
+      canonicalUrl ? ['meta', { property: 'og:url', content: canonicalUrl }] : null,
+      ['meta', { property: 'og:type', content: 'website' }],
+      ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:description', content: description }]
+    ].filter(Boolean)
+    return tags
   }
 })

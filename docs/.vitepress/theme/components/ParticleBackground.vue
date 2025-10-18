@@ -82,6 +82,7 @@ let ctx = null
 let mouseX = 0
 let mouseY = 0
 let isMouseMoving = false
+let reduceMotion = false
 
 // 粒子类
 class Particle {
@@ -344,45 +345,77 @@ function getConnectionStyle(fromId, toId) {
   }
 }
 
-// 窗口大小调整
+function startAnimation() {
+  if (reduceMotion) return
+  if (animationId) cancelAnimationFrame(animationId)
+  animationId = requestAnimationFrame(animate)
+}
+
+function stopAnimation() {
+  if (animationId) {
+    cancelAnimationFrame(animationId)
+    animationId = null
+  }
+}
+
+function handleVisibilityChange() {
+  if (document.hidden) {
+    stopAnimation()
+  } else {
+    startAnimation()
+  }
+}
+
 function handleResize() {
   if (!containerRef.value) return
-  
   canvasWidth.value = containerRef.value.offsetWidth
   canvasHeight.value = containerRef.value.offsetHeight
-  
-  // 重新定位粒子
-  particles.value.forEach(particle => {
-    if (particle.x > canvasWidth.value) particle.x = canvasWidth.value
-    if (particle.y > canvasHeight.value) particle.y = canvasHeight.value
-  })
+  initCanvas()
 }
 
 onMounted(async () => {
   await nextTick()
-  initCanvas()
-  initKnowledgeNodes()
-  animate()
   
-  if (containerRef.value) {
-    containerRef.value.addEventListener('mousemove', handleMouseMove)
-    containerRef.value.addEventListener('mouseleave', handleMouseLeave)
+  // 降级检查
+  reduceMotion = typeof window !== 'undefined' &&
+                 window.matchMedia &&
+                 window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // 移动端降密
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  if (isMobile) {
+    // 将密度降低到原来的一半
+    const half = Math.max(10, Math.floor(props.density / 2))
+    // 仅在初始时调整
+    particles.value = []
+    for (let i = 0; i < half; i++) {
+      particles.value.push(new Particle(
+        Math.random() * (canvasWidth.value || 0),
+        Math.random() * (canvasHeight.value || 0),
+        props.theme
+      ))
+    }
+  } else {
+    initCanvas()
   }
-  
-  window.addEventListener('resize', handleResize)
+
+  if (!reduceMotion) {
+    startAnimation()
+  }
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', handleResize, { passive: true })
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    // 鼠标移动交互（保留原有逻辑）
+  }
 })
 
 onUnmounted(() => {
-  if (animationId) {
-    cancelAnimationFrame(animationId)
+  stopAnimation()
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', handleResize)
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
   }
-  
-  if (containerRef.value) {
-    containerRef.value.removeEventListener('mousemove', handleMouseMove)
-    containerRef.value.removeEventListener('mouseleave', handleMouseLeave)
-  }
-  
-  window.removeEventListener('resize', handleResize)
 })
 </script>
 

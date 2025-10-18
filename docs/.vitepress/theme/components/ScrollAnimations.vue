@@ -71,6 +71,7 @@ const showBackToTop = ref(false)
 const showReadingProgress = ref(false)
 const activeChapter = ref(0)
 const chapters = ref([])
+let io = null
 
 // 进度环计算
 const circumference = 2 * Math.PI * 26
@@ -123,10 +124,10 @@ function updateActiveChapter(scrollTop) {
 
 // 触发滚动动画
 function triggerScrollAnimations() {
+  if (io) return
   const elements = document.querySelectorAll('.scroll-animate')
   const windowHeight = window.innerHeight
   const scrollTop = window.pageYOffset
-  
   elements.forEach(element => {
     const elementTop = element.offsetTop
     const elementHeight = element.offsetHeight
@@ -212,11 +213,26 @@ function handleAnchorClick(event) {
   }
 }
 
+function setupIntersectionObserver() {
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return
+  const options = { root: null, rootMargin: '0px', threshold: 0.1 }
+  io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate')
+      }
+    })
+  }, options)
+  const elements = document.querySelectorAll('.scroll-animate')
+  elements.forEach(el => io.observe(el))
+}
+
 onMounted(() => {
   // 延迟执行，确保 DOM 已渲染
   setTimeout(() => {
     collectChapters()
     addScrollAnimationClasses()
+    setupIntersectionObserver()
     updateScrollState()
   }, 100)
   
@@ -227,6 +243,10 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
   document.removeEventListener('click', handleAnchorClick)
+  if (io) {
+    io.disconnect()
+    io = null
+  }
 })
 </script>
 
