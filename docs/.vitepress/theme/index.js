@@ -21,7 +21,7 @@ import { h } from 'vue'
 // 正确导入 vitepress-plugin-image-viewer
 import 'viewerjs/dist/viewer.min.css'
 import imageViewer from 'vitepress-plugin-image-viewer'
-import { onMounted, watch, ref } from 'vue'
+import { onMounted, watch, ref, onUnmounted } from 'vue'
 import { useRoute } from 'vitepress'
 import { createCodeBlockHandler } from './utils/codeBlockHandler.js'
 import { useMermaid } from './composables/useMermaid.js'
@@ -100,53 +100,74 @@ export default {
       onMounted(async () => {
         // 初始化代码块点击事件
         codeBlockHandler.initCodeBlockClick()
-        
+
         // 初始化 mermaid
         await setupMermaid()
-        // 延迟初始化图片查看
+
+        // 修复：立即初始化图片查看插件，确保绑定点击事件
+        try {
+          imageViewer(route)
+        } catch (e) {
+          console.warn('imageViewer init failed:', e?.message || e)
+        }
+
+        // 仍保留延迟初始化策略作为兜底（若首屏没有图片或需要重试）
         initImageViewerWhenNeeded()
-        // 初始化错误监控与 Web Vitals（仅生产）
+
+        // 监听文档区域的图片变化，出现新图片时自动重新初始化
+        const docRoot = document.querySelector('.vp-doc') || document.body
+        let mo
+        if ('MutationObserver' in window && docRoot) {
+          mo = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+              if (m.addedNodes && m.addedNodes.length) {
+                const hasImg = Array.from(m.addedNodes).some(
+                  (n) => (n.nodeType === 1 && ((n.tagName === 'IMG') || (n.querySelector && n.querySelector('img'))))
+                )
+                if (hasImg) {
+                  try {
+                    imageViewer(route)
+                  } catch (e) {
+                    // 忽略单次失败
+                  }
+                  break
+                }
+              }
+            }
+          })
+          mo.observe(docRoot, { childList: true, subtree: true })
+        }
+
+        // 设置侧边栏与导航栏同步
+        const cleanupSidebarSync = setupSidebarNavbarSync()
+
+        // 初始化错误监控与分析（仅生产）
         if (import.meta.env.PROD) {
           initErrorMonitor()
           initWebVitals()
-        }
-        // 设置侧边栏与导航栏同步
-        const cleanupSidebarSync = setupSidebarNavbarSync()
-        // 初始化隐私友好的站点分析（仅生产且显式启用）
-        if (import.meta.env.PROD) {
           initAnalytics()
         }
-        
-        // 在组件卸载时清理
-        const cleanup = () => {
-          if (cleanupSidebarSync) {
-            cleanupSidebarSync()
-          }
-        }
-        
-        // 注册清理函数（VitePress会在适当时候调用）
-        if (typeof window !== 'undefined') {
-          window.__vitepress_sidebar_cleanup = cleanup
-        }
-        
-        if ('serviceWorker' in navigator && import.meta.env.PROD) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').catch((err) => {
-              console.warn('Service Worker registration failed:', err)
-            })
-          })
-        }
+
+        // 清理：在卸载时断开观察器
+        onUnmounted(() => {
+          if (mo) mo.disconnect()
+        })
       })
-      
-      // 监听路由变化，重新初始化代码块点击事件和 mermaid
+
+      // 路由变化时重新初始化图片查看插件，确保新页面的图片可用
       watch(() => route.path, async () => {
         setTimeout(async () => {
           codeBlockHandler.initCodeBlockClick()
           await setupMermaid()
-          
-          // 路由切换后如果尚未初始化图片查看，尝试触发
+
+          // 修复：路由切换后立即初始化
+          try {
+            imageViewer(route)
+          } catch {}
+
+          // 若尚未初始化，尝试触发延迟初始化
           initImageViewerWhenNeeded()
-           
+
           // 刷新导航栏高亮状态
           if (window.__refreshNavbarHighlight) {
             window.__refreshNavbarHighlight()
