@@ -15,6 +15,7 @@ export class CodeBlockHandler {
       if (!code) return
       this.handleCodeBlockClick(e)
     }
+    this._isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
   }
 
   /**
@@ -42,13 +43,13 @@ export class CodeBlockHandler {
       return
     }
     
-    console.log('[CodeBlock] 代码块被点击')
+    if (this._isDev) console.log('[CodeBlock] 代码块被点击')
     event.preventDefault()
     event.stopPropagation()
     
     const codeElement = event.target.closest('code')
     if (!codeElement) {
-      console.log('[CodeBlock] 未找到code元素')
+      if (this._isDev) console.log('[CodeBlock] 未找到code元素')
       return
     }
     
@@ -79,11 +80,11 @@ export class CodeBlockHandler {
     
     // 获取代码内容
     const codeText = codeElement.textContent || codeElement.innerText || ''
-    console.log('[CodeBlock] 代码内容长度:', codeText.length)
+    if (this._isDev) console.log('[CodeBlock] 代码内容长度:', codeText.length)
     
     // 简化的语言检测逻辑
     const language = this.detectLanguage(codeElement)
-    console.log('[CodeBlock] 检测到语言:', language)
+    if (this._isDev) console.log('[CodeBlock] 检测到语言:', language)
     
     // 设置弹窗数据并显示
     this.codeModalState.data.value = {
@@ -91,7 +92,7 @@ export class CodeBlockHandler {
       language: language
     }
     this.codeModalState.visible.value = true
-    console.log('[CodeBlock] 弹窗已显示')
+    if (this._isDev) console.log('[CodeBlock] 弹窗已显示')
   }
 
   /**

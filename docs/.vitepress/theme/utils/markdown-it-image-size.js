@@ -30,6 +30,17 @@ function imageSizePlugin(md) {
     return renderer.renderToken(tokens, idx, options)
   }
 
+  // 新增：HTML 属性值转义函数，避免 XSS 注入
+  const escapeAttrValue = (str) => {
+    if (typeof str !== 'string') return ''
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+  }
+
   md.renderer.rules.image = function(tokens, idx, options, env, renderer) {
     const token = tokens[idx]
     const src = token.attrs[token.attrIndex('src')][1]
@@ -52,7 +63,6 @@ function imageSizePlugin(md) {
 
     // 检查alt text中是否包含尺寸信息
     const sizeMatch = altText.match(/^(.*?)\|(.+)$/)
-    
     if (sizeMatch) {
       const actualAlt = sizeMatch[1].trim()
       const sizeStr = sizeMatch[2].trim()
@@ -123,12 +133,13 @@ function imageSizePlugin(md) {
           token.attrs[classAttrIndex][1] += ' ' + classes.join(' ')
         }
         
-        // 添加alt属性
+        // 添加alt属性（使用属性转义）
         const altAttrIndex = token.attrIndex('alt')
+        const safeAlt = escapeAttrValue(actualAlt)
         if (altAttrIndex < 0) {
-          token.attrPush(['alt', actualAlt])
+          token.attrPush(['alt', safeAlt])
         } else {
-          token.attrs[altAttrIndex][1] = actualAlt
+          token.attrs[altAttrIndex][1] = safeAlt
         }
 
         // 新增：当为像素尺寸且非 0 时，补充 width/height 属性，降低 CLS
@@ -144,7 +155,8 @@ function imageSizePlugin(md) {
     // 如果有清单项，生成 <picture>，包含 webp 与原格式 srcset
     if (manifestItem) {
       const altAttrIndex = token.attrIndex('alt')
-      const altVal = altAttrIndex >= 0 ? token.attrs[altAttrIndex][1] : ''
+      const altValRaw = altAttrIndex >= 0 ? token.attrs[altAttrIndex][1] : ''
+      const altVal = escapeAttrValue(altValRaw)
       const widthIdx = token.attrIndex('width')
       const heightIdx = token.attrIndex('height')
       const widthVal = widthIdx >= 0 ? token.attrs[widthIdx][1] : (manifestItem.original.width || '')

@@ -22,7 +22,9 @@
     "prepare": "echo \"Use 'pnpm run setup:hooks' to enable .githooks\"",
     "lint:frontmatter": "node docs/.vitepress/utils/frontmatterLint.js",
     "images:optimize": "node docs/.vitepress/utils/generateResponsiveImages.js",
-    "lint:links": "node docs/.vitepress/utils/linkCheck.js"
+    "lint:links": "node docs/.vitepress/utils/linkCheck.js",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest"
   },
   "keywords": [
     "wiki",
@@ -46,7 +48,16 @@
     "eslint-plugin-vue": "^9.26.0",
     "@vue/eslint-config-prettier": "^9.0.0",
     "prettier": "^3.3.2",
-    "lint-staged": "^15.2.0"
+    "lint-staged": "^15.2.0",
+    "vitest": "^1.6.0",
+    "jsdom": "^24.1.0",
+    "markdown-it": "^13.0.1"
+  },
+  "vitest": {
+    "environment": "jsdom",
+    "coverage": {
+      "reporter": ["text", "lcov"]
+    }
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
