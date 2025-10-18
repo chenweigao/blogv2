@@ -21,6 +21,7 @@
     "format": "prettier -w .",
     "prepare": "echo \"Use 'pnpm run setup:hooks' to enable .githooks\"",
     "lint:frontmatter": "node docs/.vitepress/utils/frontmatterLint.js",
+    "images:optimize": "node docs/.vitepress/utils/generateResponsiveImages.js",
     "lint:links": "node docs/.vitepress/utils/linkCheck.js"
   },
   "keywords": [
@@ -56,7 +57,8 @@
     "viewerjs": "^1.11.7",
     "vitepress-plugin-image-viewer": "^1.1.6",
     "vue": "^3.5.18",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.0",
+    "sharp": "^0.33.4"
   },
   "engines": {
     "node": ">=18.0.0",

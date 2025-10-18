@@ -37,6 +37,9 @@ jobs:
       - name: Generate timeline (incremental)
         run: pnpm run timeline:incremental
 
+      - name: Optimize responsive images
+        run: pnpm run images:optimize
+
       - name: Lint (JS/Vue)
         run: pnpm run lint || true
 

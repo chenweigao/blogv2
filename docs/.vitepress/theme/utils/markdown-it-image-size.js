@@ -10,6 +10,20 @@
  * ![图片描述|300](./image.png)     - 仅设置宽度
  */
 
+import fs from 'fs'
+import path from 'path'
+
+let imageManifest = null
+try {
+  const manifestPath = path.resolve(process.cwd(), 'docs/.vitepress/data/image-manifest.json')
+  if (fs.existsSync(manifestPath)) {
+    const raw = fs.readFileSync(manifestPath, 'utf-8')
+    imageManifest = JSON.parse(raw)
+  }
+} catch (e) {
+  imageManifest = null
+}
+
 function imageSizePlugin(md) {
   // 保存原始的图片render规则
   const defaultImageRenderer = md.renderer.rules.image || function(tokens, idx, options, env, renderer) {
@@ -29,6 +43,12 @@ function imageSizePlugin(md) {
     }
     ensureAttr('loading', 'lazy')
     ensureAttr('decoding', 'async')
+
+    // 若为本地图像且清单存在，尝试生成 <picture>
+    const isHttp = /^https?:\/\//i.test(src)
+    const isLocalImages = !isHttp && (src.startsWith('/images/') || src.startsWith('images/') || src.startsWith('./images/'))
+    const normalizedKey = src.startsWith('/images/') ? src : ('/images/' + src.replace(/^\.?\/?images\//, ''))
+    const manifestItem = imageManifest && isLocalImages ? imageManifest[normalizedKey] : null
 
     // 检查alt text中是否包含尺寸信息
     const sizeMatch = altText.match(/^(.*?)\|(.+)$/)
@@ -120,7 +140,47 @@ function imageSizePlugin(md) {
         }
       }
     }
-    
+
+    // 如果有清单项，生成 <picture>，包含 webp 与原格式 srcset
+    if (manifestItem) {
+      const altAttrIndex = token.attrIndex('alt')
+      const altVal = altAttrIndex >= 0 ? token.attrs[altAttrIndex][1] : ''
+      const widthIdx = token.attrIndex('width')
+      const heightIdx = token.attrIndex('height')
+      const widthVal = widthIdx >= 0 ? token.attrs[widthIdx][1] : (manifestItem.original.width || '')
+      const heightVal = heightIdx >= 0 ? token.attrs[heightIdx][1] : (manifestItem.original.height || '')
+
+      const webpSet = (manifestItem.variants.webp || [])
+        .map(v => `${v.src} ${v.width}w`).join(', ')
+      const origSet = (manifestItem.variants.original || [])
+        .map(v => `${v.src} ${v.width}w`).join(', ')
+      const sizes = '(max-width: 768px) 90vw, 768px'
+
+      // 构建 <picture> 手动 HTML
+      const classIdx = token.attrIndex('class')
+      const cls = classIdx >= 0 ? token.attrs[classIdx][1] : 'responsive-image'
+      const styleIdx = token.attrIndex('style')
+      const style = styleIdx >= 0 ? token.attrs[styleIdx][1] : ''
+      const loadingIdx = token.attrIndex('loading')
+      const decodingIdx = token.attrIndex('decoding')
+      const loading = loadingIdx >= 0 ? token.attrs[loadingIdx][1] : 'lazy'
+      const decoding = decodingIdx >= 0 ? token.attrs[decodingIdx][1] : 'async'
+
+      const fallbackSrc = (manifestItem.variants.original || [])[0]?.src || manifestItem.original.src
+      return [
+        `<picture class="${cls}">`,
+        webpSet ? `  <source type="image/webp" srcset="${webpSet}" sizes="${sizes}">` : '',
+        origSet ? `  <source type="${manifestItem.original.type}" srcset="${origSet}" sizes="${sizes}">` : '',
+        `  <img src="${fallbackSrc}" alt="${altVal || ''}"` +
+          `${widthVal ? ` width="${widthVal}"` : ''}` +
+          `${heightVal ? ` height="${heightVal}"` : ''}` +
+          ` loading="${loading}" decoding="${decoding}"` +
+          `${style ? ` style="${style}"` : ''}` +
+          ` />`,
+        `</picture>`
+      ].filter(Boolean).join('\n')
+    }
+     
     return defaultImageRenderer(tokens, idx, options, env, renderer)
   }
 }

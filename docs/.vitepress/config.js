@@ -6,6 +6,7 @@ import { generateAndWriteSidebar } from './utils/generateSidebar.js'
 import { sidebar } from './config/sidebar/index.js'
 import markdownItMark from 'markdown-it-mark'
 import imageSizePlugin from './theme/utils/markdown-it-image-size.js'
+import { generateResponsiveImages } from './utils/generateResponsiveImages.js'
 
 export default defineConfig({
   title: 'Knowledge Wiki',
@@ -25,6 +26,9 @@ export default defineConfig({
 
     console.log('Generating git history data for modal...')
     writeGitHistoryData()
+
+    console.log('Generating responsive images...')
+    generateResponsiveImages()
   },
 
   // SSR 配置 - 解决客户端组件的 SSR 问题
