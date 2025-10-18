@@ -1,0 +1,303 @@
+/* 自定义组件样式 */
+
+/* 文档头部容器增强 */
+.doc-header-container {
+  background: linear-gradient(135deg, var(--vp-c-bg) 0%, var(--vp-c-bg-soft) 100%);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius-large);
+  padding: var(--vp-space-32);
+  margin-bottom: var(--vp-space-32);
+  box-shadow: var(--vp-shadow-2);
+  transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing),
+              transform var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+@media (hover: hover) {
+  .doc-header-container:hover {
+    box-shadow: var(--vp-shadow-3);
+    transform: translateY(var(--vp-space-2) * -1);
+  }
+}
+
+/* 面包屑导航样式 */
+.doc-breadcrumb {
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--vp-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-link {
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  padding: var(--vp-space-4) var(--vp-space-8);
+  border-radius: var(--vp-border-radius-small);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+@media (hover: hover) {
+  .breadcrumb-link:hover {
+    color: var(--vp-c-brand-1);
+    background-color: var(--vp-c-brand-soft);
+  }
+}
+
+.breadcrumb-current {
+  color: var(--vp-c-text-1);
+  font-weight: 500;
+  padding: var(--vp-space-4) var(--vp-space-8);
+  background-color: var(--vp-c-bg-mute);
+  border-radius: var(--vp-border-radius-small);
+}
+
+.breadcrumb-separator {
+  margin: 0 0.25rem;
+  color: var(--vp-c-text-3);
+  opacity: 0.6;
+}
+
+/* 文章标签样式 */
+.article-tags {
+  display: flex;
+  align-items: center;
+  gap: var(--vp-space-12);
+  flex-wrap: wrap;
+  margin-top: var(--vp-space-16);
+}
+
+.tags-label {
+  font-size: 0.875rem;
+  color: var(--vp-c-text-3);
+  font-weight: 500;
+}
+
+.article-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--vp-space-8) var(--vp-space-16);
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border-radius: var(--vp-border-radius-xl);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              transform var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              border-color var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  border: 1px solid transparent;
+}
+
+@media (hover: hover) {
+  .article-tag:hover {
+    background: var(--vp-c-brand-1);
+    color: white;
+    transform: translateY(var(--vp-space-2) * -1);
+    box-shadow: var(--vp-shadow-2);
+    border-color: var(--vp-c-brand-1);
+  }
+}
+
+/* 快速TOC预览样式 */
+.quick-toc-preview {
+  margin-top: 1.5rem;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius-large);
+  overflow: hidden;
+  box-shadow: var(--vp-shadow-2);
+  animation: slideDown var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.quick-toc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--vp-space-16) var(--vp-space-16);
+  background: var(--vp-c-bg-soft);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.quick-toc-header h4 {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.quick-toc-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--vp-c-text-3);
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--vp-border-radius-small);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+@media (hover: hover) {
+  .quick-toc-close:hover {
+    color: var(--vp-c-text-1);
+    background-color: var(--vp-c-bg-mute);
+  }
+}
+
+.quick-toc-content {
+  padding: var(--vp-space-12) 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.quick-toc-item {
+  display: block;
+  padding: var(--vp-space-8) var(--vp-space-16);
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              border-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  border-inline-start: 3px solid transparent;
+}
+
+@media (hover: hover) {
+  .quick-toc-item:hover {
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-1);
+    border-inline-start-color: var(--vp-c-brand-1);
+    transform: translateX(var(--vp-space-4));
+  }
+}
+
+.quick-toc-item.level-2 {
+  padding-inline-start: 2rem;
+  font-size: 0.8125rem;
+}
+
+.quick-toc-item.level-3 {
+  padding-inline-start: 2.75rem;
+  font-size: 0.8125rem;
+  opacity: 0.9;
+}
+
+/* 文档底部增强样式 */
+.doc-footer-enhancements {
+  margin-top: var(--vp-space-48);
+  padding-top: var(--vp-space-32);
+  border-top: 2px solid var(--vp-c-divider);
+  background: linear-gradient(135deg, var(--vp-c-bg) 0%, var(--vp-c-bg-soft) 100%);
+  border-radius: var(--vp-border-radius-large);
+  padding: var(--vp-space-32);
+}
+
+.doc-stats {
+  display: flex;
+  gap: var(--vp-space-32);
+  font-size: 0.875rem;
+  color: var(--vp-c-text-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--vp-space-24);
+}
+
+.doc-stats span {
+  display: flex;
+  align-items: center;
+  gap: var(--vp-space-8);
+  padding: var(--vp-space-8) var(--vp-space-16);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius-medium);
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              border-color var(--vp-animation-duration-fast) var(--vp-animation-easing),
+              box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+@media (hover: hover) {
+  .doc-stats span:hover {
+    background: var(--vp-c-brand-soft);
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+  }
+}
+
+/* 相关文章样式 */
+.related-articles {
+  margin-top: var(--vp-space-32);
+}
+
+.related-articles h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: var(--vp-c-text-1);
+  font-weight: 600;
+}
+
+.related-list {
+  display: grid;
+  gap: var(--vp-space-24);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.related-item {
+  display: block;
+  padding: var(--vp-space-24);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius-large);
+  text-decoration: none;
+  transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing),
+              background-color var(--vp-animation-duration-normal) var(--vp-animation-easing),
+              border-color var(--vp-animation-duration-normal) var(--vp-animation-easing),
+              color var(--vp-animation-duration-normal) var(--vp-animation-easing),
+              transform var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  box-shadow: var(--vp-shadow-1);
+}
+
+.related-item:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(var(--vp-space-8) * -1);
+  box-shadow: var(--vp-shadow-3);
+}
+
+.related-title {
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  margin-bottom: 0.75rem;
+  font-size: 1.0625rem;
+}
+
+.related-desc {
+  font-size: 0.875rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.5;
+}
+
+/* 组件样式增强 */
+@layer components {
+  /* 组件样式增强 */
+}

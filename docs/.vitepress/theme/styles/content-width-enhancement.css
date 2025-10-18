@@ -1,0 +1,126 @@
+/* 文章主要内容区域宽度增强样式 */
+
+/* 进一步扩展内容区域宽度 - 针对 VitePress 布局优化 */
+/* 下方为历史性的“强制全宽 + !important”规则，已由末尾的 80ch 理想行长策略取代。
+   为避免层叠复杂度和维护成本，这里整体注释掉旧实现。 */
+/*
+@media (min-width: 960px) {
+  .VPDoc .container {
+    max-width: 100% !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .VPDoc .content .content-container {
+    max-width: none !important;
+  }
+  .VPDoc .content-container,
+  .VPDoc .vp-doc {
+    max-width: calc(100vw - 48px) !important;
+    width: 100% !important;
+  }
+  .VPDoc .content {
+    max-width: none !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .VPDoc .container,
+  .VPDoc .content,
+  .VPDoc .content-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .VPDoc .container {
+    max-width: 100% !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+  .VPDoc .content-container,
+  .VPDoc .vp-doc {
+    max-width: calc(100vw - 64px) !important;
+  }
+  .VPDoc .content {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPDoc .container,
+  .VPDoc .content {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+  .VPDoc .content-container,
+  .VPDoc .vp-doc {
+    max-width: calc(100vw - 96px) !important;
+  }
+}
+
+.VPContent.is-home,
+.VPContent.has-sidebar {
+  padding-right: 0 !important;
+}
+
+.VPContent:not(.has-sidebar) .VPDoc {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+.VPDoc .aside {
+  display: none !important;
+}
+
+:root {
+  --vp-layout-max-width: 100% !important;
+}
+
+.vp-doc,
+.VPDoc .vp-doc {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.VPDoc[class*="VPDoc"] {
+  max-width: 100% !important;
+}
+
+.VPDoc .content-container {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+*/
+
+/* 阅读宽度与间距优化（末尾覆盖规则） */
+.VPDoc .vp-doc {
+  max-width: var(--vp-content-max-width);
+  margin-inline: auto;
+  padding-inline: var(--vp-space-24);
+  line-height: var(--vp-line-height-normal);
+}
+
+/* 大屏适度增加内边距 */
+@media (min-width: 1280px) {
+  .VPDoc .vp-doc {
+    padding-inline: var(--vp-space-32);
+  }
+}
+
+/* 移动端回退到全宽，确保舒适阅读 */
+@media (max-width: 768px) {
+  .VPDoc .vp-doc {
+    max-width: 100%;
+    padding-inline: var(--vp-space-16);
+  }
+}
+
+/* 内容宽度增强 */
+@layer overrides {
+  /* 内容宽度增强 */
+  /* ... existing code ... */
+}

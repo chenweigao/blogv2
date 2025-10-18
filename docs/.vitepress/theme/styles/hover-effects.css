@@ -1,0 +1,359 @@
+/* 全局鼠标悬停特效 - 简洁博客风格 */
+
+/* ===== 基础悬停变量 ===== */
+:root {
+  /* 悬停效果变量 */
+  --hover-duration: 0.25s;
+  --hover-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --hover-scale: 1.02;
+  --hover-lift: -2px;
+  
+  /* 悬停颜色 */
+  --hover-bg-light: rgba(6, 69, 173, 0.05);
+  --hover-border-light: rgba(6, 69, 173, 0.2);
+  --hover-shadow: rgba(6, 69, 173, 0.15);
+}
+
+.dark {
+  --hover-bg-light: rgba(100, 108, 255, 0.08);
+  --hover-border-light: rgba(100, 108, 255, 0.25);
+  --hover-shadow: rgba(100, 108, 255, 0.2);
+}
+
+/* ===== 通用悬停基类 ===== */
+.hover-lift {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  transform: translateZ(0); /* GPU 加速 */
+}
+
+@media (hover: hover) {
+  .hover-lift:hover {
+    transform: translateY(var(--hover-lift)) translateZ(0);
+  }
+}
+
+.hover-scale {
+  transition: transform var(--hover-duration) var(--hover-easing);
+  transform: translateZ(0);
+}
+
+@media (hover: hover) {
+  .hover-scale:hover {
+    transform: scale(var(--hover-scale)) translateZ(0);
+  }
+}
+
+/* ===== 链接悬停效果 ===== */
+/* 内容区域链接 */
+.vp-doc a:not(.header-anchor) {
+  position: relative;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+@media (hover: hover) {
+  .vp-doc a:not(.header-anchor):hover {
+    background-color: var(--hover-bg-light);
+    border-bottom-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+    transform: translateY(-1px);
+  }
+}
+
+/* 导航链接 */
+.VPNavBarMenuLink,
+.VPNavBarTitle .title {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  padding: 8px 12px;
+  border-radius: 6px;
+  position: relative;
+}
+
+@media (hover: hover) {
+  .VPNavBarMenuLink:hover,
+  .VPNavBarTitle .title:hover {
+    background-color: var(--hover-bg-light);
+    color: var(--vp-c-brand-1);
+    transform: translateY(-1px);
+  }
+}
+
+/* ===== 按钮悬停效果 ===== */
+/* 主要按钮 */
+.VPButton {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (hover: hover) {
+  .VPButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--hover-shadow);
+  }
+}
+
+.VPButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline-start: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: inset-inline-start 0.5s ease;
+}
+
+@media (hover: hover) {
+  .VPNewButton:hover::before {
+    inset-inline-start: 100%;
+  }
+}
+
+/* 次要按钮和图标按钮 */
+.VPButton.alt,
+.VPIconButton,
+.clickable-icon {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  border-radius: 8px;
+}
+
+@media (hover: hover) {
+  .VPButton.alt:hover,
+  .VPIconButton:hover,
+  .clickable-icon:hover {
+    background-color: var(--hover-bg-light);
+    transform: scale(1.05);
+  }
+}
+
+/* ===== 卡片悬停效果 ===== */
+/* 文章卡片 */
+.VPFeature,
+.article-card,
+.post-card {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+@media (hover: hover) {
+  .VPFeature:hover,
+  .article-card:hover,
+  .post-card:hover {
+    border-color: var(--hover-border-light);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px var(--hover-shadow);
+  }
+}
+
+@media (hover: hover) {
+  .VPFeature:hover::after,
+  .article-card:hover::after,
+  .post-card:hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--hover-bg-light);
+    pointer-events: none;
+  }
+}
+
+/* ===== 导航和侧边栏悬停 ===== */
+/* 面包屑导航 */
+.VPDocAsideOutline .outline-link {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-inline-start: 2px solid transparent;
+}
+
+@media (hover: hover) {
+  .VPDocAsideOutline .outline-link:hover {
+    background-color: var(--hover-bg-light);
+    border-inline-start-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+    transform: translateX(4px);
+  }
+}
+
+/* ===== 表格悬停效果 ===== */
+.vp-doc table tr {
+  transition: background-color var(--hover-duration) var(--hover-easing);
+}
+
+@media (hover: hover) {
+  .vp-doc table tr:hover {
+    background-color: var(--hover-bg-light);
+  }
+}
+
+.vp-doc table th,
+.vp-doc table td {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+}
+
+@media (hover: hover) {
+  .vp-doc table th:hover,
+  .vp-doc table td:hover {
+    background-color: var(--hover-border-light);
+    color: var(--vp-c-brand-1);
+  }
+}
+
+/* ===== 代码块悬停效果 ===== */
+.vp-doc div[class*="language-"] {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  position: relative;
+}
+
+@media (hover: hover) {
+  .vp-doc div[class*="language-"]:hover {
+    border-color: var(--hover-border-light);
+    box-shadow: 0 4px 12px var(--hover-shadow);
+  }
+}
+
+/* 行内代码 */
+.vp-doc code:not(pre code) {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: var(--vp-c-bg-soft);
+}
+
+@media (hover: hover) {
+  .vp-doc code:not(pre code):hover {
+    background-color: var(--hover-bg-light);
+    color: var(--vp-c-brand-1);
+    transform: scale(1.05);
+  }
+}
+
+/* ===== 图片悬停效果 ===== */
+.vp-doc img {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  border-radius: 8px;
+}
+
+@media (hover: hover) {
+  .vp-doc img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px var(--hover-shadow);
+  }
+}
+
+/* ===== 搜索框悬停效果 ===== */
+.VPNavBarSearch .DocSearch-Button {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+}
+
+@media (hover: hover) {
+  .VPNavBarSearch .DocSearch-Button:hover {
+    background-color: var(--hover-bg-light);
+    border-color: var(--hover-border-light);
+    transform: scale(1.02);
+  }
+}
+
+/* ===== 标签和徽章悬停效果 ===== */
+.VPBadge,
+.tag,
+.badge {
+  transition: color var(--hover-duration) var(--hover-easing), background-color var(--hover-duration) var(--hover-easing), border-color var(--hover-duration) var(--hover-easing), box-shadow var(--hover-duration) var(--hover-easing), transform var(--hover-duration) var(--hover-easing), opacity var(--hover-duration) var(--hover-easing);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .VPBadge:hover,
+  .tag:hover,
+  .badge:hover {
+    transform: scale(1.1) translateY(-1px);
+    box-shadow: 0 4px 12px var(--hover-shadow);
+  }
+}
+
+/* ===== 响应式优化 ===== */
+@media (max-width: 768px) {
+  :root {
+    --hover-scale: 1.01;
+    --hover-lift: -1px;
+  }
+  
+  /* 移动设备上简化悬停效果 */
+  .VPFeature:hover,
+  .article-card:hover,
+  .post-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .vp-doc img:hover {
+    transform: scale(1.01);
+  }
+}
+
+/* ===== 减少动画偏好支持 ===== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ===== 高对比度模式支持 ===== */
+@media (prefers-contrast: high) {
+  :root {
+    --hover-bg-light: rgba(6, 69, 173, 0.15);
+    --hover-border-light: #0645ad;
+  }
+  
+  .dark {
+    --hover-bg-light: rgba(100, 108, 255, 0.2);
+    --hover-border-light: #646cff;
+  }
+}
+
+/* ===== 自定义鼠标指针 ===== */
+/* 可点击元素 */
+a, button, .clickable, [role="button"] {
+  cursor: pointer;
+}
+
+/* 可拖拽元素 */
+.draggable {
+  cursor: grab;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
+
+/* 禁用元素 */
+[disabled], .disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+[disabled]:hover, .disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== 焦点状态优化 ===== */
+/* 键盘导航焦点样式 */
+*:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 移除默认焦点样式 */
+*:focus {
+  outline: none;
+}

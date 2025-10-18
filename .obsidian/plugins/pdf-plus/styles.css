@@ -230,6 +230,11 @@ settings:
             height: var(--swatch-width);
             border-radius: 50%;
             border: var(--input-border-width) solid var(--background-modifier-border);
+            
+            /* palette 交互统一过渡 */
+            transition: border-color var(--motion-duration-short) var(--motion-ease-standard),
+                        box-shadow var(--motion-duration-short) var(--motion-ease-standard),
+                        transform var(--motion-duration-xshort) var(--motion-ease-decelerate);
         }
     }
 
@@ -609,6 +614,12 @@ body {
     --popover-width: 400px;
     --pdf-plus-bib-metadata-font-size: var(--font-ui-small);
 
+    /* Workaround to prevent bib popovers from being covered by Hover Editor
+    when the bib popover is spawned from a hover editor
+    (https://github.com/RyotaUshio/obsidian-pdf-plus/issues/459).
+    Hover Editor decides z-index based on --layer-slides, so we need to set a higher z-index. */
+    z-index: calc(var(--layer-slides) + 1);
+
     .pdf-plus-bib {
         padding: var(--size-4-3);
         font-size: var(--font-ui-medium);
@@ -685,4 +696,14 @@ body {
 body.pdf-plus-vim-hint-inverted {
     --pdf-plus-vim-hint-color: var(--text-on-accent);
     --pdf-plus-vim-hint-background-color: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pdf-plus-color-palette-item-inner {
+        transition-duration: 0.01ms !important;
+    }
+    .pdf-plus-color-palette-item-inner:hover {
+        transform: none;
+        box-shadow: none;
+    }
 }

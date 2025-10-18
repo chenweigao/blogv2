@@ -1,0 +1,231 @@
+/* 优化后的代码块样式 - 统一悬停阴影效果 */
+
+/* 基础样式重置 */
+pre, 
+code, 
+[class*="language-"],
+.shiki,
+.code-block,
+.clickable-code-block {
+  outline: none;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* 统一的代码块容器样式 */
+.code-block-container,
+div[class*="language-"],
+.code-block,
+.highlight,
+.highlighter-rouge {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-alt);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* 统一的悬停效果 - 应用到所有代码容器 */
+.code-block-container:hover,
+div[class*="language-"]:hover,
+.code-block:hover,
+.highlight:hover,
+.highlighter-rouge:hover {
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* 对于没有容器包裹的独立 pre 元素 */
+pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre) {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-alt);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre):hover {
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* 统一的行内代码悬停效果 */
+code:not(pre code):not([class*="language-"] code) {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 4px;
+  background-color: var(--vp-c-bg-alt);
+  padding: 2px 6px;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+code:not(pre code):not([class*="language-"] code):hover {
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 2px 8px rgba(6, 69, 173, 0.15);
+  background-color: rgba(6, 69, 173, 0.05);
+  color: var(--vp-c-brand-1);
+  transform: translateY(-1px);
+}
+
+/* Focus 状态 - 复用 hover 样式 */
+.code-block-container:focus,
+div[class*="language-"]:focus,
+.code-block:focus,
+.highlight:focus,
+.highlighter-rouge:focus,
+pre:not([class*="language-"] pre):not(.code-block pre):not(.highlight pre):focus,
+code:not(pre code):not([class*="language-"] code):focus {
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
+  background-color: var(--vp-c-bg-soft);
+  outline: none;
+}
+
+/* 行内代码的 focus 状态 */
+code:not(pre code):not([class*="language-"] code):focus {
+  box-shadow: 0 2px 8px rgba(6, 69, 173, 0.15);
+  transform: translateY(-1px);
+}
+
+/* 可点击代码块的特殊样式 */
+.clickable-code-block {
+  cursor: pointer;
+  position: relative;
+}
+
+.clickable-code-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* 点击动画效果 */
+.clickable-code-block.clicked {
+  animation: clickFeedback 0.15s ease-out;
+}
+
+@keyframes clickFeedback {
+  0% {
+    transform: translateY(-1px) scale(1);
+  }
+  50% {
+    transform: translateY(0) scale(0.98);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 禁用嵌套元素的交互效果，防止冲突 */
+div[class*="language-"] pre,
+div[class*="language-"] code,
+.code-block pre,
+.code-block code,
+.highlight pre,
+.highlight code {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+
+div[class*="language-"] pre:hover,
+div[class*="language-"] pre:focus,
+div[class*="language-"] code:hover,
+div[class*="language-"] code:focus,
+.code-block pre:hover,
+.code-block pre:focus,
+.code-block code:hover,
+.code-block code:focus,
+.highlight pre:hover,
+.highlight pre:focus,
+.highlight code:hover,
+.highlight code:focus {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  outline: none;
+}
+
+/* VitePress 特定优化 */
+.vp-doc div[class*="language-"],
+.vp-doc .code-block {
+  margin: 16px 0;
+}
+
+.vp-doc div[class*="language-"]:hover,
+.vp-doc .code-block:hover {
+  border-color: rgba(6, 69, 173, 0.2);
+  box-shadow: 0 4px 12px rgba(6, 69, 173, 0.15);
+  transform: translateY(-2px);
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* 确保嵌套元素不会覆盖容器样式 */
+.vp-doc div[class*="language-"] pre,
+.vp-doc div[class*="language-"] code,
+.vp-doc .code-block pre,
+.vp-doc .code-block code {
+  background: transparent;
+  border: none;
+  margin: 0;
+}
+
+/* 移除所有默认的 focus outline */
+*:focus {
+  outline: none;
+}
+
+/* 为可访问性保留键盘导航的 focus 指示，但使用统一样式 */
+*:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1, #646cff);
+  outline-offset: 2px;
+}
+
+/* 代码块的键盘导航使用统一的悬停样式而不是默认 outline */
+.code-block-container:focus-visible,
+div[class*="language-"]:focus-visible,
+.code-block:focus-visible,
+.highlight:focus-visible,
+.clickable-code-block:focus-visible {
+  outline: none;
+  border-color: var(--vp-c-brand-1, #646cff);
+  box-shadow: 0 0 0 2px rgba(var(--vp-c-brand-rgb, 100, 108, 255), 0.2);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .code-block-container:hover,
+  div[class*="language-"]:hover,
+  .code-block:hover,
+  .highlight:hover {
+    transform: none; /* 移动设备上禁用 transform 效果 */
+  }
+}
+
+/* 深色主题适配 */
+.dark .code-block-container,
+.dark div[class*="language-"],
+.dark .code-block,
+.dark .highlight {
+  border-color: var(--vp-c-border);
+  background-color: var(--vp-c-bg-alt);
+}
+
+.dark .code-block-container:hover,
+.dark div[class*="language-"]:hover,
+.dark .code-block:hover,
+.dark .highlight:hover {
+  border-color: rgba(6, 69, 173, 0.2);
+  background-color: var(--vp-c-bg-soft);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

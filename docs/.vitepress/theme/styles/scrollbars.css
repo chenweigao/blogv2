@@ -1,0 +1,42 @@
+@layer components {
+  /* Firefox 原生滚动条颜色与宽度 */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--vp-c-text-3) var(--vp-c-bg);
+  }
+
+  /* WebKit 系列滚动条样式 */
+  /* 注意：仅在支持的平台生效 */
+  :root::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  :root::-webkit-scrollbar-track {
+    background: var(--vp-c-bg);
+  }
+  :root::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, var(--vp-c-text-3) 60%, transparent);
+    border: 2px solid var(--vp-c-bg);
+    border-radius: var(--vp-border-radius-small);
+  }
+
+  @media (hover: hover) {
+    :root::-webkit-scrollbar-thumb:hover {
+      background-color: color-mix(in oklab, var(--vp-c-text-2) 65%, transparent);
+    }
+  }
+
+  /* 强制颜色模式下回退到系统色，避免自定义样式影响可见性 */
+  @media (forced-colors: active) {
+    html {
+      scrollbar-color: CanvasText Canvas !important;
+    }
+    :root::-webkit-scrollbar,
+    :root::-webkit-scrollbar-track,
+    :root::-webkit-scrollbar-thumb {
+      background: Canvas !important;
+      color: CanvasText !important;
+      border-color: CanvasText !important;
+    }
+  }
+}

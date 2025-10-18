@@ -1,0 +1,123 @@
+/* 响应式设计优化 */
+@layer theme {
+  /* 大屏幕优化 */
+  @media (min-width: 1440px) {
+    :root {
+      --vp-layout-max-width: 1400px;
+    }
+    
+    .doc-header-container {
+      padding: 2.5rem;
+    }
+    
+    .related-list {
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+  }
+
+  /* 平板设备优化 */
+  @media (max-width: 1024px) {
+    .doc-header-container {
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .doc-stats {
+      gap: 1rem;
+    }
+    
+    .related-list {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    
+    .vp-doc h1::before,
+    .vp-doc h2::before,
+    .vp-doc h3::before {
+      display: none;
+    }
+  }
+
+  /* 移动设备优化 */
+  @media (max-width: 768px) {
+    :root {
+      --vp-animation-duration-fast: 0.1s;
+      --vp-animation-duration-normal: 0.2s;
+      --vp-animation-duration-slow: 0.3s;
+    }
+    
+    .doc-header-container {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: var(--vp-border-radius-medium);
+    }
+    
+    .breadcrumb-list {
+      font-size: 0.8125rem;
+    }
+    
+    .article-tags {
+      margin-top: 0.75rem;
+    }
+    
+    .article-tag {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.625rem;
+    }
+    
+    .doc-stats {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .related-list {
+      grid-template-columns: 1fr;
+    }
+    
+    .related-item {
+      padding: 1rem;
+    }
+    
+    .quick-toc-content {
+      max-height: 200px;
+    }
+    
+    /* 移动设备上禁用一些复杂动画 */
+    .doc-header-container:hover {
+      transform: none;
+    }
+    
+    .related-item:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* 小屏设备优化 */
+  @media (max-width: 640px) {
+    .doc-header-container {
+      padding: 0.75rem;
+      border-radius: var(--vp-border-radius-small);
+    }
+    
+    .breadcrumb-list {
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    
+    .breadcrumb-separator {
+      margin: 0 0.125rem;
+    }
+    
+    .article-tags {
+      gap: 0.5rem;
+    }
+    
+    .quick-toc-header {
+      padding: 0.75rem 1rem;
+    }
+    
+    .quick-toc-content {
+      max-height: 150px;
+    }
+  }
+}

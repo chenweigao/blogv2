@@ -1,16 +1,32 @@
 {
   "recentFiles": [
     {
+      "basename": "nccl-test",
+      "path": "docs/artificial-intelligence/distributed-training/nccl-test.md"
+    },
+    {
+      "basename": "megatron_parallel",
+      "path": "docs/artificial-intelligence/distributed-training/megatron_parallel.md"
+    },
+    {
+      "basename": "index",
+      "path": "docs/artificial-intelligence/distributed-training/index.md"
+    },
+    {
+      "basename": "Drawing 2025-09-09 10.21.09.excalidraw",
+      "path": "Excalidraw/Drawing 2025-09-09 10.21.09.excalidraw.md"
+    },
+    {
+      "basename": "6.6",
+      "path": "others/tmp/6.6.md"
+    },
+    {
       "basename": "pipline",
       "path": "architecture/pipline.md"
     },
     {
       "basename": "read-lifeifei",
       "path": "read-lifeifei.md"
-    },
-    {
-      "basename": "6.6",
-      "path": "others/tmp/6.6.md"
     },
     {
       "basename": "Marketing",
@@ -183,22 +199,6 @@
     {
       "basename": "BL31",
       "path": "linux/kernel/BL31.md"
-    },
-    {
-      "basename": "gc_art_01",
-      "path": "java/art/gc_art_01.md"
-    },
-    {
-      "basename": "2025-03-05(星期三)",
-      "path": "journals/202503/2025-03-05(星期三).md"
-    },
-    {
-      "basename": "20250305-1209-JVM AI 参数调优思考",
-      "path": "notes/20250305-1209-JVM AI 参数调优思考.md"
-    },
-    {
-      "basename": "outliner-20250305120435",
-      "path": "notes/outliner-20250305120435.md"
     }
   ],
   "omittedPaths": [],

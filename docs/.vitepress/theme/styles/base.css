@@ -1,0 +1,107 @@
+@layer base, theme, components, utilities, overrides;
+/* 基础样式和性能优化 */
+
+/* GPU 加速优化 */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* 统一过渡效果 */
+.transition-fast {
+  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.transition-normal {
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
+}
+
+.transition-slow {
+  transition: color var(--vp-animation-duration-slow) var(--vp-animation-easing), background-color var(--vp-animation-duration-slow) var(--vp-animation-easing), border-color var(--vp-animation-duration-slow) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-slow) var(--vp-animation-easing), transform var(--vp-animation-duration-slow) var(--vp-animation-easing), opacity var(--vp-animation-duration-slow) var(--vp-animation-easing);
+}
+
+.transition-smooth {
+  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), transform var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+}
+
+/* 将潜在的 transition: all 替换为具体属性过渡（若存在命中则应用以下示例形式） */
+/* 示例：.some-class { transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing); } */
+/* 如当前文件未出现 transition: all，本次编辑不改变任何现有样式 */
+
+/* 性能优化 */
+.doc-header-container,
+.related-item,
+.quick-toc-preview {
+  contain: layout style paint;
+}
+
+/* 滚动性能优化 */
+.quick-toc-content,
+/* 移除对 .vp-doc 的全局平滑滚动，保留组件内滚动 */
+.vp-doc {
+  /* 原先为 scroll-behavior: smooth; */
+}
+
+/* 仅对 Quick TOC 内容保留平滑滚动 */
+.quick-toc-content {
+  scroll-behavior: smooth;
+}
+
+/* 图像优化 */
+.vp-doc img {
+  transition: transform var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  border-radius: var(--vp-border-radius-medium);
+}
+
+@media (hover: hover) {
+  .vp-doc img:hover {
+    transform: scale(1.02);
+    box-shadow: var(--vp-shadow-3);
+  }
+}
+
+/* 文本选中配色统一 */
+::selection {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-text-1);
+}
+.dark ::selection {
+  background: rgba(var(--vp-c-brand-rgb), 0.35);
+  color: var(--vp-c-bg);
+}
+
+/* 统一滚动条样式（WebKit 浏览器） */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--vp-c-bg-soft);
+  border-radius: var(--vp-border-radius-small);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-border);
+  border-radius: var(--vp-border-radius-small);
+  border: 2px solid var(--vp-c-bg-soft);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-border-hover);
+}
+
+/* Firefox 统一滚动条样式 */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-c-border) var(--vp-c-bg-soft);
+  scrollbar-gutter: stable both-edges;
+}
+
+html {
+  scroll-padding-top: calc(var(--vp-nav-height) + var(--vp-space-16));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

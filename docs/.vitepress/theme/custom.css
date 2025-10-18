@@ -1,0 +1,36 @@
+/* VitePress Enhanced Custom Theme - 模块化版本 */
+/* 新增：CSS 层，降低选择器竞争并提升维护性 */
+@layer base, theme, components, utilities, overrides;
+
+/* 
+ * 导入顺序说明：
+ * 1. variables.css - 必须最先导入，提供所有CSS变量
+ * 2. base.css - 基础样式和性能优化类
+ * 3. layout.css - VitePress布局增强（基础布局）
+ * 4. content.css - 文档内容增强样式
+ * 5. components.css - 自定义组件样式
+ * 6. animations.css - 动画定义
+ * 7. responsive.css - 响应式设计
+ * 8. accessibility.css - 可访问性增强
+ * 9. utilities.css - 实用工具类（最后导入，优先级最高）
+ * 10. hide-aside.css - 隐藏右侧 aside，给文章主体更多空间（已优化，使用安全选择器）
+ * 11. content-width-enhancement.css - 内容宽度增强（覆盖规则，放在 theme 层末尾）
+ */
+
+/* 原先的普通 @import 改为带层级的导入 */
+@import url('./styles/variables.css');
+@import url('./styles/base.css') layer(base);
+@import url('./styles/layout.css') layer(theme);
+@import url('./styles/content.css') layer(theme);
+@import url('./styles/components.css') layer(components);
+@import url('./styles/responsive-images.css') layer(components);
+@import url('./styles/animations.css') layer(components);
+@import url('./styles/navbar-animations.css') layer(components);
+/* 新增滚动条样式优化 */
+@import url('./styles/scrollbars.css') layer(components);
+@import url('./styles/responsive.css') layer(theme);
+@import url('./styles/accessibility.css') layer(overrides);
+@import url('./styles/utilities.css') layer(utilities);
+@import url('./styles/hide-aside.css') layer(overrides);
+@import url('./styles/content-width-enhancement.css') layer(theme);
+@import url('./styles/print.css') layer(overrides);

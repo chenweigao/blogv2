@@ -1,0 +1,241 @@
+/* 行号样式 */
+.line-numbers {
+  background: var(--vp-c-bg-soft, #f8f9fa);
+  border-right: 1px solid var(--vp-c-border, #a2a9b1);
+  padding: 20px 0;
+  min-width: 60px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  user-select: none;
+  font-family: var(--vp-font-family-mono, 'Menlo', 'Monaco', 'Consolas', monospace);
+  font-size: 13px;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
+.line-number {
+  padding: 0 16px;
+  color: var(--vp-c-text-3, #777);
+  text-align: right;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.line-number.highlighted {
+  background: var(--vp-c-brand-soft, rgba(6, 69, 173, 0.14));
+  color: var(--vp-c-brand-1, #0645ad);
+  font-weight: 600;
+}
+
+.code-content {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  min-width: 0; /* 确保 flex 子元素可以收缩 */
+}
+
+.shiki-container {
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+
+/* Shiki 样式覆盖 - 支持自动换行 - 使用更高优先级 */
+.code-modal-container :deep(.shiki),
+.code-modal-container :deep(pre.shiki),
+.code-modal-container :deep(.shiki pre) {
+  margin: 0 !important;
+  padding: 20px 24px !important;
+  background: transparent !important;
+  font-family: var(--vp-font-family-mono, 'Menlo', 'Monaco', 'Consolas', monospace) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  overflow: visible !important; /* 让内容自然流动 */
+  min-height: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+.code-modal-container :deep(.shiki code) {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+  display: block;
+  width: 100%;
+}
+
+.code-modal-container :deep(.shiki pre) {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: visible;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+.code-modal-container :deep(.highlighted-line) {
+  background: var(--vp-c-brand-soft, rgba(6, 69, 173, 0.14));
+  display: block;
+  margin: 0 -24px;
+  padding: 0 24px;
+  border-left: 3px solid var(--vp-c-brand-1, #0645ad);
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+
+.code-modal-container :deep(.shiki *) {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 确保代码行也支持自动换行 */
+.code-modal-container :deep(.line) {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 确保代码容器有正确的高度 */
+.code-block-wrapper {
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-container {
+  display: flex;
+  height: 100%;
+  flex: 1;
+  min-height: 0; /* 确保可以收缩 */
+}
+
+/* 滚动条样式优化 */
+.shiki-container::-webkit-scrollbar,
+.line-numbers::-webkit-scrollbar,
+.code-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.shiki-container::-webkit-scrollbar-track,
+.line-numbers::-webkit-scrollbar-track,
+.code-content::-webkit-scrollbar-track {
+  background: var(--vp-c-bg-soft, #f8f9fa);
+  border-radius: 4px;
+}
+
+.shiki-container::-webkit-scrollbar-thumb,
+.line-numbers::-webkit-scrollbar-thumb,
+.code-content::-webkit-scrollbar-thumb {
+  background: var(--vp-c-text-3, #777);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.shiki-container::-webkit-scrollbar-thumb:hover,
+.line-numbers::-webkit-scrollbar-thumb:hover,
+.code-content::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-text-2, #555);
+}
+
+/* Firefox 滚动条样式 */
+.shiki-container,
+.line-numbers,
+.code-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-c-text-3, #777) var(--vp-c-bg-soft, #f8f9fa);
+}
+
+/* 响应式设计优化 */
+@media (max-width: 768px) {
+  .line-numbers {
+    min-width: 50px;
+    padding: 16px 0;
+  }
+  
+  .line-number {
+    padding: 0 12px;
+  }
+  
+  .code-modal-container :deep(.shiki) {
+    padding: 16px 20px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .line-numbers {
+    min-width: 40px;
+  }
+  
+  .line-number {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+  
+  .code-modal-container :deep(.shiki) {
+    padding: 16px;
+    font-size: 12px;
+  }
+}
+
+/* 深色主题适配 */
+.dark .line-numbers {
+  background: var(--vp-c-bg-soft, #161b22);
+  border-right-color: var(--vp-c-border, #30363d);
+}
+
+.dark .line-number {
+  color: var(--vp-c-text-3, #656d76);
+}
+
+.dark .line-number.highlighted {
+  background: var(--vp-c-brand-soft, rgba(100, 108, 255, 0.14));
+  color: var(--vp-c-brand-1, #646cff);
+}
+
+/* 性能优化 */
+.code-modal-container {
+  contain: layout style paint;
+}
+
+.shiki-container,
+.line-numbers {
+  will-change: scroll-position;
+}
+
+/* 强制代码弹窗自动换行 - 终极解决方案 */
+.code-modal-container * {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 针对 Shiki 生成的所有元素 */
+.code-modal-container pre,
+.code-modal-container code,
+.code-modal-container span {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}

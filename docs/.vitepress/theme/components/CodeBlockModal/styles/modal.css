@@ -1,0 +1,365 @@
+/* 模态框动画优化 - 流畅版 */
+.modal-enter-active {
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-leave-active {
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-enter-from {
+  opacity: 0;
+}
+
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .code-modal-container {
+  transform: scale(0.95) translateY(-10px);
+  opacity: 0;
+}
+
+.modal-leave-to .code-modal-container {
+  transform: scale(0.98) translateY(-5px);
+  opacity: 0;
+}
+
+/* 弹窗弹入动画 */
+@keyframes modalBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-40px) rotateX(15deg);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(1.05) translateY(-5px) rotateX(0deg);
+    filter: blur(2px);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(0.98) translateY(2px) rotateX(0deg);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+/* 弹窗退出动画 */
+@keyframes modalSlideOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+    filter: blur(2px);
+  }
+}
+
+/* 遮罩层动画优化 */
+.code-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  /* 性能优化 */
+  will-change: opacity;
+  contain: layout style paint;
+}
+
+/* 遮罩层淡入动画 */
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(1);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px) saturate(1.2);
+  }
+}
+
+/* 模态框容器优化 */
+.code-modal-container {
+  background: var(--vp-c-bg, #fff);
+  border: 1px solid var(--vp-c-border, #a2a9b1);
+  border-radius: 16px;
+  box-shadow: 
+    0 20px 40px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  max-width: min(90vw, 1200px);
+  max-height: min(90vh, 800px);
+  width: 100%;
+  height: min(90vh, 800px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  /* 性能优化 */
+  will-change: transform, opacity;
+  contain: layout style paint;
+  /* 简化背景 */
+  background: var(--vp-c-bg);
+}
+
+/* 简化的悬停效果 */
+.code-modal-container:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+}
+
+/* 内容区域优化 */
+.code-modal-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+.code-modal-content.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--vp-c-bg, #fff);
+  max-width: none;
+  max-height: none;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.code-block-wrapper {
+  height: 100%;
+  position: relative;
+}
+
+.code-container {
+  display: flex;
+  height: 100%;
+}
+
+/* 深色主题适配 */
+.dark .code-modal-overlay {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.dark .code-modal-container {
+  background: var(--vp-c-bg, #0d1117);
+  border-color: var(--vp-c-border, #30363d);
+  box-shadow: 
+    0 20px 40px -12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.dark .code-modal-content.fullscreen {
+  background: var(--vp-c-bg, #0d1117);
+}
+
+/* 响应式设计优化 */
+@media (max-width: 768px) {
+  .code-modal-overlay {
+    padding: 10px;
+    backdrop-filter: blur(4px);
+  }
+  
+  .code-modal-container {
+    max-width: 100%;
+    max-height: 100%;
+    height: min(95vh, 600px);
+    border-radius: 12px;
+  }
+  
+  /* 移动设备上进一步简化动画 */
+  .modal-enter-active {
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  }
+  
+  .modal-leave-active {
+    transition: opacity 0.15s ease-in, transform 0.15s ease-in;
+  }
+  
+  .modal-enter-from .code-modal-container {
+    transform: scale(0.98) translateY(-5px);
+  }
+  
+  .code-modal-container:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .code-modal-overlay {
+    padding: 5px;
+    backdrop-filter: blur(2px);
+  }
+  
+  .code-modal-container {
+    height: min(98vh, 500px);
+    border-radius: 8px;
+  }
+  
+  /* 超小屏幕设备完全简化动画 */
+  .modal-enter-active,
+  .modal-leave-active {
+    transition: opacity 0.15s ease;
+  }
+  
+  .modal-enter-from .code-modal-container,
+  .modal-leave-to .code-modal-container {
+    transform: none;
+  }
+}
+
+/* 低性能设备优化 */
+@media (max-resolution: 1dppx) {
+  .code-modal-overlay {
+    backdrop-filter: none;
+  }
+  
+  .modal-enter-active,
+  .modal-leave-active {
+    transition: opacity 0.2s ease;
+  }
+  
+  .modal-enter-from .code-modal-container,
+  .modal-leave-to .code-modal-container {
+    transform: none;
+  }
+}
+
+/* 减少动画的用户偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  .code-modal-overlay,
+  .code-modal-container,
+  .code-modal-content.fullscreen,
+  .modal-enter-active,
+  .modal-leave-active {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* 用户偏好减少透明度：移除磨砂与降低透明度 */
+@media (prefers-reduced-transparency: reduce) {
+  .code-modal-overlay {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+  }
+  .code-modal-container {
+    box-shadow: var(--vp-shadow-1) !important;
+  }
+}
+
+/* Windows 强制颜色模式支持 */
+@media (forced-colors: active) {
+  .code-modal-overlay,
+  .code-modal-container {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-color: CanvasText !important;
+    outline: 2px solid CanvasText !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .code-modal-container {
+    border-width: 2px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    background: var(--vp-c-bg);
+  }
+  
+  .code-modal-overlay {
+    backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* 性能优化 - GPU 加速但避免过度使用 */
+.code-modal-overlay {
+  transform: translateZ(0);
+}
+
+.code-modal-container {
+  transform: translateZ(0);
+}
+
+/* 针对高刷新率屏幕优化 */
+@media (min-resolution: 2dppx) {
+  .modal-enter-active {
+    transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .code-modal-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.08);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  
+  .dark .code-modal-container:hover {
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* CPU 性能检测 - 如果支持 CSS 容器查询，说明设备性能较好 */
+@supports (container-type: inline-size) {
+  .modal-enter-active {
+    transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .modal-enter-from .code-modal-container {
+    transform: scale(0.9) translateY(-20px);
+  }
+}
+
+/* 为支持硬件加速的设备提供更好的动画 */
+@supports (backdrop-filter: blur(10px)) {
+  .code-modal-overlay {
+    backdrop-filter: blur(10px) saturate(1.1);
+  }
+  
+  @media (min-width: 769px) {
+    .modal-enter-active {
+      transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+  }
+}
+
+/* 电池优化 - 为低电量模式简化动画 */
+@media (prefers-reduced-data: reduce) {
+  .code-modal-overlay {
+    backdrop-filter: none;
+  }
+  
+  .modal-enter-active,
+  .modal-leave-active {
+    transition: opacity 0.2s ease;
+  }
+  
+  .modal-enter-from .code-modal-container,
+  .modal-leave-to .code-modal-container {
+    transform: none;
+  }
+}
