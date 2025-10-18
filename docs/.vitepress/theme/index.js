@@ -28,6 +28,7 @@ import { useMermaid } from './composables/useMermaid.js'
 import { setupSidebarNavbarSync } from './utils/sidebarNavbarSync.js'
 import { initAnalytics } from './utils/analytics.js'
 import { initErrorMonitor } from './utils/errorMonitor.js'
+import { initWebVitals } from './utils/webVitals.js'
 
 // 创建一个全局的代码块弹窗状态
 const codeModalState = {
@@ -104,9 +105,10 @@ export default {
         await setupMermaid()
         // 延迟初始化图片查看
         initImageViewerWhenNeeded()
-        // 初始化错误监控（仅生产）
+        // 初始化错误监控与 Web Vitals（仅生产）
         if (import.meta.env.PROD) {
           initErrorMonitor()
+          initWebVitals()
         }
         // 设置侧边栏与导航栏同步
         const cleanupSidebarSync = setupSidebarNavbarSync()

@@ -1,5 +1,5 @@
 /* Simple cache-first Service Worker for VitePress static assets */
-const CACHE_NAME = 'vp-cache-v1'
+const CACHE_NAME = 'vp-cache-v2'
 const ASSET_EXTENSIONS = [
   '.js', '.css', '.svg', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.woff', '.woff2'
 ]
@@ -32,22 +32,29 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     (async () => {
       try {
-        // Try cache first for static assets
+        const cache = await caches.open(CACHE_NAME)
         if (isAsset) {
-          const cache = await caches.open(CACHE_NAME)
+          // Stale-While-Revalidate：先返回缓存，再后台更新
           const cached = await cache.match(req)
-          if (cached) return cached
-          const resp = await fetch(req)
-          if (resp && resp.ok) {
-            cache.put(req, resp.clone())
+          const networkPromise = fetch(req).then((resp) => {
+            if (resp && resp.ok) cache.put(req, resp.clone())
+            return resp
+          }).catch(() => cached)
+          return cached || networkPromise
+        } else {
+          // 对 HTML/docs 走网络，失败时离线兜底
+          try {
+            const resp = await fetch(req)
+            return resp
+          } catch {
+            const offline = await cache.match('/offline.html')
+            return offline || new Response('', { status: 200, headers: { 'Content-Type': 'text/html' } })
           }
-          return resp
         }
-        // Fallback to network for HTML/docs
-        return fetch(req)
       } catch {
-        // Optional: return a minimal fallback for offline HTML requests
-        return new Response('', { status: 200, headers: { 'Content-Type': 'text/html' } })
+        const cache = await caches.open(CACHE_NAME)
+        const offline = await cache.match('/offline.html')
+        return offline || new Response('', { status: 200, headers: { 'Content-Type': 'text/html' } })
       }
     })()
   )

@@ -20,7 +20,8 @@
     "lint:fix": "eslint . --ext .js,.cjs,.mjs,.ts,.vue --fix",
     "format": "prettier -w .",
     "prepare": "echo \"Use 'pnpm run setup:hooks' to enable .githooks\"",
-    "lint:frontmatter": "node docs/.vitepress/utils/frontmatterLint.js"
+    "lint:frontmatter": "node docs/.vitepress/utils/frontmatterLint.js",
+    "lint:links": "node docs/.vitepress/utils/linkCheck.js"
   },
   "keywords": [
     "wiki",
@@ -54,7 +55,8 @@
     "shiki": "^3.9.2",
     "viewerjs": "^1.11.7",
     "vitepress-plugin-image-viewer": "^1.1.6",
-    "vue": "^3.5.18"
+    "vue": "^3.5.18",
+    "web-vitals": "^3.5.0"
   },
   "engines": {
     "node": ">=18.0.0",
