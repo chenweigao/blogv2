@@ -46,7 +46,10 @@ export default defineConfig({
               './docs/.vitepress/theme/components/EnhancedTOC.vue',
               './docs/.vitepress/theme/components/toc/TOCToggleButton.vue',
               './docs/.vitepress/theme/components/toc/TOCPanel.vue'
-            ]
+            ],
+            // 新增：将大体积依赖拆分为独立 chunk，降低首屏 JS 负载
+            mermaid: ['mermaid'],
+            viewerjs: ['viewerjs']
           }
         }
       }
@@ -257,6 +260,41 @@ export default defineConfig({
       ['meta', { name: 'twitter:title', content: title }],
       ['meta', { name: 'twitter:description', content: description }]
     ].filter(Boolean)
+
+    // 若 frontmatter 存在文章元数据，注入 JSON-LD 结构化数据
+    const fm = page?.frontmatter || {}
+    const articleTitle = fm.title || title
+    const datePublished = fm.date || null
+    const dateModified = fm.updated || fm.lastUpdated || null
+    const authorName = fm.author || (site?.title ? String(site.title) : undefined)
+    const keywords = Array.isArray(fm.tags)
+      ? fm.tags
+      : (typeof fm.tags === 'string' ? fm.tags.split(',').map(s => s.trim()).filter(Boolean) : [])
+    if (articleTitle && (datePublished || dateModified)) {
+      const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: articleTitle,
+        description,
+        ...(canonicalUrl ? { url: canonicalUrl } : {}),
+        ...(keywords?.length ? { keywords: keywords.join(', ') } : {}),
+        ...(authorName ? { author: { '@type': 'Person', name: authorName } } : {}),
+        ...(datePublished ? { datePublished: new Date(datePublished).toISOString() } : {}),
+        ...(dateModified ? { dateModified: new Date(dateModified).toISOString() } : {})
+      }
+      tags.push(['script', { type: 'application/ld+json' }, JSON.stringify(jsonLd)])
+    }
+
+    // 新增：根据环境变量为分析域名添加预连接与 DNS 预解析
+    const rawAnalyticsUrl = (typeof process !== 'undefined' && process.env && process.env.VITE_ANALYTICS_URL) || ''
+    if (rawAnalyticsUrl) {
+      try {
+        const origin = new URL(rawAnalyticsUrl).origin
+        tags.push(['link', { rel: 'preconnect', href: origin }])
+        tags.push(['link', { rel: 'dns-prefetch', href: origin }])
+      } catch {}
+    }
+
     return tags
   }
 })

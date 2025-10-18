@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { parseFrontmatter } from './frontmatter.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -31,52 +32,35 @@ export function generateTimelineData() {
         const relativeFilePath = path.join(relativePath, item)
         const fileContent = fs.readFileSync(fullPath, 'utf-8')
         
-        // 提取 frontmatter
-        const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/)
-        let frontmatter = {}
-        if (frontmatterMatch) {
-          try {
-            // 简单解析 YAML frontmatter
-            const yamlContent = frontmatterMatch[1]
-            const lines = yamlContent.split('\n')
-            for (const line of lines) {
-              const colonIndex = line.indexOf(':')
-              if (colonIndex > 0) {
-                const key = line.substring(0, colonIndex).trim()
-                const value = line.substring(colonIndex + 1).trim().replace(/^['"]|['"]$/g, '')
-                frontmatter[key] = value
-              }
-            }
-          } catch (e) {
-            console.warn(`Failed to parse frontmatter in ${relativeFilePath}:`, e)
-          }
-        }
-        
+        const frontmatter = parseFrontmatter(fileContent)
+         
         // 提取标题
-        let title = frontmatter.title
+        let title = frontmatter?.title
         if (!title) {
           const titleMatch = fileContent.match(/^#\s+(.+)$/m)
           title = titleMatch ? titleMatch[1] : item.replace('.md', '')
         }
-        
+         
         // 提取描述
-        let description = frontmatter.description
+        let description = frontmatter?.description
         if (!description) {
           // 提取第一段非标题内容作为描述
-          const contentWithoutFrontmatter = frontmatter ? fileContent.replace(/^---\n[\s\S]*?\n---\n/, '') : fileContent
+          const contentWithoutFrontmatter = (frontmatter && Object.keys(frontmatter).length > 0)
+            ? fileContent.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '')
+            : fileContent
           const paragraphs = contentWithoutFrontmatter.split('\n').filter(line => 
             line.trim() && !line.startsWith('#') && !line.startsWith('```')
           )
           description = paragraphs[0] ? paragraphs[0].substring(0, 150) + '...' : ''
         }
-        
+         
         // 获取文件时间信息
-        const createTime = frontmatter.date || stat.birthtime
-        const updateTime = frontmatter.updated || stat.mtime
-        
+        const createTime = frontmatter?.date || stat.birthtime
+        const updateTime = frontmatter?.updated || stat.mtime
+         
         // 确定分类
         const category = relativePath.split(path.sep)[0] || 'general'
-        
+         
         timelineData.push({
           title,
           description,
@@ -84,7 +68,11 @@ export function generateTimelineData() {
           category,
           createTime: new Date(createTime).toISOString(),
           updateTime: new Date(updateTime).toISOString(),
-          tags: frontmatter.tags ? frontmatter.tags.split(',').map(tag => tag.trim()) : []
+          tags: Array.isArray(frontmatter?.tags)
+            ? frontmatter.tags
+            : (typeof frontmatter?.tags === 'string'
+                ? frontmatter.tags.split(',').map(t => t.trim()).filter(Boolean)
+                : [])
         })
       }
     }

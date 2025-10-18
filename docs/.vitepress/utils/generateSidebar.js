@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import yaml from 'js-yaml'
+import { parseFrontmatterFromFile } from './frontmatter.js'
 
 /**
  * 自动生成侧边栏配置
@@ -19,26 +19,6 @@ const IGNORE_PATTERNS = [
 
 // 需要忽略的文件扩展名
 const IGNORE_EXTENSIONS = ['.json', '.js', '.ts', '.vue', '.css', '.scss', '.less']
-
-/**
- * 从 markdown 文件中提取 frontmatter
- * @param {string} filePath 文件路径
- * @returns {object} frontmatter 对象
- */
-function extractFrontmatter(filePath) {
-  try {
-    const content = fs.readFileSync(filePath, 'utf-8')
-    const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/)
-    
-    if (frontmatterMatch) {
-      return yaml.load(frontmatterMatch[1]) || {}
-    }
-  } catch (error) {
-    console.warn(`Failed to parse frontmatter from ${filePath}:`, error.message)
-  }
-  
-  return {}
-}
 
 /**
  * 格式化文件名为显示标题

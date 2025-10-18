@@ -105,6 +105,34 @@ const { page, frontmatter } = useData()
 // Component refs
 const toggleButton = ref(null)
 const tocPanel = ref(null)
+let prevFocused = null
+
+const getFocusable = () => {
+  const root = tocPanel.value?.$el || tocPanel.value || document
+  if (!root) return []
+  return Array.from(root.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+    .filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null)
+}
+
+const focusTrapKeydown = (e) => {
+  if (!isVisible.value || isPinned.value) return
+  if (e.key !== 'Tab') return
+  const focusables = getFocusable()
+  if (focusables.length === 0) return
+  const first = focusables[0]
+  const last = focusables[focusables.length - 1]
+  if (e.shiftKey) {
+    if (document.activeElement === first) {
+      e.preventDefault()
+      last.focus()
+    }
+  } else {
+    if (document.activeElement === last) {
+      e.preventDefault()
+      first.focus()
+    }
+  }
+}
 
 // TOC functionality
 const {
@@ -239,6 +267,11 @@ const toggleTOC = () => {
   if (isVisible.value && tocPanel.value) {
     setTimeout(() => {
       tocPanel.value.scrollToActiveItem()
+      // 记录前一焦点并将焦点移入面板
+      prevFocused = document.activeElement
+      const f = getFocusable()
+      if (f[0]) f[0].focus()
+      document.addEventListener('keydown', focusTrapKeydown)
     }, 100)
   }
 }
@@ -246,6 +279,14 @@ const toggleTOC = () => {
 const hideTOC = () => {
   isVisible.value = false
   clearSearch()
+  document.removeEventListener('keydown', focusTrapKeydown)
+  // 恢复焦点到切换按钮
+  const btnEl = toggleButton.value?.$el || toggleButton.value
+  if (btnEl && typeof btnEl.focus === 'function') {
+    btnEl.focus()
+  } else if (prevFocused && typeof prevFocused.focus === 'function') {
+    prevFocused.focus()
+  }
 }
 
 const togglePin = () => {
@@ -396,6 +437,19 @@ onMounted(() => {
   // Add event listeners
   window.addEventListener('resize', handleResize)
   window.addEventListener('keydown', handleKeydown)
+  
+  // 若面板通过外部控制显示/隐藏，监听其变化以同步焦点陷阱
+  watch(isVisible, async (v) => {
+    if (v) {
+      await nextTick()
+      prevFocused = document.activeElement
+      const f = getFocusable()
+      if (f[0]) f[0].focus()
+      document.addEventListener('keydown', focusTrapKeydown)
+    } else {
+      document.removeEventListener('keydown', focusTrapKeydown)
+    }
+  })
 })
 
 onUnmounted(() => {
@@ -403,6 +457,7 @@ onUnmounted(() => {
   
   window.removeEventListener('resize', handleResize)
   window.removeEventListener('keydown', handleKeydown)
+  document.removeEventListener('keydown', focusTrapKeydown)
 })
 </script>
 

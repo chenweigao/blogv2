@@ -7,6 +7,14 @@ import { nextTick } from 'vue'
 export class CodeBlockHandler {
   constructor(codeModalState) {
     this.codeModalState = codeModalState
+    this._bound = false
+    this._listener = (e) => {
+      const target = e.target
+      if (!target) return
+      const code = target.closest && target.closest('.vp-doc pre code, pre code')
+      if (!code) return
+      this.handleCodeBlockClick(e)
+    }
   }
 
   /**
@@ -18,43 +26,11 @@ export class CodeBlockHandler {
       return
     }
     
-    // 等待 DOM 更新完成后初始化代码块点击事件
-    nextTick(() => {
-      // 更广泛的选择器，包括VitePress的各种代码块格式
-      const selectors = [
-        '.vp-doc pre code',
-        '.main pre code', 
-        'div[class*="language-"] pre code',
-        '.language-js pre code',
-        '.language-javascript pre code',
-        '.language-python pre code',
-        '.language-java pre code',
-        '.language-css pre code',
-        '.language-html pre code',
-        '.language-json pre code',
-        '.language-bash pre code',
-        '.language-shell pre code',
-        'pre code'
-      ]
-      
-      let foundBlocks = 0
-      selectors.forEach(selector => {
-        const codeBlocks = document.querySelectorAll(selector)
-        codeBlocks.forEach(codeBlock => {
-          // 避免重复绑定
-          if (!codeBlock.classList.contains('clickable-code-block')) {
-            // 添加点击事件监听器
-            codeBlock.addEventListener('click', this.handleCodeBlockClick.bind(this))
-            
-            // 添加鼠标悬停效果类名
-            codeBlock.classList.add('clickable-code-block')
-            foundBlocks++
-          }
-        })
-      })
-      
-      console.log(`[CodeBlock] 找到并绑定了 ${foundBlocks} 个代码块`)
-    })
+    if (this._bound) return
+    this._bound = true
+    // 事件委托：在文档容器或 document 上绑定一次
+    const container = document.querySelector('.vp-doc') || document
+    container.addEventListener('click', this._listener, { passive: false })
   }
 
   /**

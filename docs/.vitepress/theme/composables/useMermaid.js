@@ -162,13 +162,23 @@ export function useMermaid() {
     // 重新渲染图表
     await renderMermaidCharts()
   }
-
+ 
   // 监听主题变化
   if (typeof window !== 'undefined') {
+    let themeTimer = null
+    let pending = false
     watch(isDark, async (newValue, oldValue) => {
-      if (oldValue !== undefined && newValue !== oldValue) {
-        await reinitializeWithTheme()
-      }
+      if (oldValue === undefined || newValue === oldValue) return
+      if (themeTimer) clearTimeout(themeTimer)
+      themeTimer = setTimeout(async () => {
+        if (pending) return
+        pending = true
+        try {
+          await reinitializeWithTheme()
+        } finally {
+          pending = false
+        }
+      }, 80)
     })
   }
 

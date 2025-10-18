@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { generateTimelineData } from './generateTimeline.js'
+import { parseFrontmatter } from './frontmatter.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -159,27 +159,80 @@ class IncrementalUpdater {
     
     if (deletedFiles.length > 0) {
       console.log('删除文件:')
-      deletedFiles.forEach(file => {
-        console.log(`  🗑️ ${file}`)
-      })
+      deletedFiles.forEach(file => console.log(`  🗑️ ${file}`))
     }
-
-    // 重新生成完整的时间线数据
-    console.log('🔄 重新生成时间线数据...')
-    const newTimelineData = generateTimelineData()
-    
-    // 保存更新后的数据
-    const outputDir = path.dirname(this.timelineDataPath)
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true })
-    }
-    
-    fs.writeFileSync(this.timelineDataPath, JSON.stringify(newTimelineData, null, 2))
-    
-    console.log(`✅ 时间线数据已更新: ${newTimelineData.length} 篇文章`)
-    
-    return true
-  }
++
++    // 读取现有数据并构建索引
++    const existing = this.getExistingData()
++    const map = new Map(existing.map(item => [item.path, item]))
++
++    // 工具函数：从单个文件构建条目
++    const buildEntry = (fullPath, relativePath) => {
++      try {
++        const content = fs.readFileSync(fullPath, 'utf-8')
++        const fm = parseFrontmatter(content)
++        // 标题
++        let title = fm?.title
++        if (!title) {
++          const m = content.match(/^#\s+(.+)$/m)
++          title = m ? m[1] : relativePath.replace(/\\/g, '/').split('/').pop().replace(/\.md$/, '')
++        }
++        // 描述
++        let description = fm?.description
++        if (!description) {
++          const withoutFm = (fm && Object.keys(fm).length > 0)
++            ? content.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '')
++            : content
++          const paras = withoutFm.split('\n').filter(l => l.trim() && !l.startsWith('#') && !l.startsWith('```'))
++          description = paras[0] ? paras[0].slice(0, 150) + '...' : ''
++        }
++        const stat = fs.statSync(fullPath)
++        const createTime = fm?.date || stat.birthtime
++        const updateTime = fm?.updated || stat.mtime
++        const category = (relativePath.split(path.sep)[0] || 'general')
++        const tags = Array.isArray(fm?.tags)
++          ? fm.tags
++          : (typeof fm?.tags === 'string' ? fm.tags.split(',').map(t => t.trim()).filter(Boolean) : [])
++        return {
++          title,
++          description,
++          path: '/' + relativePath.replace(/\\/g, '/').replace('.md', ''),
++          category,
++          createTime: new Date(createTime).toISOString(),
++          updateTime: new Date(updateTime).toISOString(),
++          tags
++        }
++      } catch {
++        return null
++      }
++    }
++
++    // 处理变更与新增
++    for (const f of changedFiles) {
++      const entry = buildEntry(f.fullPath, f.path)
++      if (entry) {
++        map.set(entry.path, entry)
++      }
++    }
++    // 处理删除
++    for (const rel of deletedFiles) {
++      const p = '/' + rel.replace(/\\/g, '/').replace('.md', '')
++      map.delete(p)
++    }
++
++    // 重新排序并保存
++    const newTimelineData = Array.from(map.values()).sort((a, b) => new Date(b.createTime) - new Date(a.createTime))
+     const outputDir = path.dirname(this.timelineDataPath)
+     if (!fs.existsSync(outputDir)) {
+       fs.mkdirSync(outputDir, { recursive: true })
+     }
+     
+     fs.writeFileSync(this.timelineDataPath, JSON.stringify(newTimelineData, null, 2))
+     
+     console.log(`✅ 时间线数据已更新: ${newTimelineData.length} 篇文章`)
+     
+     return true
+   }
 
   /**
    * 强制完整更新

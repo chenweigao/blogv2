@@ -1,6 +1,6 @@
 import chokidar from 'chokidar'
-import { writeTimelineData } from './generateTimeline.js'
 import { debounce } from './debounce.js'
+import IncrementalUpdater from './incrementalUpdate.js'
 
 /**
  * 智能文件监听器
@@ -10,6 +10,7 @@ class TimelineWatcher {
   constructor() {
     this.watcher = null
     this.isGenerating = false
+    this.updater = new IncrementalUpdater()
     
     // 防抖处理，避免频繁重新生成
     this.debouncedGenerate = debounce(this.generateTimeline.bind(this), 1000)
@@ -69,8 +70,10 @@ class TimelineWatcher {
       this.isGenerating = true
       console.log('🔄 重新生成时间线数据...')
       
-      const timelineData = writeTimelineData()
-      
+      const updated = await this.updater.performIncrementalUpdate()
+      // 读取结果数量用于日志（如果需要，也可从 updater 读取）
+      const timelineData = this.updater.getExistingData()
+       
       console.log(`✅ 时间线数据已更新: ${timelineData.length} 篇文章`)
       console.log('📊 最新文章:', timelineData.slice(0, 3).map(item => item.title).join(', '))
       

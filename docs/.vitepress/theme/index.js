@@ -27,6 +27,7 @@ import { createCodeBlockHandler } from './utils/codeBlockHandler.js'
 import { useMermaid } from './composables/useMermaid.js'
 import { setupSidebarNavbarSync } from './utils/sidebarNavbarSync.js'
 import { initAnalytics } from './utils/analytics.js'
+import { initErrorMonitor } from './utils/errorMonitor.js'
 
 // 创建一个全局的代码块弹窗状态
 const codeModalState = {
@@ -58,14 +59,40 @@ export default {
   setup() {
     const route = useRoute()
     
-    // 使用 vitepress-plugin-image-viewer，按照官方文档的正确方式
-    imageViewer(route)
-    
     // 创建代码块处理器
     const codeBlockHandler = createCodeBlockHandler(codeModalState)
     
     // 使用 mermaid composable
     const { setupMermaid } = useMermaid()
+    
+    // 延迟初始化 imageViewer：首张图片进入视口时再初始化
+    let viewerInited = false
+    const initImageViewerWhenNeeded = () => {
+      if (viewerInited || typeof window === 'undefined') return
+      const firstImage = document.querySelector('.vp-doc img')
+      if (!('IntersectionObserver' in window)) {
+        imageViewer(route); viewerInited = true; return
+      }
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some(e => e.isIntersecting)) {
+          imageViewer(route)
+          viewerInited = true
+          io.disconnect()
+        }
+      }, { rootMargin: '0px', threshold: 0.1 })
+      if (firstImage) io.observe(firstImage)
+      else {
+        // 如果当前无图，监听一次 DOM 变化，出现后再观察
+        const mo = new MutationObserver(() => {
+          const img = document.querySelector('.vp-doc img')
+          if (img) {
+            io.observe(img)
+            mo.disconnect()
+          }
+        })
+        mo.observe(document.body, { childList: true, subtree: true })
+      }
+    }
     
     // 只在客户端环境中初始化
     if (typeof window !== 'undefined') {
@@ -75,10 +102,14 @@ export default {
         
         // 初始化 mermaid
         await setupMermaid()
-        
+        // 延迟初始化图片查看
+        initImageViewerWhenNeeded()
+        // 初始化错误监控（仅生产）
+        if (import.meta.env.PROD) {
+          initErrorMonitor()
+        }
         // 设置侧边栏与导航栏同步
         const cleanupSidebarSync = setupSidebarNavbarSync()
-        
         // 初始化隐私友好的站点分析（仅生产且显式启用）
         if (import.meta.env.PROD) {
           initAnalytics()
@@ -111,6 +142,9 @@ export default {
           codeBlockHandler.initCodeBlockClick()
           await setupMermaid()
           
+          // 路由切换后如果尚未初始化图片查看，尝试触发
+          initImageViewerWhenNeeded()
+           
           // 刷新导航栏高亮状态
           if (window.__refreshNavbarHighlight) {
             window.__refreshNavbarHighlight()

@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Frontmatter lint
+        run: pnpm run lint:frontmatter
+
       - name: Generate timeline (incremental)
         run: pnpm run timeline:incremental
 

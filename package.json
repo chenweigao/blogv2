@@ -19,7 +19,8 @@
     "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.vue",
     "lint:fix": "eslint . --ext .js,.cjs,.mjs,.ts,.vue --fix",
     "format": "prettier -w .",
-    "prepare": "echo \"Use 'pnpm run setup:hooks' to enable .githooks\""
+    "prepare": "echo \"Use 'pnpm run setup:hooks' to enable .githooks\"",
+    "lint:frontmatter": "node docs/.vitepress/utils/frontmatterLint.js"
   },
   "keywords": [
     "wiki",
