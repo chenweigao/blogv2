@@ -11,8 +11,13 @@ export class CodeBlockHandler {
     this._listener = (e) => {
       const target = e.target
       if (!target) return
-      const code = target.closest && target.closest('.vp-doc pre code, pre code')
-      if (!code) return
+      // 统一从目标向上查找最近的 code 与 pre，兼容 Shiki 结构
+      const codeEl = target.closest && target.closest('code')
+      const preEl = codeEl && codeEl.closest('pre')
+      if (!codeEl || !preEl) return
+      // 仅当位于文档区域内时触发（避免导航/非文档区域误触）
+      const docRoot = document.querySelector('.vp-doc') || document.body
+      if (!docRoot.contains(codeEl)) return
       this.handleCodeBlockClick(e)
     }
     this._isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
@@ -52,13 +57,16 @@ export class CodeBlockHandler {
       if (this._isDev) console.log('[CodeBlock] 未找到code元素')
       return
     }
+    // 忽略行内 code：必须在 pre 内
+    const preElement = codeElement.closest('pre')
+    if (!preElement) {
+      if (this._isDev) console.log('[CodeBlock] 非预格式代码，忽略')
+      return
+    }
     
     // 立即清除focus状态，防止悬停样式变化
     codeElement.blur()
-    const preElement = codeElement.closest('pre')
-    if (preElement) {
-      preElement.blur()
-    }
+    preElement.blur()
     
     // 添加临时类名用于样式重置动画
     codeElement.classList.add('clicked')
@@ -73,9 +81,7 @@ export class CodeBlockHandler {
       }
       // 强制重置任何可能的focus相关样式
       codeElement.style.outline = 'none'
-      if (preElement) {
-        preElement.style.outline = 'none'
-      }
+      preElement.style.outline = 'none'
     }, 0)
     
     // 获取代码内容
