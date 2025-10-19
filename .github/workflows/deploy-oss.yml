@@ -60,7 +60,7 @@ jobs:
           if [ -n "$ALIYUN_OSS_PREFIX" ]; then DEST="$DEST/$ALIYUN_OSS_PREFIX"; fi
           ./ossutil64 sync docs/.vitepress/dist "$DEST" --delete --force
 
-      - name: Hint: Refresh CDN (optional)
+      - name: "Hint: Refresh CDN (optional)"
         run: |
           echo "如需刷新 CDN 缓存，请在云控制台或使用 OpenAPI/CLI 对 https://your-domain/* 发起刷新。"
           echo "可在后续添加自动刷新步骤（需配置 CDN 域名与 API 授权）。"
