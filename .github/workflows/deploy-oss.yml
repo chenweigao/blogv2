@@ -38,13 +38,13 @@ jobs:
       - name: Build site
         run: pnpm run build
 
-      - name: Network diagnostics (ossutil CDN)
+      - name: "Network diagnostics (ossutil CDN)"
         run: |
           set -euxo pipefail
           curl -I https://gosspublic.alicdn.com/ossutil/1.7.20/ossutil64 || true
           nslookup gosspublic.alicdn.com || true
 
-      - name: Download ossutil (robust with HTTPS and retry)
+      - name: "Download ossutil (robust with HTTPS and retry)"
         run: |
           set -euxo pipefail
           OSSUTIL_URL="https://gosspublic.alicdn.com/ossutil/1.7.20/ossutil64"
@@ -75,7 +75,7 @@ jobs:
           echo "Syncing to $DEST"
           ./ossutil64 sync docs/.vitepress/dist "$DEST" --delete --force
 
-      - name: Hint: Refresh CDN (optional)
+      - name: "Hint: Refresh CDN (optional)"
         run: |
           echo "如需刷新 CDN 缓存，请在云控制台或使用 OpenAPI/CLI 对 https://your-domain/* 发起刷新。"
           echo "可在后续添加自动刷新步骤（需配置 CDN 域名与 API 授权）。
