@@ -38,31 +38,12 @@ jobs:
       - name: Build site
         run: pnpm run build
 
-      - name: "Network diagnostics (ossutil CDN)"
-        run: |
-          set -euxo pipefail
-          curl -I https://gosspublic.alicdn.com/ossutil/1.7.20/ossutil64 || true
-          nslookup gosspublic.alicdn.com || true
-
-      - name: "Download ossutil (robust with HTTPS and retry)"
-        run: |
-          set -euxo pipefail
-          OSSUTIL_URL="https://gosspublic.alicdn.com/ossutil/1.7.20/ossutil64"
-          for i in 1 2 3; do
-            echo "Attempt $i: downloading $OSSUTIL_URL"
-            curl -fL "$OSSUTIL_URL" -o ossutil64 && break || sleep 2
-          done
-          chmod +x ossutil64
-          ./ossutil64 --version || true
-
-      - name: Config ossutil
-        env:
-          ALIYUN_KEY_ID: ${{ secrets.ALIYUN_KEY_ID }}
-          ALIYUN_KEY_SECRET: ${{ secrets.ALIYUN_KEY_SECRET }}
-          ALIYUN_OSS_ENDPOINT: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
-        run: |
-          set -euxo pipefail
-          ./ossutil64 config -e "$ALIYUN_OSS_ENDPOINT" -i "$ALIYUN_KEY_ID" -k "$ALIYUN_KEY_SECRET" -L CH
+      - name: Setup ossutil
+        uses: manyuanrong/setup-ossutil@v3
+        with:
+          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.ALIYUN_KEY_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_KEY_SECRET }}
 
       - name: Sync to OSS
         env:
@@ -73,7 +54,7 @@ jobs:
           DEST="oss://$ALIYUN_OSS_BUCKET"
           if [ -n "$ALIYUN_OSS_PREFIX" ]; then DEST="$DEST/$ALIYUN_OSS_PREFIX"; fi
           echo "Syncing to $DEST"
-          ./ossutil64 sync docs/.vitepress/dist "$DEST" --delete --force
+          ossutil sync docs/.vitepress/dist "$DEST" --delete --force
 
       - name: "Hint: Refresh CDN (optional)"
         run: |
