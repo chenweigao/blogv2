@@ -1,0 +1,66 @@
+name: Deploy to Aliyun OSS + CDN
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate timeline (incremental)
+        run: pnpm run timeline:incremental
+
+      - name: Optimize responsive images
+        run: pnpm run images:optimize
+
+      - name: Build site
+        run: pnpm run build
+
+      - name: Download ossutil
+        run: |
+          wget -q http://gosspublic.alicdn.com/ossutil/1.7.20/ossutil64
+          chmod +x ossutil64
+
+      - name: Config ossutil
+        env:
+          ALIYUN_KEY_ID: ${{ secrets.ALIYUN_KEY_ID }}
+          ALIYUN_KEY_SECRET: ${{ secrets.ALIYUN_KEY_SECRET }}
+          ALIYUN_OSS_ENDPOINT: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+        run: |
+          ./ossutil64 config -e "$ALIYUN_OSS_ENDPOINT" -i "$ALIYUN_KEY_ID" -k "$ALIYUN_KEY_SECRET" -L CH
+
+      - name: Sync to OSS
+        env:
+          ALIYUN_OSS_BUCKET: ${{ secrets.ALIYUN_OSS_BUCKET }}
+          ALIYUN_OSS_PREFIX: ${{ secrets.ALIYUN_OSS_PREFIX }}
+        run: |
+          DEST="oss://$ALIYUN_OSS_BUCKET"
+          if [ -n "$ALIYUN_OSS_PREFIX" ]; then DEST="$DEST/$ALIYUN_OSS_PREFIX"; fi
+          ./ossutil64 sync docs/.vitepress/dist "$DEST" --delete --force
+
+      - name: Hint: Refresh CDN (optional)
+        run: |
+          echo "如需刷新 CDN 缓存，请在云控制台或使用 OpenAPI/CLI 对 https://your-domain/* 发起刷新。"
+          echo "可在后续添加自动刷新步骤（需配置 CDN 域名与 API 授权）。"
