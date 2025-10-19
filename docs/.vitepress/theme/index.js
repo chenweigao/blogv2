@@ -39,6 +39,17 @@ const codeModalState = {
   })
 }
 
+// 基于项目 base 路径注册 Service Worker，避免在子路径下 404
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator && import.meta.env.PROD) {
+  const base = (import.meta.env && import.meta.env.BASE_URL) ? import.meta.env.BASE_URL : '/'
+  const swUrl = (base.endsWith('/') ? base : base + '/') + 'sw.js'
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(swUrl).catch((err) => {
+      console.warn('Service Worker registration failed:', err)
+    })
+  })
+}
+
 export default {
   extends: DefaultTheme,
   Layout,

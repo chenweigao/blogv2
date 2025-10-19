@@ -12,6 +12,8 @@ export default defineConfig({
   title: 'Knowledge Wiki',
   description: 'Personal Knowledge Base - Work & Study Documentation',
   lang: 'zh-CN',
+  // GitHub Pages 项目站点子路径
+  base: '/blogv2/',
 
   // 忽略死链接检查，避免构建失败
   ignoreDeadLinks: true,
@@ -66,7 +68,8 @@ export default defineConfig({
 
   // 网站图标
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    // 使用项目站点子路径，避免 /favicon.ico 在项目站下 404
+    ['link', { rel: 'icon', href: '/blogv2/favicon.ico' }],
     ['meta', { name: 'theme-color', content: '#3c82f6' }],
     ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }],
     // 新增：告知浏览器支持亮暗两种配色方案
@@ -76,7 +79,7 @@ export default defineConfig({
   // 主题配置
   themeConfig: {
     // 网站logo
-    logo: '/logo.svg',
+    logo: '/blogv2/logo.svg',
 
     // 导航栏 - 根据实际文档分类更新
     nav: [
@@ -163,7 +166,7 @@ export default defineConfig({
 
     // 编辑链接
     editLink: {
-      pattern: 'https://github.com/your-username/knowledge-wiki/edit/main/docs/:path',
+      pattern: 'https://github.com/chenweigao/blogv2/edit/main/docs/:path',
       text: 'Edit this page'
     },
 
@@ -207,7 +210,8 @@ export default defineConfig({
 
   // 站点地图
   sitemap: {
-    hostname: 'https://your-domain.com'
+    // GitHub Pages 项目站点的完整主页地址
+    hostname: 'https://chenweigao.github.io/blogv2/'
   },
 
   // 支持 front matter 数据处理
