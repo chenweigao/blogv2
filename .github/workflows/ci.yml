@@ -49,8 +49,13 @@ jobs:
       - name: Lint (CSS)
         run: pnpm run lint:css || true
 
-      - name: Build site
+      - name: Build site (skip image optimize)
+        env:
+          SKIP_IMAGE_OPTIMIZE: '1'
         run: pnpm run build
+
+      - name: Assert dist artifacts
+        run: pnpm run assert:dist
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4

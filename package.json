@@ -24,7 +24,8 @@
     "images:optimize": "node docs/.vitepress/utils/generateResponsiveImages.js",
     "lint:links": "node docs/.vitepress/utils/linkCheck.js",
     "test": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "assert:dist": "node docs/.vitepress/utils/assertDist.js"
   },
   "keywords": [
     "wiki",
@@ -56,7 +57,11 @@
   "vitest": {
     "environment": "jsdom",
     "coverage": {
-      "reporter": ["text", "lcov"]
+      "reporter": ["text", "lcov"],
+      "lines": 70,
+      "functions": 70,
+      "branches": 60,
+      "statements": 70
     }
   },
   "dependencies": {

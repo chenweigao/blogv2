@@ -105,8 +105,10 @@ export async function generateResponsiveImages() {
   }
 
   if (!fs.existsSync(SOURCE_DIR)) {
-    console.log('[images] No source dir:', SOURCE_DIR)
-    return false
+    console.log('[images] No source dir:', SOURCE_DIR, '- writing empty manifest and skipping')
+    await ensureDir(path.dirname(MANIFEST_PATH))
+    await fs.promises.writeFile(MANIFEST_PATH, JSON.stringify({}, null, 2))
+    return true
   }
   const files = walk(SOURCE_DIR, [])
   if (files.length === 0) {
