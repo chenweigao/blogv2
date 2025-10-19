@@ -490,7 +490,7 @@ onUnmounted(() => {
   transform: none;
   max-width: none;
   z-index: 1000;
-  pointer-events: auto; /* 移动端恢复事件响应 */
+  pointer-events: none; /* 容器不拦截点击，仅子元素接收事件 */
 }
 
 /* 修复固定模式样式 - 移除强制的top位置设置，避免与动态panelPosition冲突 */
@@ -513,7 +513,8 @@ onUnmounted(() => {
   bottom: 0;
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: 90;
+  pointer-events: auto;
 }
 
 /* ===== 快捷键提示 ===== */
@@ -594,7 +595,7 @@ onUnmounted(() => {
     left: auto;
     top: 50%;
     transform: translateY(-50%);
-    pointer-events: auto;
+    pointer-events: none;
   }
 }
 
