@@ -112,8 +112,10 @@ const tocPanel = ref(null)
 let prevFocused = null
 
 const getFocusable = () => {
-  const root = tocPanel.value?.$el || tocPanel.value || document
-  if (!root) return []
+  if (!isBrowser) return []
+  const panel = tocPanel.value
+  const candidate = panel?.$el ?? panel ?? document
+  const root = (candidate && typeof candidate.querySelectorAll === 'function') ? candidate : document
   return Array.from(root.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'))
     .filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null)
 }
