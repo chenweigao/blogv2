@@ -52,10 +52,8 @@ export default defineConfig({
               './docs/.vitepress/theme/components/EnhancedTOC.vue',
               './docs/.vitepress/theme/components/toc/TOCToggleButton.vue',
               './docs/.vitepress/theme/components/toc/TOCPanel.vue'
-            ],
-            // 新增：将大体积依赖拆分为独立 chunk，降低首屏 JS 负载
-            mermaid: ['mermaid'],
-            viewerjs: ['viewerjs']
+            ]
+            // 移除对外部依赖的手动分块，避免与 external 冲突
           }
         }
       }

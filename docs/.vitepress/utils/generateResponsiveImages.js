@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -32,7 +31,7 @@ async function ensureDir(p) {
   await fs.promises.mkdir(p, { recursive: true })
 }
 
-async function processImage(absPath) {
+async function processImage(absPath, sharp) {
   const relFromPublic = path.relative(PUBLIC_DIR, absPath).split(path.sep).join('/')
   const publicPath = '/' + relFromPublic
   const baseName = path.basename(absPath, path.extname(absPath))
@@ -65,10 +64,19 @@ async function processImage(absPath) {
     variantsWebp.push({ width: w, src: outPublicWebp })
   }
 
+  // 新增：LQIP（base64 极小图）
+  let lqip = ''
+  try {
+    const lqipBuffer = await sharp(absPath).resize({ width: 24 }).webp({ quality: 60 }).toBuffer()
+    lqip = 'data:image/webp;base64,' + lqipBuffer.toString('base64')
+  } catch (e) {
+    console.warn('[images] LQIP failed:', absPath, e?.message || e)
+  }
+
   return {
     key: publicPath,
     value: {
-      original: { src: publicPath, width: origWidth, height: origHeight, type: mimeOriginal },
+      original: { src: publicPath, width: origWidth, height: origHeight, type: mimeOriginal, lqip },
       variants: {
         original: variantsOriginal.sort((a, b) => a.width - b.width),
         webp: variantsWebp.sort((a, b) => a.width - b.width)
@@ -78,6 +86,24 @@ async function processImage(absPath) {
 }
 
 export async function generateResponsiveImages() {
+  // 新增：允许通过环境变量跳过（例如在某些构建环境中缺失 sharp）
+  if (process.env.SKIP_IMAGE_OPTIMIZE === '1') {
+    console.log('[images] SKIP_IMAGE_OPTIMIZE=1, skip responsive images generation')
+    return true
+  }
+  // 新增：在函数内部尝试动态加载 sharp，避免在配置解析阶段就失败
+  let sharp
+  try {
+    const mod = await import('sharp')
+    sharp = mod?.default || mod
+  } catch (e) {
+    console.warn('[images] sharp not available, skip responsive images generation:', e?.message || e)
+    // 仍然确保清单文件存在，避免下游读取失败
+    await ensureDir(path.dirname(MANIFEST_PATH))
+    await fs.promises.writeFile(MANIFEST_PATH, JSON.stringify({}, null, 2))
+    return false
+  }
+
   if (!fs.existsSync(SOURCE_DIR)) {
     console.log('[images] No source dir:', SOURCE_DIR)
     return false
@@ -93,7 +119,7 @@ export async function generateResponsiveImages() {
   console.log(`[images] Processing ${files.length} images...`)
   for (const f of files) {
     try {
-      const item = await processImage(f)
+      const item = await processImage(f, sharp)
       manifest[item.key] = item.value
     } catch (e) {
       console.warn('[images] Failed:', f, e?.message || e)
