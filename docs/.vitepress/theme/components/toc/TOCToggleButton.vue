@@ -1,5 +1,5 @@
 <template>
-  <div class="toc-toggle-wrapper">
+  <div :class="[$style.root, 'toc-toggle-wrapper']">
     <!-- 主要的进度环按钮 -->
     <button
       class="toc-progress-button u-focus-ring press-active focus-ring-animated"
@@ -183,6 +183,10 @@ onUnmounted(() => {
   // 清理工作已由外部 useDragAndDrop 处理
 })
 </script>
+
+<style module>
+.root {}
+</style>
 
 <style scoped>
 .toc-toggle-wrapper {

@@ -3,12 +3,11 @@
   <Transition :name="isPinned ? '' : 'toc-slide'" appear>
     <div 
       v-if="isVisible" 
-      class="toc-panel" 
-      :class="{ 
+      :class="[$style.root, 'toc-panel', { 
         'is-pinned': isPinned, 
         'is-compact': isCompactMode,
         'is-mobile': isMobile 
-      }"
+      }]"
       :style="panelStyle"
     >
       <!-- TOC Header -->
@@ -254,7 +253,8 @@ defineExpose({
 })
 </script>
 
-<style scoped>
+<style module>
+.root {}
 .toc-panel {
   width: 320px;
   max-height: 75vh;

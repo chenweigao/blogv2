@@ -7,6 +7,7 @@ import { sidebar } from './config/sidebar/index.js'
 import markdownItMark from 'markdown-it-mark'
 import imageSizePlugin from './theme/utils/markdown-it-image-size.js'
 import { generateResponsiveImages } from './utils/generateResponsiveImages.js'
+import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
   title: 'Knowledge Wiki',
@@ -41,7 +42,8 @@ export default defineConfig({
   // Vite 配置 - 添加实时 git 历史记录 API 插件
   vite: {
     plugins: [
-      createGitHistoryAPI()
+      createGitHistoryAPI(),
+      UnoCSS()
     ],
     // 优化构建配置
     build: {

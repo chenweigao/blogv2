@@ -1,0 +1,1 @@
+import { defineConfig, presetUno } from 'unocss'\n\nexport default defineConfig({\n  presets: [\n    presetUno()\n  ],\n  // 仅按需生成已使用的原子类，不影响现有全局样式\n  theme: {},\n})\n

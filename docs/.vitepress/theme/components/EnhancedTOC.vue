@@ -1,5 +1,5 @@
 <template>
-  <div class="enhanced-toc-container" :class="{ 'is-mobile': isMobile, 'is-pinned': isPinned }">
+  <div class="enhanced-toc-container" :class="[$style.root, { 'is-mobile': isMobile, 'is-pinned': isPinned }]">
     <!-- TOC Toggle Button with Integrated Progress Ring -->
     <TOCToggleButton
       :is-active="isVisible"
@@ -87,6 +87,10 @@
     </Transition>
   </div>
 </template>
+
+<style module>
+.root {}
+</style>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
