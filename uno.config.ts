@@ -1,1 +1,38 @@
-import { defineConfig, presetUno } from 'unocss'\n\nexport default defineConfig({\n  presets: [\n    presetUno()\n  ],\n  // 仅按需生成已使用的原子类，不影响现有全局样式\n  theme: {},\n})\n
+import { defineConfig, presetUno, presetAttributify, presetIcons, presetTypography } from 'unocss'
+
+export default defineConfig({
+  presets: [
+    presetUno(),
+    presetAttributify(),
+    presetTypography(),
+    presetIcons()
+  ],
+  theme: {
+    breakpoints: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px'
+    },
+    colors: {
+      brand: {
+        DEFAULT: '#3c82f6'
+      }
+    },
+    fontFamily: {
+      sans: 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"'
+    },
+    borderRadius: {
+      xl: '12px'
+    }
+  },
+  safelist: [
+    'container',
+    'mx-auto',
+    'px-4',
+    'sm:px-6',
+    'md:px-8',
+    'text-sm',
+    'md:text-base'
+  ]
+})

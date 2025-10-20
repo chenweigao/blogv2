@@ -9,3 +9,4 @@ docs/.vitepress/cache/
 # Vue Press 缓存目录（如果需要）
 docs/.vitepress/cache/
 docs/.vitepress/.temp/
+dev-dev.log

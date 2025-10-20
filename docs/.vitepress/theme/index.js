@@ -4,6 +4,8 @@ import './custom.css'
 import './enhanced-toc.css'
 import './styles/responsive-images.css'
 import './styles/navbar-animations.css'
+// 新增：移动端样式覆盖
+import './styles/mobile.css'
 // 注意：以下CSS文件已整合到 custom.css 的模块化结构中，避免重复导入
 // import './styles/code-block-fix.css'     // 已整合到 content.css
 // import './styles/sidebar-effects.css'   // 已整合到 layout.css  
@@ -17,8 +19,8 @@ import GitHistoryModal from './components/GitHistoryModal.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
 import EnhancedTOC from './components/EnhancedTOC.vue'
 import NavbarEnhancer from './components/NavbarEnhancer.vue'
-import { h } from 'vue'
-// 正确导入 vitepress-plugin-image-viewer
+// 移除未使用的 `h` 引入
+//// 正确导入 vitepress-plugin-image-viewer
 import 'viewerjs/dist/viewer.min.css'
 import imageViewer from 'vitepress-plugin-image-viewer'
 import { onMounted, watch, ref, onUnmounted } from 'vue'
@@ -29,6 +31,9 @@ import { setupSidebarNavbarSync } from './utils/sidebarNavbarSync.js'
 import { initAnalytics } from './utils/analytics.js'
 import { initErrorMonitor } from './utils/errorMonitor.js'
 import { initWebVitals } from './utils/webVitals.js'
+import 'uno.css'
+import './custom.css'
+import './enhanced-toc.css'
 
 // 创建一个全局的代码块弹窗状态
 const codeModalState = {
@@ -162,6 +167,9 @@ export default {
         // 清理：在卸载时断开观察器
         onUnmounted(() => {
           if (mo) mo.disconnect()
+          if (typeof cleanupSidebarSync === 'function') {
+            cleanupSidebarSync()
+          }
         })
       })
 
@@ -171,10 +179,12 @@ export default {
           codeBlockHandler.initCodeBlockClick()
           await setupMermaid()
 
-          // 修复：路由切换后立即初始化
+          // 修复：路由切换后立即初始化并记录失败原因
           try {
             imageViewer(route)
-          } catch {}
+          } catch (e) {
+            console.warn('imageViewer re-init failed:', e?.message || e)
+          }
 
           // 若尚未初始化，尝试触发延迟初始化
           initImageViewerWhenNeeded()

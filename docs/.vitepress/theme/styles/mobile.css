@@ -1,0 +1,121 @@
+/* Mobile-first overrides scoped to screens &lt;= 768px */
+@media (max-width: 768px) {
+  :root {
+    --vp-nav-height: 56px;
+    --vp-sidebar-width: 280px;
+    --vp-font-size-1: 16px;
+    --vp-font-size-2: 14px;
+  }
+
+  /* Layout paddings */
+  .VPNavBar .container,
+  .VPSidebar .nav,
+  .VPDoc .content,
+  .VPSidebar .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Headings scale */
+  .VPDoc h1 {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+  .VPDoc h2 {
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+  .VPDoc h3 {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+  .vp-doc h2,
+  .vp-doc h3 {
+    scroll-margin-top: var(--vp-nav-height, 56px);
+  }
+
+  /* Text body */
+  .VPDoc p,
+  .VPDoc li {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* Code blocks */
+  .vp-doc pre {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    margin: 12px 0;
+  }
+  .vp-doc code {
+    font-size: 0.9rem;
+  }
+
+  /* Tables */
+  .vp-doc table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-collapse: collapse;
+  }
+  .vp-doc table th,
+  .vp-doc table td {
+    padding: 10px;
+  }
+
+  /* Images */
+  .vp-doc img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px auto;
+  }
+
+  /* Lists */
+  .vp-doc ul,
+  .vp-doc ol {
+    padding-left: 1.25rem;
+  }
+
+  /* Tap targets in nav & sidebar */
+  .VPSidebarItem .item,
+  .VPNavBarMenuLink {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  /* Hide outline on mobile if present */
+  .VPDocAsideOutline {
+    display: none !important;
+  }
+
+  /* ===== Mobile navigation & sidebar interactions ===== */
+  .VPNavBarHamburger,
+  .VPNavBarMenu .VPNavBarMenuLink,
+  .VPNavBarMenuGroup .VPNavBarMenuGroupButton {
+    min-height: 44px;
+    padding-inline: 12px;
+  }
+  .VPNavBarHamburger {
+    padding: 8px;
+    margin-inline: 4px;
+  }
+
+  .VPSidebar {
+    width: 100vw;
+    max-width: none;
+  }
+  .VPSidebar .items {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - var(--vp-nav-height));
+    padding-bottom: 24px;
+  }
+
+  /* 简化浮动 TOC：在小屏隐藏，避免遮挡与误触 */
+  .enhanced-toc-container {
+    display: none !important;
+  }
+}
