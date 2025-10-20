@@ -1,5 +1,5 @@
 ---
-title: GPU Architecture - 深入理解图形处理器架构
+title: GPU Architecture
 date: 2025-03-06
 tags:
   - GPU
@@ -120,6 +120,7 @@ graph TB
 1. **指令发射**：一个Warp一次只能执行一条指令
 2. **内存合并访问**：同一Warp内的线程应访问连续内存地址
 3. **占用及延迟隐藏**：多个Warp并发执行，隐藏内存访问延迟
+4. 
 
 ### 3.3 性能优化要点
 
