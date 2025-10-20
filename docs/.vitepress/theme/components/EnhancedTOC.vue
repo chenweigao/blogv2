@@ -113,10 +113,9 @@ let prevFocused = null
 
 const getFocusable = () => {
   if (!isBrowser) return []
-  const panel = tocPanel.value
-  const candidate = panel?.$el ?? panel ?? document
-  const root = (candidate && typeof candidate.querySelectorAll === 'function') ? candidate : document
-  return Array.from(root.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+  const panelEl = tocPanel.value?.$el || tocPanel.value
+  if (!panelEl || typeof panelEl.querySelectorAll !== 'function') return []
+  return Array.from(panelEl.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'))
     .filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null)
 }
 
@@ -273,8 +272,12 @@ const toggleTOC = () => {
   if (isVisible.value && tocPanel.value) {
     setTimeout(() => {
       tocPanel.value.scrollToActiveItem()
-      // 记录前一焦点并将焦点移入面板
+      // 记录前一焦点并将焦点移入面板，先聚焦面板容器以避免页面跳到顶部
       prevFocused = document.activeElement
+      const panelEl = tocPanel.value?.$el || tocPanel.value
+      if (panelEl && typeof panelEl.focus === 'function') {
+        panelEl.focus()
+      }
       const f = getFocusable()
       if (f[0]) f[0].focus()
       document.addEventListener('keydown', focusTrapKeydown)
@@ -449,6 +452,10 @@ onMounted(() => {
     if (v) {
       await nextTick()
       prevFocused = document.activeElement
+      const panelEl = tocPanel.value?.$el || tocPanel.value
+      if (panelEl && typeof panelEl.focus === 'function') {
+        panelEl.focus()
+      }
       const f = getFocusable()
       if (f[0]) f[0].focus()
       document.addEventListener('keydown', focusTrapKeydown)

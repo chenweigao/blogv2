@@ -9,7 +9,7 @@
         'is-draggable': isDraggable,
         'has-progress': showProgress && readingProgress > 0
       }"
-      @click="handleClick"
+      @click="handleClick" type="button"
       :title="`${isActive ? 'Hide' : 'Show'} TOC - ${Math.round(readingProgress)}% read`"
       :aria-label="`${isActive ? 'Hide' : 'Show'} table of contents - ${Math.round(readingProgress)}% read`"
       :aria-expanded="isActive"
@@ -124,7 +124,8 @@ const handleClick = (event) => {
     return
   }
   
-  // 阻止事件冒泡
+  // 阻止默认与事件冒泡
+  event.preventDefault()
   event.stopPropagation()
   
   // 直接触发点击事件
