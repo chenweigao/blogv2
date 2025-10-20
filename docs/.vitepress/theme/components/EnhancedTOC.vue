@@ -204,10 +204,10 @@ const panelPosition = computed(() => {
   const buttonX = dragPosition.x
   const buttonY = dragPosition.y
   const buttonSize = 56
-  const panelWidth = 320
-  const panelHeight = 500 // 估算面板高度
+  const panelRect = (isBrowser && tocPanel.value) ? (tocPanel.value.$el?.getBoundingClientRect?.() || tocPanel.value.getBoundingClientRect?.()) : null
+  const panelWidth = panelRect?.width || 320
   const margin = 16
-  
+  const panelHeight = panelRect?.height || Math.min(window.innerHeight - margin * 2, 640)
   let panelX = buttonX + buttonSize + margin // 默认显示在按钮右侧
   let panelY = buttonY - 50 // 稍微向上偏移
   

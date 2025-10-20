@@ -9,6 +9,10 @@
         'is-mobile': isMobile 
       }]"
       :style="panelStyle"
+      role="dialog"
+      :aria-labelledby="'enhanced-toc-title'"
+      :aria-modal="(!isPinned && isVisible) ? 'true' : 'false'"
+      tabindex="-1"
     >
       <!-- TOC Header -->
       <div class="toc-header">
