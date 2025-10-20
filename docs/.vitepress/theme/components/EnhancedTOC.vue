@@ -1,53 +1,23 @@
 <template>
   <div class="enhanced-toc-container" :class="[$style.root, { 'is-mobile': isMobile, 'is-pinned': isPinned }]">
     <!-- TOC Toggle Button with Integrated Progress Ring -->
-    <TOCToggleButton
-      :is-active="isVisible"
-      :heading-count="headings.length"
-      :is-draggable="true"
-      :position="dragPosition"
-      :reading-progress="readingProgress"
-      :show-progress="!isMobile && showProgressRing"
-      @click="toggleTOC"
-      @drag-start="handleDragStart"
-      @drag-move="handleDragMove"
-      @drag-end="handleDragEnd"
-      ref="toggleButton"
-    />
+    <TOCToggleButton :is-active="isVisible" :heading-count="headings.length" :is-draggable="true"
+      :position="dragPosition" :reading-progress="readingProgress" :show-progress="!isMobile && showProgressRing"
+      @click="toggleTOC" @drag-start="handleDragStart" @drag-move="handleDragMove" @drag-end="handleDragEnd"
+      ref="toggleButton" />
 
     <!-- TOC Panel -->
     <!-- 新增：显隐过渡，使用 v-show 以获得更平滑的显隐 -->
     <Transition name="fade-slide">
-      <TOCPanel
-        v-show="isVisible"
-        :is-visible="isVisible"
-        :is-pinned="isPinned"
-        :is-compact-mode="isCompactMode"
-        :is-mobile="isMobile"
-        :title="tocTitle"
-        :headings="headings"
-        :filtered-headings="filteredHeadings"
-        :active-heading="activeHeading"
-        :search-query="searchQuery"
-        :reading-progress="readingProgress"
-        :estimated-reading-time="estimatedReadingTime"
-        :time-remaining="timeRemaining"
-        :panel-position="panelPosition"
-        @close="hideTOC"
-        @toggle-pin="togglePin"
-        @toggle-compact="toggleCompactMode"
-        @search="handleSearch"
-        @clear-search="handleClearSearch"
-        @heading-click="handleHeadingClick"
-        @scroll-to-top="scrollToTop"
-        @scroll-to-bottom="scrollToBottom"
-        @copy-toc="handleCopyTOC"
-        ref="tocPanel"
-        :aria-labelledby="'enhanced-toc-title'"
-        role="dialog"
-        :aria-modal="(!isPinned && isVisible) ? 'true' : 'false'"
-        tabindex="-1"
-      />
+      <TOCPanel v-show="isVisible" :is-visible="isVisible" :is-pinned="isPinned" :is-compact-mode="isCompactMode"
+        :is-mobile="isMobile" :title="tocTitle" :headings="headings" :filtered-headings="filteredHeadings"
+        :active-heading="activeHeading" :search-query="searchQuery" :reading-progress="readingProgress"
+        :estimated-reading-time="estimatedReadingTime" :time-remaining="timeRemaining" :panel-position="panelPosition"
+        @close="hideTOC" @toggle-pin="togglePin" @toggle-compact="toggleCompactMode" @search="handleSearch"
+        @clear-search="handleClearSearch" @heading-click="handleHeadingClick" @scroll-to-top="scrollToTop"
+        @scroll-to-bottom="scrollToBottom" @copy-toc="handleCopyTOC" ref="tocPanel"
+        :aria-labelledby="'enhanced-toc-title'" role="dialog" :aria-modal="(!isPinned && isVisible) ? 'true' : 'false'"
+        tabindex="-1" />
     </Transition>
 
     <!-- Keyboard Shortcuts Tooltip -->
@@ -57,14 +27,8 @@
     <!-- Backdrop for Mobile -->
     <!-- 新增：移动端遮罩的显隐过渡 -->
     <Transition name="fade-slide">
-      <div
-        v-if="isVisible && isMobile"
-        class="toc-backdrop"
-        @click="hideTOC"
-        role="button"
-        aria-label="Close table of contents"
-        aria-hidden="false"
-      ></div>
+      <div v-if="isVisible && isMobile" class="toc-backdrop" @click="hideTOC" role="button"
+        aria-label="Close table of contents" aria-hidden="false"></div>
     </Transition>
 
     <!-- Keyboard Shortcuts Tooltip -->
@@ -105,11 +69,18 @@ const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefine
 
 // VitePress data
 const { page, frontmatter } = useData()
+const closeOnOutsideClick = computed(() => {
+  const fm = frontmatter.value || {}
+  const toc = fm.enhancedTOC || fm.toc || {}
+  const val = (typeof toc.closeOnOutsideClick !== 'undefined') ? toc.closeOnOutsideClick : fm.tocCloseOnOutsideClick
+  return typeof val === 'boolean' ? val : true
+})
 
 // Component refs
 const toggleButton = ref(null)
 const tocPanel = ref(null)
 let prevFocused = null
+let outsidePointerDownHandler = null
 
 const getFocusable = () => {
   if (!isBrowser) return []
@@ -161,7 +132,7 @@ const getDefaultPosition = () => {
   if (!isBrowser) {
     return { x: 0, y: 0 }
   }
-  
+
   return {
     x: window.innerWidth - 76, // 距离右边20px（按钮宽度56px + 20px边距）
     y: window.innerHeight / 2 - 28 // 垂直居中（按钮高度的一半）
@@ -195,12 +166,12 @@ const panelPosition = computed(() => {
   if (!isBrowser) {
     return { x: 0, y: 0 }
   }
-  
+
   if (isMobile.value) {
     // 移动端固定位置
     return { x: 0, y: 0 }
   }
-  
+
   const buttonX = dragPosition.x
   const buttonY = dragPosition.y
   const buttonSize = 56
@@ -210,30 +181,30 @@ const panelPosition = computed(() => {
   const panelHeight = panelRect?.height || Math.min(window.innerHeight - margin * 2, 640)
   let panelX = buttonX + buttonSize + margin // 默认显示在按钮右侧
   let panelY = buttonY - 50 // 稍微向上偏移
-  
+
   // 检查右侧空间是否足够
   if (panelX + panelWidth > window.innerWidth - margin) {
     // 右侧空间不足，显示在按钮左侧
     panelX = buttonX - panelWidth - margin
   }
-  
+
   // 检查左侧空间是否足够
   if (panelX < margin) {
     // 左侧空间也不足，居中显示
     panelX = Math.max(margin, (window.innerWidth - panelWidth) / 2)
   }
-  
+
   // 检查垂直位置
   if (panelY + panelHeight > window.innerHeight - margin) {
     // 底部空间不足，向上调整
     panelY = window.innerHeight - panelHeight - margin
   }
-  
+
   if (panelY < margin) {
     // 顶部空间不足，向下调整
     panelY = margin
   }
-  
+
   return {
     x: Math.round(panelX),
     y: Math.round(panelY)
@@ -245,29 +216,29 @@ const tocTitle = computed(() => 'Table of Contents')
 
 const isDocPage = computed(() => {
   if (!page.value) return false
-  
+
   // Exclude special pages
   const excludePages = ['/', '/index', '/home', '/timeline', '/search', '/about']
   const currentPath = page.value.relativePath?.replace(/\.md$/, '') || ''
   const normalizedPath = '/' + currentPath
-  
+
   if (excludePages.includes(normalizedPath) || excludePages.includes('/' + currentPath)) {
     return false
   }
-  
+
   // Check frontmatter
   const fm = frontmatter.value || {}
   if (fm.layout === 'home' || fm.layout === 'page') {
     return false
   }
-  
+
   return true
 })
 
 // Methods
 const toggleTOC = () => {
   if (isDragging.value) return
-  
+
   isVisible.value = !isVisible.value
   if (isVisible.value && tocPanel.value) {
     setTimeout(() => {
@@ -322,7 +293,7 @@ const handleClearSearch = () => {
 
 const handleHeadingClick = (anchor, event) => {
   scrollToHeading(anchor)
-  
+
   if (isMobile.value && !isPinned.value) {
     setTimeout(() => {
       hideTOC()
@@ -358,9 +329,9 @@ const checkMobile = () => {
 
 const handleResize = () => {
   if (!isBrowser) return
-  
+
   checkMobile()
-  
+
   // 如果没有保存的位置，重新计算默认位置
   const savedPosition = localStorage.getItem('enhanced-toc-position')
   if (!savedPosition && !isMobile.value) {
@@ -371,23 +342,23 @@ const handleResize = () => {
 
 const handleKeydown = (event) => {
   if (!isBrowser) return
-  
+
   if (event.key === 'Escape' && isVisible.value && !isPinned.value) {
     hideTOC()
   }
-  
+
   if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
     event.preventDefault()
     toggleTOC()
   }
-  
+
   if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey) {
     if (isVisible.value && tocPanel.value) {
       event.preventDefault()
       tocPanel.value.focusSearch()
     }
   }
-  
+
   if ((event.ctrlKey || event.metaKey) && event.key === '?') {
     event.preventDefault()
     showShortcuts.value = !showShortcuts.value
@@ -400,15 +371,15 @@ const handleKeydown = (event) => {
 // 设置拖拽处理器 - 添加浏览器环境检查
 const setupDragHandlers = () => {
   if (!isBrowser || !toggleButton.value) return
-  
+
   const buttonElement = toggleButton.value.$el?.querySelector('.toc-progress-button')
   if (buttonElement) {
     const { handleMouseDown, handleTouchStart } = createDragHandlers(buttonElement)
-    
+
     // 绑定拖拽事件
     buttonElement.addEventListener('mousedown', handleMouseDown)
     buttonElement.addEventListener('touchstart', handleTouchStart)
-    
+
     console.log('Drag handlers set up for button element')
   }
 }
@@ -416,37 +387,37 @@ const setupDragHandlers = () => {
 // Lifecycle
 onMounted(() => {
   if (!isBrowser || !isDocPage.value) return
-  
+
   checkMobile()
-  
+
   // 设置拖拽处理器
   nextTick(() => {
     setupDragHandlers()
   })
-  
+
   // 如果是首次访问且没有保存的位置，设置默认位置
   const savedPosition = localStorage.getItem('enhanced-toc-position')
   if (!savedPosition && !isMobile.value) {
     const defaultPos = getDefaultPosition()
     setPosition(defaultPos)
   }
-  
+
   // Restore saved states
   const savedPinState = localStorage.getItem('toc-pinned')
   if (savedPinState === 'true') {
     isPinned.value = true
     isVisible.value = true
   }
-  
+
   const savedCompactState = localStorage.getItem('toc-compact')
   if (savedCompactState === 'true') {
     isCompactMode.value = true
   }
-  
+
   // Add event listeners
   window.addEventListener('resize', handleResize)
   window.addEventListener('keydown', handleKeydown)
-  
+
   // 若面板通过外部控制显示/隐藏，监听其变化以同步焦点陷阱
   watch(isVisible, async (v) => {
     if (v) {
@@ -459,18 +430,42 @@ onMounted(() => {
       const f = getFocusable()
       if (f[0]) f[0].focus()
       document.addEventListener('keydown', focusTrapKeydown)
+      // 注册外部点击关闭面板（仅未固定时生效）
+      outsidePointerDownHandler = (event) => {
+        if (!isVisible.value || isPinned.value) return
+        if (isDragging.value) return
+        const panelEl = tocPanel.value?.$el || tocPanel.value
+        const buttonEl = toggleButton.value?.$el || toggleButton.value
+        const path = typeof event.composedPath === 'function' ? event.composedPath() : []
+        const isInsidePanel = panelEl && (panelEl.contains(event.target) || path.includes(panelEl))
+        const isInsideButton = buttonEl && (buttonEl.contains(event.target) || path.includes(buttonEl))
+        if (!isInsidePanel && !isInsideButton) {
+          hideTOC()
+        }
+      }
+      if (closeOnOutsideClick.value) {
+        document.addEventListener('pointerdown', outsidePointerDownHandler, true)
+      }
     } else {
       document.removeEventListener('keydown', focusTrapKeydown)
+      if (outsidePointerDownHandler) {
+        document.removeEventListener('pointerdown', outsidePointerDownHandler, true)
+        outsidePointerDownHandler = null
+      }
     }
   })
 })
 
 onUnmounted(() => {
   if (!isBrowser) return
-  
+
   window.removeEventListener('resize', handleResize)
   window.removeEventListener('keydown', handleKeydown)
   document.removeEventListener('keydown', focusTrapKeydown)
+  if (outsidePointerDownHandler) {
+    document.removeEventListener('pointerdown', outsidePointerDownHandler, true)
+    outsidePointerDownHandler = null
+  }
 })
 </script>
 
@@ -485,7 +480,8 @@ onUnmounted(() => {
   font-family: var(--vp-font-family-base);
   transition: all 0.3s ease;
   /* 移除原来的 right 和 transform 定位，改为从左上角开始 */
-  pointer-events: none; /* 容器本身不拦截事件 */
+  pointer-events: none;
+  /* 容器本身不拦截事件 */
 }
 
 .enhanced-toc-container.is-mobile {
@@ -497,7 +493,8 @@ onUnmounted(() => {
   transform: none;
   max-width: none;
   z-index: 1000;
-  pointer-events: none; /* 容器不拦截点击，仅子元素接收事件 */
+  pointer-events: none;
+  /* 容器不拦截点击，仅子元素接收事件 */
 }
 
 /* 修复固定模式样式 - 移除强制的top位置设置，避免与动态panelPosition冲突 */
@@ -545,6 +542,7 @@ onUnmounted(() => {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -622,6 +620,7 @@ onUnmounted(() => {
 
 /* 减少动画以提升性能 */
 @media (prefers-reduced-motion: reduce) {
+
   .enhanced-toc-container,
   .shortcuts-tooltip {
     transition: none !important;
