@@ -22,6 +22,17 @@
           <span class="meta-text">{{ formattedDate }}</span>
         </div>
         
+        <!-- 更新日期 -->
+        <div class="meta-item updated" v-if="lastUpdatedText">
+          <div class="meta-icon-wrapper">
+            <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 1 1-9-9"></path>
+              <polyline points="21 3 21 12 12 12"></polyline>
+            </svg>
+          </div>
+          <span class="meta-text">更新于 {{ lastUpdatedText }}</span>
+        </div>
+        
         <!-- 分类信息 -->
         <div class="meta-item categories" v-if="frontmatter.category && frontmatter.category.length">
           <div class="meta-icon-wrapper">
@@ -98,7 +109,7 @@ const props = defineProps({
   }
 })
 
-const { frontmatter } = useData()
+const { frontmatter, page } = useData()
 
 // 计算标签列表（支持 tag 和 tags 两种格式）
 const computedTags = computed(() => {
@@ -124,11 +135,15 @@ const computedTags = computed(() => {
 
 // 检查是否显示元数据
 const showMeta = computed(() => {
-  return frontmatter.value.title || 
-         frontmatter.value.date || 
-         frontmatter.value.category || 
-         frontmatter.value.author || 
-         computedTags.value.length > 0
+  return (
+    frontmatter.value.title ||
+    frontmatter.value.date ||
+    frontmatter.value.updated ||
+    (page.value && page.value.lastUpdated) ||
+    frontmatter.value.category ||
+    frontmatter.value.author ||
+    computedTags.value.length > 0
+  )
 })
 
 // 格式化日期
@@ -139,6 +154,19 @@ const formattedDate = computed(() => {
   if (isNaN(date.getTime())) return frontmatter.value.date
   
   return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+})
+
+const lastUpdatedText = computed(() => {
+  const fm = frontmatter.value || {}
+  const updated = fm.updated || page.value?.lastUpdated
+  if (!updated) return ''
+  const d = new Date(updated)
+  if (isNaN(d.getTime())) return ''
+  return d.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
