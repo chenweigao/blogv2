@@ -21,9 +21,8 @@
 
     <!-- 侧边栏导航前的内容：添加滚动入场与模糊淡入 -->
     <template #sidebar-nav-before>
-      <SidebarDocInfo 
+      <SidebarBreathingBar 
         v-if="isDocPage"
-        class="auto-inview effect-blur-in"
         :category="frontmatter.category"
         :date="frontmatter.date"
       />
@@ -99,7 +98,7 @@ import DocBreadcrumb from './components/layout/DocBreadcrumb.vue'
 import ArticleHeader from './components/layout/ArticleHeader.vue'
 import QuickTOC from './components/layout/QuickTOC.vue'
 import DocFooter from './components/layout/DocFooter.vue'
-import SidebarDocInfo from './components/layout/SidebarDocInfo.vue'
+import SidebarBreathingBar from './components/layout/SidebarBreathingBar.vue'
 
 // 导入其他组件
 import CodeBlockModal from './components/CodeBlockModal.vue'

@@ -6,6 +6,8 @@ import './styles/responsive-images.css'
 import './styles/navbar-animations.css'
 // 新增：移动端样式覆盖
 import './styles/mobile.css'
+// 新增：侧边栏动态组件样式
+import './styles/sidebar-widget.css'
 // 注意：以下CSS文件已整合到 custom.css 的模块化结构中，避免重复导入
 // import './styles/code-block-fix.css'     // 已整合到 content.css
 // import './styles/sidebar-effects.css'   // 已整合到 layout.css  

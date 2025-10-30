@@ -1,0 +1,394 @@
+/* 侧边栏动态组件增强样式 */
+
+/* CSS 自定义属性定义 */
+:root {
+  /* 动画时长 */
+  --widget-transition-fast: 0.15s;
+  --widget-transition-medium: 0.3s;
+  --widget-transition-slow: 0.6s;
+  
+  /* 缓动函数 */
+  --widget-ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --widget-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --widget-ease-bounce: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  
+  /* 颜色主题 */
+  --widget-aurora-primary: rgba(10, 37, 64, 0.4);
+  --widget-aurora-secondary: rgba(255, 212, 0, 0.3);
+  --widget-aurora-accent: rgba(0, 208, 132, 0.4);
+  
+  --widget-ocean-primary: rgba(0, 119, 190, 0.4);
+  --widget-ocean-secondary: rgba(0, 180, 216, 0.3);
+  --widget-ocean-accent: rgba(144, 224, 239, 0.4);
+  
+  --widget-sunset-primary: rgba(255, 94, 77, 0.4);
+  --widget-sunset-secondary: rgba(255, 154, 0, 0.3);
+  --widget-sunset-accent: rgba(255, 206, 84, 0.4);
+  
+  --widget-forest-primary: rgba(76, 175, 80, 0.4);
+  --widget-forest-secondary: rgba(139, 195, 74, 0.3);
+  --widget-forest-accent: rgba(205, 220, 57, 0.4);
+  
+  /* 阴影层级 */
+  --widget-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --widget-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --widget-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --widget-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* 模糊效果 */
+  --widget-blur-sm: blur(4px);
+  --widget-blur-md: blur(8px);
+  --widget-blur-lg: blur(16px);
+  
+  /* 间距系统 */
+  --widget-space-xs: 4px;
+  --widget-space-sm: 8px;
+  --widget-space-md: 12px;
+  --widget-space-lg: 16px;
+  --widget-space-xl: 24px;
+  
+  /* 圆角系统 */
+  --widget-radius-sm: 6px;
+  --widget-radius-md: 8px;
+  --widget-radius-lg: 12px;
+  --widget-radius-xl: 16px;
+  --widget-radius-2xl: 24px;
+}
+
+/* 暗色主题适配 */
+.dark {
+  --widget-aurora-primary: rgba(10, 37, 64, 0.6);
+  --widget-aurora-secondary: rgba(255, 212, 0, 0.4);
+  --widget-aurora-accent: rgba(0, 208, 132, 0.5);
+  
+  --widget-ocean-primary: rgba(0, 119, 190, 0.6);
+  --widget-ocean-secondary: rgba(0, 180, 216, 0.4);
+  --widget-ocean-accent: rgba(144, 224, 239, 0.5);
+  
+  --widget-sunset-primary: rgba(255, 94, 77, 0.6);
+  --widget-sunset-secondary: rgba(255, 154, 0, 0.4);
+  --widget-sunset-accent: rgba(255, 206, 84, 0.5);
+  
+  --widget-forest-primary: rgba(76, 175, 80, 0.6);
+  --widget-forest-secondary: rgba(139, 195, 74, 0.4);
+  --widget-forest-accent: rgba(205, 220, 57, 0.5);
+}
+
+/* 高级动画关键帧 */
+@keyframes widget-glow-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 5px rgba(var(--vp-c-brand-rgb), 0.3),
+      0 0 10px rgba(var(--vp-c-brand-rgb), 0.2),
+      0 0 15px rgba(var(--vp-c-brand-rgb), 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 10px rgba(var(--vp-c-brand-rgb), 0.4),
+      0 0 20px rgba(var(--vp-c-brand-rgb), 0.3),
+      0 0 30px rgba(var(--vp-c-brand-rgb), 0.2);
+  }
+}
+
+@keyframes widget-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes widget-bounce-in {
+  0% {
+    transform: scale(0.3) rotate(-10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  70% {
+    transform: scale(0.9) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes widget-slide-up {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes widget-morph {
+  0%, 100% {
+    border-radius: var(--widget-radius-xl);
+  }
+  25% {
+    border-radius: var(--widget-radius-2xl) var(--widget-radius-sm);
+  }
+  50% {
+    border-radius: var(--widget-radius-sm);
+  }
+  75% {
+    border-radius: var(--widget-radius-sm) var(--widget-radius-2xl);
+  }
+}
+
+/* 粒子系统增强 */
+.particle-system-enhanced .particle {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+.particle-system-enhanced .particle::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: inherit;
+  border-radius: inherit;
+  filter: blur(2px);
+  opacity: 0.5;
+  z-index: -1;
+}
+
+/* 高级渐变背景 */
+.gradient-mesh {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, var(--vp-c-bg-soft) 0%, var(--vp-c-bg) 100%);
+}
+
+/* 玻璃态效果 */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.dark .glassmorphism {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* 神经形态设计 */
+.neumorphism {
+  background: var(--vp-c-bg-soft);
+  box-shadow: 
+    8px 8px 16px rgba(0, 0, 0, 0.1),
+    -8px -8px 16px rgba(255, 255, 255, 0.1);
+  border: none;
+}
+
+.dark .neumorphism {
+  background: var(--vp-c-bg-soft);
+  box-shadow: 
+    8px 8px 16px rgba(0, 0, 0, 0.3),
+    -8px -8px 16px rgba(255, 255, 255, 0.02);
+}
+
+.neumorphism:hover {
+  box-shadow: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* 响应式动画 */
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-dynamic-widget:hover .widget-container {
+    animation: widget-glow-pulse 2s ease-in-out infinite;
+  }
+  
+  .sidebar-dynamic-widget:hover .gradient-layer {
+    animation: widget-shimmer 3s ease-in-out infinite;
+    background-size: 200% 100%;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .sidebar-dynamic-widget {
+    min-height: 56px; /* 增加触摸目标大小 */
+  }
+  
+  .action-btn {
+    min-height: 44px; /* 符合触摸标准 */
+    padding: 12px 16px;
+  }
+  
+  .close-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* 高刷新率屏幕优化 */
+@media (min-resolution: 120dpi) {
+  .sidebar-dynamic-widget * {
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}
+
+/* 性能优化 */
+.sidebar-dynamic-widget {
+  contain: layout style paint;
+  will-change: transform;
+}
+
+.sidebar-dynamic-widget .particle {
+  contain: strict;
+  will-change: transform, opacity;
+}
+
+/* 无障碍增强 */
+.sidebar-dynamic-widget:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+.sidebar-dynamic-widget[aria-expanded="true"] .expand-icon {
+  transform: rotate(180deg);
+}
+
+/* 打印样式 */
+@media print {
+  .sidebar-dynamic-widget {
+    background: white !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .sidebar-dynamic-widget * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .particle-layer,
+  .aurora-layer {
+    display: none !important;
+  }
+}
+
+/* 高对比度模式增强 */
+@media (prefers-contrast: high) {
+  .sidebar-dynamic-widget {
+    border: 2px solid currentColor;
+  }
+  
+  .gradient-layer {
+    opacity: 0.1;
+  }
+  
+  .status-dot {
+    border: 2px solid currentColor;
+  }
+  
+  .action-btn {
+    border: 1px solid currentColor;
+  }
+}
+
+/* 减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-dynamic-widget,
+  .sidebar-dynamic-widget *,
+  .sidebar-dynamic-widget *::before,
+  .sidebar-dynamic-widget *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 颜色方案偏好 */
+@media (prefers-color-scheme: dark) {
+  .sidebar-dynamic-widget {
+    --widget-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* 实用工具类 */
+.widget-fade-in {
+  animation: widget-slide-up var(--widget-transition-medium) var(--widget-ease-smooth);
+}
+
+.widget-bounce-in {
+  animation: widget-bounce-in var(--widget-transition-slow) var(--widget-ease-bounce);
+}
+
+.widget-glow {
+  animation: widget-glow-pulse 2s ease-in-out infinite;
+}
+
+.widget-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: widget-shimmer 2s ease-in-out infinite;
+}
+
+/* 主题特定样式 */
+.theme-aurora .widget-container {
+  background: linear-gradient(
+    135deg,
+    var(--widget-aurora-primary) 0%,
+    var(--widget-aurora-secondary) 50%,
+    var(--widget-aurora-accent) 100%
+  );
+}
+
+.theme-ocean .widget-container {
+  background: linear-gradient(
+    135deg,
+    var(--widget-ocean-primary) 0%,
+    var(--widget-ocean-secondary) 50%,
+    var(--widget-ocean-accent) 100%
+  );
+}
+
+.theme-sunset .widget-container {
+  background: linear-gradient(
+    135deg,
+    var(--widget-sunset-primary) 0%,
+    var(--widget-sunset-secondary) 50%,
+    var(--widget-sunset-accent) 100%
+  );
+}
+
+.theme-forest .widget-container {
+  background: linear-gradient(
+    135deg,
+    var(--widget-forest-primary) 0%,
+    var(--widget-forest-secondary) 50%,
+    var(--widget-forest-accent) 100%
+  );
+}

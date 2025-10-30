@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVIDIA GPU并行线程执行（PTX）技术详解</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        dark: '#1D2129',
+                        light: '#F2F3F5',
+                        neutral: '#86909C',
+                        'code-bg': '#282C34',
+                        'code-text': '#E5E9F0'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Consolas', 'Monaco', 'monospace']
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .transition-smooth {
+                transition: all 0.3s ease-in-out;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+
+        /* 代码块样式 */
+        pre {
+            background-color: #282C34;
+            color: #E5E9F0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            line-height: 1.6;
+        }
+
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 导航栏滚动效果 */
+        .nav-scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 表格样式 */
+        .tech-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .tech-table th, .tech-table td {
+            border: 1px solid #E5E7EB;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .tech-table th {
+            background-color: #F9FAFB;
+            font-weight: 600;
+        }
+        .tech-table tr:nth-child(even) {
+            background-color: #FAFAFA;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-dark">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 bg-white transition-smooth">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fa fa-microchip text-primary text-2xl"></i>
+                    <h1 class="text-xl font-bold text-primary hidden sm:block">NVIDIA PTX技术详解</h1>
+                </div>
+                
+                <!-- 桌面导航 -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#section1" class="text-neutral hover:text-primary transition-smooth font-medium">GPU架构基础</a>
+                    <a href="#section2" class="text-neutral hover:text-primary transition-smooth font-medium">PTX底层机制</a>
+                    <a href="#section3" class="text-neutral hover:text-primary transition-smooth font-medium">PTX指令集</a>
+                    <a href="#section4" class="text-neutral hover:text-primary transition-smooth font-medium">新架构特性</a>
+                    <a href="#section5" class="text-neutral hover:text-primary transition-smooth font-medium">实践指南</a>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-neutral hover:text-primary transition-smooth">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-3 space-y-3">
+                <a href="#section1" class="block py-2 text-neutral hover:text-primary transition-smooth font-medium">GPU架构基础</a>
+                <a href="#section2" class="block py-2 text-neutral hover:text-primary transition-smooth font-medium">PTX底层机制</a>
+                <a href="#section3" class="block py-2 text-neutral hover:text-primary transition-smooth font-medium">PTX指令集</a>
+                <a href="#section4" class="block py-2 text-neutral hover:text-primary transition-smooth font-medium">新架构特性</a>
+                <a href="#section5" class="block py-2 text-neutral hover:text-primary transition-smooth font-medium">实践指南</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+        <!-- 封面区域 -->
+        <section class="mb-16 text-center">
+            <div class="inline-block mb-4 px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                技术深度解析
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold mb-6 text-shadow">NVIDIA GPU并行线程执行（PTX）技术详解</h1>
+            <p class="text-neutral text-lg max-w-3xl mx-auto">深入探索GPU架构基础、PTX指令集系统、底层硬件机制及最新架构优化，全面理解NVIDIA CUDA生态系统的核心技术</p>
+            <div class="mt-10 flex justify-center space-x-4">
+                <a href="#section1" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-smooth flex items-center">
+                    <i class="fa fa-book mr-2"></i> 开始阅读
+                </a>
+                <a href="#section5" class="px-6 py-3 bg-white border border-gray-300 text-dark rounded-lg hover:bg-gray-50 transition-smooth flex items-center">
+                    <i class="fa fa-code mr-2"></i> 查看案例
+                </a>
+            </div>
+        </section>
+
+        <!-- 第1部分：GPU架构基础与PTX概述 -->
+        <section id="section1" class="mb-16 scroll-mt-24">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                    <i class="fa fa-cubes text-primary"></i>
+                </div>
+                <h2 class="text-3xl font-bold">1. GPU架构基础与PTX概述</h2>
+            </div>
+
+            <!-- 1.1 GPU与CPU架构对比 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">1.1 GPU与CPU架构对比</h3>
+                <p class="mb-4 text-gray-700">在现代计算系统中，GPU（图形处理器）和CPU（中央处理器）扮演着截然不同的角色，这种差异源于它们的设计理念和应用场景的根本不同。</p>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-100">
+                        <div class="flex items-center mb-3">
+                            <i class="fa fa-desktop text-primary mr-2"></i>
+                            <h4 class="font-semibold text-lg">CPU架构特点</h4>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>4-16个高性能核心，专注复杂串行任务</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>大量缓存和复杂控制逻辑，适合多任务切换</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>高主频，擅长低延迟、强依赖性计算</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>适合操作系统调度、程序逻辑判断等任务</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>DDR5内存，带宽相对较低</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-100">
+                        <div class="flex items-center mb-3">
+                            <i class="fa fa-microchip text-secondary mr-2"></i>
+                            <h4 class="font-semibold text-lg">GPU架构特点</h4>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>数千个简单核心，专注大规模并行计算</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>80%以上芯片面积用于ALU，优化数据并行</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>高吞吐量，擅长同时处理大量相似任务</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>适合图形渲染、AI训练、科学计算等</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>GDDR6/HBM显存，带宽可达1TB/s以上</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3">GPU与CPU性能对比</h4>
+                    <div class="h-64 sm:h-80">
+                        <canvas id="gpuCpuComparisonChart"></canvas>
+                    </div>
+                </div>
+
+                <p class="text-gray-700">这种架构差异决定了它们的应用场景：CPU主要用于串行处理，适用于多任务调度和通用计算，强调低延迟和高频率；而GPU采用SIMD（单指令多数据）架构，擅长同时处理大量相似计算任务，以并行处理为核心，极大提升数据处理吞吐量，适合重复、相似的数学运算。</p>
+            </div>
+
+            <!-- 1.2 SIMT架构原理与特点 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">1.2 SIMT架构原理与特点</h3>
+                <p class="mb-4 text-gray-700">SIMT（Single Instruction Multiple Threads，单指令多线程）是NVIDIA GPU采用的核心并行计算架构，它是SIMD（Single Instruction Multiple Data）架构的一种特殊形态，但提供了更大的灵活性。</p>
+                
+                <div class="bg-blue-50 rounded-lg p-5 mb-6 border-l-4 border-primary">
+                    <h4 class="font-semibold mb-2">SIMT核心思想</h4>
+                    <p class="text-gray-700">通过单一指令流驱动多线程并行执行，每个线程处理独立数据集。多个线程共享一条指令并行执行，每个线程处理一个标量数据，使之看起来像SIMD，但是并不限制同时执行的线程之间的同步性。</p>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3">SIMT vs SIMD 关键区别</h4>
+                    <table class="tech-table">
+                        <thead>
+                            <tr>
+                                <th>特性</th>
+                                <th>SIMD（单指令多数据）</th>
+                                <th>SIMT（单指令多线程）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>执行单位</td>
+                                <td>向量（一个线程处理多个数据）</td>
+                                <td>线程（每个线程处理一个数据）</td>
+                            </tr>
+                            <tr>
+                                <td>同步要求</td>
+                                <td>所有向量元素必须同步执行</td>
+                                <td>允许线程独立分支和执行</td>
+                            </tr>
+                            <tr>
+                                <td>编程模型</td>
+                                <td>向量级编程，需显式处理数据打包</td>
+                                <td>线程级编程，更直观的并行模型</td>
+                            </tr>
+                            <tr>
+                                <td>分支处理</td>
+                                <td>处理分支效率低，易产生空闲周期</td>
+                                <td>通过Warp调度高效处理分支发散</td>
+                            </tr>
+                            <tr>
+                                <td>灵活性</td>
+                                <td>较低，适合规整的数据并行任务</td>
+                                <td>较高，适合不规则并行任务</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-3">Warp（线程束）概念</h4>
+                    <p class="text-gray-700 mb-3">在NVIDIA GPU中，Warp是基本的执行和调度单位，由32个线程组成。Warp内的32个线程以lock-step（锁步）方式执行，即在没有遇到分支指令的情况下，所有线程执行相同的指令。</p>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <span>每个Warp共享程序计数器（PC）和指令解码器</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <span>每个线程有独立的寄存器状态和指令地址计数器（自Volta架构起）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <span>Warp调度器负责管理和切换Warp执行，隐藏内存延迟</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <span>当一个Warp等待内存操作时，调度器切换到另一个就绪Warp</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.3 PTX在CUDA生态系统中的地位 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">1.3 PTX在CUDA生态系统中的地位</h3>
+                <p class="mb-4 text-gray-700">PTX（Parallel Thread Execution）是NVIDIA为CUDA平台设计的一种中间表示语言，作为虚拟指令集架构（ISA），它在整个CUDA生态系统中占据着至关重要的地位。</p>
+                
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3">CUDA编译流程</h4>
+                    <div class="relative py-8">
+                        <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                        
+                        <div class="relative pl-12 mb-8">
+                            <div class="absolute left-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">1</div>
+                            <h5 class="font-medium mb-1">CUDA C/C++源代码</h5>
+                            <p class="text-gray-600 text-sm">开发者编写的高级语言代码，包含主机代码和设备代码</p>
+                        </div>
+                        
+                        <div class="relative pl-12 mb-8">
+                            <div class="absolute left-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">2</div>
+                            <h5 class="font-medium mb-1">NVCC编译生成PTX代码</h5>
+                            <p class="text-gray-600 text-sm">CUDA编译器（nvcc）将设备代码编译为PTX中间代码</p>
+                        </div>
+                        
+                        <div class="relative pl-12 mb-8">
+                            <div class="absolute left-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">3</div>
+                            <h5 class="font-medium mb-1">PTX编译为SASS代码</h5>
+                            <p class="text-gray-600 text-sm">PTX assembler（ptxas）将PTX转换为特定GPU架构的机器代码</p>
+                        </div>
+                        
+                        <div class="relative pl-12">
+                            <div class="absolute left-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">4</div>
+                            <h5 class="font-medium mb-1">生成可执行文件</h5>
+                            <p class="text-gray-600 text-sm">链接主机代码和设备代码，生成包含PTX和SASS的可执行文件</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3">PTX设计目标</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                    <span>提供跨GPU世代的稳定ISA</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                    <span>实现与本地GPU相当的性能</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                    <span>为编译器提供机器无关的ISA</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                    <span>便于手工编码库和性能内核</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                    <span>支持从单个单元到多单元的扩展</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                    <span>提供向后兼容性和可移植性</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-5 rounded-lg border-l-4 border-primary">
+                    <h4 class="font-semibold mb-2">PTX关键特性：向后兼容性</h4>
+                    <p class="text-gray-700">为之前的GPU构建的PTX代码可以由当前的驱动进行JIT（即时）编译，并在当前的GPU上运行，无需修改。这种兼容性机制使得开发者可以编写一次PTX代码，在多种GPU型号上执行，极大地提高了代码的可移植性。</p>
+                </div>
+            </div>
+
+            <!-- 1.4 最新GPU架构发展趋势 -->
+            <div class="bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">1.4 最新GPU架构发展趋势</h3>
+                <p class="mb-4 text-gray-700">截至2025年10月，NVIDIA最新的GPU架构是Blackwell，该架构于2024年3月在GTC大会上正式发布。Blackwell架构代表了GPU技术的最新发展方向，在多个方面实现了重大突破。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4 text-lg">Blackwell架构核心特性</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 mb-4">
+                                <div class="flex items-center mb-3">
+                                    <i class="fa fa-microchip text-secondary text-xl mr-3"></i>
+                                    <h5 class="font-medium">芯片设计与工艺</h5>
+                                </div>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>双芯片（dual-die）设计，单芯片面积>800mm²</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>总计2080亿个晶体管，是Hopper的2倍以上</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>台积电定制化4NP工艺制造</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>10 TB/s片间互联，连接GPU裸片</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100">
+                                <div class="flex items-center mb-3">
+                                    <i class="fa fa-exchange text-secondary text-xl mr-3"></i>
+                                    <h5 class="font-medium">互联技术</h5>
+                                </div>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>第五代NVLink，每个GPU 1.8 TB/s双向带宽</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>支持多达576个GPU的互联</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>增强的PCIe 5.0支持</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 mb-4">
+                                <div class="flex items-center mb-3">
+                                    <i class="fa fa-tachometer text-secondary text-xl mr-3"></i>
+                                    <h5 class="font-medium">计算性能</h5>
+                                </div>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>第五代Tensor Core，相比Hopper提升30倍性能</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>支持社区定义的微缩放格式</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>支持FP4精度计算，AI量化技术里程碑</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>处理GPT-MoE-1.8T等大规模模型表现突出</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100">
+                                <div class="flex items-center mb-3">
+                                    <i class="fa fa-cogs text-secondary text-xl mr-3"></i>
+                                    <h5 class="font-medium">架构增强</h5>
+                                </div>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>第二代Transformer Engine，全面升级</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>新的内存层次结构，更大共享内存</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>改进的缓存系统，提升数据局部性</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">Ada Lovelace架构（RTX 40系列）</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <h5 class="font-medium mb-2">工艺与晶体管</h5>
+                            <p class="text-gray-700 text-sm">TSMC 4N工艺（定制5nm），相比上一代性能和能效提升显著</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <h5 class="font-medium mb-2">Tensor Core</h5>
+                            <p class="text-gray-700 text-sm">第四代Tensor Core，支持FP8、FP16、BF16、TF32和稀疏加速</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <h5 class="font-medium mb-2">光线追踪</h5>
+                            <p class="text-gray-700 text-sm">增强的RT Core，全新光线追踪和AI神经图形处理能力</p>
+                        </div>
+                    </div>
+                    
+                    <div class="h-64">
+                        <canvas id="gpuArchitectureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第2部分：PTX底层硬件机制深度剖析 -->
+        <section id="section2" class="mb-16 scroll-mt-24">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                    <i class="fa fa-cog text-primary"></i>
+                </div>
+                <h2 class="text-3xl font-bold">2. PTX底层硬件机制深度剖析</h2>
+            </div>
+
+            <!-- 2.1 线程层次结构与执行模型 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">2.1 线程层次结构与执行模型</h3>
+                <p class="mb-4 text-gray-700">在PTX的执行模型中，线程组织采用了层次化的结构，这种结构从宏观到微观依次为：Grid（网格）、Block（线程块）、Thread（线程），而Warp是硬件调度的基本单位。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">线程层次结构</h4>
+                    <div class="relative mb-6">
+                        <div class="flex flex-col items-center">
+                            <!-- Grid -->
+                            <div class="w-full max-w-2xl bg-blue-50 border-2 border-primary rounded-lg p-4 mb-8 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-primary font-semibold">Grid（网格）</div>
+                                <p class="text-gray-700 text-center">线程块的集合，表示要执行的整个任务，可分为1D、2D或3D结构</p>
+                            </div>
+                            
+                            <!-- Block -->
+                            <div class="w-full max-w-xl bg-green-50 border-2 border-green-500 rounded-lg p-4 mb-8 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-green-500 font-semibold">Block（线程块）</div>
+                                <p class="text-gray-700 text-center">Grid中的子任务，由多个Thread组成，可分为1D、2D或3D结构</p>
+                            </div>
+                            
+                            <!-- Warp -->
+                            <div class="w-full max-w-md bg-yellow-50 border-2 border-yellow-500 rounded-lg p-4 mb-8 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-yellow-500 font-semibold">Warp（线程束）</div>
+                                <p class="text-gray-700 text-center">硬件调度的基本单位，固定由32个连续线程组成</p>
+                            </div>
+                            
+                            <!-- Thread -->
+                            <div class="w-full max-w-sm bg-purple-50 border-2 border-purple-500 rounded-lg p-4 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-purple-500 font-semibold">Thread（线程）</div>
+                                <p class="text-gray-700 text-center">最基本的执行单元，每个Thread有独立的上下文和寄存器状态</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-medium mb-3">关键特性</h5>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Grid和Block可灵活组织为1D、2D或3D结构，适应不同问题维度</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Block作为整体被分配到SM执行，块间可独立并行</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Block内线程可通过共享内存和同步指令协作</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Warp大小固定为32，与SIMT架构硬件设计匹配</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium mb-3">限制与约束</h5>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fa fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span>一个Block中的Thread总数有限制（通常≤1024），取决于GPU架构</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span>Block间不能直接通信，需通过全局内存或原子操作实现</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span>Warp内线程分支会导致发散，降低执行效率</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span>每个SM可同时保存多个Block，但总数受资源限制</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-3">线程索引计算示例</h4>
+                    <p class="text-gray-700 mb-3">在CUDA编程模型中，每个Thread都有唯一的索引，用于计算内存地址和执行控制决策。以下是不同维度Block的索引计算方法：</p>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <h5 class="font-medium mb-2">1D Block</h5>
+                            <pre class="text-sm">threadIdx.x</pre>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <h5 class="font-medium mb-2">2D Block</h5>
+                            <pre class="text-sm">threadIdx.x + threadIdx.y * blockDim.x</pre>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <h5 class="font-medium mb-2">3D Block</h5>
+                            <pre class="text-sm">threadIdx.x + threadIdx.y * blockDim.x + threadIdx.z * blockDim.x * blockDim.y</pre>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-700">全局线程索引计算需要结合Block的索引和维度信息，例如对于2D Grid和2D Block，全局索引计算如下：</p>
+                    <pre class="text-sm">
+unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
+unsigned int y = blockIdx.y * blockDim.y + threadIdx.y;
+unsigned int idx = y * gridDim.x * blockDim.x + x;</pre>
+                </div>
+            </div>
+
+            <!-- 2.2 流式多处理器（SM）架构解析 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">2.2 流式多处理器（SM）架构解析</h3>
+                <p class="mb-4 text-gray-700">SM（Streaming Multiprocessor，流式多处理器）是NVIDIA GPU架构的"心脏"和基本计算单元，它集成了执行计算、调度和存储所需的一切组件。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">SM核心组件</h4>
+                    <div class="relative">
+                        <!-- SM架构示意图 -->
+                        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-6">
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <!-- 执行核心 -->
+                                <div class="w-full sm:w-56 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                    <div class="flex items-center mb-2">
+                                        <i class="fa fa-calculator text-primary mr-2"></i>
+                                        <h5 class="font-medium">执行核心</h5>
+                                    </div>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• CUDA Core (FP32/INT32)</li>
+                                        <li>• Tensor Core (矩阵运算)</li>
+                                        <li>• RT Core (光线追踪)</li>
+                                        <li>• SFU (特殊函数)</li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- 调度系统 -->
+                                <div class="w-full sm:w-56 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                    <div class="flex items-center mb-2">
+                                        <i class="fa fa-tasks text-primary mr-2"></i>
+                                        <h5 class="font-medium">调度系统</h5>
+                                    </div>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• Warp Schedulers</li>
+                                        <li>• Dispatch Units</li>
+                                        <li>• Instruction Issue</li>
+                                        <li>• Score Board</li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- 内存系统 -->
+                                <div class="w-full sm:w-56 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                    <div class="flex items-center mb-2">
+                                        <i class="fa fa-memory text-primary mr-2"></i>
+                                        <h5 class="font-medium">内存系统</h5>
+                                    </div>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• 寄存器文件</li>
+                                        <li>• 共享内存/L1缓存</li>
+                                        <li>• L0指令缓存</li>
+                                        <li>• LD/ST单元</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 class="font-medium mb-3">各组件功能详解</h5>
+                                <div class="space-y-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                        <h6 class="font-medium mb-1">CUDA Core</h6>
+                                        <p class="text-sm text-gray-700">最基本的计算单元，负责32位单精度浮点运算（FP32）和32位整数运算（INT32），是通用计算的核心。</p>
+                                    </div>
+                                    
+                                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                        <h6 class="font-medium mb-1">Tensor Core</h6>
+                                        <p class="text-sm text-gray-700">硬件化的矩阵乘加单元，一条指令可完成4x4矩阵乘法累加（D = A*B + C），专为深度学习优化。</p>
+                                    </div>
+                                    
+                                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                        <h6 class="font-medium mb-1">RT Core</h6>
+                                        <p class="text-sm text-gray-700">专门加速光线追踪的单元，执行BVH遍历和光线-三角形相交测试，显著提升图形渲染性能。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h5 class="font-medium mb-3">更多关键组件</h5>
+                                <div class="space-y-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                        <h6 class="font-medium mb-1">SFU（特殊函数单元）</h6>
+                                        <p class="text-sm text-gray-700">执行复杂的数学函数，如sin()、cos()、log2()、sqrt()等，提供高精度和近似两种计算模式。</p>
+                                    </div>
+                                    
+                                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                        <h6 class="font-medium mb-1">LD/ST单元</h6>
+                                        <p class="text-sm text-gray-700">处理内存访问，计算地址并在寄存器和各级内存之间传输数据，优化内存访问模式。</p>
+                                    </div>
+                                    
+                                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                        <h6 class="font-medium mb-1">Warp调度器</h6>
+                                        <p class="text-sm text-gray-700">管理Warp执行，选择就绪Warp并将指令发射到相应计算单元，通过切换Warp隐藏延迟。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">不同架构SM资源对比</h4>
+                    <div class="overflow-x-auto mb-6">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>GPU架构</th>
+                                    <th>每个SM的CUDA Core</th>
+                                    <th>每个SM的Tensor Core</th>
+                                    <th>寄存器文件大小</th>
+                                    <th>共享内存/L1缓存</th>
+                                    <th>Warp调度器数量</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ampere (A100)</td>
+                                    <td>64</td>
+                                    <td>16</td>
+                                    <td>256 KB</td>
+                                    <td>192 KB (可配置)</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>Hopper (H100)</td>
+                                    <td>64</td>
+                                    <td>16 (第四代)</td>
+                                    <td>256 KB</td>
+                                    <td>256 KB (可配置)</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>Ada Lovelace</td>
+                                    <td>128</td>
+                                    <td>32 (第四代)</td>
+                                    <td>512 KB</td>
+                                    <td>256 KB (可配置)</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>Blackwell</td>
+                                    <td>128</td>
+                                    <td>32 (第五代)</td>
+                                    <td>1024 KB</td>
+                                    <td>512 KB (可配置)</td>
+                                    <td>8</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="h-64">
+                        <canvas id="smResourcesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.3 指令调度与执行流水线 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">2.3 指令调度与执行流水线</h3>
+                <p class="mb-4 text-gray-700">PTX指令的执行依赖于精心设计的指令调度机制和流水线结构。SIMT硬件核心流水可以被分为SIMT前端（SIMT front-end）和SIMD后端（SIMD back-end）。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">三级调度循环</h4>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- 取指循环 -->
+                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                            <div class="bg-primary text-white p-3">
+                                <h5 class="font-medium flex items-center">
+                                    <i class="fa fa-download mr-2"></i>
+                                    取指循环
+                                </h5>
+                            </div>
+                            <div class="p-4">
+                                <ol class="space-y-3 text-gray-700">
+                                    <li class="flex items-start">
+                                        <span class="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">1</span>
+                                        <div>
+                                            <span class="font-medium">Fetch</span>
+                                            <p class="text-sm">从指令缓存获取指令</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">2</span>
+                                        <div>
+                                            <span class="font-medium">I-Cache</span>
+                                            <p class="text-sm">指令缓存存储和管理</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">3</span>
+                                        <div>
+                                            <span class="font-medium">Decode</span>
+                                            <p class="text-sm">指令解码，转换为微操作</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">4</span>
+                                        <div>
+                                            <span class="font-medium">I-Buffer</span>
+                                            <p class="text-sm">暂存解码后的指令，等待发射</p>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <!-- 指令发射循环 -->
+                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                            <div class="bg-secondary text-white p-3">
+                                <h5 class="font-medium flex items-center">
+                                    <i class="fa fa-rocket mr-2"></i>
+                                    指令发射循环
+                                </h5>
+                            </div>
+                            <div class="p-4">
+                                <ol class="space-y-3 text-gray-700">
+                                    <li class="flex items-start">
+                                        <span class="bg-secondary/10 text-secondary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">1</span>
+                                        <div>
+                                            <span class="font-medium">I-Buffer</span>
+                                            <p class="text-sm">从指令缓冲区读取微操作</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-secondary/10 text-secondary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">2</span>
+                                        <div>
+                                            <span class="font-medium">Score Board</span>
+                                            <p class="text-sm">跟踪指令依赖和资源可用性</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-secondary/10 text-secondary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">3</span>
+                                        <div>
+                                            <span class="font-medium">Issue</span>
+                                            <p class="text-sm">将指令发射到相应执行单元</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-secondary/10 text-secondary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">4</span>
+                                        <div>
+                                            <span class="font-medium">SIMT-Stack</span>
+                                            <p class="text-sm">管理分支跳转时的线程状态</p>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <!-- 寄存器访问循环 -->
+                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                            <div class="bg-purple-500 text-white p-3">
+                                <h5 class="font-medium flex items-center">
+                                    <i class="fa fa-exchange mr-2"></i>
+                                    寄存器访问循环
+                                </h5>
+                            </div>
+                            <div class="p-4">
+                                <ol class="space-y-3 text-gray-700">
+                                    <li class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-500 rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">1</span>
+                                        <div>
+                                            <span class="font-medium">Operand Collector</span>
+                                            <p class="text-sm">收集指令所需操作数</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-500 rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">2</span>
+                                        <div>
+                                            <span class="font-medium">ALU</span>
+                                            <p class="text-sm">执行算术逻辑运算</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-500 rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">3</span>
+                                        <div>
+                                            <span class="font-medium">Memory</span>
+                                            <p class="text-sm">处理内存访问请求</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-500 rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">4</span>
+                                        <div>
+                                            <span class="font-medium">Writeback</span>
+                                            <p class="text-sm">将结果写回寄存器或内存</p>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">Warp调度策略</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-3">调度机制</h5>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>Warp调度器从指令缓存获取指令并分配给整个Warp</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>每个Warp有独立的指令缓冲区（通常2-4条指令容量）</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>采用双发射（Dual-Issue）策略，每时钟周期选择1-2个就绪Warp</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                        <span>当Warp等待内存操作时，调度器切换到其他就绪Warp</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                                <h5 class="font-medium mb-3">调度优先级</h5>
+                                <ol class="space-y-2 text-gray-700 list-decimal list-inside">
+                                    <li>无停滞Warp（计算密集型，无资源等待）</li>
+                                    <li>内存访问Warp（等待内存操作完成）</li>
+                                    <li>计算密集型Warp（可能有轻微资源等待）</li>
+                                </ol>
+                                <p class="mt-3 text-sm text-gray-600">当有多个同优先级Warp就绪时，采用Round-Robin轮询调度策略。</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h5 class="font-medium mb-3">分支处理机制</h5>
+                            <p class="text-gray-700 mb-3">当Warp内线程遇到分支指令时，会出现分支发散（branch divergence），这会降低执行效率。GPU采用以下机制处理分支：</p>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary mb-4">
+                                <h6 class="font-medium mb-1">分支预测</h6>
+                                <p class="text-sm text-gray-700">硬件分支预测器预测分支方向，提前取指和译码，减少分支延迟。</p>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary mb-4">
+                                <h6 class="font-medium mb-1">路径序列化</h6>
+                                <p class="text-sm text-gray-700">当分支发散时，GPU会序列化执行不同路径，未执行路径的线程被禁用。</p>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h6 class="font-medium mb-1">分支合并</h6>
+                                <p class="text-sm text-gray-700">当发散的分支路径完成后，线程重新同步合并，继续执行后续指令。</p>
+                            </div>
+                            
+                            <div class="mt-4 h-48">
+                                <canvas id="branchDivergenceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.4 内存层次结构与访问机制 -->
+            <div class="bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">2.4 内存层次结构与访问机制</h3>
+                <p class="mb-4 text-gray-700">GPU的内存层次结构是影响PTX程序性能的关键因素之一。理解不同内存类型的特性和访问机制，对于编写高效的PTX代码至关重要。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">GPU内存层次结构</h4>
+                    <div class="relative mb-6">
+                        <!-- 内存层次可视化 -->
+                        <div class="flex flex-col items-center">
+                            <!-- 寄存器 -->
+                            <div class="w-full max-w-xs bg-red-50 border-2 border-red-500 rounded-lg p-4 mb-3 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-red-500 font-semibold">寄存器</div>
+                                <div class="text-center text-sm text-gray-700">
+                                    <p>线程私有</p>
+                                    <p>~1ns 延迟</p>
+                                    <p>极高带宽</p>
+                                </div>
+                            </div>
+                            
+                            <!-- L1缓存/共享内存 -->
+                            <div class="w-full max-w-sm bg-orange-50 border-2 border-orange-500 rounded-lg p-4 mb-3 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-orange-500 font-semibold">L1缓存/共享内存</div>
+                                <div class="text-center text-sm text-gray-700">
+                                    <p>SM内共享</p>
+                                    <p>~10ns 延迟</p>
+                                    <p>高带宽</p>
+                                </div>
+                            </div>
+                            
+                            <!-- L2缓存 -->
+                            <div class="w-full max-w-md bg-yellow-50 border-2 border-yellow-500 rounded-lg p-4 mb-3 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-yellow-500 font-semibold">L2缓存</div>
+                                <div class="text-center text-sm text-gray-700">
+                                    <p>GPU内共享</p>
+                                    <p>~100ns 延迟</p>
+                                    <p>中高带宽</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 全局内存 -->
+                            <div class="w-full max-w-lg bg-green-50 border-2 border-green-500 rounded-lg p-4 mb-3 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-green-500 font-semibold">全局内存</div>
+                                <div class="text-center text-sm text-gray-700">
+                                    <p>所有线程可访问</p>
+                                    <p>~400-800ns 延迟</p>
+                                    <p>中带宽</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 主机内存 -->
+                            <div class="w-full max-w-xl bg-blue-50 border-2 border-blue-500 rounded-lg p-4 relative">
+                                <div class="absolute -top-3 left-4 bg-white px-2 text-blue-500 font-semibold">主机内存</div>
+                                <div class="text-center text-sm text-gray-700">
+                                    <p>CPU与GPU共享</p>
+                                    <p>~10-100μs 延迟</p>
+                                    <p>低带宽</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-medium mb-3">各内存类型特性</h5>
+                            <div class="space-y-4">
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                    <h6 class="font-medium mb-1">寄存器（Register）</h6>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• 每个线程私有，最快的存储</li>
+                                        <li>• 访问延迟通常为1个时钟周期</li>
+                                        <li>• PTX中使用%r（整数）或%f（浮点）前缀</li>
+                                        <li>• 数量有限（如Ampere ≤255个/线程）</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                    <h6 class="font-medium mb-1">共享内存（Shared Memory）</h6>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• SM私有，块内线程共享</li>
+                                        <li>• 访问延迟1-32个时钟周期</li>
+                                        <li>• 与L1缓存共享物理空间</li>
+                                        <li>• 需注意bank冲突问题</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                    <h6 class="font-medium mb-1">本地内存（Local Memory）</h6>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• 线程私有，实质是全局内存的一部分</li>
+                                        <li>• 访问延迟与全局内存相当</li>
+                                        <li>• 发生寄存器溢出时自动使用</li>
+                                        <li>• 性能较低，应尽量避免使用</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="space-y-4">
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                    <h6 class="font-medium mb-1">全局内存（Global Memory）</h6>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• 所有线程可访问，最大内存空间</li>
+                                        <li>• 访问延迟400-800个时钟周期</li>
+                                        <li>• 位于GPU芯片外部（off-chip）</li>
+                                        <li>• 需优化访问模式以提高带宽利用率</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                    <h6 class="font-medium mb-1">常量内存（Constant Memory）</h6>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• 只读内存，具有良好缓存特性</li>
+                                        <li>• 数据广播到Warp内所有线程</li>
+                                        <li>• 适合存储只读参数或系数</li>
+                                        <li>• 单次访问可服务整个Warp</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                    <h6 class="font-medium mb-1">纹理内存（Texture Memory）</h6>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• 只读内存，专为图形和图像处理优化</li>
+                                        <li>• 支持自动插值和mipmap</li>
+                                        <li>• 适合空间局部性好的数据访问</li>
+                                        <li>• 提供特殊的寻址模式</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h6 class="font-medium mb-1">PTX内存访问指令</h6>
+                                <pre class="text-xs">
+// 全局内存
+ld.global.f32 %f1, [%rd1];  // 加载
+st.global.f32 [%rd1], %f1;  // 存储
+
+// 共享内存
+ld.shared.f32 %f1, [%rd1];  // 加载
+st.shared.f32 [%rd1], %f1;  // 存储
+
+// 本地内存
+ld.local.f32 %f1, [%rd1];   // 加载
+st.local.f32 [%rd1], %f1;   // 存储</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">内存性能对比与优化策略</h4>
+                    <div class="h-64 mb-6">
+                        <canvas id="memoryPerformanceChart"></canvas>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-medium mb-3">内存访问优化策略</h5>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>合并全局内存访问，确保线程访问连续内存地址</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>使用共享内存作为全局内存的缓存，减少重复访问</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>优化数据布局，避免共享内存bank冲突</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>合理使用寄存器，避免寄存器溢出到本地内存</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>利用数据局部性，提高缓存命中率</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h5 class="font-medium mb-3">常见内存访问问题</h5>
+                            <div class="space-y-3">
+                                <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-500">
+                                    <h6 class="font-medium mb-1">非合并访问</h6>
+                                    <p class="text-sm text-gray-700">线程访问非连续内存地址，导致内存带宽利用率低，性能下降。</p>
+                                </div>
+                                
+                                <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-500">
+                                    <h6 class="font-medium mb-1">共享内存Bank冲突</h6>
+                                    <p class="text-sm text-gray-700">多个线程同时访问同一bank，导致访问串行化，延迟增加。</p>
+                                </div>
+                                
+                                <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-500">
+                                    <h6 class="font-medium mb-1">寄存器溢出</h6>
+                                    <p class="text-sm text-gray-700">线程使用过多寄存器，编译器将多余变量移到本地内存，导致性能大幅下降。</p>
+                                </div>
+                                
+                                <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-500">
+                                    <h6 class="font-medium mb-1">缓存抖动</h6>
+                                    <p class="text-sm text-gray-700">数据访问模式导致缓存频繁替换，命中率低，无法有效利用缓存。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第3部分：PTX指令集系统分析 -->
+        <section id="section3" class="mb-16 scroll-mt-24">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                    <i class="fa fa-code text-primary"></i>
+                </div>
+                <h2 class="text-3xl font-bold">3. PTX指令集系统分析</h2>
+            </div>
+
+            <!-- 3.1 算术运算指令详解 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">3.1 算术运算指令详解</h3>
+                <p class="mb-4 text-gray-700">PTX的算术运算指令集提供了丰富的运算支持，涵盖了整数运算、浮点运算和特殊运算功能。这些指令是PTX程序实现数值计算的基础。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">整数算术运算指令</h4>
+                    <div class="overflow-x-auto mb-6">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>指令格式</th>
+                                    <th>描述</th>
+                                    <th>示例</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>add.sX d, a, b</td>
+                                    <td>有符号整数加法，X为宽度（8,16,32,64）</td>
+                                    <td>add.s32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>add.uX d, a, b</td>
+                                    <td>无符号整数加法，X为宽度（8,16,32,64）</td>
+                                    <td>add.u32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>sub.sX d, a, b</td>
+                                    <td>有符号整数减法，X为宽度（8,16,32,64）</td>
+                                    <td>sub.s32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>sub.uX d, a, b</td>
+                                    <td>无符号整数减法，X为宽度（8,16,32,64）</td>
+                                    <td>sub.u32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>mul.sX d, a, b</td>
+                                    <td>有符号整数乘法，X为宽度（8,16,32,64）</td>
+                                    <td>mul.s32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>mul.uX d, a, b</td>
+                                    <td>无符号整数乘法，X为宽度（8,16,32,64）</td>
+                                    <td>mul.u32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>mul24.sX d, a, b</td>
+                                    <td>24位有符号整数乘法</td>
+                                    <td>mul24.s32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>div.sX d, a, b</td>
+                                    <td>有符号整数除法，X为宽度（8,16,32,64）</td>
+                                    <td>div.s32 %r1, %r2, %r3</td>
+                                </tr>
+                                <tr>
+                                    <td>div.uX d, a, b</td>
+                                    <td>无符号整数除法，X为宽度（8,16,32,64）</td>
+                                    <td>div.u32 %r1, %r2, %r3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                        <h5 class="font-medium mb-2">整数算术运算特性</h5>
+                        <ul class="space-y-1 text-sm text-gray-700">
+                            <li>• 支持饱和运算（使用.sat修饰符），超出范围时自动截断到最值</li>
+                            <li>• 支持进位/借位运算（使用.carry/.borrow修饰符）</li>
+                            <li>• 支持符号扩展和零扩展（使用.sext/.zext修饰符）</li>
+                            <li>• 24位乘法指令（mul24）在处理颜色值等场景时特别有用</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">浮点算术运算指令</h4>
+                    <div class="overflow-x-auto mb-6">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>指令格式</th>
+                                    <th>描述</th>
+                                    <th>示例</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>add.fX d, a, b</td>
+                                    <td>浮点加法，X为精度（16,32,64）</td>
+                                    <td>add.f32 %f1, %f2, %f3</td>
+                                </tr>
+                                <tr>
+                                    <td>sub.fX d, a, b</td>
+                                    <td>浮点减法，X为精度（16,32,64）</td>
+                                    <td>sub.f32 %f1, %f2, %f3</td>
+                                </tr>
+                                <tr>
+                                    <td>mul.fX d, a, b</td>
+                                    <td>浮点乘法，X为精度（16,32,64）</td>
+                                    <td>mul.f32 %f1, %f2, %f3</td>
+                                </tr>
+                                <tr>
+                                    <td>div.fX d, a, b</td>
+                                    <td>浮点除法，X为精度（16,32,64）</td>
+                                    <td>div.f32 %f1, %f2, %f3</td>
+                                </tr>
+                                <tr>
+                                    <td>fma.rnd.fX d, a, b, c</td>
+                                    <td>融合乘加，d = a×b + c</td>
+                                    <td>fma.rn.f32 %f1, %f2, %f3, %f4</td>
+                                </tr>
+                                <tr>
+                                    <td>sqrt.fX d, a</td>
+                                    <td>平方根，X为精度（16,32,64）</td>
+                                    <td>sqrt.f32 %f1, %f2</td>
+                                </tr>
+                                <tr>
+                                    <td>rcp.fX d, a</td>
+                                    <td>倒数，X为精度（16,32,64）</td>
+                                    <td>rcp.f32 %f1, %f2</td>
+                                </tr>
+                                <tr>
+                                    <td>rsqrt.fX d, a</td>
+                                    <td>倒数平方根，X为精度（16,32,64）</td>
+                                    <td>rsqrt.f32 %f1, %f2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                            <h5 class="font-medium mb-2">FMA指令重要性</h5>
+                            <p class="text-sm text-gray-700">融合乘加（FMA）指令能够在一条指令中完成乘法和加法操作，不仅提高了运算效率（吞吐量提升约一倍），还能提供更高的计算精度，因为中间结果使用无限精度计算，只在最后进行舍入。FMA指令在科学计算和深度学习中应用广泛。</p>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                            <h5 class="font-medium mb-2">浮点运算修饰符</h5>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li>• .rnd: 指定舍入模式（rn=就近, rz=截断, ru=向上, rd=向下）</li>
+                                <li>• .ftz: Flush To Zero，将次正规数flush到零</li>
+                                <li>• .sat: Saturation，结果超出范围时饱和到最值</li>
+                                <li>• .approx: 近似计算，速度更快但精度略低</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">特殊算术指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">三角函数指令</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• sin.f32/sin.f64: 正弦函数</li>
+                                    <li>• cos.f32/cos.f64: 余弦函数</li>
+                                    <li>• tan.f32/tan.f64: 正切函数</li>
+                                    <li>• asin.f32/asin.f64: 反正弦函数</li>
+                                    <li>• acos.f32/acos.f64: 反余弦函数</li>
+                                    <li>• atan.f32/atan.f64: 反正切函数</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                <h5 class="font-medium mb-2">指数与对数指令</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• exp.f32/exp.f64: 指数函数 (e^x)</li>
+                                    <li>• exp2.f32/exp2.f64: 2的幂 (2^x)</li>
+                                    <li>• log.f32/log.f64: 自然对数 (ln x)</li>
+                                    <li>• log2.f32/log2.f64: 2为底的对数</li>
+                                    <li>• log10.f32/log10.f64: 10为底的对数</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">其他特殊函数</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• pow.f32/pow.f64: 幂函数 (x^y)</li>
+                                    <li>• cbrt.f32/cbrt.f64: 立方根</li>
+                                    <li>• hypot.f32/hypot.f64: 斜边长度 (sqrt(x²+y²))</li>
+                                    <li>• erf.f32/erf.f64: 误差函数</li>
+                                    <li>• erfc.f32/erfc.f64: 互补误差函数</li>
+                                    <li>• tgamma.f32/tgamma.f64: 伽马函数</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">精度与性能权衡</h5>
+                                <p class="text-sm text-gray-700">大多数特殊函数指令都提供近似版本（使用.approx修饰符），近似版本执行速度更快但精度略低。在对精度要求不高的场景（如图形渲染），可以使用近似版本来提高性能。例如：</p>
+                                <pre class="text-xs mt-2">
+// 精确计算，精度高但速度较慢
+sqrt.f32 %f1, %f2;
+
+// 近似计算，速度快但精度略低
+sqrt.approx.f32 %f1, %f2;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.2 内存访问指令深度解析 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">3.2 内存访问指令深度解析</h3>
+                <p class="mb-4 text-gray-700">内存访问指令是PTX中最复杂也是最重要的指令类型之一，它们直接影响程序的性能表现。PTX提供了丰富的内存访问指令，支持不同类型内存的高效访问。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">全局内存访问指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">基本加载/存储指令</h5>
+                                <table class="tech-table text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>指令</th>
+                                            <th>描述</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>ld.global.bX</td>
+                                            <td>加载X位字节数据</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ld.global.sX</td>
+                                            <td>加载X位有符号整数</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ld.global.uX</td>
+                                            <td>加载X位无符号整数</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ld.global.fX</td>
+                                            <td>加载X位浮点数</td>
+                                        </tr>
+                                        <tr>
+                                            <td>st.global.bX</td>
+                                            <td>存储X位字节数据</td>
+                                        </tr>
+                                        <tr>
+                                            <td>st.global.sX</td>
+                                            <td>存储X位有符号整数</td>
+                                        </tr>
+                                        <tr>
+                                            <td>st.global.uX</td>
+                                            <td>存储X位无符号整数</td>
+                                        </tr>
+                                        <tr>
+                                            <td>st.global.fX</td>
+                                            <td>存储X位浮点数</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">全局内存访问优化</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 确保线程访问连续内存地址，实现合并访问</li>
+                                    <li>• 使用向量化加载/存储提高带宽利用率</li>
+                                    <li>• 利用L2缓存预取，减少延迟</li>
+                                    <li>• 避免非对齐访问，减少内存事务</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">向量化内存访问</h5>
+                                <p class="text-sm text-gray-700 mb-2">向量化指令可以一次传输多个数据元素，显著提高内存带宽利用率：</p>
+                                <pre class="text-xs">
+// 加载4个32位浮点数
+ld.global.v4.f32 {%f1, %f2, %f3, %f4}, [%rd1];
+
+// 存储4个32位浮点数
+st.global.v4.f32 [%rd1], {%f1, %f2, %f3, %f4};
+
+// 支持的向量大小：.v2, .v4, .v8, .v16</pre>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                <h5 class="font-medium mb-2">预取优化</h5>
+                                <p class="text-sm text-gray-700 mb-2">在优化MoE算子性能时，可以通过内联PTX设置预取大小：</p>
+                                <pre class="text-xs">
+// 设置L2预取大小，优化内存访问
+ld.global.f32 %f1, [%rd1], level::prefetch_size=8;
+
+// 生成具有L2预取修饰符的LDG指令
+// 提高数据预取效率，减少内存延迟</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">共享内存访问指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">共享内存指令格式</h5>
+                                <pre class="text-xs">
+// 共享内存加载指令
+ld.shared.bX d, [a];
+ld.shared.sX d, [a];
+ld.shared.uX d, [a];
+ld.shared.fX d, [a];
+
+// 共享内存存储指令
+st.shared.bX [a], s;
+st.shared.sX [a], s;
+st.shared.uX [a], s;
+st.shared.fX [a], s;
+
+// 示例
+ld.shared.f32 %f1, [%rd1];  // 加载32位浮点数
+st.shared.f32 [%rd1], %f1;  // 存储32位浮点数</pre>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">共享内存性能特性</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 访问延迟：1-32个时钟周期，比全局内存快20-30倍</li>
+                                    <li>• 带宽：比全局内存高约10倍</li>
+                                    <li>• 物理空间：与L1缓存共享，可配置比例</li>
+                                    <li>• 作用域：线程块内共享，块间不可访问</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">共享内存Bank冲突</h5>
+                                <p class="text-sm text-gray-700 mb-2">共享内存被划分为多个bank（通常32个），每个bank可以独立服务一个内存请求。当多个线程同时访问同一个bank时，会发生bank冲突，导致访问串行化。</p>
+                                <p class="text-sm text-gray-700 mb-2">冲突类型：</p>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 无冲突：每个bank最多一个线程访问</li>
+                                    <li>• 部分冲突：多个线程访问同一bank</li>
+                                    <li>• 完全冲突：所有线程访问同一bank</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                                <h5 class="font-medium mb-2">避免Bank冲突的方法</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 调整数据布局，增加填充（padding）</li>
+                                    <li>• 改变线程索引计算方式</li>
+                                    <li>• 使用交错访问模式</li>
+                                    <li>• 利用广播机制（同一Warp内所有线程访问同一地址）</li>
+                                </ul>
+                                <pre class="text-xs mt-2">
+// 有冲突的访问
+int idx = threadIdx.x;
+float data = sdata[idx];
+
+// 无冲突的访问（添加填充）
+int idx = threadIdx.x * 2;  // 假设添加1个元素的填充
+float data = sdata[idx];</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">原子操作指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">原子操作类型</h5>
+                                <table class="tech-table text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>指令</th>
+                                            <th>描述</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>atom.add</td>
+                                            <td>原子加法</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atom.sub</td>
+                                            <td>原子减法</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atom.and</td>
+                                            <td>原子按位与</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atom.or</td>
+                                            <td>原子按位或</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atom.xor</td>
+                                            <td>原子按位异或</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atom.max</td>
+                                            <td>原子最大值</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atom.min</td>
+                                            <td>原子最小值</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atom.cas</td>
+                                            <td>比较并交换</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">原子操作示例</h5>
+                                <pre class="text-xs">
+// 全局内存原子加法
+atom.global.add.u32 (%rd1), %r1;
+// 将%r1的值加到%rd1地址处的32位无符号整数
+
+// 共享内存原子加法
+atom.shared.add.u32 (%rd1), %r1;
+
+// 比较并交换（CAS）
+atom.global.cas.b32 %r1, [%rd1], %r2, %r3;
+// 如果[%rd1] == %r2，则设置为%r3，返回原始值到%r1
+
+// 原子操作带内存语义
+atom.global.add.u32 (%rd1), %r1, acquire;
+atom.global.add.u32 (%rd1), %r1, release;
+atom.global.add.u32 (%rd1), %r1, acq_rel;</pre>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">原子操作应用场景</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 实现计数器和累加器</li>
+                                    <li>• 实现并行数据结构（如并发队列）</li>
+                                    <li>• 实现线程间同步</li>
+                                    <li>• 处理稀疏数据更新</li>
+                                    <li>• 注意：原子操作会序列化访问，可能成为性能瓶颈</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.3 控制流与同步指令 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">3.3 控制流与同步指令</h3>
+                <p class="mb-4 text-gray-700">控制流指令决定了程序的执行顺序，是实现复杂算法逻辑的基础。PTX提供了丰富的控制流指令，支持条件执行、循环控制和函数调用等功能。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">条件分支指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">谓词寄存器与比较指令</h5>
+                                <p class="text-sm text-gray-700 mb-2">PTX使用谓词寄存器（.pred类型）来实现条件执行，setp指令用于设置谓词寄存器的值：</p>
+                                <pre class="text-xs">
+// 声明谓词寄存器
+.reg .pred %p1, %p2;
+
+// setp指令格式：setp.cc.type p, a, b
+// cc: 比较条件，type: 数据类型
+setp.eq.s32 %p1, %r1, %r2;   // %r1 == %r2 则%p1 = 1
+setp.ne.s32 %p1, %r1, %r2;   // %r1 != %r2 则%p1 = 1
+setp.lt.s32 %p1, %r1, %r2;   // %r1 < %r2 则%p1 = 1
+setp.le.s32 %p1, %r1, %r2;   // %r1 <= %r2 则%p1 = 1
+setp.gt.s32 %p1, %r1, %r2;   // %r1 > %r2 则%p1 = 1
+setp.ge.s32 %p1, %r1, %r2;   // %r1 >= %r2 则%p1 = 1
+
+// 浮点比较
+setp.eq.f32 %p1, %f1, %f2;
+setp.lt.f32 %p1, %f1, %f2;
+
+// 无符号比较
+setp.lt.u32 %p1, %r1, %r2;</pre>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">分支指令</h5>
+                                <pre class="text-xs">
+// 无条件分支
+bra label;  // 跳转到指定标签
+
+// 条件分支：@谓词寄存器 指令
+@%p1 bra true_label;       // 如果%p1为真，跳转到true_label
+@!%p1 bra false_label;      // 如果%p1为假，跳转到false_label
+
+// 分支并链接（用于函数调用）
+call.uni @%p1 func, (%r1);  // 条件函数调用
+
+// 示例：if-else结构
+setp.lt.s32 %p1, %r1, %r2;
+@!%p1 bra else_label;
+
+// if块
+add.s32 %r3, %r1, %r2;
+bra end_if_label;
+
+else_label:
+// else块
+sub.s32 %r3, %r1, %r2;
+
+end_if_label:
+// 后续代码</pre>
+                            </div>
+                            
+                            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                                <h5 class="font-medium mb-2">分支发散问题</h5>
+                                <p class="text-sm text-gray-700">当Warp内的线程因为条件分支而执行不同路径时，会发生分支发散。GPU会序列化执行不同路径，未执行路径的线程被禁用，导致性能下降。应尽量减少分支发散，或确保Warp内线程行为一致。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">循环控制与函数调用</h4>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">循环实现示例</h5>
+                                <p class="text-sm text-gray-700 mb-2">PTX没有专门的循环指令，通过分支指令和计数器实现循环：</p>
+                                <pre class="text-xs">
+// 实现for循环：for (int i = 0; i < 10; i++)
+.reg .pred %p1;
+.reg .s32 %r1, %r2, %r3;
+
+mov.s32 %r1, 0;          // i = 0
+mov.s32 %r2, 10;         // 循环次数
+
+loop_label:
+setp.ge.s32 %p1, %r1, %r2;  // 检查i >= 10
+@%p1 bra end_loop_label;    // 如果条件成立，退出循环
+
+// 循环体
+mul.s32 %r3, %r1, %r1;      // r3 = i * i
+
+// 循环变量递增
+add.s32 %r1, %r1, 1;        // i++
+bra loop_label;             // 回到循环开始
+
+end_loop_label:
+// 循环结束后的代码</pre>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">循环优化技巧</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 循环展开：减少分支指令，提高指令级并行</li>
+                                    <li>• 循环不变量外提：将循环内不变的计算移到循环外</li>
+                                    <li>• 软件流水线：重新安排指令顺序，充分利用流水线</li>
+                                    <li>• 避免循环内分支：减少分支发散</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">函数调用指令</h5>
+                                <pre class="text-xs">
+// 函数定义
+.visible .entry func_name(
+    .param .s32 param1,
+    .param .f32 param2
+)
+{
+    // 函数体
+    ret;  // 函数返回
+}
+
+// 函数调用
+call func_name(%r1, %f1);
+
+// 带返回值的函数调用
+call %r2 = func_name(%r1, %f1);
+
+// 条件函数调用
+@%p1 call func_name(%r1, %f1);
+
+// 内联函数
+.callprologue
+call.func inline_directive func_name;
+
+// 示例：函数调用完整流程
+.visible .entry main()
+{
+    .reg .s32 %r1, %r2;
+    
+    mov.s32 %r1, 5;
+    call %r2 = add_one(%r1);  // 调用add_one函数
+    
+    ret;
+}
+
+.visible .func add_one(
+    .param .s32 x
+) -> .s32
+{
+    .reg .s32 %r1, %r2;
+    
+    ld.param.s32 %r1, [add_one_param_0];
+    add.s32 %r2, %r1, 1;
+    
+    ret %r2;
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">同步指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">线程块内同步</h5>
+                                <p class="text-sm text-gray-700 mb-2">bar.sync指令用于线程块内的同步，确保所有线程到达同步点后再继续执行：</p>
+                                <pre class="text-xs">
+// 基本同步指令
+bar.sync 0;  // 等待块内所有线程到达此点
+
+// 带计数的同步
+bar.sync 0, %r1;  // %r1指定等待的线程数
+
+// 同步模式
+bar.sync 0, %r1, arrive;  // 仅到达，不等待
+bar.sync 0, %r1, sync;    // 等待所有线程到达
+
+// 示例：使用共享内存的线程协作
+.reg .f32 %f1, %f2;
+.shared .f32 sdata[256];
+
+// 线程0写入共享内存
+setp.eq.s32 %p1, %tid.x, 0;
+@%p1 st.shared.f32 [sdata], %f1;
+
+// 等待线程0完成写入
+bar.sync 0;
+
+// 所有线程读取共享内存数据
+ld.shared.f32 %f2, [sdata];</pre>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">内存屏障与Warp洗牌指令</h5>
+                                <pre class="text-xs">
+// 内存屏障指令，确保内存操作顺序
+membar.gl;    // 全局内存屏障
+membar.sys;   // 系统内存屏障
+membar.cta;   // 线程块内内存屏障
+membar.warp;  // Warp内内存屏障
+
+// Warp洗牌指令，Warp内线程数据交换
+shfl.sync.b32 %r1, %r2, %r3;  // 基本洗牌
+shfl.sync.b32 %r1, %r2, %r3, %r4;  // 带掩码的洗牌
+
+// 洗牌指令变体
+shfl.up.sync.b32;    // 向上洗牌
+shfl.down.sync.b32;  // 向下洗牌
+shfl.bfly.sync.b32;  // 蝴蝶洗牌
+
+// 示例：使用shfl计算Warp内求和
+.reg .f32 %f1, %f2;
+.reg .s32 %r1;
+
+mov.s32 %r1, %laneid;  // 获取线程在Warp中的ID（0-31）
+
+// 逐步合并求和
+mov.f32 %f1, %f2;
+@%p1 shfl.down.sync.b32 %f1, %f1, 16;
+add.f32 %f1, %f1, %f2;
+@%p1 shfl.down.sync.b32 %f1, %f1, 8;
+add.f32 %f1, %f1, %f2;
+// ... 继续直到得到总和</pre>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">同步指令应用场景</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 线程间数据共享前的同步</li>
+                                    <li>• 确保内存操作顺序，避免数据竞争</li>
+                                    <li>• Warp内高效数据交换</li>
+                                    <li>• 实现并行归约等算法</li>
+                                    <li>• 注意：过度同步会导致性能下降</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.4 特殊功能指令集 -->
+            <div class="bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">3.4 特殊功能指令集</h3>
+                <p class="mb-4 text-gray-700">特殊功能指令是PTX为特定应用场景设计的专用指令，这些指令通常能够提供比通用指令更高的性能或更丰富的功能。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">Tensor Core相关指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">mma指令（矩阵乘加）</h5>
+                                <p class="text-sm text-gray-700 mb-2">mma（Matrix Multiply-Accumulate）指令用于执行矩阵乘加运算，专门针对Tensor Core硬件优化：</p>
+                                <pre class="text-xs">
+// mma指令格式
+mma.sync.shape.type d, a, b, c;
+
+// shape: 矩阵形状（m16n8k16等）
+// type: 数据类型组合
+
+// 示例1：FP16输入，FP32累加
+mma.sync.m16n8k16.sp.f32 
+    {%f1, %f2, %f3, %f4},    // 输出矩阵D (4x4)
+    {%f5, %f6, %f7, %f8},    // 输入矩阵A (4x4)
+    {%f9, %f10, %f11, %f12}, // 输入矩阵B (4x4)
+    {%f13, %f14, %f15, %f16};// 累加矩阵C (4x4)
+
+// 示例2：BF16输入，FP32累加
+mma.sync.m16n8k16.bf.f32 
+    {%f1, %f2, %f3, %f4}, 
+    {%f5, %f6, %f7, %f8}, 
+    {%f9, %f10, %f11, %f12}, 
+    {%f13, %f14, %f15, %f16};
+
+// 示例3：FP8输入，FP32累加（Ada/Blackwell架构）
+mma.sync.m16n8k16.f8.f32 
+    {%f1, %f2, %f3, %f4}, 
+    {%f5, %f6, %f7, %f8}, 
+    {%f9, %f10, %f11, %f12}, 
+    {%f13, %f14, %f15, %f16};</pre>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">wmma指令（Warp级矩阵乘加）</h5>
+                                <pre class="text-xs">
+// wmma指令是Warp级的矩阵乘加指令
+wmma.sync.aligned.mma.shape.type
+    d, a, b, c;
+
+// 示例：16x16x16矩阵乘加
+wmma.sync.aligned.mma.m16n16k16.f32.f16.f16
+    {%f1, %f2, %f3, %f4,
+     %f5, %f6, %f7, %f8,
+     %f9, %f10, %f11, %f12,
+     %f13, %f14, %f15, %f16},  // D (16x16)
+    {%f17, %f18, %f19, %f20,
+     %f21, %f22, %f23, %f24,
+     %f25, %f26, %f27, %f28,
+     %f29, %f30, %f31, %f32},  // A (16x16)
+    {%f33, %f34, %f35, %f36,
+     %f37, %f38, %f39, %f40,
+     %f41, %f42, %f43, %f44,
+     %f45, %f46, %f47, %f48},  // B (16x16)
+    {%f49, %f50, %f51, %f52,
+     %f53, %f54, %f55, %f56,
+     %f57, %f58, %f59, %f60,
+     %f61, %f62, %f63, %f64};  // C (16x16)</pre>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">Tensor Core性能优势</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 单条mma指令完成4x4矩阵乘法累加</li>
+                                    <li>• 相比CUDA Core实现，性能提升5-10倍</li>
+                                    <li>• 支持混合精度计算，平衡性能与精度</li>
+                                    <li>• Blackwell架构支持FP4精度，进一步提升性能</li>
+                                    <li>• 专为深度学习工作负载优化</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">纹理和表面访问指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">纹理访问指令</h5>
+                                <pre class="text-xs">
+// 声明纹理引用
+.tex .2d .f32 tex_ref;
+
+// 纹理采样指令
+tex.2d.v4.f32.f32 {%f1, %f2, %f3, %f4}, tex_ref, %f5, %f6;
+
+// 纹理指令变体
+tex.1d;   // 1D纹理
+tex.2d;   // 2D纹理
+tex.3d;   // 3D纹理
+tex.cube; // 立方体贴图
+tex.array;// 纹理数组
+
+// 示例：2D纹理采样
+.reg .f32 %f1, %f2, %f3, %f4, %f5, %f6;
+.reg .f32 %x, %y;
+
+// 设置纹理坐标
+mov.f32 %x, 0.5;
+mov.f32 %y, 0.5;
+
+// 采样纹理，获取颜色值（rgba）
+tex.2d.v4.f32.f32 {%f1, %f2, %f3, %f4}, tex_ref, %x, %y;
+
+// %f1 = r通道, %f2 = g通道, %f3 = b通道, %f4 = a通道</pre>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">表面访问指令</h5>
+                                <pre class="text-xs">
+// 声明表面引用
+.surf .2d .f32 surf_ref;
+
+// 表面加载指令
+suld.2d.v4.f32 {%f1, %f2, %f3, %f4}, surf_ref, %r1, %r2;
+
+// 表面存储指令
+sust.2d.v4.f32 surf_ref, %r1, %r2, {%f1, %f2, %f3, %f4};
+
+// 表面读取指令（返回状态）
+sured.2d.v4.f32 {%f1, %f2, %f3, %f4}, surf_ref, %r1, %r2, %r3;
+
+// 示例：表面读写
+.reg .f32 %f1, %f2, %f3, %f4;
+.reg .s32 %r1, %r2, %r3;
+
+// 设置坐标
+mov.s32 %r1, 10;
+mov.s32 %r2, 20;
+
+// 从表面加载数据
+suld.2d.v4.f32 {%f1, %f2, %f3, %f4}, surf_ref, %r1, %r2;
+
+// 修改数据
+add.f32 %f1, %f1, 0.1;
+add.f32 %f2, %f2, 0.1;
+add.f32 %f3, %f3, 0.1;
+
+// 存储数据到表面
+sust.2d.v4.f32 surf_ref, %r1, %r2, {%f1, %f2, %f3, %f4};</pre>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">纹理/表面特性</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 纹理内存具有自动插值和过滤功能</li>
+                                    <li>• 支持mipmap、各向异性过滤等高级特性</li>
+                                    <li>• 表面内存支持读写操作和原子操作</li>
+                                    <li>• 适合图形渲染和图像处理应用</li>
+                                    <li>• 具有特殊的缓存机制，优化空间局部性</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">其他特殊功能指令</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">并行归约指令</h5>
+                                <pre class="text-xs">
+// 归约指令，对线程块内数据进行聚合操作
+red.reduce.s32 %r1, %r2, op;
+
+// op可以是：add, mul, max, min, and, or, xor等
+
+// 示例：线程块内求和归约
+.reg .s32 %r1, %r2, %r3;
+.shared .s32 sdata[256];
+
+// 每个线程将数据写入共享内存
+st.shared.s32 [sdata + %tid.x], %r1;
+bar.sync 0;
+
+// 归约操作：求和
+red.reduce.s32 %r2, sdata, add;
+
+// 线程0获取最终结果
+setp.eq.s32 %p1, %tid.x, 0;
+@%p1 mov.s32 %r3, %r2;</pre>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                <h5 class="font-medium mb-2">随机数生成指令</h5>
+                                <pre class="text-xs">
+// 生成32位伪随机数
+rand.u32 %r1, %r2;
+
+// 生成循环随机数（周期更长）
+randc.u32 %r1, %r2;
+
+// 示例：生成随机数
+.reg .u32 %r1, %r2, %r3;
+
+// 设置种子
+mov.u32 %r1, %tid.x;  // 使用线程ID作为种子
+
+// 生成随机数
+rand.u32 %r2, %r1;    // 生成第一个随机数
+rand.u32 %r3, %r2;    // 使用前一个结果作为种子，生成下一个
+
+// 循环随机数生成
+randc.u32 %r2, %r1;   // 周期更长的随机数</pre>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">位操作指令</h5>
+                                <pre class="text-xs">
+// 按位与
+and.b32 %r1, %r2, %r3;
+
+// 按位或
+or.b32 %r1, %r2, %r3;
+
+// 按位异或
+xor.b32 %r1, %r2, %r3;
+
+// 按位取反
+not.b32 %r1, %r2;
+
+// 计算1的个数
+popc.b32 %r1, %r2;
+
+// 计算前导零
+clz.b32 %r1, %r2;
+
+// 计算尾随零
+ctz.b32 %r1, %r2;
+
+// 位旋转
+rotl.b32 %r1, %r2, %r3;  // 左旋转
+rotr.b32 %r1, %r2, %r3;  // 右旋转
+
+// 位扩展
+sext.b32 %r1, %r2;  // 符号扩展
+zext.b32 %r1, %r2;  // 零扩展
+
+// 示例：位掩码操作
+mov.b32 %r1, 0x0000FFFF;  // 设置掩码
+and.b32 %r2, %r3, %r1;    // 提取低16位</pre>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <h5 class="font-medium mb-2">特殊指令应用场景</h5>
+                                <ul class="space-y-1 text-sm text-gray-700">
+                                    <li>• 并行归约：统计计算、聚合操作</li>
+                                    <li>• 随机数生成：蒙特卡洛模拟、随机算法</li>
+                                    <li>• 位操作：位掩码、数据压缩、加密算法</li>
+                                    <li>• 纹理操作：图形渲染、图像处理</li>
+                                    <li>• Tensor Core指令：深度学习、矩阵运算</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第4部分：新架构PTX特性与优化 -->
+        <section id="section4" class="mb-16 scroll-mt-24">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                    <i class="fa fa-rocket text-primary"></i>
+                </div>
+                <h2 class="text-3xl font-bold">4. 新架构PTX特性与优化</h2>
+            </div>
+
+            <!-- 4.1 Blackwell架构的PTX创新 -->
+            <div class="mb-10 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                <h3 class="text-2xl font-semibold mb-4 text-primary">4.1 Blackwell架构的PTX创新</h3>
+                <p class="mb-4 text-gray-700">Blackwell架构作为NVIDIA在2024年推出的最新GPU架构，在PTX层面引入了多项创新，这些创新主要集中在支持更高的计算精度、更强大的Tensor Core功能以及新的内存管理机制上。</p>
+                
+                <div class="mb-8">
+                    <h4 class="font-semibold mb-4">FP4精度支持</h4>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="bg-blue-50 p-5 rounded-lg border-l-4 border-primary mb-4">
+                                <h5 class="font-medium mb-2">FP4精度的重要性</h5>
+                                <p class="text-sm text-gray-700">FP4（4位浮点）精度是AI量化技术发展的重要里程碑。相比传统的FP16精度，FP4能够：</p>
+                                <ul class="space-y-1 text-sm text-gray-700 mt-2">
+                                    <li>• 节省4倍的存储空间</li>
+                                    <li>• 减少4倍的内存带宽需求</li>
+                                    <li>• 在保持可接受精度损失的前提下提升4倍计算速度</li>
+                                    <li>• 特别适合大规模语言模型的推理阶段</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                <h5 class="font-medium mb-2">FP4数据类型格式</h5>
+                                <p class="text-sm text-gray-700 mb-2">Blackwell架构支持两种FP4格式：</p>
+                                <ul class="space-y-2 text-sm text-gray-700">
+                                    <li class="flex items-start">
+                                        <span class="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0 text-xs">E2M1</span>
+                                        <div>
+                                            <span class="font-medium">2位指数，1位尾数</span>
+                                            <p class="text-xs">适合对精度要求不高的场景，如某些推理任务</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0 text-xs">E1M2</span>
+                                        <div>
+                                            <span class="font-medium">1位指数，2位尾数</span>
+                                            <p class="text-xs">提供更高的精度，适合对精度要求较高的场景</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                                <h5 class="font-medium mb-2">PTX FP4指令支持</h5>
+                                <pre class="text-xs">
+// 声明FP4寄存器
+.reg .f4.e2m1 %f4_1;  // E2M1格式FP4
+.reg .f4.e1m2 %f4_2;  // E1M2格式FP4
+
+// FP4算术运算指令
+add.f4.e2m1 %f4_1, %f4_1, %f4_1;
+mul.f4.e2m1 %f4_1, %
