@@ -1,6 +1,14 @@
 {
   "recentFiles": [
     {
+      "basename": "ptx",
+      "path": "docs/artificial-intelligence/gpu-computing/ptx.md"
+    },
+    {
+      "basename": "gpu_arch",
+      "path": "docs/artificial-intelligence/gpu-computing/gpu_arch.md"
+    },
+    {
       "basename": "nccl-test",
       "path": "docs/artificial-intelligence/distributed-training/nccl-test.md"
     },
@@ -191,14 +199,6 @@
     {
       "basename": "idle_tick",
       "path": "linux/kernel/idle_tick.md"
-    },
-    {
-      "basename": "i2c",
-      "path": "linux/kernel/i2c.md"
-    },
-    {
-      "basename": "BL31",
-      "path": "linux/kernel/BL31.md"
     }
   ],
   "omittedPaths": [],

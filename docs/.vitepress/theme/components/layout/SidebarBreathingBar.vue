@@ -249,6 +249,26 @@ const scrollToTop = () => {
   }, null)
 }
 
+
+// 生命周期
+onMounted(() => {
+  updateStats()
+  
+  // 监听滚动事件更新阅读进度
+  const handleScroll = utils.throttle(() => {
+    if (isExpanded.value) {
+      readingProgress.value = utils.calculateReadingProgress()
+    }
+  }, 100)
+  
+  window.addEventListener('scroll', handleScroll)
+  
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+    clearTimeout(collapseTimer)
+  })
+})
+
 const toggleTheme = () => {
   errorHandler.safeExecute(() => {
     const themes = Object.keys(themeConfigs)
@@ -392,7 +412,7 @@ watch(currentTheme, (newTheme) => {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 16px;
+  border-radius: 16px !important; /* 强制保持圆角 */
   overflow: hidden;
   border: 1px solid var(--vp-c-divider);
   background: var(--vp-c-bg-soft);
@@ -400,6 +420,11 @@ watch(currentTheme, (newTheme) => {
     0 1px 3px rgba(0, 0, 0, 0.1),
     0 1px 2px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 确保所有浏览器都保持圆角 */
+  -webkit-border-radius: 16px !important;
+  -moz-border-radius: 16px !important;
+  /* 防止子元素破坏圆角 */
+  isolation: isolate;
 }
 
 .sidebar-dynamic-widget:hover .widget-container {
@@ -407,6 +432,41 @@ watch(currentTheme, (newTheme) => {
   box-shadow: 
     0 4px 12px rgba(0, 0, 0, 0.15),
     0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 悬停时强制保持圆角 */
+  border-radius: 16px !important;
+  -webkit-border-radius: 16px !important;
+  -moz-border-radius: 16px !important;
+}
+
+/* 展开状态的圆角 */
+.sidebar-dynamic-widget.is-expanded .widget-container {
+  border-radius: 20px !important;
+  -webkit-border-radius: 20px !important;
+  -moz-border-radius: 20px !important;
+}
+
+.sidebar-dynamic-widget.is-expanded:hover .widget-container {
+  border-radius: 20px !important;
+  -webkit-border-radius: 20px !important;
+  -moz-border-radius: 20px !important;
+}
+
+/* 防止全局样式干扰 - 重置可能影响边框的属性 */
+.sidebar-dynamic-widget,
+.sidebar-dynamic-widget *,
+.sidebar-dynamic-widget *::before,
+.sidebar-dynamic-widget *::after {
+  box-sizing: border-box;
+}
+
+/* 确保根容器和所有子元素都保持圆角 */
+.sidebar-dynamic-widget .widget-container,
+.sidebar-dynamic-widget .background-layers,
+.sidebar-dynamic-widget .gradient-layer,
+.sidebar-dynamic-widget .particle-layer,
+.sidebar-dynamic-widget .aurora-layer,
+.sidebar-dynamic-widget .content-area {
+  border-radius: inherit !important;
 }
 
 /* 背景层 */
@@ -417,6 +477,8 @@ watch(currentTheme, (newTheme) => {
   right: 0;
   bottom: 0;
   z-index: 1;
+  border-radius: inherit !important;
+  overflow: hidden;
 }
 
 .gradient-layer {
@@ -1464,6 +1526,83 @@ watch(currentTheme, (newTheme) => {
   
   .gradient-layer {
     opacity: 0.3;
+  }
+}
+
+/* ===== 最终保护规则 - 确保边框圆角永不变形 ===== */
+
+/* 强制所有状态下保持圆角 - 最高优先级 */
+.sidebar-dynamic-widget .widget-container {
+  border-radius: 16px !important;
+  -webkit-border-radius: 16px !important;
+  -moz-border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.sidebar-dynamic-widget:hover .widget-container,
+.sidebar-dynamic-widget:focus .widget-container,
+.sidebar-dynamic-widget:active .widget-container {
+  border-radius: 16px !important;
+  -webkit-border-radius: 16px !important;
+  -moz-border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.sidebar-dynamic-widget.is-expanded .widget-container {
+  border-radius: 20px !important;
+  -webkit-border-radius: 20px !important;
+  -moz-border-radius: 20px !important;
+  overflow: hidden !important;
+}
+
+.sidebar-dynamic-widget.is-expanded:hover .widget-container,
+.sidebar-dynamic-widget.is-expanded:focus .widget-container,
+.sidebar-dynamic-widget.is-expanded:active .widget-container {
+  border-radius: 20px !important;
+  -webkit-border-radius: 20px !important;
+  -moz-border-radius: 20px !important;
+  overflow: hidden !important;
+}
+
+/* 防止任何全局样式覆盖 */
+.sidebar-dynamic-widget {
+  /* 重置任何可能影响边框的全局样式 */
+  border-radius: initial !important;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  /* 确保组件独立性 */
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+/* 确保所有子元素都不会破坏圆角 */
+.sidebar-dynamic-widget .widget-container > *,
+.sidebar-dynamic-widget .widget-container::before,
+.sidebar-dynamic-widget .widget-container::after {
+  border-radius: inherit !important;
+}
+
+/* 确保在任何浏览器和设备上都保持圆角 */
+@supports (border-radius: 16px) {
+  .sidebar-dynamic-widget .widget-container {
+    border-radius: 16px !important;
+  }
+  
+  .sidebar-dynamic-widget.is-expanded .widget-container {
+    border-radius: 20px !important;
+  }
+}
+
+/* 兼容旧版浏览器 */
+@supports not (border-radius: 16px) {
+  .sidebar-dynamic-widget .widget-container {
+    -webkit-border-radius: 16px !important;
+    -moz-border-radius: 16px !important;
+  }
+  
+  .sidebar-dynamic-widget.is-expanded .widget-container {
+    -webkit-border-radius: 20px !important;
+    -moz-border-radius: 20px !important;
   }
 }
 </style>
