@@ -42,9 +42,14 @@ function formatTitle(filename) {
 function getDisplayTitle(filePath, name, isFile = false) {
   if (isFile) {
     // 对于文件，尝试从 frontmatter 中获取 title
-    const frontmatter = extractFrontmatter(filePath)
-    if (frontmatter.title) {
-      return frontmatter.title
+    try {
+      const frontmatter = parseFrontmatterFromFile(filePath)
+      if (frontmatter && frontmatter.title) {
+        return frontmatter.title
+      }
+    } catch (error) {
+      // 如果解析 frontmatter 失败，继续使用文件名
+      console.warn(`Failed to parse frontmatter from ${filePath}:`, error.message)
     }
     
     // 如果没有 frontmatter title，使用格式化的文件名

@@ -19,7 +19,7 @@ export default defineConfig({
   // 忽略死链接检查，避免构建失败
   ignoreDeadLinks: true,
 
-  // 构建钩子 - 在构建前生成 timeline 数据、git 历史记录和侧边栏配置
+  // 构建钩子 - 在构建前生成 timeline 数据、git 历史记录、侧边栏配置和响应式图片
   buildStart() {
     console.log('Generating sidebar configuration...')
     generateAndWriteSidebar()
