@@ -251,6 +251,93 @@ export const utils = {
         setTimeout(() => inThrottle = false, limit)
       }
     }
+  },
+
+  /**
+   * 计算阅读统计信息
+   * @returns {Object} 包含进度、字数、阅读时间的对象
+   */
+  calculateReadingStats() {
+    if (typeof window === 'undefined') {
+      return { progress: 0, wordCount: 0, readingTime: 0 }
+    }
+
+    try {
+      // 计算阅读进度
+      const progress = this.calculateReadingProgress()
+      
+      // 计算字数
+      const content = document.querySelector('.content') || document.body
+      const text = content.textContent || content.innerText || ''
+      const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length
+      
+      // 计算阅读时间
+      const readingTime = this.estimateReadingTime(wordCount)
+      
+      return { progress, wordCount, readingTime }
+    } catch (error) {
+      console.warn('计算阅读统计时出错:', error)
+      return { progress: 0, wordCount: 0, readingTime: 0 }
+    }
+  },
+
+  /**
+   * 滚动到顶部
+   */
+  scrollToTop() {
+    if (typeof window === 'undefined') return
+    
+    try {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    } catch (error) {
+      // 降级处理
+      window.scrollTo(0, 0)
+    }
+  }
+}
+
+// 错误处理工具
+export const errorHandler = {
+  /**
+   * 安全执行函数，捕获并处理错误
+   * @param {Function} fn - 要执行的函数
+   * @param {*} fallback - 出错时的回退值
+   * @returns {*} 函数执行结果或回退值
+   */
+  safeExecute(fn, fallback = null) {
+    try {
+      return fn()
+    } catch (error) {
+      console.warn('函数执行出错:', error)
+      return fallback
+    }
+  },
+
+  /**
+   * 异步安全执行
+   * @param {Function} fn - 要执行的异步函数
+   * @param {*} fallback - 出错时的回退值
+   * @returns {Promise} 执行结果
+   */
+  async safeExecuteAsync(fn, fallback = null) {
+    try {
+      return await fn()
+    } catch (error) {
+      console.warn('异步函数执行出错:', error)
+      return fallback
+    }
+  },
+
+  /**
+   * 记录错误
+   * @param {string} context - 错误上下文
+   * @param {Error} error - 错误对象
+   */
+  logError(context, error) {
+    console.error(`[${context}] 错误:`, error)
   }
 }
 

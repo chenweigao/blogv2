@@ -4,11 +4,18 @@
     :class="{ 
       'is-expanded': isExpanded,
       'is-interactive': isInteractive,
-      [`theme-${currentTheme}`]: true
+      [`theme-${currentTheme}`]: true,
+      'has-particles': showParticles && enableAnimations
     }"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
     @click="handleClick"
+    :aria-expanded="isExpanded"
+    :aria-label="title"
+    role="button"
+    tabindex="0"
+    @keydown.enter="handleClick"
+    @keydown.space.prevent="handleClick"
   >
     <!-- 主容器 -->
     <div class="widget-container">
@@ -31,7 +38,7 @@
         <!-- 紧凑模式内容 -->
         <div v-if="!isExpanded" class="compact-content">
           <div class="status-indicator">
-            <div class="pulse-ring"></div>
+            <div v-if="enableAnimations" class="pulse-ring"></div>
             <div class="status-dot" :class="`status-${status}`"></div>
           </div>
           <div class="compact-info">
@@ -50,8 +57,13 @@
           <div v-if="isExpanded" class="expanded-content">
             <div class="header-section">
               <h4 class="widget-title">{{ title }}</h4>
-              <button class="close-btn" @click.stop="collapse">
-                <svg viewBox="0 0 24 24">
+              <button 
+                class="close-btn" 
+                @click.stop="collapse"
+                aria-label="关闭"
+                type="button"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 </svg>
               </button>
@@ -73,17 +85,27 @@
             </div>
 
             <div class="action-buttons">
-              <button class="action-btn primary" @click="scrollToTop">
-                <svg viewBox="0 0 24 24">
+              <button 
+                class="action-btn primary" 
+                @click="scrollToTop"
+                type="button"
+                aria-label="回到顶部"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
                 </svg>
                 回到顶部
               </button>
-              <button class="action-btn secondary" @click="toggleTheme">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <button 
+                class="action-btn secondary" 
+                @click="toggleTheme"
+                type="button"
+                aria-label="切换主题"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6z"/>
                 </svg>
-                切换主题
+                {{ getThemeName(currentTheme) }}
               </button>
             </div>
           </div>
@@ -120,7 +142,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch, toRefs } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, toRefs, nextTick } from 'vue'
+import { defaultConfig, themeConfigs, utils, errorHandler } from './SidebarWidgetConfig.js'
 
 // Props
 const props = defineProps({
@@ -143,35 +166,33 @@ const enableAnimations = ref(true)
 const showParticles = ref(true)
 const status = ref('active')
 
-// 统计数据（模拟）
+// 统计数据
 const readingProgress = ref(0)
-const wordCount = ref(1250)
-const readingTime = ref(5)
+const wordCount = ref(0)
+const readingTime = ref(0)
 
 // 粒子系统
 const particles = ref([])
-const maxParticles = 8
 
-// 定时器
+// 定时器和状态
 let collapseTimer = null
-let animationFrame = null
+let scrollTimer = null
+let isScrolling = false
+
+// 性能监控
+let performanceObserver = null
 
 // 计算属性
 const gradientStyle = computed(() => {
-  const themes = {
-    aurora: 'linear-gradient(135deg, rgba(10,37,64,0.4) 0%, rgba(255,212,0,0.3) 50%, rgba(0,208,132,0.4) 100%)',
-    ocean: 'linear-gradient(135deg, rgba(0,119,190,0.4) 0%, rgba(0,180,216,0.3) 50%, rgba(144,224,239,0.4) 100%)',
-    sunset: 'linear-gradient(135deg, rgba(255,94,77,0.4) 0%, rgba(255,154,0,0.3) 50%, rgba(255,206,84,0.4) 100%)',
-    forest: 'linear-gradient(135deg, rgba(76,175,80,0.4) 0%, rgba(139,195,74,0.3) 50%, rgba(205,220,57,0.4) 100%)'
-  }
-  return { background: themes[currentTheme.value] || themes.aurora }
+  const config = themeConfigs[currentTheme.value] || themeConfigs.aurora
+  return { background: config.gradient }
 })
 
 // 方法
 const handleMouseEnter = () => {
   if (!enableInteraction.value) return
   clearTimeout(collapseTimer)
-  if (enableAnimations.value) {
+  if (enableAnimations.value && showParticles.value) {
     generateParticles()
   }
 }
@@ -199,70 +220,159 @@ const collapse = () => {
 }
 
 const formatDate = (dateStr) => {
-  if (!dateStr) return ''
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+  return utils.formatDate(dateStr)
 }
 
 const generateParticles = () => {
   if (!showParticles.value || !enableAnimations.value) return
   
-  particles.value = []
-  for (let i = 0; i < maxParticles; i++) {
-    particles.value.push({
-      id: i,
-      style: {
-        left: Math.random() * 100 + '%',
-        top: Math.random() * 100 + '%',
-        animationDelay: Math.random() * 2 + 's',
-        animationDuration: (Math.random() * 3 + 2) + 's'
-      }
-    })
-  }
+  errorHandler.safeExecute(() => {
+    particles.value = utils.generateParticleStyles(defaultConfig.maxParticles)
+  }, [])
 }
 
 const updateStats = () => {
-  // 模拟获取阅读统计
-  const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100)
-  readingProgress.value = Math.max(0, Math.min(100, scrollPercent))
+  if (typeof window === 'undefined') return
+  
+  errorHandler.safeExecute(() => {
+    const stats = utils.calculateReadingStats()
+    readingProgress.value = stats.progress
+    wordCount.value = stats.wordCount
+    readingTime.value = stats.readingTime
+  }, null)
 }
 
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  collapse()
+  errorHandler.safeExecute(() => {
+    utils.scrollToTop()
+    collapse()
+  }, null)
 }
 
 const toggleTheme = () => {
-  const themes = ['aurora', 'ocean', 'sunset', 'forest']
-  const currentIndex = themes.indexOf(currentTheme.value)
-  currentTheme.value = themes[(currentIndex + 1) % themes.length]
+  errorHandler.safeExecute(() => {
+    const themes = Object.keys(themeConfigs)
+    const currentIndex = themes.indexOf(currentTheme.value)
+    currentTheme.value = themes[(currentIndex + 1) % themes.length]
+  }, null)
 }
+
+const getThemeName = (theme) => {
+  return errorHandler.safeExecute(() => {
+    return themeConfigs[theme]?.name || '极光'
+  }, '极光')
+}
+
+const onAnimationToggle = () => {
+  errorHandler.safeExecute(() => {
+    if (!enableAnimations.value) {
+      showParticles.value = false
+      particles.value = []
+    }
+  }, null)
+}
+
+// 节流的滚动处理
+const throttledUpdateStats = utils.throttle(() => {
+  updateStats()
+}, 100)
 
 // 生命周期
 onMounted(() => {
-  updateStats()
-  window.addEventListener('scroll', updateStats)
-  
-  if (enableAnimations.value) {
-    generateParticles()
-  }
+  errorHandler.safeExecute(() => {
+    nextTick(() => {
+      // 检测用户偏好设置
+      const preferences = utils.detectUserPreferences()
+      if (preferences.prefersReducedMotion) {
+        enableAnimations.value = false
+        showParticles.value = false
+      }
+      
+      // 初始化统计数据
+      updateStats()
+      
+      // 添加滚动监听器
+      if (typeof window !== 'undefined') {
+        window.addEventListener('scroll', throttledUpdateStats, { passive: true })
+        
+        // 添加性能监控
+        if ('PerformanceObserver' in window && defaultConfig.enablePerformanceMonitoring) {
+          performanceObserver = new PerformanceObserver((list) => {
+            const entries = list.getEntries()
+            entries.forEach(entry => {
+              if (entry.entryType === 'measure' && entry.name.includes('sidebar-widget')) {
+                console.log(`[SidebarWidget Performance] ${entry.name}: ${entry.duration}ms`)
+              }
+            })
+          })
+          performanceObserver.observe({ entryTypes: ['measure'] })
+        }
+      }
+      
+      // 生成初始粒子
+      if (enableAnimations.value && showParticles.value) {
+        generateParticles()
+      }
+    })
+  }, null)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', updateStats)
-  clearTimeout(collapseTimer)
-  if (animationFrame) {
-    cancelAnimationFrame(animationFrame)
-  }
+  errorHandler.safeExecute(() => {
+    // 清理事件监听器
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('scroll', throttledUpdateStats)
+    }
+    
+    // 清理定时器
+    if (collapseTimer) {
+      clearTimeout(collapseTimer)
+      collapseTimer = null
+    }
+    if (scrollTimer) {
+      clearTimeout(scrollTimer)
+      scrollTimer = null
+    }
+    
+    // 清理性能监控
+    if (performanceObserver) {
+      performanceObserver.disconnect()
+      performanceObserver = null
+    }
+    
+    // 清理粒子
+    particles.value = []
+  }, null)
 })
 
-// 监听动画设置变化
+// 监听器
 watch(enableAnimations, (newVal) => {
-  if (newVal) {
-    generateParticles()
-  } else {
-    particles.value = []
-  }
+  errorHandler.safeExecute(() => {
+    if (newVal && showParticles.value) {
+      generateParticles()
+    } else {
+      particles.value = []
+    }
+  }, null)
+})
+
+watch(showParticles, (newVal) => {
+  errorHandler.safeExecute(() => {
+    if (newVal && enableAnimations.value) {
+      generateParticles()
+    } else {
+      particles.value = []
+    }
+  }, null)
+})
+
+watch(currentTheme, (newTheme) => {
+  errorHandler.safeExecute(() => {
+    // 主题切换时重新生成粒子以匹配新主题
+    if (enableAnimations.value && showParticles.value) {
+      generateParticles()
+    }
+  }, null)
 })
 </script>
 
@@ -686,6 +796,10 @@ watch(enableAnimations, (newVal) => {
 }
 
 /* 主题变体 */
+.theme-aurora .gradient-layer {
+  background: linear-gradient(135deg, rgba(10,37,64,0.4) 0%, rgba(255,212,0,0.3) 50%, rgba(0,208,132,0.4) 100%) !important;
+}
+
 .theme-ocean .gradient-layer {
   background: linear-gradient(135deg, rgba(0,119,190,0.4) 0%, rgba(0,180,216,0.3) 50%, rgba(144,224,239,0.4) 100%) !important;
 }
@@ -696,6 +810,636 @@ watch(enableAnimations, (newVal) => {
 
 .theme-forest .gradient-layer {
   background: linear-gradient(135deg, rgba(76,175,80,0.4) 0%, rgba(139,195,74,0.3) 50%, rgba(205,220,57,0.4) 100%) !important;
+}
+
+/* 无障碍和性能优化 */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-dynamic-widget,
+  .sidebar-dynamic-widget *,
+  .sidebar-dynamic-widget *::before,
+  .sidebar-dynamic-widget *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .particle {
+    display: none !important;
+  }
+  
+  .aurora-layer {
+    display: none !important;
+  }
+  
+  .pulse-ring {
+    animation: none !important;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .widget-container {
+    border: 2px solid var(--vp-c-text-1);
+  }
+  
+  .gradient-layer {
+    opacity: 0.2;
+  }
+  
+  .status-dot {
+    border: 2px solid var(--vp-c-text-1);
+  }
+  
+  .action-btn {
+    border: 1px solid var(--vp-c-text-1);
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .sidebar-dynamic-widget {
+    background: white !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .sidebar-dynamic-widget * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .particle-layer,
+  .aurora-layer {
+    display: none !important;
+  }
+  
+  .action-buttons {
+    display: none !important;
+  }
+}
+
+/* 焦点状态 */
+.sidebar-dynamic-widget:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+.widget-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--vp-border-radius-large);
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  box-shadow: var(--vp-shadow-1);
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+  backdrop-filter: blur(8px);
+}
+
+.sidebar-dynamic-widget:hover .widget-container {
+  transform: translateY(-1px);
+  box-shadow: var(--vp-shadow-2);
+  border-color: var(--vp-c-brand-soft);
+}
+
+/* 背景层优化 */
+.background-layers {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.gradient-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.7;
+  transition: opacity var(--vp-animation-duration-normal) ease;
+  mix-blend-mode: multiply;
+}
+
+.particle-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: float 4s ease-in-out infinite;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+.aurora-layer {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 60%
+  );
+  animation: aurora-flow 12s ease-in-out infinite alternate;
+  mix-blend-mode: overlay;
+}
+
+/* 内容区域 */
+.content-area {
+  position: relative;
+  z-index: 2;
+  padding: var(--vp-space-12) var(--vp-space-16);
+  color: var(--vp-c-text-1);
+}
+
+/* 紧凑模式优化 */
+.compact-content {
+  display: flex;
+  align-items: center;
+  gap: var(--vp-space-12);
+  min-height: 36px;
+}
+
+.status-indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pulse-ring {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--vp-c-brand-1);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--vp-c-brand-1);
+  position: relative;
+  z-index: 1;
+}
+
+.status-dot.status-active { background: var(--vp-c-success); }
+.status-dot.status-warning { background: var(--vp-c-warning); }
+.status-dot.status-error { background: var(--vp-c-danger); }
+
+.compact-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.category-tag {
+  font-size: var(--vp-font-size-xs);
+  font-weight: 600;
+  color: var(--vp-c-brand-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: var(--vp-line-height-tight);
+}
+
+.date-info {
+  font-size: calc(var(--vp-font-size-xs) * 0.9);
+  color: var(--vp-c-text-3);
+  white-space: nowrap;
+  line-height: var(--vp-line-height-tight);
+}
+
+.expand-hint {
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+  transition: opacity var(--vp-animation-duration-fast) ease;
+  flex-shrink: 0;
+}
+
+.sidebar-dynamic-widget:hover .expand-hint {
+  opacity: 1;
+}
+
+.expand-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  transition: transform var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+}
+
+.is-expanded .expand-icon {
+  transform: rotate(180deg);
+}
+
+/* 展开模式优化 */
+.expanded-content {
+  min-height: 180px;
+  animation: slideIn var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--vp-space-16);
+  padding-bottom: var(--vp-space-8);
+  border-bottom: 1px solid var(--vp-c-divider-light);
+}
+
+.widget-title {
+  margin: 0;
+  font-size: var(--vp-font-size-s);
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  line-height: var(--vp-line-height-tight);
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: var(--vp-border-radius-small);
+  cursor: pointer;
+  color: var(--vp-c-text-2);
+  transition: all var(--vp-animation-duration-fast) ease;
+}
+
+.close-btn:hover {
+  background: var(--vp-c-bg-mute);
+  color: var(--vp-c-text-1);
+  transform: scale(1.05);
+}
+
+.close-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--vp-space-8);
+  margin-bottom: var(--vp-space-16);
+}
+
+.stat-item {
+  text-align: center;
+  padding: var(--vp-space-8);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--vp-border-radius-medium);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--vp-animation-duration-fast) ease;
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.stat-value {
+  font-size: var(--vp-font-size-m);
+  font-weight: 700;
+  color: var(--vp-c-brand-1);
+  margin-bottom: 2px;
+  line-height: var(--vp-line-height-tight);
+}
+
+.stat-label {
+  font-size: calc(var(--vp-font-size-xs) * 0.85);
+  color: var(--vp-c-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  line-height: var(--vp-line-height-tight);
+}
+
+.action-buttons {
+  display: flex;
+  gap: var(--vp-space-8);
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vp-space-8);
+  padding: var(--vp-space-8) var(--vp-space-12);
+  border: none;
+  border-radius: var(--vp-border-radius-medium);
+  font-size: var(--vp-font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--vp-animation-duration-fast) ease;
+  line-height: var(--vp-line-height-tight);
+}
+
+.action-btn.primary {
+  background: var(--vp-c-brand-1);
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: var(--vp-c-brand-2);
+  transform: translateY(-1px);
+  box-shadow: var(--vp-shadow-1);
+}
+
+.action-btn.secondary {
+  background: var(--vp-c-bg-mute);
+  color: var(--vp-c-text-1);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.action-btn.secondary:hover {
+  background: var(--vp-c-bg-elv);
+  border-color: var(--vp-c-brand-soft);
+  transform: translateY(-1px);
+}
+
+.action-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* 配置面板 */
+.config-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius-large);
+  padding: var(--vp-space-16);
+  margin-top: var(--vp-space-8);
+  box-shadow: var(--vp-shadow-3);
+  z-index: var(--vp-z-index-local);
+  backdrop-filter: blur(12px);
+}
+
+.config-panel h5 {
+  margin: 0 0 var(--vp-space-12) 0;
+  font-size: var(--vp-font-size-s);
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.config-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vp-space-8);
+}
+
+.config-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--vp-font-size-xs);
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  padding: var(--vp-space-4) 0;
+}
+
+.config-item input,
+.config-item select {
+  margin-left: var(--vp-space-8);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius-small);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  padding: 2px 6px;
+  font-size: var(--vp-font-size-xs);
+}
+
+/* 动画定义 */
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.4; 
+  }
+  50% { 
+    transform: scale(1.1); 
+    opacity: 0.2; 
+  }
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+    opacity: 0.6; 
+  }
+  25% { 
+    transform: translateY(-8px) rotate(90deg); 
+    opacity: 1; 
+  }
+  50% { 
+    transform: translateY(-4px) rotate(180deg); 
+    opacity: 0.8; 
+  }
+  75% { 
+    transform: translateY(-12px) rotate(270deg); 
+    opacity: 0.9; 
+  }
+}
+
+@keyframes aurora-flow {
+  0% { 
+    transform: rotate(0deg) scale(1); 
+    opacity: 0.6; 
+  }
+  50% { 
+    transform: rotate(180deg) scale(1.05); 
+    opacity: 0.8; 
+  }
+  100% { 
+    transform: rotate(360deg) scale(1); 
+    opacity: 0.6; 
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 过渡动画 */
+.expand-content-enter-active,
+.expand-content-leave-active {
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+}
+
+.expand-content-enter-from,
+.expand-content-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+}
+
+.config-panel-enter-active,
+.config-panel-leave-active {
+  transition: all var(--vp-animation-duration-fast) ease;
+}
+
+.config-panel-enter-from,
+.config-panel-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .sidebar-dynamic-widget {
+    min-height: 50px;
+  }
+  
+  .content-area {
+    padding: var(--vp-space-8) var(--vp-space-12);
+  }
+  
+  .compact-content {
+    gap: var(--vp-space-8);
+    min-height: 32px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--vp-space-8);
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: var(--vp-space-8);
+  }
+  
+  .expanded-content {
+    min-height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--vp-space-8);
+  }
+  
+  .compact-info {
+    font-size: calc(var(--vp-font-size-xs) * 0.9);
+  }
+  
+  .category-tag {
+    font-size: calc(var(--vp-font-size-xs) * 0.9);
+  }
+  
+  .date-info {
+    font-size: calc(var(--vp-font-size-xs) * 0.8);
+  }
+}
+
+/* 主题变体 */
+.theme-ocean .gradient-layer {
+  background: linear-gradient(135deg, rgba(0,119,190,0.4) 0%, rgba(0,180,216,0.3) 50%, rgba(144,224,239,0.4) 100%) !important;
+}
+
+.theme-sunset .gradient-layer {
+  background: linear-gradient(135deg, rgba(255,94,77,0.4) 0%, rgba(255,154,0,0.3) 50%, rgba(255,206,84,0.4) 100%) !important;
+}
+
+.theme-forest .gradient-layer {
+  background: linear-gradient(135deg, rgba(76,175,80,0.4) 0%, rgba(139,195,74,0.3) 50%, rgba(205,220,57,0.4) 100%) !important;
+}
+
+/* 无障碍和性能优化 */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-dynamic-widget,
+  .sidebar-dynamic-widget *,
+  .sidebar-dynamic-widget *::before,
+  .sidebar-dynamic-widget *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .particle {
+    display: none !important;
+  }
+  
+  .aurora-layer {
+    display: none !important;
+  }
+  
+  .pulse-ring {
+    animation: none !important;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .widget-container {
+    border: 2px solid var(--vp-c-text-1);
+  }
+  
+  .gradient-layer {
+    opacity: 0.2;
+  }
+  
+  .status-dot {
+    border: 2px solid var(--vp-c-text-1);
+  }
+  
+  .action-btn {
+    border: 1px solid var(--vp-c-text-1);
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .sidebar-dynamic-widget {
+    background: white !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .sidebar-dynamic-widget * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .particle-layer,
+  .aurora-layer {
+    display: none !important;
+  }
+  
+  .action-buttons {
+    display: none !important;
+  }
 }
 
 /* 无障碍和性能优化 */
