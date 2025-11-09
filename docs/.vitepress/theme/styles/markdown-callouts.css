@@ -46,16 +46,32 @@
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
 }
 
+.vp-doc .custom-block.info .custom-block-title,
+.vp-doc .custom-block.note .custom-block-title {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
+  color: var(--vp-c-brand-darker);
+}
+
 .vp-doc .custom-block.tip {
   border-left-color: #10b981;
   background: rgba(16, 185, 129, 0.1);
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
 }
 
+.vp-doc .custom-block.tip .custom-block-title {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.15));
+  color: #047857;
+}
+
 .vp-doc .custom-block.warning {
   border-left-color: #f59e0b;
   background: rgba(245, 158, 11, 0.1);
   box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+}
+
+.vp-doc .custom-block.warning .custom-block-title {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.15));
+  color: #92400e;
 }
 
 .vp-doc .custom-block.danger,
@@ -65,10 +81,21 @@
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
 }
 
+.vp-doc .custom-block.danger .custom-block-title,
+.vp-doc .custom-block.caution .custom-block-title {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.15));
+  color: #b91c1c;
+}
+
 .vp-doc .custom-block.important {
   border-left-color: #8b5cf6;
   background: rgba(139, 92, 246, 0.1);
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+}
+
+.vp-doc .custom-block.important .custom-block-title {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(139, 92, 246, 0.15));
+  color: #6d28d9;
 }
 
 /* 兜底方案：检测文本内容的 blockquote */
@@ -87,12 +114,14 @@
   letter-spacing: 0.8px;
   margin-bottom: var(--vp-space-12);
   padding-bottom: var(--vp-space-8);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
   position: relative;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  padding: var(--vp-space-8) var(--vp-space-12);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.08));
+  padding: var(--vp-space-12) var(--vp-space-16);
   margin: calc(-1 * var(--vp-space-16)) calc(-1 * var(--vp-space-16)) var(--vp-space-12);
   border-radius: var(--vp-border-radius-medium) var(--vp-border-radius-medium) 0 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 
+              0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* 标题图标增强 */
@@ -139,12 +168,15 @@
   letter-spacing: 0.8px;
   margin-bottom: var(--vp-space-12);
   padding-bottom: var(--vp-space-8);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
   position: relative;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  padding: var(--vp-space-8) var(--vp-space-12);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
+  padding: var(--vp-space-12) var(--vp-space-16);
   margin: calc(-1 * var(--vp-space-16)) calc(-1 * var(--vp-space-16)) var(--vp-space-12);
   border-radius: var(--vp-border-radius-medium) var(--vp-border-radius-medium) 0 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 
+              0 1px 3px rgba(0, 0, 0, 0.1);
+  color: var(--vp-c-brand-darker);
 }
 
 /* 为 NOTE 添加图标 */
