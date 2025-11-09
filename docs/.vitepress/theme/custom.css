@@ -33,4 +33,5 @@
 @import url('./styles/utilities.css') layer(utilities);
 @import url('./styles/hide-aside.css') layer(overrides);
 @import url('./styles/content-width-enhancement.css') layer(theme);
+@import url('./styles/markdown-callouts.css') layer(components);
 @import url('./styles/print.css') layer(overrides);

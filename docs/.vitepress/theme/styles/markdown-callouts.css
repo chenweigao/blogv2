@@ -1,0 +1,261 @@
+/* Markdown Callouts 增强样式 - 支持 VitePress 原生 GitHub-flavored alerts */
+
+/* VitePress 原生 callout 样式增强 */
+.vp-doc .custom-block {
+  position: relative;
+  margin: var(--vp-space-16) 0;
+  padding: var(--vp-space-16);
+  border-radius: var(--vp-border-radius-medium);
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* 基础 blockquote 样式（兜底方案） - 增强交互效果 */
+.vp-doc blockquote {
+  position: relative;
+  margin: var(--vp-space-16) 0;
+  padding: var(--vp-space-16);
+  border-radius: var(--vp-border-radius-medium);
+  border-left: 4px solid var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+/* VitePress 原生 callout 类型样式 */
+.vp-doc .custom-block.info,
+.vp-doc .custom-block.note {
+  border-left-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.vp-doc .custom-block.tip {
+  border-left-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+
+.vp-doc .custom-block.warning {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+}
+
+.vp-doc .custom-block.danger,
+.vp-doc .custom-block.caution {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+}
+
+.vp-doc .custom-block.important {
+  border-left-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+}
+
+/* 兜底方案：检测文本内容的 blockquote */
+.vp-doc blockquote:has(p:first-child strong:first-child) {
+  cursor: pointer;
+}
+
+/* NOTE 类型检测 */
+.vp-doc blockquote p:first-child strong:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vp-space-8);
+  font-weight: 600;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--vp-space-8);
+  position: relative;
+}
+
+/* 鼠标悬停效果 - VitePress 原生 callouts */
+@media (hover: hover) {
+  .vp-doc .custom-block:hover,
+  .vp-doc blockquote:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .vp-doc .custom-block.info:hover,
+  .vp-doc .custom-block.note:hover {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+    border-left-color: var(--vp-c-brand-darker);
+  }
+  
+  .vp-doc .custom-block.tip:hover {
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
+    border-left-color: #059669;
+  }
+  
+  .vp-doc .custom-block.warning:hover {
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+    border-left-color: #d97706;
+  }
+  
+  .vp-doc .custom-block.danger:hover,
+  .vp-doc .custom-block.caution:hover {
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
+    border-left-color: #dc2626;
+  }
+  
+  .vp-doc .custom-block.important:hover {
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.25);
+    border-left-color: #7c3aed;
+  }
+}
+
+/* 点击效果 */
+.vp-doc .custom-block:active,
+.vp-doc blockquote:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: var(--vp-animation-duration-fast);
+}
+
+/* 添加微妙的背景动画效果 */
+.vp-doc .custom-block::before,
+.vp-doc blockquote::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform var(--vp-animation-duration-slow) var(--vp-animation-easing);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .vp-doc .custom-block:hover::before,
+  .vp-doc blockquote:hover::before {
+    transform: translateX(100%);
+  }
+}
+
+/* 支持其他常见的 callout 类型 */
+.vp-doc blockquote:has(p:first-child strong:first-child:contains("WARNING")) {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.vp-doc blockquote:has(p:first-child strong:first-child:contains("WARNING")) p:first-child strong:first-child::before {
+  content: "⚠️";
+}
+
+@media (hover: hover) {
+  .vp-doc blockquote:has(p:first-child strong:first-child:contains("WARNING")):hover {
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+    border-left-color: #d97706;
+  }
+}
+
+.vp-doc blockquote:has(p:first-child strong:first-child:contains("TIP")) {
+  border-left-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.vp-doc blockquote:has(p:first-child strong:first-child:contains("TIP")) p:first-child strong:first-child::before {
+  content: "💡";
+}
+
+@media (hover: hover) {
+  .vp-doc blockquote:has(p:first-child strong:first-child:contains("TIP")):hover {
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
+    border-left-color: #059669;
+  }
+}
+
+.vp-doc blockquote:has(p:first-child strong:first-child:contains("DANGER")) {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.vp-doc blockquote:has(p:first-child strong:first-child:contains("DANGER")) p:first-child strong:first-child::before {
+  content: "🚨";
+}
+
+@media (hover: hover) {
+  .vp-doc blockquote:has(p:first-child strong:first-child:contains("DANGER")):hover {
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
+    border-left-color: #dc2626;
+  }
+}
+
+/* 暗色模式适配 */
+.dark .vp-doc .custom-block,
+.dark .vp-doc blockquote {
+  background: var(--vp-c-bg-mute);
+  border-left-color: var(--vp-c-divider-light);
+}
+
+.dark .vp-doc .custom-block.info,
+.dark .vp-doc .custom-block.note {
+  background: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.dark .vp-doc .custom-block.tip {
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.dark .vp-doc .custom-block.warning {
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.dark .vp-doc .custom-block.danger,
+.dark .vp-doc .custom-block.caution {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.dark .vp-doc .custom-block.important {
+  background: rgba(139, 92, 246, 0.15);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .vp-doc .custom-block,
+  .vp-doc blockquote {
+    margin: var(--vp-space-12) 0;
+    padding: var(--vp-space-12);
+  }
+  
+  /* 移动设备上减少悬停效果的强度 */
+  @media (hover: hover) {
+    .vp-doc .custom-block:hover,
+    .vp-doc blockquote:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+/* 无障碍支持 */
+.vp-doc .custom-block:focus-within,
+.vp-doc blockquote:focus-within {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+/* 减少动画的用户偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  .vp-doc .custom-block,
+  .vp-doc .custom-block::before,
+  .vp-doc blockquote,
+  .vp-doc blockquote::before {
+    transition: none;
+  }
+  
+  .vp-doc .custom-block:hover,
+  .vp-doc blockquote:hover {
+    transform: none;
+  }
+}
