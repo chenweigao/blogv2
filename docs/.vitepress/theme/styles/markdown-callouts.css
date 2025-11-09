@@ -3,12 +3,25 @@
 /* VitePress 原生 callout 样式增强 */
 .vp-doc .custom-block {
   position: relative;
-  margin: var(--vp-space-16) 0;
-  padding: var(--vp-space-16);
+  margin: var(--vp-space-20) 0;
+  padding: 0;
   border-radius: var(--vp-border-radius-medium);
   transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
   overflow: hidden;
   cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* 内容区域样式 */
+.vp-doc .custom-block > :not(.custom-block-title) {
+  padding: 0 var(--vp-space-16) var(--vp-space-16);
+}
+
+.vp-doc .custom-block > p:last-child,
+.vp-doc .custom-block > ul:last-child,
+.vp-doc .custom-block > ol:last-child {
+  margin-bottom: 0;
 }
 
 /* 基础 blockquote 样式（兜底方案） - 增强交互效果 */
@@ -63,17 +76,82 @@
   cursor: pointer;
 }
 
-/* NOTE 类型检测 */
-.vp-doc blockquote p:first-child strong:first-child {
-  display: inline-flex;
+/* 标题美化 - VitePress 原生 callout 标题 */
+.vp-doc .custom-block .custom-block-title {
+  display: flex;
   align-items: center;
   gap: var(--vp-space-8);
-  font-weight: 600;
-  font-size: 0.9em;
+  font-weight: 700;
+  font-size: 0.95em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: var(--vp-space-8);
+  letter-spacing: 0.8px;
+  margin-bottom: var(--vp-space-12);
+  padding-bottom: var(--vp-space-8);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  padding: var(--vp-space-8) var(--vp-space-12);
+  margin: calc(-1 * var(--vp-space-16)) calc(-1 * var(--vp-space-16)) var(--vp-space-12);
+  border-radius: var(--vp-border-radius-medium) var(--vp-border-radius-medium) 0 0;
+}
+
+/* 标题图标增强 */
+.vp-doc .custom-block.info .custom-block-title::before,
+.vp-doc .custom-block.note .custom-block-title::before {
+  content: "ℹ️";
+  font-size: 1.2em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.vp-doc .custom-block.tip .custom-block-title::before {
+  content: "💡";
+  font-size: 1.2em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.vp-doc .custom-block.warning .custom-block-title::before {
+  content: "⚠️";
+  font-size: 1.2em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.vp-doc .custom-block.danger .custom-block-title::before,
+.vp-doc .custom-block.caution .custom-block-title::before {
+  content: "🚨";
+  font-size: 1.2em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.vp-doc .custom-block.important .custom-block-title::before {
+  content: "⭐";
+  font-size: 1.2em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* 兜底方案：普通 blockquote 标题美化 */
+.vp-doc blockquote p:first-child strong:first-child {
+  display: flex;
+  align-items: center;
+  gap: var(--vp-space-8);
+  font-weight: 700;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: var(--vp-space-12);
+  padding-bottom: var(--vp-space-8);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  padding: var(--vp-space-8) var(--vp-space-12);
+  margin: calc(-1 * var(--vp-space-16)) calc(-1 * var(--vp-space-16)) var(--vp-space-12);
+  border-radius: var(--vp-border-radius-medium) var(--vp-border-radius-medium) 0 0;
+}
+
+/* 为 NOTE 添加图标 */
+.vp-doc blockquote p:first-child strong:first-child::before {
+  content: "ℹ️";
+  font-size: 1.2em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 /* 鼠标悬停效果 - VitePress 原生 callouts */
@@ -132,12 +210,65 @@
   transform: translateX(-100%);
   transition: transform var(--vp-animation-duration-slow) var(--vp-animation-easing);
   pointer-events: none;
+  z-index: 1;
 }
 
 @media (hover: hover) {
   .vp-doc .custom-block:hover::before,
   .vp-doc blockquote:hover::before {
     transform: translateX(100%);
+  }
+}
+
+/* 添加渐变边框效果 */
+.vp-doc .custom-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.2), 
+    transparent 30%, 
+    transparent 70%, 
+    rgba(255, 255, 255, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: subtract;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: subtract;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 内容层级管理 */
+.vp-doc .custom-block .custom-block-title,
+.vp-doc .custom-block > * {
+  position: relative;
+  z-index: 3;
+}
+
+/* 列表项美化 */
+.vp-doc .custom-block ul li,
+.vp-doc blockquote ul li {
+  position: relative;
+  padding-left: var(--vp-space-4);
+  margin-bottom: var(--vp-space-8);
+  transition: transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+.vp-doc .custom-block ul li::marker,
+.vp-doc blockquote ul li::marker {
+  color: var(--vp-c-brand-1);
+  font-size: 1.1em;
+}
+
+@media (hover: hover) {
+  .vp-doc .custom-block ul li:hover,
+  .vp-doc blockquote ul li:hover {
+    transform: translateX(4px);
   }
 }
 
