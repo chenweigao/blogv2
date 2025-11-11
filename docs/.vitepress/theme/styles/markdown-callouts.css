@@ -72,17 +72,25 @@
 @media (hover: hover) {
   .vp-doc .custom-block:hover,
   .vp-doc blockquote:hover {
-    transform: rotate(-0.3deg) translateY(var(--callout-hover-lift));
+    box-shadow: 
+      inset 0 0 0 var(--callout-border-width) rgba(var(--current-color), 0.8),
+      var(--callout-shadow-hover) rgba(var(--current-color), 0.25);
     animation: handDrawnWiggle 0.6s ease-in-out;
   }
 }
 
-/* 手绘摆动动画 */
+/* 手绘摆动动画 - 仅使用阴影和颜色变化，不使用变形 */
 @keyframes handDrawnWiggle {
-  0%, 100% { transform: rotate(-0.3deg) translateY(var(--callout-hover-lift)); }
-  25% { transform: rotate(0.1deg) translateY(var(--callout-hover-lift)); }
-  50% { transform: rotate(-0.2deg) translateY(var(--callout-hover-lift)); }
-  75% { transform: rotate(0.3deg) translateY(var(--callout-hover-lift)); }
+  0%, 100% { 
+    box-shadow: 
+      inset 0 0 0 var(--callout-border-width) rgba(var(--current-color), 0.8),
+      var(--callout-shadow-hover) rgba(var(--current-color), 0.25);
+  }
+  50% { 
+    box-shadow: 
+      inset 0 0 0 var(--callout-border-width) rgba(var(--current-color), 0.9),
+      var(--callout-shadow-hover) rgba(var(--current-color), 0.3);
+  }
 }
 
 /* VitePress 原生 callout 特定样式 */
@@ -308,7 +316,9 @@
 /* 点击效果 - 手绘压缩 */
 .vp-doc .custom-block:active,
 .vp-doc blockquote:active {
-  transform: rotate(0deg) scale(var(--callout-active-scale));
+  box-shadow: 
+    inset 0 0 0 var(--callout-border-width) rgba(var(--current-color), 0.9),
+    0 1px 4px rgba(var(--current-color), 0.2);
   transition-duration: 0.1s;
 }
 
@@ -351,7 +361,9 @@
   
   .vp-doc .custom-block:hover,
   .vp-doc blockquote:hover {
-    transform: rotate(0.2deg);
+    box-shadow: 
+      inset 0 0 0 var(--callout-border-width) rgba(var(--current-color), 0.8),
+      var(--callout-shadow-base) rgba(var(--current-color), 0.2);
   }
 }
 
