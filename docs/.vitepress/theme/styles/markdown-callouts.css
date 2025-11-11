@@ -533,3 +533,159 @@
   transform: rotate(10deg);
   color: rgba(var(--current-color), 0.6);
 }
+
+/* ===================================================================
+   11. 手绘风格表格
+   =================================================================== */
+
+/* 手绘风格表格容器 */
+.vp-doc table {
+  display: table !important;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: var(--vp-space-16) 0;
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif;
+  line-height: 1.6;
+  
+  /* 手绘纸张质感背景 */
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(120, 119, 108, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+  
+  /* 手绘边框效果 */
+  border: none;
+  box-shadow: 
+    inset 0 0 0 2px rgba(120, 119, 108, 0.3),
+    2px 4px 12px rgba(120, 119, 108, 0.15);
+  
+  /* 手绘边框路径 */
+  clip-path: polygon(
+    1% 2%, 3% 0%, 97% 1%, 99% 3%, 98% 25%, 100% 27%, 99% 50%, 97% 52%, 
+    99% 75%, 100% 77%, 98% 97%, 96% 99%, 3% 98%, 1% 96%, 2% 75%, 0% 73%, 
+    1% 50%, 3% 48%, 1% 25%, 0% 23%
+  );
+  
+  /* 手绘不规则圆角 */
+  border-radius: 12px 18px 15px 14px;
+  
+  /* 轻微倾斜增加手绘感 */
+  transform: rotate(0.1deg);
+  
+  /* 性能优化 */
+  will-change: transform;
+}
+
+/* 手绘表格悬停效果 */
+@media (hover: hover) {
+  .vp-doc table:hover {
+    box-shadow: 
+      inset 0 0 0 2px rgba(120, 119, 108, 0.5),
+      4px 8px 20px rgba(120, 119, 108, 0.25);
+    animation: tableWiggle 0.6s ease-in-out;
+  }
+}
+
+/* 手绘表格动画 */
+@keyframes tableWiggle {
+  0%, 100% { 
+    box-shadow: 
+      inset 0 0 0 2px rgba(120, 119, 108, 0.5),
+      4px 8px 20px rgba(120, 119, 108, 0.25);
+  }
+  50% { 
+    box-shadow: 
+      inset 0 0 0 2px rgba(120, 119, 108, 0.6),
+      4px 8px 20px rgba(120, 119, 108, 0.3);
+  }
+}
+
+/* 手绘风格表头 */
+.vp-doc th {
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(100, 149, 237, 0.15) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 80%, rgba(100, 149, 237, 0.1) 0%, transparent 70%),
+    rgba(100, 149, 237, 0.08);
+  color: #4169E1;
+  font-weight: 600;
+  padding: var(--vp-space-12) var(--vp-space-16);
+  text-align: left;
+  border: none;
+  position: relative;
+  
+  /* 手绘下划线效果 */
+  border-bottom: 2px solid rgba(100, 149, 237, 0.4);
+  
+  /* 手写字体 */
+  font-family: 'Kalam', 'Comic Sans MS', cursive, sans-serif;
+  
+  /* 轻微倾斜 */
+  transform: rotate(-0.2deg);
+}
+
+/* 手绘表头悬停效果 */
+.vp-doc th:hover {
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(100, 149, 237, 0.25) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 80%, rgba(100, 149, 237, 0.2) 0%, transparent 70%),
+    rgba(100, 149, 237, 0.15);
+  color: #191970;
+}
+
+/* 手绘风格表格单元格 */
+.vp-doc td {
+  padding: var(--vp-space-12) var(--vp-space-16);
+  border: none;
+  border-top: 1px dashed rgba(120, 119, 108, 0.3);
+  position: relative;
+  transition: background-color 0.3s ease;
+  
+  /* 手写字体 */
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif;
+}
+
+/* 手绘风格斑马纹 */
+.vp-doc tbody tr:nth-child(odd) td {
+  background-color: rgba(120, 119, 108, 0.03);
+}
+
+/* 手绘风格行悬停效果 */
+.vp-doc tbody tr:hover td {
+  background-color: rgba(100, 149, 237, 0.08);
+}
+
+/* 手绘风格表格响应式处理 */
+@media (max-width: 768px) {
+  .vp-doc table {
+    font-size: 0.875rem;
+    border-radius: 8px 12px 10px 9px;
+    transform: rotate(0.05deg);
+  }
+  
+  .vp-doc th,
+  .vp-doc td {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  /* 移动端简化手绘边框 */
+  .vp-doc table {
+    clip-path: polygon(
+      2% 1%, 98% 2%, 99% 50%, 98% 98%, 2% 99%, 1% 50%
+    );
+  }
+}
+
+/* 减少动画以提升性能 */
+@media (prefers-reduced-motion: reduce) {
+  .vp-doc table,
+  .vp-doc table:hover {
+    animation: none;
+    transition: none;
+  }
+  
+  .vp-doc table:hover {
+    box-shadow: 
+      inset 0 0 0 2px rgba(120, 119, 108, 0.5),
+      2px 4px 12px rgba(120, 119, 108, 0.2);
+  }
+}
