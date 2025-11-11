@@ -1,43 +1,44 @@
 /* ===================================================================
-   Markdown Callouts - 重构版本
-   模块化设计 + CSS 自定义属性 + 性能优化
+   Markdown Callouts - 手绘风格版本
+   温馨亲和 + 手绘质感 + 不规则边框
    =================================================================== */
 
 /* ===================================================================
-   1. CSS 自定义属性定义
+   1. CSS 自定义属性定义 - 手绘风格
    =================================================================== */
 :root {
-  /* 基础颜色调色板 */
-  --callout-info-color: 59, 130, 246;
-  --callout-tip-color: 16, 185, 129;
-  --callout-warning-color: 245, 158, 11;
-  --callout-danger-color: 239, 68, 68;
-  --callout-important-color: 139, 92, 246;
+  /* 手绘风格颜色调色板 - 柔和色调 */
+  --callout-info-color: 100, 149, 237;     /* 矢车菊蓝 */
+  --callout-tip-color: 60, 179, 113;       /* 中海绿 */
+  --callout-warning-color: 255, 165, 0;    /* 橙色 */
+  --callout-danger-color: 220, 20, 60;     /* 深红 */
+  --callout-important-color: 147, 112, 219; /* 中兰花紫 */
   
-  /* 基础尺寸 */
-  --callout-border-width: 4px;
-  --callout-border-radius: var(--vp-border-radius-medium);
-  --callout-padding: var(--vp-space-16);
-  --callout-margin: var(--vp-space-20) 0;
-  --callout-title-gap: var(--vp-space-8);
+  /* 手绘风格尺寸 */
+  --callout-border-width: 3px;
+  --callout-border-radius: 15px 25px 20px 18px; /* 不规则圆角 */
+  --callout-padding: var(--vp-space-20);
+  --callout-margin: var(--vp-space-24) 0;
+  --callout-title-gap: var(--vp-space-12);
   
-  /* 动画参数 */
-  --callout-transition: all var(--vp-animation-duration-normal) var(--vp-animation-easing);
-  --callout-hover-lift: -2px;
-  --callout-active-scale: 0.98;
+  /* 手绘动画参数 */
+  --callout-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --callout-hover-lift: -3px;
+  --callout-active-scale: 0.97;
+  --callout-wiggle: 1deg;
   
-  /* 阴影层级 */
-  --callout-shadow-base: 0 2px 8px;
-  --callout-shadow-hover: 0 8px 25px;
+  /* 手绘阴影 */
+  --callout-shadow-base: 2px 4px 12px;
+  --callout-shadow-hover: 4px 8px 20px;
   
-  /* 透明度 */
-  --callout-bg-opacity: 0.1;
-  --callout-title-opacity-start: 0.25;
-  --callout-title-opacity-end: 0.15;
+  /* 手绘透明度 */
+  --callout-bg-opacity: 0.08;
+  --callout-title-opacity: 0.12;
+  --callout-paper-texture: 0.03;
 }
 
 /* ===================================================================
-   2. 基础样式模块
+   2. 基础样式模块 - 手绘质感
    =================================================================== */
 .vp-doc .custom-block,
 .vp-doc blockquote {
@@ -45,10 +46,43 @@
   margin: var(--callout-margin);
   border-radius: var(--callout-border-radius);
   transition: var(--callout-transition);
-  overflow: hidden;
+  overflow: visible; /* 允许手绘边框溢出 */
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  transform: rotate(0.2deg); /* 轻微倾斜，增加手绘感 */
+  
+  /* 手绘纸张质感背景 */
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 108, var(--callout-paper-texture)) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, var(--callout-paper-texture)) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(120, 119, 108, var(--callout-paper-texture)) 0%, transparent 50%);
+  
+  /* 手绘边框效果 */
+  border: none;
+  box-shadow: 
+    inset 0 0 0 var(--callout-border-width) rgba(var(--current-color), 0.6),
+    var(--callout-shadow-base) rgba(var(--current-color), 0.15);
+  
+  /* 手绘边框路径 */
+  clip-path: polygon(
+    2% 0%, 98% 1%, 99% 25%, 97% 50%, 99% 75%, 98% 99%, 2% 98%, 1% 75%, 3% 50%, 1% 25%
+  );
+}
+
+/* 悬停时的手绘摆动效果 */
+@media (hover: hover) {
+  .vp-doc .custom-block:hover,
+  .vp-doc blockquote:hover {
+    transform: rotate(-0.3deg) translateY(var(--callout-hover-lift));
+    animation: handDrawnWiggle 0.6s ease-in-out;
+  }
+}
+
+/* 手绘摆动动画 */
+@keyframes handDrawnWiggle {
+  0%, 100% { transform: rotate(-0.3deg) translateY(var(--callout-hover-lift)); }
+  25% { transform: rotate(0.1deg) translateY(var(--callout-hover-lift)); }
+  50% { transform: rotate(-0.2deg) translateY(var(--callout-hover-lift)); }
+  75% { transform: rotate(0.3deg) translateY(var(--callout-hover-lift)); }
 }
 
 /* VitePress 原生 callout 特定样式 */
@@ -58,6 +92,8 @@
 
 .vp-doc .custom-block > :not(.custom-block-title) {
   padding: 0 var(--callout-padding) var(--callout-padding);
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif; /* 手写字体 */
+  line-height: 1.7; /* 增加行高，更像手写 */
 }
 
 .vp-doc .custom-block > p:last-child,
@@ -69,186 +105,235 @@
 /* 兜底方案 blockquote 样式 */
 .vp-doc blockquote {
   padding: var(--callout-padding);
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif;
+  line-height: 1.7;
 }
 
 /* ===================================================================
-   3. 主题颜色模块 - 使用 CSS 自定义属性
+   3. 主题颜色模块 - 手绘水彩效果
    =================================================================== */
 .vp-doc .custom-block.info,
 .vp-doc .custom-block.note,
 .vp-doc blockquote {
   --current-color: var(--callout-info-color);
-  border-left: var(--callout-border-width) solid rgb(var(--current-color));
-  background: rgba(var(--current-color), var(--callout-bg-opacity));
-  box-shadow: var(--callout-shadow-base) rgba(var(--current-color), 0.1);
+  background: 
+    radial-gradient(ellipse at top left, rgba(var(--current-color), var(--callout-bg-opacity)) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.7)) 0%, transparent 50%),
+    rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.5));
 }
 
 .vp-doc .custom-block.tip {
   --current-color: var(--callout-tip-color);
-  border-left: var(--callout-border-width) solid rgb(var(--current-color));
-  background: rgba(var(--current-color), var(--callout-bg-opacity));
-  box-shadow: var(--callout-shadow-base) rgba(var(--current-color), 0.1);
+  background: 
+    radial-gradient(ellipse at top left, rgba(var(--current-color), var(--callout-bg-opacity)) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.7)) 0%, transparent 50%),
+    rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.5));
 }
 
 .vp-doc .custom-block.warning {
   --current-color: var(--callout-warning-color);
-  border-left: var(--callout-border-width) solid rgb(var(--current-color));
-  background: rgba(var(--current-color), var(--callout-bg-opacity));
-  box-shadow: var(--callout-shadow-base) rgba(var(--current-color), 0.1);
+  background: 
+    radial-gradient(ellipse at top left, rgba(var(--current-color), var(--callout-bg-opacity)) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.7)) 0%, transparent 50%),
+    rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.5));
 }
 
 .vp-doc .custom-block.danger,
 .vp-doc .custom-block.caution {
   --current-color: var(--callout-danger-color);
-  border-left: var(--callout-border-width) solid rgb(var(--current-color));
-  background: rgba(var(--current-color), var(--callout-bg-opacity));
-  box-shadow: var(--callout-shadow-base) rgba(var(--current-color), 0.1);
+  background: 
+    radial-gradient(ellipse at top left, rgba(var(--current-color), var(--callout-bg-opacity)) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.7)) 0%, transparent 50%),
+    rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.5));
 }
 
 .vp-doc .custom-block.important {
   --current-color: var(--callout-important-color);
-  border-left: var(--callout-border-width) solid rgb(var(--current-color));
-  background: rgba(var(--current-color), var(--callout-bg-opacity));
-  box-shadow: var(--callout-shadow-base) rgba(var(--current-color), 0.1);
+  background: 
+    radial-gradient(ellipse at top left, rgba(var(--current-color), var(--callout-bg-opacity)) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.7)) 0%, transparent 50%),
+    rgba(var(--current-color), calc(var(--callout-bg-opacity) * 0.5));
 }
 
 /* ===================================================================
-   4. 标题样式模块
+   4. 标题样式模块 - 手写风格
    =================================================================== */
 .vp-doc .custom-block .custom-block-title,
 .vp-doc blockquote p:first-child strong:first-child {
   display: flex;
   align-items: center;
   gap: var(--callout-title-gap);
-  font-weight: 700;
-  font-size: 0.95em;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: var(--vp-space-12);
-  padding: var(--vp-space-12) var(--callout-padding);
-  margin: calc(-1 * var(--callout-padding)) calc(-1 * var(--callout-padding)) var(--vp-space-12);
-  border-radius: var(--callout-border-radius) var(--callout-border-radius) 0 0;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  background: linear-gradient(135deg, 
-    rgba(var(--current-color), var(--callout-title-opacity-start)), 
-    rgba(var(--current-color), var(--callout-title-opacity-end))
-  );
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 
-              0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  font-size: 1.1em;
+  text-transform: none; /* 移除大写，更自然 */
+  letter-spacing: 0.2px;
+  margin-bottom: var(--vp-space-16);
+  padding: var(--vp-space-16) var(--callout-padding);
+  margin: calc(-1 * var(--callout-padding)) calc(-1 * var(--callout-padding)) var(--vp-space-16);
+  border-radius: 20px 25px 15px 18px; /* 不规则圆角 */
+  
+  /* 手绘标题背景 */
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(var(--current-color), var(--callout-title-opacity)) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 80%, rgba(var(--current-color), calc(var(--callout-title-opacity) * 0.8)) 0%, transparent 70%),
+    rgba(var(--current-color), calc(var(--callout-title-opacity) * 0.6));
+  
+  /* 手绘下划线效果 */
+  border-bottom: none;
+  position: relative;
+  
+  /* 手写字体 */
+  font-family: 'Kalam', 'Comic Sans MS', 'Marker Felt', cursive, sans-serif;
+  
+  /* 轻微倾斜 */
+  transform: rotate(-0.5deg);
 }
 
-/* 标题颜色 */
+/* 手绘下划线 */
+.vp-doc .custom-block .custom-block-title::after,
+.vp-doc blockquote p:first-child strong:first-child::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 10%;
+  right: 8%;
+  height: 2px;
+  background: rgba(var(--current-color), 0.4);
+  border-radius: 2px;
+  transform: rotate(0.3deg);
+  
+  /* 手绘线条效果 */
+  clip-path: polygon(
+    0% 20%, 15% 80%, 25% 40%, 40% 90%, 55% 30%, 70% 70%, 85% 10%, 100% 60%, 100% 100%, 0% 100%
+  );
+}
+
+/* 手绘风格标题颜色 */
 .vp-doc .custom-block.info .custom-block-title,
 .vp-doc .custom-block.note .custom-block-title,
 .vp-doc blockquote p:first-child strong:first-child {
-  color: var(--vp-c-brand-darker);
+  color: #4169E1; /* 皇家蓝 */
+  text-shadow: 1px 1px 2px rgba(65, 105, 225, 0.3);
 }
 
 .vp-doc .custom-block.tip .custom-block-title {
-  color: #047857;
+  color: #228B22; /* 森林绿 */
+  text-shadow: 1px 1px 2px rgba(34, 139, 34, 0.3);
 }
 
 .vp-doc .custom-block.warning .custom-block-title {
-  color: #92400e;
+  color: #FF8C00; /* 深橙色 */
+  text-shadow: 1px 1px 2px rgba(255, 140, 0, 0.3);
 }
 
 .vp-doc .custom-block.danger .custom-block-title,
 .vp-doc .custom-block.caution .custom-block-title {
-  color: #b91c1c;
+  color: #DC143C; /* 深红色 */
+  text-shadow: 1px 1px 2px rgba(220, 20, 60, 0.3);
 }
 
 .vp-doc .custom-block.important .custom-block-title {
-  color: #6d28d9;
+  color: #9370DB; /* 中紫色 */
+  text-shadow: 1px 1px 2px rgba(147, 112, 219, 0.3);
 }
 
 /* ===================================================================
-   5. 图标系统模块
+   5. 图标系统模块 - 手绘涂鸦风格
    =================================================================== */
 .vp-doc .custom-block .custom-block-title::before,
 .vp-doc blockquote p:first-child strong:first-child::before {
-  font-size: 1.2em;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  font-size: 1.4em;
+  filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.2));
+  transform: rotate(-5deg);
+  display: inline-block;
+  animation: doodleFloat 3s ease-in-out infinite;
 }
 
+/* 手绘图标浮动动画 */
+@keyframes doodleFloat {
+  0%, 100% { transform: rotate(-5deg) translateY(0px); }
+  50% { transform: rotate(-3deg) translateY(-2px); }
+}
+
+/* 手绘风格图标 */
 .vp-doc .custom-block.info .custom-block-title::before,
 .vp-doc .custom-block.note .custom-block-title::before,
 .vp-doc blockquote p:first-child strong:first-child::before {
-  content: "ℹ️";
+  content: "📝"; /* 手绘笔记本 */
 }
 
 .vp-doc .custom-block.tip .custom-block-title::before {
-  content: "💡";
+  content: "🌟"; /* 手绘星星 */
 }
 
 .vp-doc .custom-block.warning .custom-block-title::before {
-  content: "⚠️";
+  content: "⚡"; /* 手绘闪电 */
 }
 
 .vp-doc .custom-block.danger .custom-block-title::before,
 .vp-doc .custom-block.caution .custom-block-title::before {
-  content: "🚨";
+  content: "🔥"; /* 手绘火焰 */
 }
 
 .vp-doc .custom-block.important .custom-block-title::before {
-  content: "⭐";
+  content: "💎"; /* 手绘钻石 */
 }
 
 /* ===================================================================
-   6. 交互效果模块
+   6. 交互效果模块 - 手绘摆动效果
    =================================================================== */
 
-/* 光泽动画效果 */
+/* 手绘纸张质感 */
 .vp-doc .custom-block::before,
 .vp-doc blockquote::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-  transform: translateX(-100%);
-  transition: transform var(--vp-animation-duration-slow) var(--vp-animation-easing);
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(var(--current-color), 0.02) 2px,
+      rgba(var(--current-color), 0.02) 4px
+    );
+  border-radius: inherit;
   pointer-events: none;
-  z-index: 1;
+  z-index: -1;
 }
 
-/* 悬停效果 */
-@media (hover: hover) {
-  .vp-doc .custom-block:hover,
-  .vp-doc blockquote:hover {
-    transform: translateY(var(--callout-hover-lift));
-    box-shadow: var(--callout-shadow-hover) rgba(var(--current-color), 0.25);
-    border-left-color: rgba(var(--current-color), 0.8);
-  }
-  
-  .vp-doc .custom-block:hover::before,
-  .vp-doc blockquote:hover::before {
-    transform: translateX(100%);
-  }
-}
-
-/* 点击效果 */
+/* 点击效果 - 手绘压缩 */
 .vp-doc .custom-block:active,
 .vp-doc blockquote:active {
-  transform: translateY(0) scale(var(--callout-active-scale));
-  transition-duration: var(--vp-animation-duration-fast);
+  transform: rotate(0deg) scale(var(--callout-active-scale));
+  transition-duration: 0.1s;
 }
 
 /* ===================================================================
-   7. 响应式适配模块
+   7. 响应式适配模块 - 手绘风格适配
    =================================================================== */
 @media (max-width: 768px) {
   :root {
-    --callout-padding: var(--vp-space-12);
-    --callout-margin: var(--vp-space-16) 0;
-    --callout-hover-lift: -1px;
+    --callout-padding: var(--vp-space-16);
+    --callout-margin: var(--vp-space-20) 0;
+    --callout-hover-lift: -2px;
+    --callout-border-radius: 12px 18px 15px 14px; /* 移动端较小的不规则圆角 */
   }
   
   .vp-doc .custom-block .custom-block-title,
   .vp-doc blockquote p:first-child strong:first-child {
-    font-size: 0.9em;
-    letter-spacing: 0.6px;
+    font-size: 1em;
+    letter-spacing: 0.1px;
+    padding: var(--vp-space-12) var(--callout-padding);
+  }
+  
+  /* 移动端减少倾斜角度 */
+  .vp-doc .custom-block,
+  .vp-doc blockquote {
+    transform: rotate(0.1deg);
   }
 }
 
@@ -257,41 +342,41 @@
   .vp-doc .custom-block,
   .vp-doc blockquote,
   .vp-doc .custom-block::before,
-  .vp-doc blockquote::before {
+  .vp-doc blockquote::before,
+  .vp-doc .custom-block .custom-block-title::before,
+  .vp-doc blockquote p:first-child strong:first-child::before {
+    animation: none;
     transition: none;
   }
   
   .vp-doc .custom-block:hover,
   .vp-doc blockquote:hover {
-    transform: none;
+    transform: rotate(0.2deg);
   }
 }
 
 /* ===================================================================
-   8. 高级视觉效果模块
+   8. 手绘风格特殊效果模块
    =================================================================== */
 
-/* 渐变边框效果 */
+/* 手绘涂鸦装饰 */
 .vp-doc .custom-block::after {
-  content: '';
+  content: '✨';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.2), 
-    transparent 30%, 
-    transparent 70%, 
-    rgba(255, 255, 255, 0.1));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
+  top: 8px;
+  right: 12px;
+  font-size: 0.8em;
+  opacity: 0.3;
+  transform: rotate(15deg);
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
+  animation: sparkle 4s ease-in-out infinite;
+}
+
+/* 闪烁装饰动画 */
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: rotate(15deg) scale(1); }
+  50% { opacity: 0.6; transform: rotate(-10deg) scale(1.1); }
 }
 
 /* 内容层级管理 */
@@ -301,164 +386,138 @@
   z-index: 3;
 }
 
-/* 可访问性增强 */
+/* 手绘风格焦点效果 */
 .vp-doc .custom-block:focus-visible,
 .vp-doc blockquote:focus-visible {
-  outline: 2px solid rgba(var(--current-color), 0.6);
-  outline-offset: 2px;
+  outline: 3px dashed rgba(var(--current-color), 0.8);
+  outline-offset: 3px;
+  animation: focusPulse 1s ease-in-out infinite alternate;
 }
 
-/* 高对比度模式支持 */
+/* 焦点脉动动画 */
+@keyframes focusPulse {
+  from { outline-color: rgba(var(--current-color), 0.8); }
+  to { outline-color: rgba(var(--current-color), 0.4); }
+}
+
+/* 高对比度模式 - 手绘风格适配 */
 @media (prefers-contrast: high) {
   .vp-doc .custom-block,
   .vp-doc blockquote {
-    border-left-width: 6px;
-    background: rgba(var(--current-color), 0.15);
+    box-shadow: 
+      inset 0 0 0 6px rgba(var(--current-color), 0.8),
+      var(--callout-shadow-base) rgba(var(--current-color), 0.3);
+    background: rgba(var(--current-color), 0.2);
   }
   
   .vp-doc .custom-block .custom-block-title,
   .vp-doc blockquote p:first-child strong:first-child {
-    background: rgba(var(--current-color), 0.3);
+    background: rgba(var(--current-color), 0.4);
+    border: 2px solid rgba(var(--current-color), 0.8);
   }
 }
 
-/* 列表项美化 */
+/* 手绘风格列表项 */
 .vp-doc .custom-block ul li,
 .vp-doc blockquote ul li {
   position: relative;
-  padding-left: var(--vp-space-4);
-  margin-bottom: var(--vp-space-8);
-  transition: transform var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  padding-left: var(--vp-space-8);
+  margin-bottom: var(--vp-space-12);
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif;
+  line-height: 1.6;
+  transform: rotate(0.1deg);
+  transition: all 0.3s ease;
 }
 
+/* 手绘风格列表标记 */
 .vp-doc .custom-block ul li::marker,
 .vp-doc blockquote ul li::marker {
-  color: var(--vp-c-brand-1);
-  font-size: 1.1em;
+  content: '🖍️ ';
+  font-size: 0.9em;
 }
 
+/* 手绘列表项悬停效果 */
 @media (hover: hover) {
   .vp-doc .custom-block ul li:hover,
   .vp-doc blockquote ul li:hover {
-    transform: translateX(4px);
+    transform: rotate(-0.2deg) translateX(6px);
+    color: rgba(var(--current-color), 1);
   }
 }
 
-/* 支持其他常见的 callout 类型 */
-.vp-doc blockquote:has(p:first-child strong:first-child:contains("WARNING")) {
-  border-left-color: #f59e0b;
-  background: rgba(245, 158, 11, 0.1);
-}
-
-.vp-doc blockquote:has(p:first-child strong:first-child:contains("WARNING")) p:first-child strong:first-child::before {
-  content: "⚠️";
-}
-
-@media (hover: hover) {
-  .vp-doc blockquote:has(p:first-child strong:first-child:contains("WARNING")):hover {
-    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
-    border-left-color: #d97706;
-  }
-}
-
-.vp-doc blockquote:has(p:first-child strong:first-child:contains("TIP")) {
-  border-left-color: #10b981;
-  background: rgba(16, 185, 129, 0.1);
-}
-
-.vp-doc blockquote:has(p:first-child strong:first-child:contains("TIP")) p:first-child strong:first-child::before {
-  content: "💡";
-}
-
-@media (hover: hover) {
-  .vp-doc blockquote:has(p:first-child strong:first-child:contains("TIP")):hover {
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
-    border-left-color: #059669;
-  }
-}
-
-.vp-doc blockquote:has(p:first-child strong:first-child:contains("DANGER")) {
-  border-left-color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.vp-doc blockquote:has(p:first-child strong:first-child:contains("DANGER")) p:first-child strong:first-child::before {
-  content: "🚨";
-}
-
-@media (hover: hover) {
-  .vp-doc blockquote:has(p:first-child strong:first-child:contains("DANGER")):hover {
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
-    border-left-color: #dc2626;
-  }
-}
-
-/* 暗色模式适配 */
+/* ===================================================================
+   9. 手绘风格暗色模式适配
+   =================================================================== */
 .dark .vp-doc .custom-block,
 .dark .vp-doc blockquote {
-  background: var(--vp-c-bg-mute);
-  border-left-color: var(--vp-c-divider-light);
+  /* 暗色模式下的纸张质感 */
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(200, 200, 200, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.01) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(180, 180, 180, 0.02) 0%, transparent 50%);
 }
 
 .dark .vp-doc .custom-block.info,
 .dark .vp-doc .custom-block.note {
-  background: rgba(59, 130, 246, 0.15);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  background: 
+    radial-gradient(ellipse at top left, rgba(100, 149, 237, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(100, 149, 237, 0.08) 0%, transparent 50%),
+    rgba(100, 149, 237, 0.06);
 }
 
 .dark .vp-doc .custom-block.tip {
-  background: rgba(16, 185, 129, 0.15);
+  background: 
+    radial-gradient(ellipse at top left, rgba(60, 179, 113, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(60, 179, 113, 0.08) 0%, transparent 50%),
+    rgba(60, 179, 113, 0.06);
 }
 
 .dark .vp-doc .custom-block.warning {
-  background: rgba(245, 158, 11, 0.15);
+  background: 
+    radial-gradient(ellipse at top left, rgba(255, 165, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(255, 165, 0, 0.08) 0%, transparent 50%),
+    rgba(255, 165, 0, 0.06);
 }
 
 .dark .vp-doc .custom-block.danger,
 .dark .vp-doc .custom-block.caution {
-  background: rgba(239, 68, 68, 0.15);
+  background: 
+    radial-gradient(ellipse at top left, rgba(220, 20, 60, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(220, 20, 60, 0.08) 0%, transparent 50%),
+    rgba(220, 20, 60, 0.06);
 }
 
 .dark .vp-doc .custom-block.important {
-  background: rgba(139, 92, 246, 0.15);
+  background: 
+    radial-gradient(ellipse at top left, rgba(147, 112, 219, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(147, 112, 219, 0.08) 0%, transparent 50%),
+    rgba(147, 112, 219, 0.06);
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .vp-doc .custom-block,
-  .vp-doc blockquote {
-    margin: var(--vp-space-12) 0;
-    padding: var(--vp-space-12);
-  }
-  
-  /* 移动设备上减少悬停效果的强度 */
-  @media (hover: hover) {
-    .vp-doc .custom-block:hover,
-    .vp-doc blockquote:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-  }
-}
-
-/* 无障碍支持 */
+/* ===================================================================
+   10. 手绘风格无障碍支持
+   =================================================================== */
 .vp-doc .custom-block:focus-within,
 .vp-doc blockquote:focus-within {
-  outline: 2px solid var(--vp-c-brand-1);
-  outline-offset: 2px;
+  outline: 3px dashed rgba(var(--current-color), 0.8);
+  outline-offset: 4px;
+  animation: focusWiggle 0.8s ease-in-out infinite alternate;
 }
 
-/* 减少动画的用户偏好支持 */
-@media (prefers-reduced-motion: reduce) {
-  .vp-doc .custom-block,
-  .vp-doc .custom-block::before,
-  .vp-doc blockquote,
-  .vp-doc blockquote::before {
-    transition: none;
-  }
-  
-  .vp-doc .custom-block:hover,
-  .vp-doc blockquote:hover {
-    transform: none;
-  }
+/* 焦点摆动动画 */
+@keyframes focusWiggle {
+  from { outline-offset: 4px; }
+  to { outline-offset: 6px; }
+}
+
+/* 手绘风格最终装饰 */
+.vp-doc .custom-block p:last-child::after,
+.vp-doc blockquote p:last-child::after {
+  content: '~';
+  display: inline-block;
+  margin-left: 8px;
+  opacity: 0.4;
+  font-size: 1.2em;
+  transform: rotate(10deg);
+  color: rgba(var(--current-color), 0.6);
 }
