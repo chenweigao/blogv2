@@ -1,13 +1,83 @@
 import { defineConfig } from 'vitepress'
+import { generateSidebar } from 'vitepress-sidebar'
 import { writeTimelineData } from './utils/generateTimeline.js'
 import { writeGitHistoryData } from './utils/generateGitHistoryData.js'
 import { createGitHistoryAPI } from './utils/gitHistoryAPI.js'
-import { generateAndWriteSidebar } from './utils/generateSidebar.js'
-import { sidebar } from './config/sidebar/index.js'
 import markdownItMark from 'markdown-it-mark'
 import imageSizePlugin from './theme/utils/markdown-it-image-size.js'
 import { generateResponsiveImages } from './utils/generateResponsiveImages.js'
 import UnoCSS from 'unocss/vite'
+
+// 通用侧边栏配置选项
+const commonSidebarOptions = {
+  // 排除不需要生成侧边栏的文件
+  excludeFiles: ['index.md'],
+  // 使用文件的 frontmatter title 作为侧边栏标题
+  useTitleFromFileHeading: true,
+  useTitleFromFrontmatter: true,
+  // 按文件名排序
+  sortMenusByFrontmatterOrder: true,
+  sortMenusOrderByDescending: false,
+  // 折叠配置
+  collapsed: true,
+  collapseDepth: 2,
+  // 使用文件夹名作为组标题
+  useFolderTitleFromIndexFile: true,
+  useFolderLinkFromIndexFile: true,
+  // 首字母大写
+  capitalizeFirst: true,
+  // 连字符转空格
+  hyphenToSpace: true,
+  // 下划线转空格
+  underscoreToSpace: true,
+}
+
+// 使用 vitepress-sidebar 自动生成多侧边栏配置
+// 每个导航 tab 对应独立的侧边栏
+const vitepressSidebarOptions = [
+  {
+    documentRootPath: '/docs',
+    scanStartPath: 'artificial-intelligence',
+    resolvePath: '/artificial-intelligence/',
+    ...commonSidebarOptions,
+  },
+  {
+    documentRootPath: '/docs',
+    scanStartPath: 'computer-systems',
+    resolvePath: '/computer-systems/',
+    ...commonSidebarOptions,
+  },
+  {
+    documentRootPath: '/docs',
+    scanStartPath: 'research-projects',
+    resolvePath: '/research-projects/',
+    ...commonSidebarOptions,
+  },
+  {
+    documentRootPath: '/docs',
+    scanStartPath: 'algorithms',
+    resolvePath: '/algorithms/',
+    ...commonSidebarOptions,
+  },
+  {
+    documentRootPath: '/docs',
+    scanStartPath: 'programming-languages',
+    resolvePath: '/programming-languages/',
+    ...commonSidebarOptions,
+  },
+  {
+    documentRootPath: '/docs',
+    scanStartPath: 'development-tools',
+    resolvePath: '/development-tools/',
+    ...commonSidebarOptions,
+  },
+  {
+    documentRootPath: '/docs',
+    scanStartPath: 'copilot',
+    resolvePath: '/copilot/',
+    ...commonSidebarOptions,
+  },
+]
 
 export default defineConfig({
   title: 'Knowledge Wiki',
@@ -19,11 +89,8 @@ export default defineConfig({
   // 忽略死链接检查，避免构建失败
   ignoreDeadLinks: true,
 
-  // 构建钩子 - 在构建前生成 timeline 数据、git 历史记录、侧边栏配置和响应式图片
+  // 构建钩子 - 在构建前生成 timeline 数据、git 历史记录和响应式图片
   buildStart() {
-    console.log('Generating sidebar configuration...')
-    generateAndWriteSidebar()
-
     console.log('Generating timeline data...')
     writeTimelineData()
 
@@ -129,8 +196,8 @@ export default defineConfig({
       }
     ],
 
-    // 侧边栏配置 - 从外部文件导入
-    sidebar,
+    // 侧边栏配置 - 使用 vitepress-sidebar 自动生成
+    sidebar: generateSidebar(vitepressSidebarOptions),
 
     // 社交链接
     socialLinks: [
