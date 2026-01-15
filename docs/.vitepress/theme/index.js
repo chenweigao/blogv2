@@ -97,7 +97,7 @@ export default {
     // 创建代码块处理器
     const codeBlockHandler = createCodeBlockHandler(codeModalState)
     
-    // 使用 mermaid composable
+    // 使用自定义 mermaid composable
     const { setupMermaid } = useMermaid()
     
     // 延迟初始化 imageViewer：首张图片进入视口时再初始化
@@ -135,7 +135,7 @@ export default {
         // 初始化代码块点击事件
         codeBlockHandler.initCodeBlockClick()
 
-        // 初始化 mermaid
+        // 初始化自定义 mermaid
         await setupMermaid()
 
         // 修复：立即初始化图片查看插件，确保绑定点击事件
@@ -195,6 +195,8 @@ export default {
       watch(() => route.path, async () => {
         setTimeout(async () => {
           codeBlockHandler.initCodeBlockClick()
+          // 路由变化时重新初始化 mermaid 渲染器
+          initMermaidRenderer()
           await setupMermaid()
 
           // 修复：路由切换后立即初始化并记录失败原因

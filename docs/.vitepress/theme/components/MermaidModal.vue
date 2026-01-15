@@ -21,7 +21,7 @@
                 class="mermaid-action-btn" 
                 @click="zoomOut" 
                 title="缩小"
-                :disabled="zoomLevel <= 0.25"
+                :disabled="zoomLevel <= 0.1"
               >
                 <svg viewBox="0 0 24 24" width="18" height="18">
                   <path fill="currentColor" d="M19 13H5v-2h14v2z"/>
@@ -32,13 +32,13 @@
                 class="mermaid-action-btn" 
                 @click="zoomIn" 
                 title="放大"
-                :disabled="zoomLevel >= 3"
+                :disabled="zoomLevel >= 5"
               >
                 <svg viewBox="0 0 24 24" width="18" height="18">
                   <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                 </svg>
               </button>
-              <button class="mermaid-action-btn" @click="resetZoom" title="重置缩放">
+              <button class="mermaid-action-btn" @click="resetZoom" title="重置缩放 (250%)">
                 <svg viewBox="0 0 24 24" width="18" height="18">
                   <path fill="currentColor" d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
                 </svg>
@@ -49,11 +49,12 @@
                   <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
                 </svg>
               </button>
-              <!-- 复制源码 -->
+              <!-- 复制 Mermaid 代码 -->
               <button 
                 class="mermaid-action-btn" 
                 @click="copySource" 
-                :title="isCopied ? '已复制' : '复制源码'"
+                :title="isCopied ? '已复制!' : '复制 Mermaid 代码'"
+                :class="{ 'copied': isCopied }"
               >
                 <svg v-if="!isCopied" viewBox="0 0 24 24" width="18" height="18">
                   <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
@@ -92,7 +93,7 @@
           <!-- 底部提示 -->
           <div class="mermaid-modal-footer">
             <span class="mermaid-hint">
-              <kbd>滚轮</kbd> 缩放 · <kbd>拖拽</kbd> 平移 · <kbd>Esc</kbd> 关闭
+              <kbd>滚轮</kbd> 缩放 · <kbd>拖拽</kbd> 平移 · <kbd>Esc</kbd> 关闭 · <kbd>0</kbd> 重置
             </span>
           </div>
         </div>
@@ -117,6 +118,7 @@ const dragStartY = ref(0)
 const lastTranslateX = ref(0)
 const lastTranslateY = ref(0)
 const isCopied = ref(false)
+const initialZoom = ref(1) // 保存初始适配的缩放比例
 
 // refs
 const contentRef = ref(null)
@@ -136,26 +138,35 @@ const transformStyle = computed(() => ({
   cursor: isDragging.value ? 'grabbing' : 'grab'
 }))
 
+// 默认缩放比例
+const DEFAULT_ZOOM = 2.5
+
+// 重置为默认缩放
+const resetToDefault = () => {
+  zoomLevel.value = DEFAULT_ZOOM
+  translateX.value = 0
+  translateY.value = 0
+}
+
 // 缩放方法
 const zoomIn = () => {
-  zoomLevel.value = Math.min(zoomLevel.value + 0.25, 3)
+  zoomLevel.value = Math.min(zoomLevel.value + 0.25, 5)
 }
 
 const zoomOut = () => {
-  zoomLevel.value = Math.max(zoomLevel.value - 0.25, 0.25)
+  zoomLevel.value = Math.max(zoomLevel.value - 0.25, 0.1)
 }
 
+// 重置缩放
 const resetZoom = () => {
-  zoomLevel.value = 1
-  translateX.value = 0
-  translateY.value = 0
+  resetToDefault()
 }
 
 // 滚轮缩放
 const handleWheel = (event) => {
   event.preventDefault()
   const delta = event.deltaY > 0 ? -0.1 : 0.1
-  const newZoom = Math.max(0.25, Math.min(3, zoomLevel.value + delta))
+  const newZoom = Math.max(0.1, Math.min(5, zoomLevel.value + delta))
   zoomLevel.value = newZoom
 }
 
@@ -196,7 +207,7 @@ const downloadSvg = () => {
   URL.revokeObjectURL(url)
 }
 
-// 复制源码
+// 复制 Mermaid 源码
 const copySource = async () => {
   const source = currentSource.value
   if (!source) return
@@ -219,7 +230,9 @@ const closeModal = () => {
     mermaidModalState.data.value = { svg: '', source: '' }
   }
   // 重置状态
-  resetZoom()
+  zoomLevel.value = 1
+  translateX.value = 0
+  translateY.value = 0
   isCopied.value = false
 }
 
@@ -239,16 +252,17 @@ const handleKeydown = (event) => {
       zoomOut()
       break
     case '0':
-      resetZoom()
+      resetToDefault()
       break
   }
 }
 
-// 监听弹窗打开，重置状态
+// 监听弹窗打开，设置默认缩放
 watch(() => mermaidModalState?.visible?.value, (newVal) => {
   if (newVal) {
     nextTick(() => {
-      resetZoom()
+      // 设置默认 250% 缩放
+      resetToDefault()
     })
   }
 })
