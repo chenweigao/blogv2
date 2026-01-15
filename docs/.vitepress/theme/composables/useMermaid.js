@@ -1,7 +1,13 @@
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, ref, watch, inject } from 'vue'
 import { useData } from 'vitepress'
 
 let mermaidInstance = null
+let mermaidModalStateRef = null
+
+// 设置全局的 mermaid modal 状态引用
+export function setMermaidModalState(state) {
+  mermaidModalStateRef = state
+}
 
 // 主题配置映射
 const THEME_CONFIG = {
@@ -126,8 +132,14 @@ export function useMermaid() {
           if (wrapper) {
             // 保存原始代码以便主题切换时恢复
             wrapper.dataset.originalCode = code
+            wrapper.dataset.mermaidSvg = svg
             wrapper.innerHTML = svg
             wrapper.classList.add('mermaid-rendered')
+            
+            // 添加点击事件处理
+            wrapper.addEventListener('click', () => {
+              openMermaidModal(svg, code)
+            })
           }
         } catch (error) {
           console.error(`[Mermaid] 渲染图表失败 (${id}):`, error)
@@ -182,11 +194,28 @@ export function useMermaid() {
     })
   }
 
+  // 打开 Mermaid 弹窗
+  const openMermaidModal = (svg, source) => {
+    if (mermaidModalStateRef) {
+      mermaidModalStateRef.data.value = { svg, source }
+      mermaidModalStateRef.visible.value = true
+    }
+  }
+
   return {
     initMermaid,
     renderMermaidCharts,
     setupMermaid,
     reinitializeWithTheme,
-    getCurrentThemeConfig
+    getCurrentThemeConfig,
+    openMermaidModal
+  }
+}
+
+// 独立的打开弹窗函数，供点击事件使用
+function openMermaidModal(svg, source) {
+  if (mermaidModalStateRef) {
+    mermaidModalStateRef.data.value = { svg, source }
+    mermaidModalStateRef.visible.value = true
   }
 }

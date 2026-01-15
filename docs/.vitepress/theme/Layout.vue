@@ -85,6 +85,9 @@
   
   <!-- 全局模态框组件：添加细腻入场 -->
   <CodeBlockModal class="effect-blur-in" />
+  
+  <!-- Mermaid 图表弹窗组件 -->
+  <MermaidModal />
 </template>
 
 <script setup>
@@ -102,6 +105,7 @@ import SidebarBreathingBar from './components/layout/SidebarBreathingBar.vue'
 
 // 导入其他组件
 import CodeBlockModal from './components/CodeBlockModal.vue'
+import MermaidModal from './components/MermaidModal.vue'
 import EnhancedTOC from './components/EnhancedTOC.vue'
 import NavbarEnhancer from './components/NavbarEnhancer.vue'
 

@@ -19,6 +19,7 @@ import ParticleBackground from './components/ParticleBackground.vue'
 import GitHistoryButton from './components/GitHistoryButton.vue'
 import GitHistoryModal from './components/GitHistoryModal.vue'
 import CodeBlockModal from './components/CodeBlockModal.vue'
+import MermaidModal from './components/MermaidModal.vue'
 import EnhancedTOC from './components/EnhancedTOC.vue'
 import NavbarEnhancer from './components/NavbarEnhancer.vue'
 // 移除未使用的 `h` 引入
@@ -28,7 +29,7 @@ import imageViewer from 'vitepress-plugin-image-viewer'
 import { onMounted, watch, ref, onUnmounted } from 'vue'
 import { useRoute } from 'vitepress'
 import { createCodeBlockHandler } from './utils/codeBlockHandler.js'
-import { useMermaid } from './composables/useMermaid.js'
+import { useMermaid, setMermaidModalState } from './composables/useMermaid.js'
 import { setupSidebarNavbarSync } from './utils/sidebarNavbarSync.js'
 import { initAnalytics } from './utils/analytics.js'
 import { initErrorMonitor } from './utils/errorMonitor.js'
@@ -45,6 +46,18 @@ const codeModalState = {
     language: 'text'
   })
 }
+
+// 创建一个全局的 Mermaid 弹窗状态
+const mermaidModalState = {
+  visible: ref(false),
+  data: ref({
+    svg: '',
+    source: ''
+  })
+}
+
+// 设置 Mermaid 弹窗状态引用
+setMermaidModalState(mermaidModalState)
 
 // 基于项目 base 路径注册 Service Worker，避免在子路径下 404
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator && import.meta.env.PROD) {
@@ -69,11 +82,14 @@ export default {
     app.component('GitHistoryButton', GitHistoryButton)
     app.component('GitHistoryModal', GitHistoryModal)
     app.component('CodeBlockModal', CodeBlockModal)
+    app.component('MermaidModal', MermaidModal)
     app.component('EnhancedTOC', EnhancedTOC)
     app.component('NavbarEnhancer', NavbarEnhancer)
     
     // 提供全局的代码块弹窗状态
     app.provide('codeModalState', codeModalState)
+    // 提供全局的 Mermaid 弹窗状态
+    app.provide('mermaidModalState', mermaidModalState)
   },
   setup() {
     const route = useRoute()
