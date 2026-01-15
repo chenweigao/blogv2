@@ -52,6 +52,8 @@
 @import url('./styles/navbar-animations.css') layer(components);
 @import url('./styles/scrollbars.css') layer(components);
 @import url('./styles/markdown-callouts.css') layer(components);
+/* 🆕 首页样式增强 */
+@import url('./styles/home.css') layer(components);
 
 /* ============================================
    工具类层
