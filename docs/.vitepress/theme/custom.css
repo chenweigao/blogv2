@@ -1,37 +1,66 @@
-/* VitePress Enhanced Custom Theme - 模块化版本 */
-/* 新增：CSS 层，降低选择器竞争并提升维护性 */
-@layer base, theme, components, utilities, overrides;
+/* ============================================
+   VitePress Enhanced Custom Theme
+   Apple/Linear 风格 - 模块化版本
+   ============================================ */
+
+/* CSS 层级定义，降低选择器竞争并提升维护性 */
+@layer base, tokens, theme, components, utilities, overrides;
 
 /* 
- * 导入顺序说明：
- * 1. variables.css - 必须最先导入，提供所有CSS变量
- * 2. base.css - 基础样式和性能优化类
- * 3. layout.css - VitePress布局增强（基础布局）
- * 4. content.css - 文档内容增强样式
- * 5. components.css - 自定义组件样式
- * 6. animations.css - 动画定义
- * 7. responsive.css - 响应式设计
- * 8. accessibility.css - 可访问性增强
- * 9. utilities.css - 实用工具类（最后导入，优先级最高）
- * 10. hide-aside.css - 隐藏右侧 aside，给文章主体更多空间（已优化，使用安全选择器）
- * 11. content-width-enhancement.css - 内容宽度增强（覆盖规则，放在 theme 层末尾）
+ * 导入顺序说明（Apple/Linear 风格重构版）：
+ * 
+ * 1. design-tokens.css - 🆕 Apple/Linear 设计令牌系统（最先导入）
+ * 2. variables.css - VitePress 标准变量（已更新为 Apple 风格）
+ * 3. base.css - 基础样式、玻璃拟态、柔和阴影
+ * 4. layout.css - VitePress 布局增强
+ * 5. content.css - 文档内容增强样式
+ * 6. components.css - 自定义组件样式
+ * 7. animations.css - Apple 风格动画定义
+ * 8. responsive.css - 响应式设计
+ * 9. accessibility.css - 可访问性增强
+ * 10. utilities.css - 实用工具类
+ * 11. overrides - 覆盖层样式
  */
 
-/* 原先的普通 @import 改为带层级的导入 */
+/* ============================================
+   设计令牌和变量系统
+   ============================================ */
+/* 🆕 Apple/Linear 风格设计令牌 - 必须最先导入 */
+@import url('./styles/design-tokens.css') layer(tokens);
+/* VitePress 标准变量（已更新为 Apple 风格） */
 @import url('./styles/variables.css');
+
+/* ============================================
+   基础层样式
+   ============================================ */
 @import url('./styles/base.css') layer(base);
+
+/* ============================================
+   主题层样式
+   ============================================ */
 @import url('./styles/layout.css') layer(theme);
 @import url('./styles/content.css') layer(theme);
+@import url('./styles/responsive.css') layer(theme);
+@import url('./styles/content-width-enhancement.css') layer(theme);
+
+/* ============================================
+   组件层样式
+   ============================================ */
 @import url('./styles/components.css') layer(components);
 @import url('./styles/responsive-images.css') layer(components);
 @import url('./styles/animations.css') layer(components);
 @import url('./styles/navbar-animations.css') layer(components);
-/* 新增滚动条样式优化 */
 @import url('./styles/scrollbars.css') layer(components);
-@import url('./styles/responsive.css') layer(theme);
-@import url('./styles/accessibility.css') layer(overrides);
-@import url('./styles/utilities.css') layer(utilities);
-@import url('./styles/hide-aside.css') layer(overrides);
-@import url('./styles/content-width-enhancement.css') layer(theme);
 @import url('./styles/markdown-callouts.css') layer(components);
+
+/* ============================================
+   工具类层
+   ============================================ */
+@import url('./styles/utilities.css') layer(utilities);
+
+/* ============================================
+   覆盖层样式
+   ============================================ */
+@import url('./styles/accessibility.css') layer(overrides);
+@import url('./styles/hide-aside.css') layer(overrides);
 @import url('./styles/print.css') layer(overrides);

@@ -1,58 +1,82 @@
-/* VitePress CSS 变量系统 */
+/* VitePress CSS 变量系统 - Apple/Linear 风格重构 */
 
 :root {
-  /* 品牌色彩 - 使用VitePress标准变量 */
-  --vp-c-brand-1: #0645ad;
-  --vp-c-brand-2: #0645ad;
-  --vp-c-brand-3: #0645ad;
-  --vp-c-brand-soft: rgba(6, 69, 173, 0.14);
-  --vp-c-brand-rgb: 6, 69, 173;
+  /* ========================================
+     品牌色彩 - Apple/Linear 风格蓝紫色调
+     ======================================== */
+  --vp-c-brand-1: #5E5CE6;
+  --vp-c-brand-2: #7B7BF7;
+  --vp-c-brand-3: #4B4ACF;
+  --vp-c-brand-soft: rgba(94, 92, 230, 0.12);
+  --vp-c-brand-rgb: 94, 92, 230;
   
   /* 扩展品牌色彩 */
-  --vp-c-brand-lighter: #4a90e2;
-  --vp-c-brand-darker: #043a7a;
-  --vp-c-brand-gradient: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-lighter));
+  --vp-c-brand-lighter: #9B9BFF;
+  --vp-c-brand-darker: #4B4ACF;
+  --vp-c-brand-gradient: linear-gradient(135deg, #5E5CE6, #7B7BF7);
+  --vp-c-brand-gradient-subtle: linear-gradient(135deg, rgba(94, 92, 230, 0.1), rgba(123, 123, 247, 0.05));
   
-  /* 背景色彩系统 */
-  --vp-c-bg: #fff;
-  --vp-c-bg-alt: #f8f9fa;
-  --vp-c-bg-elv: #fff;
-  --vp-c-bg-soft: #f8f9fa;
-  --vp-c-bg-mute: #f1f3f4;
+  /* ========================================
+     背景色彩系统 - 精致的中性色
+     ======================================== */
+  --vp-c-bg: #FFFFFF;
+  --vp-c-bg-alt: #F5F5F7;
+  --vp-c-bg-elv: #FFFFFF;
+  --vp-c-bg-soft: rgba(0, 0, 0, 0.03);
+  --vp-c-bg-mute: #FAFAFA;
   
-  /* 文本色彩系统 */
-  --vp-c-text-1: #222;
-  --vp-c-text-2: #555;
-  --vp-c-text-3: #777;
-  --vp-c-text-4: #999;
+  /* 玻璃拟态背景 */
+  --vp-c-bg-glass: rgba(255, 255, 255, 0.72);
+  --vp-c-bg-glass-heavy: rgba(255, 255, 255, 0.88);
+  --vp-c-bg-glass-light: rgba(255, 255, 255, 0.56);
   
-  /* 边框和分割线 */
-  --vp-c-border: #a2a9b1;
-  --vp-c-border-hover: #8aa4af;
-  --vp-c-divider: #e2e8f0;
-  --vp-c-divider-light: #f1f5f9;
-  --vp-c-gutter: #a2a9b1;
+  /* ========================================
+     文本色彩系统 - Apple 风格层级
+     ======================================== */
+  --vp-c-text-1: #1D1D1F;
+  --vp-c-text-2: #6E6E73;
+  --vp-c-text-3: #86868B;
+  --vp-c-text-4: #AEAEB2;
   
-  /* 状态色彩 */
-  --vp-c-success: #10b981;
-  --vp-c-success-soft: rgba(16, 185, 129, 0.14);
-  --vp-c-warning: #f59e0b;
-  --vp-c-warning-soft: rgba(245, 158, 11, 0.14);
-  --vp-c-danger: #ef4444;
-  --vp-c-danger-soft: rgba(239, 68, 68, 0.14);
-  --vp-c-info: #3b82f6;
-  --vp-c-info-soft: rgba(59, 130, 246, 0.14);
+  /* ========================================
+     边框和分割线 - 更柔和的边框
+     ======================================== */
+  --vp-c-border: rgba(0, 0, 0, 0.08);
+  --vp-c-border-hover: rgba(0, 0, 0, 0.12);
+  --vp-c-divider: rgba(0, 0, 0, 0.06);
+  --vp-c-divider-light: rgba(0, 0, 0, 0.03);
+  --vp-c-gutter: rgba(0, 0, 0, 0.08);
   
-  /* 布局变量 */
+  /* 玻璃边框 */
+  --vp-c-border-glass: rgba(255, 255, 255, 0.18);
+  --vp-c-border-glass-heavy: rgba(255, 255, 255, 0.35);
+  
+  /* ========================================
+     状态色彩 - Apple 风格
+     ======================================== */
+  --vp-c-success: #34C759;
+  --vp-c-success-soft: rgba(52, 199, 89, 0.12);
+  --vp-c-warning: #FF9500;
+  --vp-c-warning-soft: rgba(255, 149, 0, 0.12);
+  --vp-c-danger: #FF3B30;
+  --vp-c-danger-soft: rgba(255, 59, 48, 0.12);
+  --vp-c-info: #007AFF;
+  --vp-c-info-soft: rgba(0, 122, 255, 0.12);
+  
+  /* ========================================
+     布局变量
+     ======================================== */
   --vp-layout-max-width: 1200px;
   --vp-nav-height: 64px;
   --vp-sidebar-width: 272px;
 
-  /* 字体系统 */
-  --vp-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  --vp-font-family-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  /* ========================================
+     字体系统 - Apple 风格
+     ======================================== */
+  --vp-font-family-base: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', Roboto, sans-serif;
+  --vp-font-family-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
 
-  /* 新增：字体刻度与行高刻度 */
+  /* 字体刻度与行高刻度 */
   --vp-font-size-xs: clamp(0.8125rem, 0.8rem + 0.2vw, 0.875rem);
   --vp-font-size-s: clamp(0.875rem, 0.85rem + 0.2vw, 0.9375rem);
   --vp-font-size-m: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
@@ -63,7 +87,9 @@
   --vp-line-height-normal: 1.6;
   --vp-line-height-relaxed: 1.8;
 
-  /* 新增：间距刻度（px 基础，组件内部可按需转换为 rem） */
+  /* ========================================
+     间距刻度
+     ======================================== */
   --vp-space-2: 2px;
   --vp-space-4: 4px;
   --vp-space-8: 8px;
@@ -73,64 +99,193 @@
   --vp-space-32: 32px;
   --vp-space-48: 48px;
 
-  /* 新增：正文阅读最大宽度（理想行长 72–80ch） */
+  /* 正文阅读最大宽度 */
   --vp-content-max-width: 80ch;
 
-  /* 动画系统 - 优化性能 */
+  /* ========================================
+     动画系统 - Apple 风格缓动
+     ======================================== */
+  --vp-animation-duration-instant: 0.05s;
   --vp-animation-duration-fast: 0.15s;
   --vp-animation-duration-normal: 0.25s;
-  --vp-animation-duration-slow: 0.4s;
-  --vp-animation-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --vp-animation-duration-slow: 0.35s;
+  --vp-animation-duration-slower: 0.5s;
+  
+  /* Apple 风格缓动函数 */
+  --vp-animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --vp-animation-easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --vp-animation-easing-in: cubic-bezier(0.4, 0, 1, 1);
   --vp-animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --vp-animation-easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* 阴影系统 */
-  --vp-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --vp-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --vp-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --vp-shadow-4: 0 16px 40px rgba(0, 0, 0, 0.15);
+  /* Apple 特色缓动 */
+  --vp-animation-easing-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --vp-animation-easing-expo-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --vp-animation-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --vp-animation-easing-spring-soft: cubic-bezier(0.22, 1.2, 0.36, 1);
   
-  /* 圆角系统 */
-  --vp-border-radius-small: 4px;
+  /* ========================================
+     阴影系统 - Linear 风格柔和多层次
+     ======================================== */
+  --vp-shadow-1: 
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 1px 1px rgba(0, 0, 0, 0.02);
+  --vp-shadow-2: 
+    0 2px 4px rgba(0, 0, 0, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.02);
+  --vp-shadow-3: 
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.02);
+  --vp-shadow-4: 
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.03);
+  --vp-shadow-5: 
+    0 16px 48px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.04);
+  
+  /* 品牌色阴影 */
+  --vp-shadow-brand-sm: 0 2px 8px rgba(94, 92, 230, 0.15);
+  --vp-shadow-brand-md: 0 4px 14px rgba(94, 92, 230, 0.2);
+  --vp-shadow-brand-lg: 0 8px 24px rgba(94, 92, 230, 0.25);
+  
+  /* 悬浮阴影 */
+  --vp-shadow-hover: 
+    0 12px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+  
+  /* 内阴影 */
+  --vp-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  
+  /* 发光效果 */
+  --vp-glow-brand: 0 0 20px rgba(94, 92, 230, 0.3);
+  
+  /* ========================================
+     圆角系统 - 更大更统一
+     ======================================== */
+  --vp-border-radius-xs: 4px;
+  --vp-border-radius-small: 6px;
   --vp-border-radius-medium: 8px;
   --vp-border-radius-large: 12px;
   --vp-border-radius-xl: 16px;
+  --vp-border-radius-2xl: 20px;
+  --vp-border-radius-3xl: 24px;
+  --vp-border-radius-full: 9999px;
   
-  /* Z-index 层级系统 */
+  /* 组件专用圆角 */
+  --vp-border-radius-button: 8px;
+  --vp-border-radius-input: 8px;
+  --vp-border-radius-card: 16px;
+  --vp-border-radius-modal: 20px;
+  
+  /* ========================================
+     Z-index 层级系统
+     ======================================== */
   --vp-z-index-local: 1;
   --vp-z-index-nav: 10;
   --vp-z-index-sidebar: 20;
-  --vp-z-index-modal: 100;
-  --vp-z-index-toast: 200;
+  --vp-z-index-dropdown: 30;
+  --vp-z-index-overlay: 40;
+  --vp-z-index-modal: 50;
+  --vp-z-index-popover: 60;
+  --vp-z-index-tooltip: 70;
+  --vp-z-index-toast: 80;
   
-  /* 新增：侧边栏激活项边框宽度变量 */
+  /* 侧边栏激活项边框宽度变量 */
   --vp-sidebar-active-border-width: 3px;
+  
+  /* ========================================
+     玻璃拟态模糊强度
+     ======================================== */
+  --vp-blur-sm: 8px;
+  --vp-blur-md: 16px;
+  --vp-blur-lg: 24px;
+  --vp-blur-xl: 40px;
 }
 
-/* 暗色主题变量 */
+/* ============================================
+   暗色主题变量 - Apple/Linear 风格
+   ============================================ */
 .dark {
-  --vp-c-bg: #0d1117;
-  --vp-c-bg-alt: #161b22;
-  --vp-c-bg-elv: #161b22;
-  --vp-c-bg-soft: #21262d;
-  --vp-c-bg-mute: #30363d;
+  /* 品牌色调整 - 暗色下更亮 */
+  --vp-c-brand-1: #7B7BF7;
+  --vp-c-brand-2: #9B9BFF;
+  --vp-c-brand-3: #5E5CE6;
+  --vp-c-brand-soft: rgba(123, 123, 247, 0.15);
+  --vp-c-brand-rgb: 123, 123, 247;
+  --vp-c-brand-lighter: #ADADFF;
+  --vp-c-brand-darker: #5E5CE6;
+  --vp-c-brand-gradient: linear-gradient(135deg, #7B7BF7, #9B9BFF);
+  --vp-c-brand-gradient-subtle: linear-gradient(135deg, rgba(123, 123, 247, 0.15), rgba(155, 155, 255, 0.08));
   
-  --vp-c-text-1: #e6edf3;
-  --vp-c-text-2: #7d8590;
-  --vp-c-text-3: #656d76;
-  --vp-c-text-4: #484f58;
+  /* 背景色 - Apple 暗色风格 */
+  --vp-c-bg: #000000;
+  --vp-c-bg-alt: #1C1C1E;
+  --vp-c-bg-elv: #1C1C1E;
+  --vp-c-bg-soft: rgba(255, 255, 255, 0.05);
+  --vp-c-bg-mute: #2C2C2E;
   
-  --vp-c-border: #30363d;
-  --vp-c-border-hover: #484f58;
-  --vp-c-divider: #21262d;
-  --vp-c-divider-light: #30363d;
-
-  /* 新增：暗色主题下更柔和且对比合适的品牌浅色背景 */
-  --vp-c-brand-soft: rgba(var(--vp-c-brand-rgb), 0.20);
+  /* 玻璃拟态背景 - 暗色 */
+  --vp-c-bg-glass: rgba(28, 28, 30, 0.72);
+  --vp-c-bg-glass-heavy: rgba(28, 28, 30, 0.88);
+  --vp-c-bg-glass-light: rgba(28, 28, 30, 0.56);
   
-  /* 暗色主题阴影 */
-  --vp-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --vp-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --vp-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --vp-shadow-4: 0 16px 40px rgba(0, 0, 0, 0.5);
+  /* 文本色 - Apple 暗色风格 */
+  --vp-c-text-1: #F5F5F7;
+  --vp-c-text-2: #A1A1A6;
+  --vp-c-text-3: #8E8E93;
+  --vp-c-text-4: #636366;
+  
+  /* 边框色 - 暗色 */
+  --vp-c-border: rgba(255, 255, 255, 0.1);
+  --vp-c-border-hover: rgba(255, 255, 255, 0.15);
+  --vp-c-divider: rgba(255, 255, 255, 0.08);
+  --vp-c-divider-light: rgba(255, 255, 255, 0.04);
+  --vp-c-gutter: rgba(255, 255, 255, 0.1);
+  
+  /* 玻璃边框 - 暗色 */
+  --vp-c-border-glass: rgba(255, 255, 255, 0.08);
+  --vp-c-border-glass-heavy: rgba(255, 255, 255, 0.18);
+  
+  /* 状态色 - 暗色下稍微调亮 */
+  --vp-c-success: #30D158;
+  --vp-c-success-soft: rgba(48, 209, 88, 0.15);
+  --vp-c-warning: #FFD60A;
+  --vp-c-warning-soft: rgba(255, 214, 10, 0.15);
+  --vp-c-danger: #FF453A;
+  --vp-c-danger-soft: rgba(255, 69, 58, 0.15);
+  --vp-c-info: #0A84FF;
+  --vp-c-info-soft: rgba(10, 132, 255, 0.15);
+  
+  /* 阴影系统 - 暗色主题更深 */
+  --vp-shadow-1: 
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 1px 1px rgba(0, 0, 0, 0.15);
+  --vp-shadow-2: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.15);
+  --vp-shadow-3: 
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.15);
+  --vp-shadow-4: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+  --vp-shadow-5: 
+    0 16px 48px rgba(0, 0, 0, 0.35),
+    0 8px 16px rgba(0, 0, 0, 0.25);
+  
+  /* 品牌色阴影 - 暗色 */
+  --vp-shadow-brand-sm: 0 2px 8px rgba(123, 123, 247, 0.2);
+  --vp-shadow-brand-md: 0 4px 14px rgba(123, 123, 247, 0.25);
+  --vp-shadow-brand-lg: 0 8px 24px rgba(123, 123, 247, 0.3);
+  
+  /* 悬浮阴影 - 暗色 */
+  --vp-shadow-hover: 
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  
+  /* 内阴影 - 暗色 */
+  --vp-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  
+  /* 发光效果 - 暗色 */
+  --vp-glow-brand: 0 0 24px rgba(123, 123, 247, 0.4);
 }

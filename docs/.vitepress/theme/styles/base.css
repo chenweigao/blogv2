@@ -1,5 +1,7 @@
 @layer base, theme, components, utilities, overrides;
-/* 基础样式和性能优化 */
+/* ============================================
+   基础样式和性能优化 - Apple/Linear 风格
+   ============================================ */
 
 /* GPU 加速优化 */
 .gpu-accelerated {
@@ -8,28 +10,111 @@
   backface-visibility: hidden;
 }
 
-/* 统一过渡效果 */
+/* ============================================
+   统一过渡效果 - Apple 风格缓动
+   ============================================ */
 .transition-fast {
-  transition: color var(--vp-animation-duration-fast) var(--vp-animation-easing), background-color var(--vp-animation-duration-fast) var(--vp-animation-easing), border-color var(--vp-animation-duration-fast) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing), transform var(--vp-animation-duration-fast) var(--vp-animation-easing), opacity var(--vp-animation-duration-fast) var(--vp-animation-easing);
+  transition: 
+    color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    background-color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    border-color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    transform var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    opacity var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out);
 }
 
 .transition-normal {
-  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), transform var(--vp-animation-duration-normal) var(--vp-animation-easing), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing);
+  transition: 
+    color var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    background-color var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    transform var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    opacity var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out);
 }
 
 .transition-slow {
-  transition: color var(--vp-animation-duration-slow) var(--vp-animation-easing), background-color var(--vp-animation-duration-slow) var(--vp-animation-easing), border-color var(--vp-animation-duration-slow) var(--vp-animation-easing), box-shadow var(--vp-animation-duration-slow) var(--vp-animation-easing), transform var(--vp-animation-duration-slow) var(--vp-animation-easing), opacity var(--vp-animation-duration-slow) var(--vp-animation-easing);
+  transition: 
+    color var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out),
+    background-color var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out),
+    border-color var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out),
+    box-shadow var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out),
+    transform var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out),
+    opacity var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out);
 }
 
 .transition-smooth {
-  transition: color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), transform var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth), opacity var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
+  transition: 
+    color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth),
+    background-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth),
+    border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth),
+    box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth),
+    transform var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth),
+    opacity var(--vp-animation-duration-normal) var(--vp-animation-easing-smooth);
 }
 
-/* 将潜在的 transition: all 替换为具体属性过渡（若存在命中则应用以下示例形式） */
-/* 示例：.some-class { transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing), background-color var(--vp-animation-duration-normal) var(--vp-animation-easing); } */
-/* 如当前文件未出现 transition: all，本次编辑不改变任何现有样式 */
+/* Apple 弹性过渡 */
+.transition-spring {
+  transition: 
+    color var(--vp-animation-duration-normal) var(--vp-animation-easing-spring),
+    background-color var(--vp-animation-duration-normal) var(--vp-animation-easing-spring),
+    border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-spring),
+    box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-spring),
+    transform var(--vp-animation-duration-normal) var(--vp-animation-easing-spring),
+    opacity var(--vp-animation-duration-normal) var(--vp-animation-easing-spring);
+}
 
-/* 性能优化 */
+/* ============================================
+   玻璃拟态效果类
+   ============================================ */
+.glass {
+  background: var(--vp-c-bg-glass);
+  backdrop-filter: blur(var(--vp-blur-md));
+  -webkit-backdrop-filter: blur(var(--vp-blur-md));
+  border: 1px solid var(--vp-c-border-glass);
+  box-shadow: var(--vp-shadow-2);
+}
+
+.glass-light {
+  background: var(--vp-c-bg-glass-light);
+  backdrop-filter: blur(var(--vp-blur-sm));
+  -webkit-backdrop-filter: blur(var(--vp-blur-sm));
+  border: 1px solid var(--vp-c-border-glass);
+}
+
+.glass-heavy {
+  background: var(--vp-c-bg-glass-heavy);
+  backdrop-filter: blur(var(--vp-blur-lg));
+  -webkit-backdrop-filter: blur(var(--vp-blur-lg));
+  border: 1px solid var(--vp-c-border-glass-heavy);
+  box-shadow: var(--vp-shadow-3);
+}
+
+/* ============================================
+   柔和阴影工具类
+   ============================================ */
+.shadow-soft-sm { box-shadow: var(--vp-shadow-1); }
+.shadow-soft-md { box-shadow: var(--vp-shadow-2); }
+.shadow-soft-lg { box-shadow: var(--vp-shadow-3); }
+.shadow-soft-xl { box-shadow: var(--vp-shadow-4); }
+.shadow-soft-2xl { box-shadow: var(--vp-shadow-5); }
+.shadow-brand { box-shadow: var(--vp-shadow-brand-md); }
+.shadow-hover { box-shadow: var(--vp-shadow-hover); }
+
+/* ============================================
+   圆角工具类
+   ============================================ */
+.rounded-apple-xs { border-radius: var(--vp-border-radius-xs); }
+.rounded-apple-sm { border-radius: var(--vp-border-radius-small); }
+.rounded-apple-md { border-radius: var(--vp-border-radius-medium); }
+.rounded-apple-lg { border-radius: var(--vp-border-radius-large); }
+.rounded-apple-xl { border-radius: var(--vp-border-radius-xl); }
+.rounded-apple-2xl { border-radius: var(--vp-border-radius-2xl); }
+.rounded-apple-full { border-radius: var(--vp-border-radius-full); }
+
+/* ============================================
+   性能优化
+   ============================================ */
 .doc-header-container,
 .related-item,
 .quick-toc-preview {
@@ -37,63 +122,86 @@
 }
 
 /* 滚动性能优化 */
-.quick-toc-content,
-/* 移除对 .vp-doc 的全局平滑滚动，保留组件内滚动 */
-.vp-doc {
-  /* 原先为 scroll-behavior: smooth; */
-}
-
-/* 仅对 Quick TOC 内容保留平滑滚动 */
 .quick-toc-content {
   scroll-behavior: smooth;
 }
 
-/* 图像优化 */
+/* ============================================
+   图像优化 - Apple 风格
+   ============================================ */
 .vp-doc img {
-  transition: transform var(--vp-animation-duration-normal) var(--vp-animation-easing);
-  border-radius: var(--vp-border-radius-medium);
+  transition: 
+    transform var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out);
+  border-radius: var(--vp-border-radius-large);
+  box-shadow: var(--vp-shadow-2);
 }
 
 @media (hover: hover) {
   .vp-doc img:hover {
-    transform: scale(1.02);
-    box-shadow: var(--vp-shadow-3);
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: var(--vp-shadow-hover);
   }
 }
 
-/* 文本选中配色统一 */
+/* ============================================
+   文本选中配色 - Apple 风格
+   ============================================ */
 ::selection {
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-text-1);
 }
+
 .dark ::selection {
   background: rgba(var(--vp-c-brand-rgb), 0.35);
-  color: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
 }
 
-/* 统一滚动条样式（WebKit 浏览器） */
+/* ============================================
+   滚动条样式 - 精致细腻
+   ============================================ */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--vp-c-bg-soft);
-  border-radius: var(--vp-border-radius-small);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--vp-c-border);
-  border-radius: var(--vp-border-radius-small);
-  border: 2px solid var(--vp-c-bg-soft);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--vp-c-border-hover);
+  width: 8px;
+  height: 8px;
 }
 
-/* Firefox 统一滚动条样式 */
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: var(--vp-border-radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--vp-border-radius-full);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background var(--vp-animation-duration-fast) var(--vp-animation-easing);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+  background-clip: content-box;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  background-clip: content-box;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+  background-clip: content-box;
+}
+
+/* Firefox 滚动条样式 */
 html {
   scrollbar-width: thin;
-  scrollbar-color: var(--vp-c-border) var(--vp-c-bg-soft);
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
   scrollbar-gutter: stable both-edges;
+}
+
+.dark {
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
 
 html {
@@ -104,4 +212,156 @@ html {
   html {
     scroll-behavior: auto;
   }
+  
+  .glass,
+  .glass-light,
+  .glass-heavy {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ============================================
+   玻璃效果降级处理
+   ============================================ */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .glass-light,
+  .glass-heavy {
+    background: var(--vp-c-bg);
+    opacity: 0.98;
+  }
+}
+
+/* ============================================
+   焦点样式 - Apple 风格
+   ============================================ */
+:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: var(--vp-border-radius-small);
+}
+
+/* ============================================
+   链接样式增强
+   ============================================ */
+.vp-doc a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  transition: 
+    color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    opacity var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out);
+}
+
+.vp-doc a:hover {
+  color: var(--vp-c-brand-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================
+   按钮基础样式 - Apple 风格
+   ============================================ */
+.btn-apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: var(--vp-font-size-s);
+  font-weight: 500;
+  line-height: 1;
+  border-radius: var(--vp-border-radius-button);
+  border: none;
+  cursor: pointer;
+  transition: 
+    background-color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    transform var(--vp-animation-duration-fast) var(--vp-animation-easing-spring),
+    box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out);
+}
+
+.btn-apple:hover {
+  transform: translateY(-1px);
+}
+
+.btn-apple:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-apple-primary {
+  background: var(--vp-c-brand-gradient);
+  color: white;
+  box-shadow: var(--vp-shadow-brand-sm);
+}
+
+.btn-apple-primary:hover {
+  box-shadow: var(--vp-shadow-brand-md);
+}
+
+.btn-apple-secondary {
+  background: var(--vp-c-bg-glass);
+  color: var(--vp-c-text-1);
+  border: 1px solid var(--vp-c-border);
+  backdrop-filter: blur(var(--vp-blur-sm));
+  -webkit-backdrop-filter: blur(var(--vp-blur-sm));
+}
+
+.btn-apple-secondary:hover {
+  background: var(--vp-c-bg-glass-heavy);
+  box-shadow: var(--vp-shadow-2);
+}
+
+/* ============================================
+   卡片基础样式 - Apple 风格
+   ============================================ */
+.card-apple {
+  background: var(--vp-c-bg-glass);
+  backdrop-filter: blur(var(--vp-blur-md));
+  -webkit-backdrop-filter: blur(var(--vp-blur-md));
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vp-border-radius-card);
+  box-shadow: var(--vp-shadow-2);
+  transition: 
+    transform var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+    border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out);
+}
+
+.card-apple:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--vp-shadow-hover);
+  border-color: var(--vp-c-border-hover);
+}
+
+/* ============================================
+   输入框基础样式 - Apple 风格
+   ============================================ */
+.input-apple {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: var(--vp-font-size-s);
+  line-height: 1.5;
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg-glass-light);
+  backdrop-filter: blur(var(--vp-blur-sm));
+  -webkit-backdrop-filter: blur(var(--vp-blur-sm));
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vp-border-radius-input);
+  box-shadow: var(--vp-shadow-inset);
+  transition: 
+    border-color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
+    background-color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out);
+}
+
+.input-apple:focus {
+  outline: none;
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 
+    var(--vp-shadow-inset),
+    0 0 0 3px var(--vp-c-brand-soft);
+  background: var(--vp-c-bg);
+}
+
+.input-apple::placeholder {
+  color: var(--vp-c-text-4);
 }

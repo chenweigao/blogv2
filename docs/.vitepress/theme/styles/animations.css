@@ -1,30 +1,52 @@
-/* 页面过渡动画 */
+/* ============================================
+   页面过渡动画 - Apple/Linear 风格
+   ============================================ */
 
-/* 页面加载动画 */
+/* ============================================
+   基础动画关键帧 - 更流畅的 Apple 风格
+   ============================================ */
+
+/* 页面加载动画 - 更柔和的入场 */
 @keyframes pageLoad {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
+/* 淡入上移 - Apple 风格 */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
+/* 淡入下移 */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 左侧滑入 - 更精致 */
 @keyframes slideInFromLeft {
   from {
     opacity: 0;
-    transform: translateX(-60px);
+    transform: translateX(-40px);
   }
   to {
     opacity: 1;
@@ -32,10 +54,11 @@
   }
 }
 
+/* 右侧滑入 - 更精致 */
 @keyframes slideInFromRight {
   from {
     opacity: 0;
-    transform: translateX(60px);
+    transform: translateX(40px);
   }
   to {
     opacity: 1;
@@ -43,10 +66,11 @@
   }
 }
 
+/* 缩放入场 - Apple 弹性效果 */
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.92);
   }
   to {
     opacity: 1;
@@ -54,56 +78,214 @@
   }
 }
 
+/* 弹性缩放 - 更有活力 */
+@keyframes scaleInSpring {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 淡入 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 淡出 */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* 脉冲效果 - 更柔和 */
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
+    opacity: 1;
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    opacity: 0.9;
   }
 }
 
+/* 柔和脉冲 */
+@keyframes pulseSoft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* 闪烁加载效果 */
 @keyframes shimmer {
   0% {
-    background-position: -200px 0;
+    background-position: -200% 0;
   }
   100% {
-    background-position: calc(200px + 100%) 0;
+    background-position: 200% 0;
   }
 }
 
+/* 骨架屏闪烁 */
+@keyframes skeleton {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* 发光效果 - 品牌色 */
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 8px var(--vp-c-brand-1);
+    box-shadow: 0 0 8px rgba(var(--vp-c-brand-rgb), 0.3);
   }
   50% {
-    box-shadow: 0 0 24px var(--vp-c-brand-1), 0 0 36px var(--vp-c-brand-1);
+    box-shadow: 0 0 20px rgba(var(--vp-c-brand-rgb), 0.5), 
+                0 0 30px rgba(var(--vp-c-brand-rgb), 0.3);
   }
 }
 
+/* 柔和发光 */
+@keyframes glowSoft {
+  0%, 100% {
+    box-shadow: var(--vp-shadow-brand-sm);
+  }
+  50% {
+    box-shadow: var(--vp-shadow-brand-lg);
+  }
+}
+
+/* 下滑展开 */
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-12px);
     max-height: 0;
   }
   to {
     opacity: 1;
-    max-height: 300px;
+    transform: translateY(0);
+    max-height: 500px;
   }
 }
 
-/* 页面切换指示器 */
+/* 上滑收起 */
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+    max-height: 0;
+  }
+}
+
+/* 浮动效果 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* 轻微摇摆 */
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-2deg);
+  }
+  75% {
+    transform: rotate(2deg);
+  }
+}
+
+/* 弹跳效果 */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* 旋转加载 */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 模糊入场 */
+@keyframes blurIn {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* 模糊出场 */
+@keyframes blurOut {
+  from {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+/* ============================================
+   页面切换指示器 - 更精致
+   ============================================ */
 .page-transition-indicator {
   position: fixed;
   top: 0;
   inset-inline-start: 0;
   width: 100%;
-  height: 3px;
+  height: 2px;
   background: var(--vp-c-brand-gradient);
   z-index: var(--vp-z-index-toast);
-  animation: pageTransitionProgress 1.2s ease-in-out;
+  animation: pageTransitionProgress 1s var(--vp-animation-easing-expo-out);
   transform-origin: left center;
+  box-shadow: 0 0 10px rgba(var(--vp-c-brand-rgb), 0.5);
 }
 
 @keyframes pageTransitionProgress {
@@ -111,12 +293,158 @@
     transform: scaleX(0);
     opacity: 1;
   }
-  70% {
-    transform: scaleX(0.8);
+  80% {
+    transform: scaleX(0.9);
     opacity: 1;
   }
   100% {
     transform: scaleX(1);
     opacity: 0;
+  }
+}
+
+/* ============================================
+   动画工具类
+   ============================================ */
+
+/* 入场动画 */
+.animate-fade-in {
+  animation: fadeIn var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInFromLeft var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out) forwards;
+}
+
+.animate-scale-in-spring {
+  animation: scaleInSpring var(--vp-animation-duration-slow) var(--vp-animation-easing-spring) forwards;
+}
+
+.animate-blur-in {
+  animation: blurIn var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out) forwards;
+}
+
+/* 循环动画 */
+.animate-pulse {
+  animation: pulse 2s var(--vp-animation-easing) infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s var(--vp-animation-easing) infinite;
+}
+
+.animate-float {
+  animation: float 3s var(--vp-animation-easing) infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s var(--vp-animation-easing) infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-glow {
+  animation: glow 2s var(--vp-animation-easing) infinite;
+}
+
+.animate-glow-soft {
+  animation: glowSoft 2s var(--vp-animation-easing) infinite;
+}
+
+/* 骨架屏效果 */
+.animate-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--vp-c-bg-soft) 25%,
+    var(--vp-c-bg-mute) 50%,
+    var(--vp-c-bg-soft) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.5s var(--vp-animation-easing) infinite;
+}
+
+/* 延迟动画 */
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+
+/* 动画时长 */
+.animate-duration-fast { animation-duration: var(--vp-animation-duration-fast); }
+.animate-duration-normal { animation-duration: var(--vp-animation-duration-normal); }
+.animate-duration-slow { animation-duration: var(--vp-animation-duration-slow); }
+
+/* ============================================
+   悬停动画效果
+   ============================================ */
+.hover-lift {
+  transition: transform var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out),
+              box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--vp-shadow-hover);
+}
+
+.hover-scale {
+  transition: transform var(--vp-animation-duration-fast) var(--vp-animation-easing-spring);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-glow {
+  transition: box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-expo-out);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--vp-glow-brand);
+}
+
+/* ============================================
+   减少动画偏好支持
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-fade-in-down,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-scale-in,
+  .animate-scale-in-spring,
+  .animate-blur-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }

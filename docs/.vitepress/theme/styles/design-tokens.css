@@ -1,0 +1,509 @@
+/* ============================================
+   Apple/Linear 风格设计令牌系统
+   Design Tokens for Modern Glassmorphism UI
+   ============================================ */
+
+/* 
+ * 设计理念：
+ * - 玻璃拟态 (Glassmorphism): 半透明背景 + 模糊效果 + 微妙边框
+ * - 柔和阴影: 多层次、大扩散、低透明度
+ * - 精致圆角: 统一的大圆角设计
+ * - 微妙渐变: 低对比度的渐变背景和边框
+ * - 克制动效: 流畅但不夸张的过渡动画
+ */
+
+:root {
+  /* ========================================
+     1. 品牌色彩系统 - Apple/Linear 风格
+     ======================================== */
+  
+  /* 主品牌色 - 柔和的蓝紫色调 */
+  --apple-brand-primary: #5E5CE6;
+  --apple-brand-secondary: #7B7BF7;
+  --apple-brand-tertiary: #4B4ACF;
+  --apple-brand-rgb: 94, 92, 230;
+  
+  /* 品牌色变体 */
+  --apple-brand-soft: rgba(94, 92, 230, 0.12);
+  --apple-brand-muted: rgba(94, 92, 230, 0.08);
+  --apple-brand-subtle: rgba(94, 92, 230, 0.04);
+  
+  /* 强调色 */
+  --apple-accent-blue: #007AFF;
+  --apple-accent-green: #34C759;
+  --apple-accent-orange: #FF9500;
+  --apple-accent-red: #FF3B30;
+  --apple-accent-purple: #AF52DE;
+  --apple-accent-pink: #FF2D55;
+  --apple-accent-teal: #5AC8FA;
+  --apple-accent-indigo: #5856D6;
+
+  /* ========================================
+     2. 中性色系统 - 精致的灰度
+     ======================================== */
+  
+  /* 背景色 */
+  --apple-bg-primary: #FFFFFF;
+  --apple-bg-secondary: #F5F5F7;
+  --apple-bg-tertiary: #FAFAFA;
+  --apple-bg-elevated: #FFFFFF;
+  
+  /* 表面色（用于卡片、面板等） */
+  --apple-surface-primary: rgba(255, 255, 255, 0.8);
+  --apple-surface-secondary: rgba(255, 255, 255, 0.6);
+  --apple-surface-tertiary: rgba(255, 255, 255, 0.4);
+  
+  /* 文本色 */
+  --apple-text-primary: #1D1D1F;
+  --apple-text-secondary: #6E6E73;
+  --apple-text-tertiary: #86868B;
+  --apple-text-quaternary: #AEAEB2;
+  --apple-text-placeholder: #C7C7CC;
+  
+  /* 边框色 */
+  --apple-border-primary: rgba(0, 0, 0, 0.08);
+  --apple-border-secondary: rgba(0, 0, 0, 0.05);
+  --apple-border-tertiary: rgba(0, 0, 0, 0.03);
+  --apple-border-focus: rgba(94, 92, 230, 0.4);
+  
+  /* 分割线 */
+  --apple-divider: rgba(0, 0, 0, 0.06);
+  --apple-divider-light: rgba(0, 0, 0, 0.03);
+
+  /* ========================================
+     3. 玻璃拟态系统 (Glassmorphism)
+     ======================================== */
+  
+  /* 玻璃背景 */
+  --glass-bg-light: rgba(255, 255, 255, 0.72);
+  --glass-bg-medium: rgba(255, 255, 255, 0.56);
+  --glass-bg-heavy: rgba(255, 255, 255, 0.88);
+  --glass-bg-ultra: rgba(255, 255, 255, 0.95);
+  
+  /* 玻璃边框 */
+  --glass-border-light: rgba(255, 255, 255, 0.18);
+  --glass-border-medium: rgba(255, 255, 255, 0.25);
+  --glass-border-heavy: rgba(255, 255, 255, 0.35);
+  
+  /* 模糊强度 */
+  --glass-blur-sm: 8px;
+  --glass-blur-md: 16px;
+  --glass-blur-lg: 24px;
+  --glass-blur-xl: 40px;
+  
+  /* 玻璃效果预设 */
+  --glass-effect-light: 
+    rgba(255, 255, 255, 0.72) 
+    blur(16px);
+  --glass-effect-navbar: 
+    rgba(255, 255, 255, 0.8);
+  --glass-effect-sidebar: 
+    rgba(255, 255, 255, 0.6);
+  --glass-effect-card: 
+    rgba(255, 255, 255, 0.7);
+  --glass-effect-modal: 
+    rgba(255, 255, 255, 0.85);
+
+  /* ========================================
+     4. 阴影系统 - 柔和多层次
+     ======================================== */
+  
+  /* 基础阴影 - Linear 风格 */
+  --shadow-xs: 
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 1px 1px rgba(0, 0, 0, 0.02);
+  
+  --shadow-sm: 
+    0 2px 4px rgba(0, 0, 0, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.02);
+  
+  --shadow-md: 
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.02);
+  
+  --shadow-lg: 
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.03);
+  
+  --shadow-xl: 
+    0 16px 48px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.04);
+  
+  --shadow-2xl: 
+    0 24px 64px rgba(0, 0, 0, 0.1),
+    0 12px 24px rgba(0, 0, 0, 0.05);
+  
+  /* 品牌色阴影 */
+  --shadow-brand-sm: 
+    0 2px 8px rgba(94, 92, 230, 0.15);
+  
+  --shadow-brand-md: 
+    0 4px 14px rgba(94, 92, 230, 0.2);
+  
+  --shadow-brand-lg: 
+    0 8px 24px rgba(94, 92, 230, 0.25);
+  
+  /* 悬浮阴影（用于卡片悬停等） */
+  --shadow-hover: 
+    0 12px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+  
+  /* 内阴影 */
+  --shadow-inset-sm: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-inset-md: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+  /* 发光效果 */
+  --glow-brand: 0 0 20px rgba(94, 92, 230, 0.3);
+  --glow-white: 0 0 20px rgba(255, 255, 255, 0.5);
+
+  /* ========================================
+     5. 圆角系统 - 精致统一
+     ======================================== */
+  
+  --radius-none: 0;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+  
+  /* 组件专用圆角 */
+  --radius-button: 8px;
+  --radius-input: 8px;
+  --radius-card: 16px;
+  --radius-modal: 20px;
+  --radius-tooltip: 8px;
+  --radius-badge: 6px;
+  --radius-avatar: 50%;
+
+  /* ========================================
+     6. 动效系统 - Apple 风格
+     ======================================== */
+  
+  /* 时长 */
+  --duration-instant: 50ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+  --duration-slowest: 700ms;
+  
+  /* 缓动函数 - Apple 风格 */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Apple 特色缓动 */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+  
+  /* 弹性缓动 */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring-soft: cubic-bezier(0.22, 1.2, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* 组合动效预设 */
+  --transition-fast: var(--duration-fast) var(--ease-out);
+  --transition-normal: var(--duration-normal) var(--ease-out);
+  --transition-slow: var(--duration-slow) var(--ease-out);
+  --transition-spring: var(--duration-normal) var(--ease-spring);
+  --transition-smooth: var(--duration-normal) var(--ease-out-expo);
+
+  /* ========================================
+     7. 间距系统
+     ======================================== */
+  
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-2-5: 10px;
+  --space-3: 12px;
+  --space-3-5: 14px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ========================================
+     8. 字体系统
+     ======================================== */
+  
+  /* 字体族 */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
+  --font-serif: 'New York', 'Georgia', 'Times New Roman', serif;
+  
+  /* 字号 */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  
+  /* 字重 */
+  --font-thin: 100;
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  
+  /* 行高 */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* 字间距 */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* ========================================
+     9. Z-Index 层级系统
+     ======================================== */
+  
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-toast: 80;
+  --z-max: 9999;
+
+  /* ========================================
+     10. 响应式断点
+     ======================================== */
+  
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* ============================================
+   暗色主题变量
+   ============================================ */
+
+.dark {
+  /* 品牌色调整 */
+  --apple-brand-primary: #7B7BF7;
+  --apple-brand-secondary: #9B9BFF;
+  --apple-brand-tertiary: #5E5CE6;
+  --apple-brand-soft: rgba(123, 123, 247, 0.15);
+  --apple-brand-muted: rgba(123, 123, 247, 0.10);
+  --apple-brand-subtle: rgba(123, 123, 247, 0.05);
+  
+  /* 背景色 */
+  --apple-bg-primary: #000000;
+  --apple-bg-secondary: #1C1C1E;
+  --apple-bg-tertiary: #2C2C2E;
+  --apple-bg-elevated: #1C1C1E;
+  
+  /* 表面色 */
+  --apple-surface-primary: rgba(28, 28, 30, 0.8);
+  --apple-surface-secondary: rgba(28, 28, 30, 0.6);
+  --apple-surface-tertiary: rgba(28, 28, 30, 0.4);
+  
+  /* 文本色 */
+  --apple-text-primary: #F5F5F7;
+  --apple-text-secondary: #A1A1A6;
+  --apple-text-tertiary: #8E8E93;
+  --apple-text-quaternary: #636366;
+  --apple-text-placeholder: #48484A;
+  
+  /* 边框色 */
+  --apple-border-primary: rgba(255, 255, 255, 0.1);
+  --apple-border-secondary: rgba(255, 255, 255, 0.06);
+  --apple-border-tertiary: rgba(255, 255, 255, 0.03);
+  --apple-border-focus: rgba(123, 123, 247, 0.5);
+  
+  /* 分割线 */
+  --apple-divider: rgba(255, 255, 255, 0.08);
+  --apple-divider-light: rgba(255, 255, 255, 0.04);
+  
+  /* 玻璃背景 - 暗色 */
+  --glass-bg-light: rgba(28, 28, 30, 0.72);
+  --glass-bg-medium: rgba(28, 28, 30, 0.56);
+  --glass-bg-heavy: rgba(28, 28, 30, 0.88);
+  --glass-bg-ultra: rgba(28, 28, 30, 0.95);
+  
+  /* 玻璃边框 - 暗色 */
+  --glass-border-light: rgba(255, 255, 255, 0.08);
+  --glass-border-medium: rgba(255, 255, 255, 0.12);
+  --glass-border-heavy: rgba(255, 255, 255, 0.18);
+  
+  /* 玻璃效果预设 - 暗色 */
+  --glass-effect-navbar: rgba(28, 28, 30, 0.8);
+  --glass-effect-sidebar: rgba(28, 28, 30, 0.6);
+  --glass-effect-card: rgba(28, 28, 30, 0.7);
+  --glass-effect-modal: rgba(28, 28, 30, 0.9);
+  
+  /* 阴影 - 暗色主题更深 */
+  --shadow-xs: 
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 1px 1px rgba(0, 0, 0, 0.15);
+  
+  --shadow-sm: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.15);
+  
+  --shadow-md: 
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.15);
+  
+  --shadow-lg: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+  
+  --shadow-xl: 
+    0 16px 48px rgba(0, 0, 0, 0.35),
+    0 8px 16px rgba(0, 0, 0, 0.25);
+  
+  --shadow-2xl: 
+    0 24px 64px rgba(0, 0, 0, 0.4),
+    0 12px 24px rgba(0, 0, 0, 0.3);
+  
+  /* 品牌色阴影 - 暗色 */
+  --shadow-brand-sm: 
+    0 2px 8px rgba(123, 123, 247, 0.2);
+  
+  --shadow-brand-md: 
+    0 4px 14px rgba(123, 123, 247, 0.25);
+  
+  --shadow-brand-lg: 
+    0 8px 24px rgba(123, 123, 247, 0.3);
+  
+  --shadow-hover: 
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  
+  /* 内阴影 - 暗色 */
+  --shadow-inset-sm: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-inset-md: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+  
+  /* 发光效果 - 暗色 */
+  --glow-brand: 0 0 24px rgba(123, 123, 247, 0.4);
+  --glow-white: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   实用工具类
+   ============================================ */
+
+/* 玻璃拟态效果类 */
+.glass {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-md));
+  -webkit-backdrop-filter: blur(var(--glass-blur-md));
+  border: 1px solid var(--glass-border-light);
+}
+
+.glass-light {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  border: 1px solid var(--glass-border-light);
+}
+
+.glass-heavy {
+  background: var(--glass-bg-heavy);
+  backdrop-filter: blur(var(--glass-blur-lg));
+  -webkit-backdrop-filter: blur(var(--glass-blur-lg));
+  border: 1px solid var(--glass-border-medium);
+}
+
+.glass-ultra {
+  background: var(--glass-bg-ultra);
+  backdrop-filter: blur(var(--glass-blur-xl));
+  -webkit-backdrop-filter: blur(var(--glass-blur-xl));
+  border: 1px solid var(--glass-border-heavy);
+}
+
+/* 阴影工具类 */
+.shadow-apple-sm { box-shadow: var(--shadow-sm); }
+.shadow-apple-md { box-shadow: var(--shadow-md); }
+.shadow-apple-lg { box-shadow: var(--shadow-lg); }
+.shadow-apple-xl { box-shadow: var(--shadow-xl); }
+.shadow-apple-hover { box-shadow: var(--shadow-hover); }
+.shadow-apple-brand { box-shadow: var(--shadow-brand-md); }
+
+/* 过渡工具类 */
+.transition-apple {
+  transition: all var(--transition-normal);
+}
+
+.transition-apple-fast {
+  transition: all var(--transition-fast);
+}
+
+.transition-apple-spring {
+  transition: all var(--transition-spring);
+}
+
+.transition-apple-smooth {
+  transition: all var(--transition-smooth);
+}
+
+/* 圆角工具类 */
+.rounded-apple-sm { border-radius: var(--radius-sm); }
+.rounded-apple-md { border-radius: var(--radius-md); }
+.rounded-apple-lg { border-radius: var(--radius-lg); }
+.rounded-apple-xl { border-radius: var(--radius-xl); }
+.rounded-apple-2xl { border-radius: var(--radius-2xl); }
+.rounded-apple-full { border-radius: var(--radius-full); }
+
+/* 响应式玻璃效果降级 */
+@media (prefers-reduced-motion: reduce) {
+  .glass,
+  .glass-light,
+  .glass-heavy,
+  .glass-ultra {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* 低性能设备降级 */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .glass-light,
+  .glass-heavy,
+  .glass-ultra {
+    background: var(--apple-bg-primary);
+    opacity: 0.95;
+  }
+}
