@@ -2,51 +2,73 @@
 import { getCollection } from 'astro:content';
 import DocLayout from '../../layouts/DocLayout.astro';
 
-// Define category metadata
-const categoryMeta: Record<string, { title: string; description: string }> = {
+const CATEGORIES = [
+  'algorithms',
+  'computer-systems', 
+  'programming-languages',
+  'artificial-intelligence',
+  'development-tools',
+  'research-projects',
+];
+
+export async function getStaticPaths() {
+  return [
+    'algorithms',
+    'computer-systems', 
+    'programming-languages',
+    'artificial-intelligence',
+    'development-tools',
+    'research-projects',
+  ].map(category => ({ params: { category } }));
+}
+
+// Category metadata with icons
+const categoryMeta: Record<string, { title: string; description: string; icon: string; gradient: string }> = {
   'algorithms': {
     title: '算法与数据结构',
     description: '排序、搜索、图算法、动态规划和复杂度分析',
+    icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>`,
+    gradient: 'from-blue-500/20 to-cyan-500/20',
   },
   'computer-systems': {
     title: '计算机系统',
     description: 'CPU/GPU 架构、操作系统、内存管理和性能优化',
+    icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
+    gradient: 'from-purple-500/20 to-pink-500/20',
   },
   'programming-languages': {
     title: '编程语言',
     description: 'Java、Python、JVM 内部原理、语言特性和最佳实践',
+    icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>`,
+    gradient: 'from-amber-500/20 to-orange-500/20',
   },
   'artificial-intelligence': {
     title: '人工智能',
     description: 'GPU 计算、分布式训练、性能分析和训练框架',
+    icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>`,
+    gradient: 'from-emerald-500/20 to-teal-500/20',
   },
   'development-tools': {
     title: '开发工具',
     description: '云服务、数据库、框架、前端开发和网络编程',
+    icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`,
+    gradient: 'from-rose-500/20 to-red-500/20',
   },
   'research-projects': {
     title: '研究项目',
     description: '学术论文、研究项目和实验记录',
+    icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>`,
+    gradient: 'from-indigo-500/20 to-violet-500/20',
   },
 };
 
-export async function getStaticPaths() {
-  const categories = Object.keys({
-    'algorithms': true,
-    'computer-systems': true,
-    'programming-languages': true,
-    'artificial-intelligence': true,
-    'development-tools': true,
-    'research-projects': true,
-  });
-  
-  return categories.map(category => ({
-    params: { category },
-  }));
-}
-
 const { category } = Astro.params;
-const meta = categoryMeta[category] || { title: category, description: '' };
+const meta = categoryMeta[category] || { 
+  title: category, 
+  description: '', 
+  icon: '', 
+  gradient: 'from-gray-500/20 to-slate-500/20' 
+};
 
 // Get all docs in this category
 const allDocs = await getCollection('docs');
@@ -57,109 +79,134 @@ const categoryDocs = allDocs.filter(doc => {
 
 // Group by subcategory
 const grouped = new Map<string, typeof categoryDocs>();
-
 categoryDocs.forEach(doc => {
   const parts = doc.id.split('/');
-  // If doc is in a subfolder, use that as subcategory
   const subcategory = parts.length > 2 ? parts[1] : '文章';
-  
-  if (!grouped.has(subcategory)) {
-    grouped.set(subcategory, []);
-  }
+  if (!grouped.has(subcategory)) grouped.set(subcategory, []);
   grouped.get(subcategory)!.push(doc);
 });
 
-// Sort docs within each group by date or title
-grouped.forEach((docs, key) => {
+// Sort docs within each group
+grouped.forEach((docs) => {
   docs.sort((a, b) => {
-    // Sort by date if available, otherwise by title
     if (a.data.date && b.data.date) {
       return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
     }
-    const titleA = a.data.title || a.id;
-    const titleB = b.data.title || b.id;
-    return titleA.localeCompare(titleB, 'zh-CN');
+    return (a.data.title || a.id).localeCompare(b.data.title || b.id, 'zh-CN');
   });
 });
 
-// Sort subcategories - put '文章' last
+// Sort subcategories
 const sortedGroups = [...grouped.entries()].sort((a, b) => {
   if (a[0] === '文章') return 1;
   if (b[0] === '文章') return -1;
   return a[0].localeCompare(b[0], 'zh-CN');
 });
 
-// Format subcategory name
 function formatSubcategory(name: string): string {
-  return name
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  return name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-// Get doc URL - handle index removal
 function getDocUrl(docId: string): string {
   let slug = docId;
-  if (slug.endsWith('/index')) {
-    slug = slug.slice(0, -6);
-  }
+  if (slug.endsWith('/index')) slug = slug.slice(0, -6);
   return `/blogv2/${slug}/`;
 }
 ---
 
-<DocLayout 
-  title={meta.title}
-  description={meta.description}
->
-  <div class="space-y-8">
-    <!-- Category Header -->
-    <div class="mb-8">
-      <p class="text-[var(--color-text-muted)] text-lg">
-        {meta.description}
-      </p>
-      <p class="text-sm text-[var(--color-text-muted)] mt-2">
-        共 {categoryDocs.length} 篇文章
-      </p>
-    </div>
+<DocLayout title={meta.title} description={meta.description}>
+  <div class="space-y-10">
+    <!-- Category Header with Gradient Background -->
+    <header class="relative overflow-hidden rounded-2xl p-8 md:p-10">
+      <!-- Gradient Background -->
+      <div class={`absolute inset-0 bg-gradient-to-br ${meta.gradient} opacity-60`}></div>
+      <div class="absolute inset-0 bg-[var(--color-bg)]/30 backdrop-blur-sm"></div>
+      
+      <!-- Content -->
+      <div class="relative z-10">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="p-3 rounded-xl bg-[var(--color-bg)]/80 backdrop-blur-sm shadow-sm text-[var(--color-primary)]" set:html={meta.icon} />
+          <div class="px-3 py-1 rounded-full text-xs font-medium bg-[var(--color-bg)]/80 text-[var(--color-text-muted)]">
+            {categoryDocs.length} 篇文章
+          </div>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold text-[var(--color-text)] mb-3">
+          {meta.title}
+        </h1>
+        <p class="text-[var(--color-text-muted)] text-base md:text-lg max-w-2xl leading-relaxed">
+          {meta.description}
+        </p>
+      </div>
+    </header>
 
     <!-- Grouped Articles -->
     {sortedGroups.map(([subcategory, docs]) => (
-      <section>
+      <section class="space-y-4">
         {subcategory !== '文章' && (
-          <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4 pb-2 border-b border-[var(--color-border)]">
-            {formatSubcategory(subcategory)}
-          </h2>
+          <div class="flex items-center gap-3 mb-5">
+            <h2 class="text-lg font-semibold text-[var(--color-text)]">
+              {formatSubcategory(subcategory)}
+            </h2>
+            <div class="flex-1 h-px bg-gradient-to-r from-[var(--color-border)] to-transparent"></div>
+            <span class="text-xs text-[var(--color-text-muted)] px-2 py-1 rounded-md bg-[var(--color-bg-secondary)]">
+              {docs.length}
+            </span>
+          </div>
         )}
         
         <div class="grid gap-3">
-          {docs.map(doc => (
+          {docs.map((doc, index) => (
             <a 
               href={getDocUrl(doc.id)}
-              class="group flex items-center justify-between p-4 rounded-lg hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+              class="group relative flex items-center gap-4 p-4 md:p-5 rounded-xl
+                     bg-[var(--color-bg)] hover:bg-[var(--color-bg-secondary)]/50
+                     border border-transparent hover:border-[var(--color-border)]
+                     shadow-sm hover:shadow-md
+                     transition-all duration-200 ease-out cursor-pointer"
+              style={`animation-delay: ${index * 30}ms`}
             >
+              <!-- Article Number -->
+              <div class="hidden md:flex items-center justify-center w-8 h-8 rounded-lg 
+                          bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] 
+                          text-xs font-mono shrink-0
+                          group-hover:bg-[var(--color-primary)]/10 group-hover:text-[var(--color-primary)]
+                          transition-colors duration-200">
+                {String(index + 1).padStart(2, '0')}
+              </div>
+              
+              <!-- Content -->
               <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+                <h3 class="font-medium text-[var(--color-text)] 
+                           group-hover:text-[var(--color-primary)] 
+                           transition-colors duration-200 truncate">
                   {doc.data.title || doc.id.split('/').pop()?.replace(/-/g, ' ')}
                 </h3>
                 {doc.data.description && (
-                  <p class="text-sm text-[var(--color-text-muted)] mt-1 truncate">
+                  <p class="text-sm text-[var(--color-text-muted)] mt-1 truncate opacity-80">
                     {doc.data.description}
                   </p>
                 )}
               </div>
               
-              <div class="flex items-center gap-3 ml-4 shrink-0">
+              <!-- Meta & Arrow -->
+              <div class="flex items-center gap-4 shrink-0">
                 {doc.data.date && (
                   <time 
                     datetime={doc.data.date.toISOString()}
-                    class="text-xs text-[var(--color-text-muted)]"
+                    class="hidden sm:block text-xs text-[var(--color-text-muted)] font-mono"
                   >
-                    {doc.data.date.toLocaleDateString('zh-CN')}
+                    {doc.data.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
                   </time>
                 )}
-                <svg class="w-4 h-4 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
+                <div class="w-6 h-6 rounded-full flex items-center justify-center
+                            bg-[var(--color-bg-secondary)] group-hover:bg-[var(--color-primary)]
+                            transition-all duration-200">
+                  <svg class="w-3 h-3 text-[var(--color-text-muted)] group-hover:text-white 
+                              transform group-hover:translate-x-0.5 transition-all duration-200" 
+                       fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </div>
             </a>
           ))}
@@ -167,10 +214,41 @@ function getDocUrl(docId: string): string {
       </section>
     ))}
 
+    <!-- Empty State -->
     {categoryDocs.length === 0 && (
-      <div class="text-center py-12 text-[var(--color-text-muted)]">
-        <p>暂无文章</p>
+      <div class="flex flex-col items-center justify-center py-20 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-[var(--color-bg-secondary)] flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <p class="text-[var(--color-text-muted)]">暂无文章</p>
+        <p class="text-sm text-[var(--color-text-muted)] mt-1 opacity-60">内容正在准备中...</p>
       </div>
     )}
   </div>
 </DocLayout>
+
+<style>
+  /* Subtle entrance animation */
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  section a {
+    animation: fadeSlideIn 0.4s ease-out both;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    section a {
+      animation: none;
+    }
+  }
+</style>

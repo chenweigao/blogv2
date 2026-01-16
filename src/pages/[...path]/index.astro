@@ -1,7 +1,7 @@
 ---
 /**
  * Dynamic index page generator for subfolders
- * Modern glassmorphism design inspired by Linear, Apple, and SaaS dashboards
+ * Modern glassmorphism design
  */
 import { getCollection } from 'astro:content';
 import DocLayout from '../../layouts/DocLayout.astro';
@@ -45,22 +45,20 @@ const folderName = pathParts[pathParts.length - 1] || '';
 const title = folderName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 const category = pathParts[0] || '';
 
-// Category accent colors (subtle, modern palette)
 const categoryAccent: Record<string, string> = {
-  'algorithms': '#8b5cf6',
-  'computer-systems': '#10b981',
+  'algorithms': '#3b82f6',
+  'computer-systems': '#8b5cf6',
   'programming-languages': '#f59e0b',
-  'artificial-intelligence': '#ec4899',
-  'development-tools': '#6366f1',
-  'research-projects': '#14b8a6',
+  'artificial-intelligence': '#10b981',
+  'development-tools': '#ef4444',
+  'research-projects': '#6366f1',
 };
-const accent = categoryAccent[category] || '#8b5cf6';
+const accent = categoryAccent[category] || '#6366f1';
 
-// Get docs and subfolders
 const allDocs = await getCollection('docs');
 const folderDocs = allDocs.filter(doc => {
   if (!doc.id.startsWith(path + '/')) return false;
-  if (doc.id.endsWith('/inde return false;
+  if (doc.id.endsWith('/index')) return false;
   const relativePath = doc.id.slice(path.length + 1);
   return !relativePath.includes('/');
 });
@@ -88,172 +86,145 @@ const totalItems = displaySubfolders.length + folderDocs.length;
 ---
 
 <DocLayout title={title}>
-  <div class="index-page space-y-10">
-    <!-- Hero SectionGlassmorphism -->
-    <header class="hero-section relative">
-      <!-- Ambient background glow -->
-      <div class="absolute -inset-4 opacity-30 blur-3xl" style={`background: radial-gradient(ellipse at 30% 20%, ${accent}40, transparent 50%), radial-gradient(ellipse at 70% 80%, ${accent}30, transparent 50%)`}></div>
+  <div class="space-y-10">
+    <!-- Header -->
+    <header class="relative overflow-hidden rounded-2xl p-8">
+      <div class="absolute inset-0 opacity-20" style={`background: linear-gradient(135deg, ${accent}40, transparent 60%)`}></div>
+      <div class="absolute inset-0 bg-[var(--color-bg)]/50 backdrop-blur-sm"></div>
       
-      <!-- Glass card -->
-      <div class="relative glass-card rounded-3xl p-8 md:p-10 overflow-hidden">
-        <!-- Subtle grid pattern -->
-        <div class="absolute inset-0 opacity-[t 1px); background-size: 24px 24px;"></div>
-        
-        <!-- Gradient accent line -->
-        <div class="absolute top-0 left-8 right-8 h-px" style={`background: linear-gradient(90deg, transparent, ${accent}60, transparent)`}></div>
-        
-        <div class="relative">
-          <!-- Breadcrumb -->
-          <nav class="mb-6">
-            <ol class="flex items-center gap-2 text-sm">
-              <li>
-                <a href="/transition-colors duration-200">
-                  首页
-                </a>
-              </li>
-              {pathParts.map((part, i) => (
-                <>
-                  <li class="text-[var(--color-text-muted)]/50">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </li>
-                  <li>
-                {i === pathParts.length - 1 ? (
-                      <span class="font-medium text-[var(--color-text)]">{formatName(part)}</span>
-: (
-                      <a href={`/blogv2/${pathParts.slice(0, i + 1).join('/')}/`} class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors duration-200">
-                        {formatName(part)}
-                      </a>
-                    )}
-                  </li>
-                </>
-              ))}
-            </ol>
-          </nav>
+      <div class="relative">
+        <!-- Breadcrumb -->
+        <nav class="mb-5">
+          <ol class="flex items-center gap-2 text-sm flex-wrap">
+            <li>
+              <a href="/blogv2/" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors cursor-pointer">
+                首页
+              </a>
+            </li>
+            {pathParts.map((part, i) => (
+              <>
+                <li class="text-[var(--color-text-muted)]">/</li>
+                <li>
+                  {i === pathParts.length - 1 ? (
+                    <span class="font-medium text-[var(--color-text)]">{formatName(part)}</span>
+                  ) : (
+                    <a 
+                      href={`/blogv2/${pathParts.slice(0, i + 1).join('/')}/`} 
+                      class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors cursor-pointer"
+                    >
+                      {formatName(part)}
+                    </a>
+                  )}
+                </li>
+              </>
+            ))}
+          </ol>
+        </nav>
 
-          <!-- Title area -->
-          <div class="flex items-start gap-5">
-            <!-- Icon with glow -->
-            <div class="relative shrink-0">
-              <div class="absolute inset-0 blur-xl opacity-40" style={`background: ${accent}`}></div>
-              <div class="relative w-14 h-14 rounded-2xl flex items-center justify-center" style={`background: linear-gradient(135deg, ${accent}20, ${accent}10); border: 1px solid ${accent}30`}>
-                <svg class="w-7 h-7" style={`color: ${accent}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="rou-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                </svg>
-              </div>
-            </div>
-            
-            <div class="flex-1 min-w-0">
-              <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text)] tracking-tight">{title}</h1>
-              <p class="mt-2 text-[var(--color-text-muted)] text-lg">
-                {totalItems > 0 ? (
-                  <span class="flex items-center gap-3">
-                    {displaySubfolders.length > 0 && (
-                      <span class="inline-flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full" style={`background: ${accent}`}></span>
-                        {displaySubfolders.length} 个目录
-                      </span>
-                    )}
-                    {folderDocs.length > 0 && (
-                      <span class="inline-flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-[var(--color-text-muted)]/30"></span>
-                        {folderDocs.length} 篇文章
-                      </span>
-                    )}
-                  </span>
-                ) : '暂无内容'}
-              </p>
-            </div>
+        <div class="flex items-center gap-4">
+          <div 
+            class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+            style={`background: ${accent}20; border: 1px solid ${accent}30`}
+          >
+            <svg class="w-6 h-6" style={`color: ${accent}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-[var(--color-text)]">{title}</h1>
+            <p class="text-[var(--color-text-muted)] mt-1">
+              {displaySubfolders.length > 0 && `${displaySubfolders.length} 个目录`}
+              {displaySubfolders.length > 0 && folderDocs.length > 0 && ' · '}
+              {folderDocs.length > 0 && `${folderDocs.length} 篇文章`}
+              {totalItems === 0 && '暂无内容'}
+            </p>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Subfolders Section -->
+    <!-- Subfolders -->
     {displaySubfolders.length > 0 && (
-      <section class="space-y-5">
-        <div class="flex items-center gap-3">
-          <div class="w-1 h-5 rounded-full" style={`background: ${accent}`}></div>
-          <h2 class="texold text-[var(--color-text)]">目录</h2>
-        </div>
+      <section class="space-y-4">
+        <h2 class="text-lg font-semibold text-[var(--color-text)] flex items-center gap-2">
+          <span class="w-1 h-5 rounded-full" style={`background: ${accent}`}></span>
+          目录
+        </h2>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {displaySubfolders.map((subfolder) => (
             <a 
               href={`/blogv2/${path}/${subfolder}/`}
-              class="folder-card group relative rounded-2xl p-5 transition-all duration-300 cursor-pointer"
+              class="group flex items-center gap-3 p-4 rounded-xl
+                     bg-[var(--color-bg)] hover:bg-[var(--color-bg-secondary)]/50
+                     border border-[var(--color-border)]/50 hover:border-[var(--color-border)]
+                     shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
             >
-              <!-- Hover glow -->
-              <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={`background: radial-gradient(ellipse at center, ${accent}08, transparent 70%)`}></div>
-              
-              <div class="relative flex items-center gap-4">
-                <div class="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-105" style={`background: ${accent}12; border: 1px solid ${accent}20`}>
-                  <svg class="w-5 h-5 transition-colors duration-300" style={`color: ${accenewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                  </svg>
-                </div>
-                
-                <div class="flex-1 min-w-0">
-                  <h3 class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-text)] transition-colors truncate">
-                    {formatName(subfolder)}
-                  </h3>
-                </div>
-                
-                <svg class="w-5 h-5 text-[var(--color-text-muted)]/50 group-hover:text-[var(--color-text-muted)] group-hover:translate-x-0.5 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+              <div 
+                class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0
+                       group-hover:scale-105 transition-transform duration-200"
+                style={`background: ${accent}15`}
+              >
+                <svg class="w-5 h-5" style={`color: ${accent}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                 </svg>
               </div>
+              <span class="font-medium text-[var(--color-text)] truncate">{formatName(subfolder)}</span>
+              <svg class="w-4 h-4 text-[var(--color-text-muted)] ml-auto shrink-0 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
             </a>
           ))}
         </div>
       </section>
     )}
 
-    <!-- Articles Section -->
+    <!-- Articles -->
     {folderDocs.length > 0 && (
-      <section class="space-y-5">
-        <div class="flex items-center gap-3">
-          <div class="w-1 h-5 rounded-full bg-[var(--color-text-muted)]/30"></div>
-          <h2 class="text-lg font-semibold text-[var(--color-text)]">文章</h2>
-        </div>
+      <section class="space-y-4">
+        <h2 class="text-lg font-semibold text-[var(--color-text)] flex items-center gap-2">
+          <span class="w-1 h-5 rounded-full bg-[var(--color-text-muted)]/30"></span>
+          文章
+        </h2>
         
-        <div class="space-y-3">
+        <div class="space-y-2">
           {folderDocs.map((doc, i) => (
             <a 
               href={getDocUrl(doc.id)}
-              class="article-card group flex items-center gap-5 rounded-2xl p-5 transition-all duration-300 cursor-pointer"
+              class="group flex items-center gap-4 p-4 rounded-xl
+                     hover:bg-[var(--color-bg-secondary)]/50
+                     border border-transparent hover:border-[var(--color-border)]/50
+                     transition-all duration-200 cursor-pointer"
             >
-              <!-- Index number -->
-              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-medium transition-all duration-300 shrink-0" style={`background: var(--color-bg-secondary); color: var(--color-text-muted)`}>
-                <span class="group-hover:opacity-0 transition-opacity">{String(i + 1).padStart(2, '0')}</span>
-                <svg class="w-4 h-4 absolute opacity-0 group-hover:opacity-100 transition-opacity" style={`{accent}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono
+                          bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)]
+                          group-hover:text-[var(--color-primary)] transition-colors shrink-0">
+                {String(i + 1).padStart(2, '0')}
               </div>
               
               <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-text)] transition-colors truncate">
+                <h3 class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors truncate">
                   {doc.data.title || doc.id.split('/').pop()?.replace(/-/g, ' ')}
                 </h3>
                 {doc.data.description && (
-                  <p class="text-sm text-[var(--color-text-muted)]/70 mt-1 truncate">
+                  <p class="text-sm text-[var(--color-text-muted)] mt-0.5 truncate opacity-70">
                     {doc.data.description}
                   </p>
                 )}
               </div>
               
-              <div class="flex items-center gap-4 shrink-0">
-                {doc.data.date && (
-                  <time datetimss="text-xs text-[var(--color-text-muted)]/60 hidden sm:block tabular-nums">
-                    {doc.data.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
-                  </time>
-                )}
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300" style={`background: ${accent}15`}>
-             >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </div>
+              {doc.data.date && (
+                <time class="text-xs text-[var(--color-text-muted)] hidden sm:block font-mono shrink-0">
+                  {doc.data.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                </time>
+              )}
+              
+              <div class="w-6 h-6 rounded-full flex items-center justify-center
+                          bg-[var(--color-bg-secondary)] group-hover:bg-[var(--color-primary)]
+                          transition-all duration-200 shrink-0">
+                <svg class="w-3 h-3 text-[var(--color-text-muted)] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
               </div>
             </a>
           ))}
@@ -263,85 +234,23 @@ const totalItems = displaySubfolders.length + folderDocs.length;
 
     <!-- Empty State -->
     {totalItems === 0 && (
-      <div class="flex flex-col items-center justify-center py-20">
-        <div class="w- ${accent}20`}>
-          <svg class="w-10 h-10" style={`color: ${accent}60`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={`background: ${accent}15`}>
+          <svg class="w-8 h-8" style={`color: ${accent}80`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
           </svg>
         </div>
-        <p class="text-[var(--color内容</p>
-        <p class="text-[var(--color-text-muted)]/60 text-sm mt-1">此目录下还没有文档</p>
+        <p class="text-[var(--color-text-muted)]">暂无内容</p>
+        <p class="text-sm text-[var(--color-text-muted)] mt-1 opacity-60">此目录下还没有文档</p>
       </div>
     )}
   </div>
 </DocLayout>
 
 <style>
-  .index-page {
-    --card-bg: color-mix(in srgb, var(--color-bg) 80%, transparent);
-    --card-border: color-mix(in srgb, var(--color-border) 50%, transparent);
-  }
-
-  .glass-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--card-border);
-    box-shadow: 
-      0 0 0 1px color-mix(in srgb, var(--color-text) 3%, transparent),
-      0 1px 2px color-mix(in srgb, var(--color-text) 4%, transparent),
-      0 4px 16px color-mix(in srgb, var(--color-text) 4%, transparent);
-  }
-
-  .folder-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(12px) saturate(150%);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-    border: 1px solid var(--card-border);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--color-text) 3%, transparent);
-  }
-s-reduced-motion: reduce) {
-    .folder-card,
-    .article-card {
-      transition: none;
-    }
-    .folder-card:hover {
-      transform: none;
+  @media (prefers-reduced-motion: reduce) {
+    a {
+      transition: none !important;
     }
   }
 </style>
-r-text) 4%, transparent);
-  }
-
-  /* Dark mode adjustments */
-  :global(.dark) .index-page {
-    --card-bg: color-mix(in srgb, var(--color-bg) 60%, transparent);
-    --card-border: color-mix(in srgb, var(--color-border) 40%, transparent);
-  }
-
-  :global(.dark) .glass-card {
-    box-shadow: 
-      0 0 0 1px color-mix(in srgb, white 5%, transparent),
-      0 1px 2px color-mix(in srgb, black 20%, transparent),
-      0 4px 16px color-mix(in srgb, black 30%, transparent);
-  }
-
-  /* Reduced motion */
-  @media (prefer {
-    border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-    box-shadow: 
-      0 0 0 1px color-mix(in srgb, var(--color-text) 5%, transparent),
-      0 4px 20px color-mix(in srgb, var(--color-text) 6%, transparent);
-    transform: translateY(-2px);
-  }
-
-  .article-card {
-    background: transparent;
-    border: 1px solid transparent;
-  }
-
-  .article-card:hover {
-    background: var(--card-bg);
-    border-color: var(--card-border);
-    box-shadow: 0 2px 12px color-mix(in srgb, var(--colo
-  .folder-card:hover
