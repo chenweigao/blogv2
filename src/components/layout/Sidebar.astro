@@ -1,0 +1,106 @@
+---
+import { isActive, isExactActive, type SidebarItem } from '../../lib/sidebar';
+
+interface Props {
+  items: SidebarItem[];
+  currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+---
+
+<aside class="w-64 shrink-0 hidden lg:block">
+  <nav 
+    class="glass rounded-2xl p-4 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto"
+    aria-label="侧边栏导航"
+    style="--glass-blur: 12px;"
+  >
+    <ul class="space-y-1">
+      {items.map((item) => (
+        <li>
+          {item.children && item.children.length > 0 ? (
+            <details 
+              class="group"
+              open={isActive(item.href, currentPath)}
+            >
+              <summary class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors">
+                <span class="text-sm font-medium">{item.title}</span>
+                <svg 
+                  class="w-4 h-4 transition-transform duration-250 group-open:rotate-90" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </summary>
+              <ul class="mt-1 ml-3 pl-3 border-l border-[var(--color-border)] space-y-1">
+                {item.children.map((child) => (
+                  <li>
+                    <a
+                      href={child.href}
+                      class:list={[
+                        'block px-3 py-1.5 rounded-lg text-sm transition-colors cursor-pointer',
+                        isExactActive(child.href, currentPath)
+                          ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border-l-3 border-[var(--color-primary)] -ml-3 pl-6'
+                          : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]'
+                      ]}
+                      aria-current={isExactActive(child.href, currentPath) ? 'page' : undefined}
+                    >
+                      {child.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : (
+            <a
+              href={item.href}
+              class:list={[
+                'block px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer',
+                isExactActive(item.href, currentPath)
+                  ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border-l-3 border-[var(--color-primary)]'
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]'
+              ]}
+              aria-current={isExactActive(item.href, currentPath) ? 'page' : undefined}
+            >
+              {item.title}
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>
+
+<script>
+  // Persist collapse state
+  function initSidebarState() {
+    const details = document.querySelectorAll('aside nav details');
+    const storageKey = 'sidebar-collapse-state';
+    
+    // Load saved state
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      details.forEach((detail, index) => {
+        if (saved[index] !== undefined) {
+          (detail as HTMLDetailsElement).open = saved[index];
+        }
+      });
+    } catch {}
+    
+    // Save state on toggle
+    details.forEach((detail, index) => {
+      detail.addEventListener('toggle', () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+          saved[index] = (detail as HTMLDetailsElement).open;
+          localStorage.setItem(storageKey, JSON.stringify(saved));
+        } catch {}
+      });
+    });
+  }
+  
+  initSidebarState();
+  document.addEventListener('astro:after-swap', initSidebarState);
+</script>

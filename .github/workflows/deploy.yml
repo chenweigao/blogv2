@@ -1,9 +1,8 @@
-name: Deploy VitePress to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - '**'
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -13,11 +12,10 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
-    if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,25 +29,24 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: pnpm
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "astro-site/pnpm-lock.yaml"
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
+        working-directory: astro-site
 
-      - name: Generate timeline (incremental)
-        run: pnpm run timeline:incremental
+      - name: Build
+        run: pnpm build
+        working-directory: astro-site
 
-      - name: Build site
-        run: pnpm run build
-
-      - name: Upload Pages artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist
+          path: astro-site/dist
 
   deploy:
-    if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
