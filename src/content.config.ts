@@ -6,7 +6,12 @@ import { glob } from 'astro/loaders';
  * Validates: Requirements 2.1, 2.2, 15.1
  */
 const docsCollection = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/docs' }),
+  loader: glob({ 
+    pattern: '**/*.md', 
+    base: './src/content/docs',
+    // Disable automatic image processing for relative paths
+    generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+  }),
   schema: z.object({
     // Required fields with defaults
     title: z.string().optional(),

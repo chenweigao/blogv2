@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { remarkRelativeImages } from './src/lib/remark-relative-images.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,10 +27,22 @@ export default defineConfig({
         dark: 'github-dark',
       },
     },
-    remarkPlugins: [remarkMath],
+    remarkPlugins: [remarkMath, remarkRelativeImages],
     rehypePlugins: [rehypeKatex],
+  },
+  image: {
+    // Allow images from content directory
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
   },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        // Externalize pagefind since it's generated post-build
+        external: [/^\/blogv2\/pagefind\//],
+      },
+    },
   },
 });

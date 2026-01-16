@@ -84,9 +84,12 @@
 
     if (!modal || !input || !resultsContainer) return;
 
-    // Load pagefind
+    // Load pagefind dynamically at runtime
     try {
-      pagefind = await import('/blogv2/pagefind/pagefind.js');
+      // Use a variable to prevent Vite from analyzing the import
+      const pagefindPath = '/blogv2/pagefind/pagefind.js';
+      // @ts-ignore - pagefind is generated at build time
+      pagefind = await import(/* @vite-ignore */ pagefindPath);
       await pagefind.init();
     } catch (e) {
       console.warn('Pagefind not available:', e);
