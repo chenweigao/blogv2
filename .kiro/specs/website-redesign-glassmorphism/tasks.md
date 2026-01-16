@@ -6,14 +6,14 @@ This implementation plan breaks down the website redesign into discrete, increme
 
 ## Tasks
 
-- [ ] 1. Enhance Design Token System
-  - [ ] 1.1 Update design-tokens.css with refined glassmorphism variables
+- [x] 1. Enhance Design Token System
+  - [x] 1.1 Update design-tokens.css with refined glassmorphism variables
     - Add blur intensity tokens (--vp-blur-navbar, --vp-blur-sidebar, --vp-blur-card)
     - Add glass background opacity variants for light/dark modes
     - Add multi-layered shadow presets
     - _Requirements: 1.1, 1.5, 2.1, 4.1, 4.2, 7.1_
   
-  - [ ] 1.2 Update variables.css with VitePress-specific overrides
+  - [x] 1.2 Update variables.css with VitePress-specific overrides
     - Map design tokens to VitePress CSS variables
     - Add component-specific variable aliases
     - Ensure dark mode variables are complete

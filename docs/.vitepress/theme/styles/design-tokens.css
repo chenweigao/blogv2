@@ -74,35 +74,48 @@
      3. 玻璃拟态系统 (Glassmorphism)
      ======================================== */
   
-  /* 玻璃背景 */
+  /* 玻璃背景 - Light Mode */
   --glass-bg-light: rgba(255, 255, 255, 0.72);
   --glass-bg-medium: rgba(255, 255, 255, 0.56);
   --glass-bg-heavy: rgba(255, 255, 255, 0.88);
   --glass-bg-ultra: rgba(255, 255, 255, 0.95);
+  
+  /* 玻璃背景透明度变体 - Light Mode (0.7-0.9 range for visibility) */
+  --glass-opacity-navbar: 0.8;
+  --glass-opacity-sidebar: 0.7;
+  --glass-opacity-card: 0.75;
+  --glass-opacity-modal: 0.9;
   
   /* 玻璃边框 */
   --glass-border-light: rgba(255, 255, 255, 0.18);
   --glass-border-medium: rgba(255, 255, 255, 0.25);
   --glass-border-heavy: rgba(255, 255, 255, 0.35);
   
-  /* 模糊强度 */
+  /* 模糊强度 - 基础值 */
   --glass-blur-sm: 8px;
   --glass-blur-md: 16px;
   --glass-blur-lg: 24px;
   --glass-blur-xl: 40px;
   
-  /* 玻璃效果预设 */
+  /* 组件专用模糊强度 (Requirements 1.1, 2.1, 4.1) */
+  --glass-blur-navbar: 20px;    /* Navbar: 16-24px range, using 20px */
+  --glass-blur-sidebar: 10px;   /* Sidebar: 8-12px range, using 10px */
+  --glass-blur-card: 14px;      /* Card: 12-16px range, using 14px */
+  --glass-blur-modal: 24px;     /* Modal: using lg blur */
+  --glass-blur-code: 8px;       /* Code blocks: subtle blur */
+  
+  /* 玻璃效果预设 - Light Mode */
   --glass-effect-light: 
     rgba(255, 255, 255, 0.72) 
     blur(16px);
   --glass-effect-navbar: 
     rgba(255, 255, 255, 0.8);
   --glass-effect-sidebar: 
-    rgba(255, 255, 255, 0.6);
-  --glass-effect-card: 
     rgba(255, 255, 255, 0.7);
+  --glass-effect-card: 
+    rgba(255, 255, 255, 0.75);
   --glass-effect-modal: 
-    rgba(255, 255, 255, 0.85);
+    rgba(255, 255, 255, 0.9);
 
   /* ========================================
      4. 阴影系统 - 柔和多层次
@@ -133,6 +146,35 @@
     0 24px 64px rgba(0, 0, 0, 0.1),
     0 12px 24px rgba(0, 0, 0, 0.05);
   
+  /* 组件专用多层阴影预设 (Requirements 1.5, 4.2) */
+  --shadow-navbar: 
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.02);
+  
+  --shadow-sidebar: 
+    0 2px 8px rgba(0, 0, 0, 0.03),
+    0 1px 4px rgba(0, 0, 0, 0.02);
+  
+  --shadow-card: 
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    0 2px 6px rgba(0, 0, 0, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.02);
+  
+  --shadow-card-hover: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.02);
+  
+  --shadow-code-block: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  
+  --shadow-modal: 
+    0 24px 64px rgba(0, 0, 0, 0.12),
+    0 12px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+  
   /* 品牌色阴影 */
   --shadow-brand-sm: 
     0 2px 8px rgba(94, 92, 230, 0.15);
@@ -142,6 +184,15 @@
   
   --shadow-brand-lg: 
     0 8px 24px rgba(94, 92, 230, 0.25);
+  
+  /* 品牌色组件阴影 */
+  --shadow-brand-button: 
+    0 4px 14px rgba(94, 92, 230, 0.25),
+    0 2px 6px rgba(94, 92, 230, 0.15);
+  
+  --shadow-brand-button-hover: 
+    0 8px 24px rgba(94, 92, 230, 0.3),
+    0 4px 10px rgba(94, 92, 230, 0.2);
   
   /* 悬浮阴影（用于卡片悬停等） */
   --shadow-hover: 
@@ -355,11 +406,17 @@
   --apple-divider: rgba(255, 255, 255, 0.08);
   --apple-divider-light: rgba(255, 255, 255, 0.04);
   
-  /* 玻璃背景 - 暗色 */
+  /* 玻璃背景 - 暗色 (darker base colors per Req 7.3) */
   --glass-bg-light: rgba(28, 28, 30, 0.72);
   --glass-bg-medium: rgba(28, 28, 30, 0.56);
   --glass-bg-heavy: rgba(28, 28, 30, 0.88);
   --glass-bg-ultra: rgba(28, 28, 30, 0.95);
+  
+  /* 玻璃背景透明度变体 - Dark Mode (adjusted for dark backgrounds) */
+  --glass-opacity-navbar: 0.85;
+  --glass-opacity-sidebar: 0.75;
+  --glass-opacity-card: 0.8;
+  --glass-opacity-modal: 0.92;
   
   /* 玻璃边框 - 暗色 */
   --glass-border-light: rgba(255, 255, 255, 0.08);
@@ -367,12 +424,12 @@
   --glass-border-heavy: rgba(255, 255, 255, 0.18);
   
   /* 玻璃效果预设 - 暗色 */
-  --glass-effect-navbar: rgba(28, 28, 30, 0.8);
-  --glass-effect-sidebar: rgba(28, 28, 30, 0.6);
-  --glass-effect-card: rgba(28, 28, 30, 0.7);
-  --glass-effect-modal: rgba(28, 28, 30, 0.9);
+  --glass-effect-navbar: rgba(28, 28, 30, 0.85);
+  --glass-effect-sidebar: rgba(28, 28, 30, 0.75);
+  --glass-effect-card: rgba(28, 28, 30, 0.8);
+  --glass-effect-modal: rgba(28, 28, 30, 0.92);
   
-  /* 阴影 - 暗色主题更深 */
+  /* 阴影 - 暗色主题更深 (proportional intensity per Req 7.4) */
   --shadow-xs: 
     0 1px 2px rgba(0, 0, 0, 0.2),
     0 1px 1px rgba(0, 0, 0, 0.15);
@@ -397,6 +454,35 @@
     0 24px 64px rgba(0, 0, 0, 0.4),
     0 12px 24px rgba(0, 0, 0, 0.3);
   
+  /* 组件专用多层阴影预设 - 暗色 */
+  --shadow-navbar: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  
+  --shadow-sidebar: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 1px 4px rgba(0, 0, 0, 0.1);
+  
+  --shadow-card: 
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  
+  --shadow-card-hover: 
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  --shadow-code-block: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  --shadow-modal: 
+    0 24px 64px rgba(0, 0, 0, 0.4),
+    0 12px 32px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+  
   /* 品牌色阴影 - 暗色 */
   --shadow-brand-sm: 
     0 2px 8px rgba(123, 123, 247, 0.2);
@@ -406,6 +492,15 @@
   
   --shadow-brand-lg: 
     0 8px 24px rgba(123, 123, 247, 0.3);
+  
+  /* 品牌色组件阴影 - 暗色 */
+  --shadow-brand-button: 
+    0 4px 14px rgba(123, 123, 247, 0.3),
+    0 2px 6px rgba(123, 123, 247, 0.2);
+  
+  --shadow-brand-button-hover: 
+    0 8px 24px rgba(123, 123, 247, 0.35),
+    0 4px 10px rgba(123, 123, 247, 0.25);
   
   --shadow-hover: 
     0 12px 32px rgba(0, 0, 0, 0.35),
@@ -453,6 +548,41 @@
   border: 1px solid var(--glass-border-heavy);
 }
 
+/* 组件专用玻璃效果类 */
+.glass-navbar {
+  background: var(--glass-effect-navbar);
+  backdrop-filter: blur(var(--glass-blur-navbar));
+  -webkit-backdrop-filter: blur(var(--glass-blur-navbar));
+  border: 1px solid var(--glass-border-light);
+  box-shadow: var(--shadow-navbar);
+}
+
+.glass-sidebar {
+  background: var(--glass-effect-sidebar);
+  backdrop-filter: blur(var(--glass-blur-sidebar));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sidebar));
+  border: 1px solid var(--glass-border-light);
+  box-shadow: var(--shadow-sidebar);
+}
+
+.glass-card {
+  background: var(--glass-effect-card);
+  backdrop-filter: blur(var(--glass-blur-card));
+  -webkit-backdrop-filter: blur(var(--glass-blur-card));
+  border: 1px solid var(--glass-border-light);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+}
+
+.glass-modal {
+  background: var(--glass-effect-modal);
+  backdrop-filter: blur(var(--glass-blur-modal));
+  -webkit-backdrop-filter: blur(var(--glass-blur-modal));
+  border: 1px solid var(--glass-border-medium);
+  box-shadow: var(--shadow-modal);
+  border-radius: var(--radius-modal);
+}
+
 /* 阴影工具类 */
 .shadow-apple-sm { box-shadow: var(--shadow-sm); }
 .shadow-apple-md { box-shadow: var(--shadow-md); }
@@ -460,6 +590,14 @@
 .shadow-apple-xl { box-shadow: var(--shadow-xl); }
 .shadow-apple-hover { box-shadow: var(--shadow-hover); }
 .shadow-apple-brand { box-shadow: var(--shadow-brand-md); }
+
+/* 组件专用阴影工具类 */
+.shadow-navbar { box-shadow: var(--shadow-navbar); }
+.shadow-sidebar { box-shadow: var(--shadow-sidebar); }
+.shadow-card { box-shadow: var(--shadow-card); }
+.shadow-card-hover { box-shadow: var(--shadow-card-hover); }
+.shadow-code-block { box-shadow: var(--shadow-code-block); }
+.shadow-modal { box-shadow: var(--shadow-modal); }
 
 /* 过渡工具类 */
 .transition-apple {
@@ -491,19 +629,47 @@
   .glass,
   .glass-light,
   .glass-heavy,
-  .glass-ultra {
+  .glass-ultra,
+  .glass-navbar,
+  .glass-sidebar,
+  .glass-card,
+  .glass-modal {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
 }
 
-/* 低性能设备降级 */
+/* 低性能设备降级 - Glassmorphism Fallback (Req 7.8) */
 @supports not (backdrop-filter: blur(1px)) {
   .glass,
-  .glass-light,
+  .glass-light {
+    background: var(--apple-bg-primary);
+    opacity: 0.95;
+  }
+  
   .glass-heavy,
   .glass-ultra {
     background: var(--apple-bg-primary);
+    opacity: 0.98;
+  }
+  
+  .glass-navbar {
+    background: var(--apple-bg-primary);
+    opacity: 0.96;
+  }
+  
+  .glass-sidebar {
+    background: var(--apple-bg-secondary);
     opacity: 0.95;
+  }
+  
+  .glass-card {
+    background: var(--apple-bg-primary);
+    opacity: 0.95;
+  }
+  
+  .glass-modal {
+    background: var(--apple-bg-primary);
+    opacity: 0.98;
   }
 }

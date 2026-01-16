@@ -30,6 +30,13 @@
   --vp-c-bg-glass-heavy: rgba(255, 255, 255, 0.88);
   --vp-c-bg-glass-light: rgba(255, 255, 255, 0.56);
   
+  /* 组件专用玻璃背景 (Requirements 7.1) */
+  --vp-c-bg-glass-navbar: rgba(255, 255, 255, 0.8);
+  --vp-c-bg-glass-sidebar: rgba(255, 255, 255, 0.7);
+  --vp-c-bg-glass-card: rgba(255, 255, 255, 0.75);
+  --vp-c-bg-glass-modal: rgba(255, 255, 255, 0.9);
+  --vp-c-bg-glass-code: rgba(255, 255, 255, 0.6);
+  
   /* ========================================
      文本色彩系统 - Apple 风格层级
      ======================================== */
@@ -51,6 +58,12 @@
   --vp-c-border-glass: rgba(255, 255, 255, 0.18);
   --vp-c-border-glass-heavy: rgba(255, 255, 255, 0.35);
   
+  /* 组件专用边框 (Requirements 7.7) */
+  --vp-c-border-navbar: rgba(255, 255, 255, 0.15);
+  --vp-c-border-sidebar: rgba(0, 0, 0, 0.06);
+  --vp-c-border-card: rgba(255, 255, 255, 0.18);
+  --vp-c-border-card-hover: rgba(94, 92, 230, 0.2);
+  
   /* ========================================
      状态色彩 - Apple 风格
      ======================================== */
@@ -69,6 +82,9 @@
   --vp-layout-max-width: 1200px;
   --vp-nav-height: 64px;
   --vp-sidebar-width: 272px;
+  
+  /* 浮动导航栏边距 */
+  --vp-nav-margin: 16px;
 
   /* ========================================
      字体系统 - Apple 风格
@@ -148,6 +164,34 @@
   --vp-shadow-brand-md: 0 4px 14px rgba(94, 92, 230, 0.2);
   --vp-shadow-brand-lg: 0 8px 24px rgba(94, 92, 230, 0.25);
   
+  /* 组件专用阴影 - 映射到设计令牌 */
+  --vp-shadow-navbar: 
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.02);
+  --vp-shadow-sidebar: 
+    0 2px 8px rgba(0, 0, 0, 0.03),
+    0 1px 4px rgba(0, 0, 0, 0.02);
+  --vp-shadow-card: 
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    0 2px 6px rgba(0, 0, 0, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.02);
+  --vp-shadow-card-hover: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.02);
+  --vp-shadow-code-block: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  
+  /* 品牌色按钮阴影 */
+  --vp-shadow-brand-button: 
+    0 4px 14px rgba(94, 92, 230, 0.25),
+    0 2px 6px rgba(94, 92, 230, 0.15);
+  --vp-shadow-brand-button-hover: 
+    0 8px 24px rgba(94, 92, 230, 0.3),
+    0 4px 10px rgba(94, 92, 230, 0.2);
+  
   /* 悬浮阴影 */
   --vp-shadow-hover: 
     0 12px 32px rgba(0, 0, 0, 0.08),
@@ -176,6 +220,8 @@
   --vp-border-radius-input: 8px;
   --vp-border-radius-card: 16px;
   --vp-border-radius-modal: 20px;
+  --vp-border-radius-navbar: 16px;
+  --vp-border-radius-code: 12px;
   
   /* ========================================
      Z-index 层级系统
@@ -200,6 +246,49 @@
   --vp-blur-md: 16px;
   --vp-blur-lg: 24px;
   --vp-blur-xl: 40px;
+  
+  /* 组件专用模糊强度 */
+  --vp-blur-navbar: 20px;
+  --vp-blur-sidebar: 10px;
+  --vp-blur-card: 14px;
+  --vp-blur-modal: 24px;
+  --vp-blur-code: 8px;
+  
+  /* ========================================
+     组件变量别名 - 便于组件样式引用
+     ======================================== */
+  
+  /* Navbar 组件变量 */
+  --vp-navbar-bg: var(--vp-c-bg-glass-navbar);
+  --vp-navbar-blur: var(--vp-blur-navbar);
+  --vp-navbar-border: var(--vp-c-border-navbar);
+  --vp-navbar-shadow: var(--vp-shadow-navbar);
+  --vp-navbar-radius: var(--vp-border-radius-navbar);
+  --vp-navbar-margin: var(--vp-nav-margin);
+  
+  /* Sidebar 组件变量 */
+  --vp-sidebar-bg: var(--vp-c-bg-glass-sidebar);
+  --vp-sidebar-blur: var(--vp-blur-sidebar);
+  --vp-sidebar-border: var(--vp-c-border-sidebar);
+  --vp-sidebar-shadow: var(--vp-shadow-sidebar);
+  --vp-sidebar-active-bg: var(--vp-c-brand-soft);
+  --vp-sidebar-active-border: var(--vp-c-brand-1);
+  
+  /* Card 组件变量 */
+  --vp-card-bg: var(--vp-c-bg-glass-card);
+  --vp-card-blur: var(--vp-blur-card);
+  --vp-card-border: var(--vp-c-border-card);
+  --vp-card-border-hover: var(--vp-c-border-card-hover);
+  --vp-card-shadow: var(--vp-shadow-card);
+  --vp-card-shadow-hover: var(--vp-shadow-card-hover);
+  --vp-card-radius: var(--vp-border-radius-card);
+  
+  /* Code Block 组件变量 */
+  --vp-code-bg: var(--vp-c-bg-glass-code);
+  --vp-code-blur: var(--vp-blur-code);
+  --vp-code-shadow: var(--vp-shadow-code-block);
+  --vp-code-radius: var(--vp-border-radius-code);
+  --vp-code-accent: var(--vp-c-brand-1);
 }
 
 /* ============================================
@@ -229,6 +318,13 @@
   --vp-c-bg-glass-heavy: rgba(28, 28, 30, 0.88);
   --vp-c-bg-glass-light: rgba(28, 28, 30, 0.56);
   
+  /* 组件专用玻璃背景 - 暗色 (Requirements 7.3) */
+  --vp-c-bg-glass-navbar: rgba(28, 28, 30, 0.85);
+  --vp-c-bg-glass-sidebar: rgba(28, 28, 30, 0.75);
+  --vp-c-bg-glass-card: rgba(28, 28, 30, 0.8);
+  --vp-c-bg-glass-modal: rgba(28, 28, 30, 0.92);
+  --vp-c-bg-glass-code: rgba(28, 28, 30, 0.65);
+  
   /* 文本色 - Apple 暗色风格 */
   --vp-c-text-1: #F5F5F7;
   --vp-c-text-2: #A1A1A6;
@@ -245,6 +341,12 @@
   /* 玻璃边框 - 暗色 */
   --vp-c-border-glass: rgba(255, 255, 255, 0.08);
   --vp-c-border-glass-heavy: rgba(255, 255, 255, 0.18);
+  
+  /* 组件专用边框 - 暗色 (Requirements 7.7) */
+  --vp-c-border-navbar: rgba(255, 255, 255, 0.1);
+  --vp-c-border-sidebar: rgba(255, 255, 255, 0.06);
+  --vp-c-border-card: rgba(255, 255, 255, 0.1);
+  --vp-c-border-card-hover: rgba(123, 123, 247, 0.25);
   
   /* 状态色 - 暗色下稍微调亮 */
   --vp-c-success: #30D158;
@@ -277,6 +379,34 @@
   --vp-shadow-brand-sm: 0 2px 8px rgba(123, 123, 247, 0.2);
   --vp-shadow-brand-md: 0 4px 14px rgba(123, 123, 247, 0.25);
   --vp-shadow-brand-lg: 0 8px 24px rgba(123, 123, 247, 0.3);
+  
+  /* 组件专用阴影 - 暗色 */
+  --vp-shadow-navbar: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  --vp-shadow-sidebar: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 1px 4px rgba(0, 0, 0, 0.1);
+  --vp-shadow-card: 
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  --vp-shadow-card-hover: 
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  --vp-shadow-code-block: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  /* 品牌色按钮阴影 - 暗色 */
+  --vp-shadow-brand-button: 
+    0 4px 14px rgba(123, 123, 247, 0.3),
+    0 2px 6px rgba(123, 123, 247, 0.2);
+  --vp-shadow-brand-button-hover: 
+    0 8px 24px rgba(123, 123, 247, 0.35),
+    0 4px 10px rgba(123, 123, 247, 0.25);
   
   /* 悬浮阴影 - 暗色 */
   --vp-shadow-hover: 
