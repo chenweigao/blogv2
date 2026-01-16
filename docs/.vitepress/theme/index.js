@@ -8,6 +8,8 @@ import './styles/navbar-animations.css'
 import './styles/mobile.css'
 // 新增：侧边栏动态组件样式
 import './styles/sidebar-widget.css'
+// Mermaid 图表样式（横向滚动支持和弹窗样式）
+import './styles/mermaid-modal.css'
 // 注意：以下CSS文件已整合到 custom.css 的模块化结构中，避免重复导入
 // import './styles/code-block-fix.css'     // 已整合到 content.css
 // import './styles/sidebar-effects.css'   // 已整合到 layout.css  
@@ -29,7 +31,6 @@ import imageViewer from 'vitepress-plugin-image-viewer'
 import { onMounted, watch, ref, onUnmounted } from 'vue'
 import { useRoute } from 'vitepress'
 import { createCodeBlockHandler } from './utils/codeBlockHandler.js'
-import { useMermaid, setMermaidModalState } from './composables/useMermaid.js'
 import { setupSidebarNavbarSync } from './utils/sidebarNavbarSync.js'
 import { initAnalytics } from './utils/analytics.js'
 import { initErrorMonitor } from './utils/errorMonitor.js'
@@ -56,8 +57,50 @@ const mermaidModalState = {
   })
 }
 
-// 设置 Mermaid 弹窗状态引用
-setMermaidModalState(mermaidModalState)
+// Mermaid 图表点击放大处理函数
+// 用于为 vitepress-plugin-mermaid 渲染的图表添加点击事件
+const initMermaidClickHandler = () => {
+  if (typeof window === 'undefined') return
+  
+  // 查找所有 mermaid 渲染的 SVG 容器
+  const mermaidContainers = document.querySelectorAll('.mermaid')
+  
+  mermaidContainers.forEach((container) => {
+    // 避免重复绑定
+    if (container.dataset.clickBound) return
+    container.dataset.clickBound = 'true'
+    
+    // 添加点击样式提示
+    container.style.cursor = 'pointer'
+    
+    container.addEventListener('click', () => {
+      const svg = container.querySelector('svg')
+      if (!svg) return
+      
+      // 获取 SVG 内容
+      const svgContent = container.innerHTML
+      
+      // 尝试获取原始 mermaid 代码（从 pre 标签或 data 属性）
+      let sourceCode = ''
+      const preElement = container.previousElementSibling
+      if (preElement && preElement.tagName === 'PRE') {
+        const codeElement = preElement.querySelector('code')
+        if (codeElement) {
+          sourceCode = codeElement.textContent || ''
+        }
+      }
+      
+      // 打开弹窗
+      if (mermaidModalState) {
+        mermaidModalState.data.value = { 
+          svg: svgContent, 
+          source: sourceCode 
+        }
+        mermaidModalState.visible.value = true
+      }
+    })
+  })
+}
 
 // 基于项目 base 路径注册 Service Worker，避免在子路径下 404
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator && import.meta.env.PROD) {
@@ -97,9 +140,6 @@ export default {
     // 创建代码块处理器
     const codeBlockHandler = createCodeBlockHandler(codeModalState)
     
-    // 使用自定义 mermaid composable
-    const { setupMermaid } = useMermaid()
-    
     // 延迟初始化 imageViewer：首张图片进入视口时再初始化
     let viewerInited = false
     const initImageViewerWhenNeeded = () => {
@@ -134,9 +174,9 @@ export default {
       onMounted(async () => {
         // 初始化代码块点击事件
         codeBlockHandler.initCodeBlockClick()
-
-        // 初始化自定义 mermaid
-        await setupMermaid()
+        
+        // 初始化 Mermaid 图表点击放大功能
+        initMermaidClickHandler()
 
         // 修复：立即初始化图片查看插件，确保绑定点击事件
         try {
@@ -195,9 +235,8 @@ export default {
       watch(() => route.path, async () => {
         setTimeout(async () => {
           codeBlockHandler.initCodeBlockClick()
-          // 路由变化时重新初始化 mermaid 渲染器
-          initMermaidRenderer()
-          await setupMermaid()
+          // 路由变化时重新初始化 Mermaid 点击处理
+          initMermaidClickHandler()
 
           // 修复：路由切换后立即初始化并记录失败原因
           try {

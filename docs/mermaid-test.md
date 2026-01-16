@@ -5,6 +5,26 @@
 ## 流程图示例
 
 ```mermaid
+mindmap
+  root((mindmap))
+    Origins
+      Long history
+      ::icon(fa fa-book)
+      Popularisation
+        British popular psychology author Tony Buzan
+    Research
+      On effectiveness<br/>and features
+      On Automatic creation
+        Uses
+            Creative techniques
+            Strategic planning
+            Argument mapping
+    Tools
+      Pen and paper
+      Mermaid
+```
+
+```mermaid
 graph TD
     A[开始] --> B{是否登录?}
     B -->|是| C[显示主页]

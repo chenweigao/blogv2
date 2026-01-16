@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 import { generateSidebar } from 'vitepress-sidebar'
 import { writeTimelineData } from './utils/generateTimeline.js'
 import { writeGitHistoryData } from './utils/generateGitHistoryData.js'
@@ -79,7 +80,7 @@ const vitepressSidebarOptions = [
   },
 ]
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   title: 'Knowledge Wiki',
   description: 'Personal Knowledge Base - Work & Study Documentation',
   lang: 'zh-CN',
@@ -103,7 +104,7 @@ export default defineConfig({
 
   // SSR 配置 - 解决客户端组件的 SSR 问题
   ssr: {
-    noExternal: ['vue', '@vue/shared']
+    noExternal: ['vue', '@vue/shared', 'mermaid']
   },
 
   // Vite 配置 - 添加实时 git 历史记录 API 插件
@@ -112,6 +113,22 @@ export default defineConfig({
       createGitHistoryAPI(),
       UnoCSS()
     ],
+    // 强制预构建 CommonJS 依赖，解决 ESM 兼容性问题
+    optimizeDeps: {
+      include: [
+        'mermaid',
+        '@braintree/sanitize-url',
+        'dayjs',
+        'cytoscape',
+        'cytoscape-cose-bilkent'
+      ]
+    },
+    // 解决 mermaid/dayjs ESM 兼容性问题
+    resolve: {
+      alias: {
+        'dayjs/esm': 'dayjs'
+      }
+    },
     // 优化构建配置
     build: {
       rollupOptions: {
@@ -371,5 +388,41 @@ export default defineConfig({
     }
 
     return tags
+  },
+
+  // Mermaid 配置 - 放在 withMermaid 参数对象内部
+  mermaid: {
+    theme: 'default',
+    securityLevel: 'loose',
+    // 禁用 useMaxWidth，让图表按原始大小渲染
+    // 复杂图表不会被压缩，文字保持清晰可读
+    flowchart: {
+      useMaxWidth: false,
+      htmlLabels: true,
+      padding: 20
+    },
+    sequence: {
+      useMaxWidth: false,
+      wrap: true
+    },
+    gantt: {
+      useMaxWidth: false
+    },
+    // 状态图
+    state: {
+      useMaxWidth: false
+    },
+    // 类图
+    class: {
+      useMaxWidth: false
+    },
+    // ER 图
+    er: {
+      useMaxWidth: false
+    }
+  },
+  // Mermaid 插件配置
+  mermaidPlugin: {
+    class: 'mermaid'
   }
-})
+}))
