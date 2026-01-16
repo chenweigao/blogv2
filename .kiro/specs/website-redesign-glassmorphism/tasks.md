@@ -91,20 +91,20 @@ This implementation plan breaks down the website redesign into discrete, increme
     - **Property 3: Transition Timing Bounds (Sidebar)**
     - **Validates: Requirements 2.5, 2.7**
 
-- [ ] 5. Implement Content Area Typography
-  - [ ] 5.1 Update content.css with typography improvements
+- [x] 5. Implement Content Area Typography
+  - [x] 5.1 Update content.css with typography improvements
     - Apply SF Pro / system font stack for body text
     - Set maximum content width to 80ch
     - Configure line height to 1.6-1.8 for body text
     - _Requirements: 3.1, 3.3, 3.4_
   
-  - [ ] 5.2 Implement heading hierarchy styles
+  - [x] 5.2 Implement heading hierarchy styles
     - Create consistent heading sizes with decreasing scale
     - Add letter-spacing (-0.01em to -0.02em) for headings
     - Apply appropriate spacing between headings and content
     - _Requirements: 3.5, 3.7_
   
-  - [ ] 5.3 Apply design token spacing throughout content area
+  - [x] 5.3 Apply design token spacing throughout content area
     - Use spacing scale for all margins and padding
     - Ensure consistent vertical rhythm
     - _Requirements: 3.6_
