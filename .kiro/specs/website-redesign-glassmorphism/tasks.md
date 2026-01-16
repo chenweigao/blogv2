@@ -117,7 +117,7 @@ This implementation plan breaks down the website redesign into discrete, increme
     - **Property 2: Contrast Ratio Compliance (Content)**
     - **Validates: Requirements 3.8**
 
-- [ ] 6. Checkpoint - Core Layout Complete
+- [x] 6. Checkpoint - Core Layout Complete
   - Ensure all navbar, sidebar, and content tests pass, ask the user if questions arise.
 
 - [ ] 7. Implement Card Components
