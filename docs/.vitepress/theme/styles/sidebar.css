@@ -1,0 +1,509 @@
+/* ============================================
+   Sidebar Glassmorphism Styles
+   Apple/Linear Design Language
+   ============================================ */
+
+/* 
+ * Requirements Coverage:
+ * - 2.1: Subtle glassmorphism background with lighter blur (8-12px)
+ * - 2.2: Clear visual hierarchy with distinct styling for parent and child items
+ * - 2.3: Brand-colored left border indicator (3px) for active items
+ * - 2.4: Soft brand-colored background highlight for active items
+ * - 2.5: Smooth background transitions on hover
+ * - 2.6: Consistent spacing using design token scale
+ * - 2.7: Collapsible sections with smooth expand/collapse animations (200-300ms)
+ * - 2.8: Dark mode with readable contrast and appropriate glass effects
+ */
+
+@layer components {
+  /* ========================================
+     Main Sidebar Container - Glassmorphism
+     Requirement 2.1: Subtle glassmorphism with 8-12px blur
+     ======================================== */
+  
+  .VPSidebar {
+    /* Glassmorphism background - Req 2.1 */
+    background: var(--vp-sidebar-bg, var(--vp-c-bg-glass-sidebar));
+    backdrop-filter: blur(var(--vp-sidebar-blur, var(--vp-blur-sidebar)));
+    -webkit-backdrop-filter: blur(var(--vp-sidebar-blur, var(--vp-blur-sidebar)));
+    
+    /* Subtle border for definition */
+    border-right: 1px solid var(--vp-sidebar-border, var(--vp-c-border-sidebar));
+    
+    /* Soft shadow for depth - Req 2.1 */
+    box-shadow: var(--vp-sidebar-shadow, var(--vp-shadow-sidebar));
+    
+    /* Smooth transitions for theme changes */
+    transition: 
+      background-color var(--vp-animation-duration-normal) var(--vp-animation-easing-out),
+      border-color var(--vp-animation-duration-normal) var(--vp-animation-easing-out),
+      box-shadow var(--vp-animation-duration-normal) var(--vp-animation-easing-out);
+  }
+
+  /* ========================================
+     Sidebar Navigation Groups
+     Requirement 2.2: Visual hierarchy for sections
+     ======================================== */
+  
+  .VPSidebar .VPSidebarNav {
+    /* Consistent spacing - Req 2.6 */
+    padding: var(--vp-space-16) var(--vp-space-8);
+  }
+  
+  /* Section/Group Title - Parent Level */
+  .VPSidebar .VPSidebarItem.level-0 > .item {
+    /* Parent item styling - Req 2.2 */
+    font-weight: 600;
+    font-size: var(--vp-font-size-s);
+    color: var(--vp-c-text-1);
+    letter-spacing: -0.01em;
+    
+    /* Spacing - Req 2.6 */
+    padding: var(--vp-space-8) var(--vp-space-12);
+    margin-bottom: var(--vp-space-4);
+  }
+  
+  /* Group header with caret */
+  .VPSidebar .VPSidebarItem.level-0 > .item .caret {
+    transition: transform var(--vp-animation-duration-normal) var(--vp-animation-easing-out);
+  }
+  
+  .VPSidebar .VPSidebarItem.level-0.collapsed > .item .caret {
+    transform: rotate(-90deg);
+  }
+
+  /* ========================================
+     Sidebar Items - Child Level
+     Requirement 2.2: Distinct styling for child items
+     ======================================== */
+  
+  /* Child items container */
+  .VPSidebar .VPSidebarItem.level-0 > .items {
+    /* Spacing between sections - Req 2.6 */
+    margin-bottom: var(--vp-space-16);
+  }
+  
+  /* Individual sidebar links */
+  .VPSidebar .VPSidebarItem .link {
+    /* Base styling */
+    display: flex;
+    align-items: center;
+    position: relative;
+    
+    /* Typography */
+    font-size: var(--vp-font-size-s);
+    font-weight: 400;
+    color: var(--vp-c-text-2);
+    line-height: var(--vp-line-height-normal);
+    
+    /* Spacing - Req 2.6 */
+    padding: var(--vp-space-8) var(--vp-space-12);
+    margin: var(--vp-space-2) 0;
+    
+    /* Rounded corners */
+    border-radius: var(--vp-border-radius-small);
+    
+    /* Left border placeholder for active state */
+    border-left: 3px solid transparent;
+    
+    /* Smooth transitions - Req 2.5 */
+    transition: 
+      color var(--vp-animation-duration-fast) var(--vp-animation-easing-out),
+      background-color var(--vp-animation-duration-fast) var(--vp-animation-easing-out),
+      border-color var(--vp-animation-duration-fast) var(--vp-animation-easing-out),
+      transform var(--vp-animation-duration-fast) var(--vp-animation-easing-out);
+  }
+  
+  /* Level 1 items (direct children) - Req 2.2 */
+  .VPSidebar .VPSidebarItem.level-1 > .item .link {
+    padding-left: var(--vp-space-16);
+  }
+  
+  /* Level 2+ items (nested children) - Req 2.2 */
+  .VPSidebar .VPSidebarItem.level-2 > .item .link {
+    padding-left: var(--vp-space-24);
+    font-size: calc(var(--vp-font-size-s) - 1px);
+  }
+  
+  .VPSidebar .VPSidebarItem.level-3 > .item .link {
+    padding-left: var(--vp-space-32);
+    font-size: calc(var(--vp-font-size-s) - 1px);
+  }
+
+  /* ========================================
+     Sidebar Link Text
+     ======================================== */
+  
+  .VPSidebar .VPSidebarItem .link .text {
+    /* Ensure text is properly styled */
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ========================================
+     Sidebar Hover States
+     Requirement 2.5: Smooth background transitions on hover
+     ======================================== */
+  
+  @media (hover: hover) {
+    .VPSidebar .VPSidebarItem .link:hover {
+      /* Hover background - Req 2.5 */
+      background-color: var(--vp-c-bg-soft);
+      color: var(--vp-c-text-1);
+      
+      /* Subtle transform for feedback */
+      transform: translateX(2px);
+    }
+    
+    /* Parent item hover */
+    .VPSidebar .VPSidebarItem.level-0 > .item:hover {
+      color: var(--vp-c-brand-1);
+      cursor: pointer;
+    }
+    
+    /* Collapsible header hover */
+    .VPSidebar .VPSidebarItem.collapsible > .item:hover {
+      background-color: var(--vp-c-bg-soft);
+      border-radius: var(--vp-border-radius-small);
+    }
+  }
+
+  /* ========================================
+     Sidebar Active States
+     Requirements 2.3, 2.4: Active item styling
+     ======================================== */
+  
+  /* Active link styling - multiple selector patterns for VitePress compatibility */
+  .VPSidebar .VPSidebarItem.is-active > .item .link,
+  .VPSidebar .VPSidebarItem .link.active,
+  .VPSidebar .VPSidebarItem.is-link.is-active > .item > .link,
+  .VPSidebar a.link[aria-current="page"] {
+    /* Brand-colored left border - Req 2.3 */
+    border-left-color: var(--vp-sidebar-active-border, var(--vp-c-brand-1));
+    border-left-width: var(--vp-sidebar-active-border-width, 3px);
+    border-left-style: solid;
+    
+    /* Soft brand-colored background - Req 2.4 */
+    background-color: var(--vp-sidebar-active-bg, var(--vp-c-brand-soft));
+    
+    /* Text styling for active state - visually distinct */
+    color: var(--vp-c-brand-1);
+    font-weight: 500;
+    
+    /* Ensure the active state is prominent */
+    position: relative;
+  }
+  
+  /* Active state indicator enhancement - subtle glow effect */
+  .VPSidebar .VPSidebarItem.is-active > .item .link::before,
+  .VPSidebar .VPSidebarItem .link.active::before,
+  .VPSidebar .VPSidebarItem.is-link.is-active > .item > .link::before,
+  .VPSidebar a.link[aria-current="page"]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--vp-c-brand-1);
+    border-radius: 0 2px 2px 0;
+    box-shadow: var(--vp-shadow-brand-sm);
+  }
+  
+  /* Active parent group */
+  .VPSidebar .VPSidebarItem.level-0.is-active > .item,
+  .VPSidebar .VPSidebarItem.level-0.has-active > .item {
+    color: var(--vp-c-brand-1);
+  }
+  
+  /* Active state hover - maintain active styling */
+  @media (hover: hover) {
+    .VPSidebar .VPSidebarItem.is-active > .item .link:hover,
+    .VPSidebar .VPSidebarItem .link.active:hover,
+    .VPSidebar .VPSidebarItem.is-link.is-active > .item > .link:hover,
+    .VPSidebar a.link[aria-current="page"]:hover {
+      background-color: var(--vp-sidebar-active-bg, var(--vp-c-brand-soft));
+      color: var(--vp-c-brand-1);
+    }
+  }
+
+  /* ========================================
+     Collapsible Sections
+     Requirement 2.7: Smooth expand/collapse animations (200-300ms)
+     ======================================== */
+  
+  /* Items container for collapse animation */
+  .VPSidebar .VPSidebarItem .items {
+    /* Animation setup - Req 2.7 (using 250ms within 200-300ms range) */
+    overflow: hidden;
+    transition: 
+      max-height var(--vp-animation-duration-normal) var(--vp-animation-easing-out),
+      opacity var(--vp-animation-duration-normal) var(--vp-animation-easing-out),
+      transform var(--vp-animation-duration-normal) var(--vp-animation-easing-out);
+    transform-origin: top;
+  }
+  
+  /* Collapsed state */
+  .VPSidebar .VPSidebarItem.collapsed > .items {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: scaleY(0.95);
+  }
+  
+  /* Expanded state */
+  .VPSidebar .VPSidebarItem:not(.collapsed) > .items {
+    max-height: none;
+    opacity: 1;
+    visibility: visible;
+    transform: scaleY(1);
+  }
+  
+  /* Collapse indicator rotation - Req 2.7 */
+  .VPSidebar .VPSidebarItem .caret,
+  .VPSidebar .VPSidebarItem .caret-icon,
+  .VPSidebar .VPSidebarItem .indicator {
+    transition: transform var(--vp-animation-duration-normal) var(--vp-animation-easing-out);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .VPSidebar .VPSidebarItem.collapsed .caret,
+  .VPSidebar .VPSidebarItem.collapsed .caret-icon,
+  .VPSidebar .VPSidebarItem.collapsed .indicator {
+    transform: rotate(-90deg);
+  }
+  
+  /* Smooth rotation for expanded state */
+  .VPSidebar .VPSidebarItem:not(.collapsed) .caret,
+  .VPSidebar .VPSidebarItem:not(.collapsed) .caret-icon,
+  .VPSidebar .VPSidebarItem:not(.collapsed) .indicator {
+    transform: rotate(0deg);
+  }
+  
+  /* Collapsible item header styling */
+  .VPSidebar .VPSidebarItem.collapsible > .item {
+    cursor: pointer;
+    user-select: none;
+    transition: 
+      background-color var(--vp-animation-duration-fast) var(--vp-animation-easing-out),
+      color var(--vp-animation-duration-fast) var(--vp-animation-easing-out);
+  }
+  
+  /* Focus state for keyboard navigation */
+  .VPSidebar .VPSidebarItem.collapsible > .item:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 2px;
+    border-radius: var(--vp-border-radius-small);
+  }
+
+  /* ========================================
+     Sidebar Scrollbar Styling
+     ======================================== */
+  
+  .VPSidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .VPSidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .VPSidebar::-webkit-scrollbar-thumb {
+    background: var(--vp-c-text-4);
+    border-radius: 3px;
+    transition: background-color var(--vp-animation-duration-fast) var(--vp-animation-easing-out);
+  }
+  
+  @media (hover: hover) {
+    .VPSidebar::-webkit-scrollbar-thumb:hover {
+      background: var(--vp-c-brand-1);
+    }
+  }
+}
+
+/* ============================================
+   Dark Mode Styles
+   Requirement 2.8: Readable contrast and glass effects
+   ============================================ */
+
+@layer components {
+  .dark .VPSidebar {
+    /* Adjusted glass background for dark mode - Req 2.8 */
+    background: var(--vp-sidebar-bg, var(--vp-c-bg-glass-sidebar));
+    
+    /* Updated border for dark mode visibility */
+    border-right-color: var(--vp-sidebar-border, var(--vp-c-border-sidebar));
+    
+    /* Adjusted shadow for dark mode - deeper shadows */
+    box-shadow: var(--vp-sidebar-shadow, var(--vp-shadow-sidebar));
+    
+    /* Maintain backdrop blur for glass effect */
+    backdrop-filter: blur(var(--vp-sidebar-blur, var(--vp-blur-sidebar)));
+    -webkit-backdrop-filter: blur(var(--vp-sidebar-blur, var(--vp-blur-sidebar)));
+  }
+  
+  /* Dark mode text colors for readable contrast - Req 2.8 */
+  .dark .VPSidebar .VPSidebarItem .link {
+    color: var(--vp-c-text-2);
+  }
+  
+  /* Parent/section titles in dark mode */
+  .dark .VPSidebar .VPSidebarItem.level-0 > .item {
+    color: var(--vp-c-text-1);
+  }
+  
+  /* Dark mode hover states */
+  @media (hover: hover) {
+    .dark .VPSidebar .VPSidebarItem .link:hover {
+      background-color: var(--vp-c-bg-soft);
+      color: var(--vp-c-text-1);
+    }
+    
+    .dark .VPSidebar .VPSidebarItem.level-0 > .item:hover {
+      color: var(--vp-c-brand-1);
+    }
+    
+    .dark .VPSidebar .VPSidebarItem.collapsible > .item:hover {
+      background-color: var(--vp-c-bg-soft);
+    }
+  }
+  
+  /* Dark mode active state - Req 2.8 */
+  .dark .VPSidebar .VPSidebarItem.is-active > .item .link,
+  .dark .VPSidebar .VPSidebarItem .link.active,
+  .dark .VPSidebar .VPSidebarItem.is-link.is-active > .item > .link,
+  .dark .VPSidebar a.link[aria-current="page"] {
+    background-color: var(--vp-sidebar-active-bg, var(--vp-c-brand-soft));
+    border-left-color: var(--vp-sidebar-active-border, var(--vp-c-brand-1));
+    color: var(--vp-c-brand-1);
+  }
+  
+  /* Dark mode active parent group */
+  .dark .VPSidebar .VPSidebarItem.level-0.is-active > .item,
+  .dark .VPSidebar .VPSidebarItem.level-0.has-active > .item {
+    color: var(--vp-c-brand-1);
+  }
+  
+  /* Dark mode scrollbar */
+  .dark .VPSidebar::-webkit-scrollbar-thumb {
+    background: var(--vp-c-text-4);
+  }
+  
+  @media (hover: hover) {
+    .dark .VPSidebar::-webkit-scrollbar-thumb:hover {
+      background: var(--vp-c-brand-1);
+    }
+  }
+  
+  /* Dark mode nested item indicators */
+  .dark .VPSidebar .VPSidebarItem .caret,
+  .dark .VPSidebar .VPSidebarItem .caret-icon,
+  .dark .VPSidebar .VPSidebarItem .indicator {
+    color: var(--vp-c-text-3);
+  }
+  
+  /* Dark mode dividers between sections */
+  .dark .VPSidebar .VPSidebarItem.level-0 + .VPSidebarItem.level-0 {
+    border-top: 1px solid var(--vp-c-divider);
+    padding-top: var(--vp-space-8);
+    margin-top: var(--vp-space-8);
+  }
+}
+
+/* ============================================
+   Glassmorphism Fallback
+   Requirement 7.8: Fallback for unsupported browsers
+   ============================================ */
+
+@supports not (backdrop-filter: blur(1px)) {
+  .VPSidebar {
+    background: var(--vp-c-bg-alt);
+    opacity: 0.98;
+  }
+  
+  .dark .VPSidebar {
+    background: var(--vp-c-bg-alt);
+    opacity: 0.98;
+  }
+}
+
+/* ============================================
+   Reduced Motion Support
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .VPSidebar,
+  .VPSidebar .VPSidebarItem .link,
+  .VPSidebar .VPSidebarItem .items,
+  .VPSidebar .VPSidebarItem .caret-icon,
+  .VPSidebar .VPSidebarItem .indicator,
+  .VPSidebar .VPSidebarItem.level-0 > .item .caret {
+    transition: none !important;
+  }
+}
+
+/* ============================================
+   High Contrast Mode Support
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .VPSidebar .VPSidebarItem.is-active > .item .link,
+  .VPSidebar .VPSidebarItem .link.active {
+    border-left-width: 4px;
+    border-left-color: var(--vp-c-brand-1);
+    background-color: transparent;
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: -2px;
+  }
+}
+
+/* ============================================
+   Forced Colors Mode Support
+   ============================================ */
+
+@media (forced-colors: active) {
+  .VPSidebar {
+    background: Canvas;
+    border-right: 1px solid ButtonBorder;
+  }
+  
+  .VPSidebar .VPSidebarItem .link {
+    color: CanvasText;
+    border-left: 3px solid transparent;
+  }
+  
+  .VPSidebar .VPSidebarItem.is-active > .item .link,
+  .VPSidebar .VPSidebarItem .link.active {
+    border-left-color: ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+@media (max-width: 768px) {
+  .VPSidebar {
+    /* Full width on mobile */
+    border-right: none;
+    border-bottom: 1px solid var(--vp-c-border-sidebar);
+    
+    /* Adjusted padding for mobile */
+    padding: var(--vp-space-8);
+  }
+  
+  .VPSidebar .VPSidebarNav {
+    padding: var(--vp-space-8) var(--vp-space-4);
+  }
+  
+  /* Disable hover transforms on mobile */
+  .VPSidebar .VPSidebarItem .link:hover {
+    transform: none;
+  }
+}
