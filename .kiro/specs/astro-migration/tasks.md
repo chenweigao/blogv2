@@ -32,39 +32,39 @@ This implementation plan converts the VitePress-based Knowledge Wiki to Astro, p
     - Test all text/background color pairs meet WCAG AA (4.5:1)
     - **Validates: Requirements 6.6**
 
-- [ ] 2. Content Collection Setup
-  - [~] 2.1 Configure content collections with Zod schema
+- [x] 2. Content Collection Setup
+  - [x] 2.1 Configure content collections with Zod schema
     - Create `src/content/config.ts` with docs collection
     - Define Zod schema for frontmatter (title, date, category, tags, description, layout)
     - Support optional fields with sensible defaults
     - _Requirements: 2.1, 2.2, 15.1_
 
-  - [~] 2.2 Write property test for frontmatter validation
+  - [x] 2.2 Write property test for frontmatter validation
     - **Property 1: Frontmatter Schema Validation**
     - Test valid frontmatter is accepted, invalid types rejected
     - **Validates: Requirements 2.1, 15.1**
 
-  - [~] 2.3 Write property test for frontmatter defaults
+  - [x] 2.3 Write property test for frontmatter defaults
     - **Property 27: Frontmatter Default Values**
     - Test missing optional fields get sensible defaults
     - **Validates: Requirements 15.6**
 
-  - [~] 2.4 Set up content symlink and folder structure
+  - [x] 2.4 Set up content symlink and folder structure
     - Create symlink from `src/content/docs/` to existing `docs/` content
     - Verify folder structure matches (algorithms, artificial-intelligence, etc.)
     - _Requirements: 2.5_
 
-  - [~] 2.5 Configure MDX support
+  - [x] 2.5 Configure MDX support
     - Install `@astrojs/mdx`
     - Configure MDX in `astro.config.mjs`
     - _Requirements: 2.3_
 
-  - [~] 2.6 Configure Shiki syntax highlighting
+  - [x] 2.6 Configure Shiki syntax highlighting
     - Configure Shiki with github-light/github-dark themes
     - Enable line numbers by default
     - _Requirements: 2.4_
 
-- [~] 3. Checkpoint - Verify content collection setup
+- [x] 3. Checkpoint - Verify content collection setup
   - Ensure content collection builds without errors
   - Verify frontmatter parsing works for sample files
   - Ask the user if questions arise

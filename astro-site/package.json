@@ -10,6 +10,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.16.10"
+    "@astrojs/mdx": "^4.3.13",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.10",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "fast-check": "^4.5.3",
+    "vitest": "^4.0.17",
+    "zod": "^4.3.5"
   }
 }
