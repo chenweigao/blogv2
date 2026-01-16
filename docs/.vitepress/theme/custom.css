@@ -82,3 +82,9 @@
 @import url('./styles/print.css') layer(overrides);
 /* 🆕 玻璃拟态降级样式 - Fallback for unsupported browsers (Requirement 7.8) */
 @import url('./styles/glassmorphism-fallback.css') layer(overrides);
+
+/* ============================================
+   VitePress 主题变量覆盖 - 最高优先级
+   通过覆盖 VitePress 官方 CSS 变量实现玻璃拟态
+   ============================================ */
+@import url('./styles/vp-theme-override.css');
