@@ -353,176 +353,176 @@ This implementation plan converts the VitePress-based Knowledge Wiki to Astro, p
   - Test markdown extensions (highlight, image size, math)
   - Ask the user if questions arise
 
-- [ ] 17. Search Implementation
-  - [-] 17.1 Integrate Pagefind
+- [x] 17. Search Implementation
+  - [x] 17.1 Integrate Pagefind
     - Install `@pagefind/default-ui`
     - Configure Pagefind in build process
     - Generate search index at build time
     - _Requirements: 7.1_
 
-  - [~] 17.2 Create search modal component
+  - [x] 17.2 Create search modal component
     - Create `src/components/interactive/SearchModal.tsx`
     - Implement modal UI with search input
     - Display results with title, excerpt, category
     - Highlight matching terms
     - _Requirements: 7.2, 7.3, 7.6_
 
-  - [~] 17.3 Write property test for search results
+  - [x] 17.3 Write property test for search results
     - **Property 11: Search Results Content**
     - Test results contain required fields with highlighting
     - **Validates: Requirements 7.3, 7.6**
 
-  - [~] 17.4 Implement keyboard navigation
+  - [x] 17.4 Implement keyboard navigation
     - Support arrow keys for result navigation
     - Support Enter to select, Escape to close
     - _Requirements: 7.4_
 
-  - [~] 17.5 Handle empty results
+  - [x] 17.5 Handle empty results
     - Display helpful message when no results found
     - _Requirements: 7.5_
 
-- [ ] 18. Timeline Feature
-  - [~] 18.1 Create timeline page
+- [x] 18. Timeline Feature
+  - [x] 18.1 Create timeline page
     - Create `src/pages/timeline.astro`
     - Query all articles from content collection
     - Sort by date descending
     - _Requirements: 8.1_
 
-  - [~] 18.2 Write property test for timeline sorting
+  - [x] 18.2 Write property test for timeline sorting
     - **Property 12: Timeline Chronological Sorting**
     - Test articles are sorted newest first
     - **Validates: Requirements 8.1**
 
-  - [~] 18.3 Implement year-month grouping
+  - [x] 18.3 Implement year-month grouping
     - Group articles by year and month
     - Display group headers
     - _Requirements: 8.2_
 
-  - [~] 18.4 Write property test for timeline grouping
+  - [x] 18.4 Write property test for timeline grouping
     - **Property 13: Timeline Year-Month Grouping**
     - Test articles are grouped correctly by year/month
     - **Validates: Requirements 8.2**
 
-  - [~] 18.5 Create timeline entry component
+  - [x] 18.5 Create timeline entry component
     - Display title, date, category, excerpt
     - Link to full article
     - _Requirements: 8.3, 8.5_
 
-  - [~] 18.6 Write property test for timeline entry content
+  - [x] 18.6 Write property test for timeline entry content
     - **Property 14: Timeline Entry Content**
     - Test entries contain all required fields
     - **Validates: Requirements 8.3**
 
-  - [~] 18.7 Implement category filtering
+  - [x] 18.7 Implement category filtering
     - Add filter UI for categories
     - Filter displayed articles by selection
     - _Requirements: 8.4_
 
-  - [~] 18.8 Write property test for timeline filtering
+  - [x] 18.8 Write property test for timeline filtering
     - **Property 15: Timeline Category Filtering**
     - Test filtering shows only matching articles
     - **Validates: Requirements 8.4**
 
-- [ ] 19. Homepage Implementation
-  - [~] 19.1 Create homepage
+- [x] 19. Homepage Implementation
+  - [x] 19.1 Create homepage
     - Create `src/pages/index.astro`
     - Implement hero section with title and tagline
     - Add feature cards for main sections
     - _Requirements: N/A (existing feature)_
 
-  - [~] 19.2 Create HomeLayout
+  - [x] 19.2 Create HomeLayout
     - Create `src/layouts/HomeLayout.astro`
     - Extend BaseLayout without sidebar
     - _Requirements: N/A_
 
-- [~] 20. Checkpoint - Verify features
+- [x] 20. Checkpoint - Verify features
   - Ensure search works correctly
   - Verify timeline displays and filters
   - Test homepage renders correctly
   - Ask the user if questions arise
 
-- [ ] 21. Image Optimization
-  - [~] 21.1 Configure Astro Image
+- [x] 21. Image Optimization
+  - [x] 21.1 Configure Astro Image
     - Enable image optimization in astro.config.mjs
     - Configure image formats and quality
     - _Requirements: 11.2_
 
-  - [~] 21.2 Implement lazy loading
+  - [x] 21.2 Implement lazy loading
     - Add loading="lazy" to images below fold
     - Keep above-fold images eager
     - _Requirements: 11.4_
 
-  - [~] 21.3 Write property test for lazy loading
+  - [x] 21.3 Write property test for lazy loading
     - **Property 18: Image Lazy Loading**
     - Test images have loading="lazy" attribute
     - **Validates: Requirements 11.4**
 
-  - [~] 21.4 Ensure image alt text
+  - [x] 21.4 Ensure image alt text
     - Validate all images have alt attributes
     - Add default alt text handling
     - _Requirements: 12.6_
 
-  - [~] 21.5 Write property test for image alt text
+  - [x] 21.5 Write property test for image alt text
     - **Property 21: Image Alt Text**
     - Test all images have non-empty alt attribute
     - **Validates: Requirements 12.6**
 
-- [ ] 22. Accessibility Enhancements
-  - [~] 22.1 Verify heading hierarchy
+- [x] 22. Accessibility Enhancements
+  - [x] 22.1 Verify heading hierarchy
     - Ensure single h1 per page
     - Maintain proper heading order
     - _Requirements: 12.4_
 
-  - [~] 22.2 Write property test for heading hierarchy
+  - [x] 22.2 Write property test for heading hierarchy
     - **Property 20: Single H1 Per Page**
     - Test each page has exactly one h1
     - **Validates: Requirements 12.4**
 
-  - [~] 22.3 Add reduced motion support
+  - [x] 22.3 Add reduced motion support
     - Add @media (prefers-reduced-motion) CSS rules
     - Disable animations for users who prefer reduced motion
     - _Requirements: 12.7_
 
-- [ ] 23. Performance Optimization
-  - [~] 23.1 Configure link prefetching
+- [x] 23. Performance Optimization
+  - [x] 23.1 Configure link prefetching
     - Enable Astro prefetch for internal links
     - Configure prefetch strategy
     - _Requirements: 11.3_
 
-  - [~] 23.2 Verify minimal JavaScript
+  - [x] 23.2 Verify minimal JavaScript
     - Ensure pages have zero JS by default
     - Only hydrate interactive islands
     - _Requirements: 11.1_
 
-- [ ] 24. Deployment Configuration
-  - [~] 24.1 Create GitHub Actions workflow
+- [x] 24. Deployment Configuration
+  - [x] 24.1 Create GitHub Actions workflow
     - Create `.github/workflows/deploy.yml`
     - Configure build and deploy to GitHub Pages
     - Trigger on push to main branch
     - _Requirements: 14.1, 14.2_
 
-  - [~] 24.2 Verify base path configuration
+  - [x] 24.2 Verify base path configuration
     - Ensure all links include `/blogv2/` prefix
     - Test asset paths are correct
     - _Requirements: 14.3_
 
-  - [~] 24.3 Write property test for base path
+  - [x] 24.3 Write property test for base path
     - **Property 22: Base Path in Links**
     - Test all internal links have correct base path
     - **Validates: Requirements 14.3**
 
-  - [~] 24.4 Create 404 page
+  - [x] 24.4 Create 404 page
     - Create `src/pages/404.astro`
     - Add navigation back to home
     - Style consistently with site theme
     - _Requirements: 14.4_
 
-  - [~] 24.5 Generate sitemap
+  - [x] 24.5 Generate sitemap
     - Install `@astrojs/sitemap`
     - Configure sitemap generation
     - _Requirements: 12.3_
 
-- [~] 25. Final Checkpoint - Complete verification
+- [x] 25. Final Checkpoint - Complete verification
   - Run full build and verify no errors
   - Test all pages render correctly
   - Verify all property tests pass
