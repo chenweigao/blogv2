@@ -69,20 +69,20 @@ This implementation plan converts the VitePress-based Knowledge Wiki to Astro, p
   - Verify frontmatter parsing works for sample files
   - Ask the user if questions arise
 
-- [ ] 4. Dynamic Routing and URL Structure
-  - [~] 4.1 Create dynamic route handler
+- [x] 4. Dynamic Routing and URL Structure
+  - [x] 4.1 Create dynamic route handler
     - Create `src/pages/[...slug].astro` for doc pages
     - Implement `getStaticPaths()` to generate routes from content collection
     - Match existing URL structure (e.g., `/algorithms/sorting/`)
     - _Requirements: 2.6_
 
-  - [~] 4.2 Write property test for URL routing
+  - [x] 4.2 Write property test for URL routing
     - **Property 2: Content URL Routing**
     - Test file paths generate correct URLs
     - **Validates: Requirements 2.6**
 
-- [ ] 5. Base Layout Implementation
-  - [~] 5.1 Create BaseLayout component
+- [x] 5. Base Layout Implementation
+  - [x] 5.1 Create BaseLayout component
     - Create `src/layouts/BaseLayout.astro`
     - Implement HTML structure with proper lang attribute
     - Add meta tags slot for SEO
@@ -90,31 +90,31 @@ This implementation plan converts the VitePress-based Knowledge Wiki to Astro, p
     - Import global styles
     - _Requirements: 12.1_
 
-  - [~] 5.2 Implement SEO meta tags
+  - [x] 5.2 Implement SEO meta tags
     - Add title, description, canonical URL meta tags
     - Add Open Graph meta tags (og:title, og:description, og:url, og:type)
     - Add Twitter Card meta tags
     - _Requirements: 12.1, 12.2_
 
-  - [~] 5.3 Write property test for meta tags
+  - [x] 5.3 Write property test for meta tags
     - **Property 19: SEO Meta Tags**
     - Test all required meta tags are present
     - **Validates: Requirements 12.1, 12.2**
 
-  - [~] 5.4 Add skip-to-content link
+  - [x] 5.4 Add skip-to-content link
     - Add visually hidden skip link for keyboard users
     - Style with focus visibility
     - _Requirements: 12.5_
 
-- [ ] 6. Navbar Component
-  - [~] 6.1 Create floating glass navbar
+- [x] 6. Navbar Component
+  - [x] 6.1 Create floating glass navbar
     - Create `src/components/layout/Navbar.astro`
     - Implement glassmorphism styling (blur 20px, opacity 0.75/0.85)
     - Add floating positioning (top: 12px, left/right: 16px)
     - Add rounded corners (16px) and multi-layered shadows
     - _Requirements: 4.2, 5.1_
 
-  - [~] 6.2 Implement navbar content
+  - [x] 6.2 Implement navbar content
     - Add site logo with link to home
     - Add navigation links with dropdown support
     - Add search button trigger
@@ -122,239 +122,239 @@ This implementation plan converts the VitePress-based Knowledge Wiki to Astro, p
     - Add social links (GitHub)
     - _Requirements: 5.1_
 
-  - [~] 6.3 Implement dark mode navbar styles
+  - [x] 6.3 Implement dark mode navbar styles
     - Adjust glass opacity for dark mode (0.85)
     - Update border colors for visibility
     - Maintain consistent shadow ratios
     - _Requirements: 4.2_
 
-  - [~] 6.4 Add glassmorphism fallback
+  - [x] 6.4 Add glassmorphism fallback
     - Add @supports fallback for browsers without backdrop-filter
     - Use solid background with high opacity
     - _Requirements: 4.7_
 
 - [ ] 7. Theme Toggle Component
-  - [~] 7.1 Create theme toggle component
+  - [x] 7.1 Create theme toggle component
     - Create `src/components/ui/ThemeToggle.astro`
     - Implement sun/moon icon toggle
     - Add smooth icon transition animation
     - _Requirements: 6.2_
 
-  - [~] 7.2 Implement theme logic
+  - [x] 7.2 Implement theme logic
     - Detect system preference on initial load
     - Persist preference to localStorage
     - Apply theme class to document root
     - Prevent flash of incorrect theme with inline script
     - _Requirements: 6.1, 6.3, 6.4_
 
-  - [~] 7.3 Write property test for theme persistence
+  - [x] 7.3 Write property test for theme persistence
     - **Property 9: Theme Persistence Round-Trip**
     - Test theme value persists correctly to localStorage
     - **Validates: Requirements 6.3**
 
-  - [~] 7.4 Define light/dark mode design tokens
+  - [x] 7.4 Define light/dark mode design tokens
     - Create separate token values for light and dark modes
     - Use CSS custom properties with .dark class override
     - _Requirements: 6.5_
 
-- [~] 8. Checkpoint - Verify layout and theme
+- [x] 8. Checkpoint - Verify layout and theme
   - Ensure navbar displays correctly in both themes
   - Verify theme toggle persists preference
   - Test glassmorphism effect and fallback
   - Ask the user if questions arise
 
-- [ ] 9. Sidebar Component
-  - [~] 9.1 Create sidebar generator utility
+- [x] 9. Sidebar Component
+  - [x] 9.1 Create sidebar generator utility
     - Create `src/lib/sidebar.ts`
     - Implement function to scan content folder structure
     - Build hierarchical navigation from folders
     - Sort by frontmatter order or alphabetically
     - _Requirements: 5.3_
 
-  - [~] 9.2 Write property test for sidebar generation
+  - [x] 9.2 Write property test for sidebar generation
     - **Property 6: Sidebar Generation from Folder Structure**
     - Test folder hierarchy produces correct navigation structure
     - **Validates: Requirements 5.3**
 
-  - [~] 9.3 Create sidebar component
+  - [x] 9.3 Create sidebar component
     - Create `src/components/layout/Sidebar.astro`
     - Implement glass styling (blur 12px)
     - Display hierarchical navigation items
     - _Requirements: 4.3, 5.4_
 
-  - [~] 9.4 Implement collapsible sections
+  - [x] 9.4 Implement collapsible sections
     - Add expand/collapse functionality with 250ms animation
     - Persist collapse state in localStorage
     - Add caret rotation indicator
     - _Requirements: 5.4_
 
-  - [~] 9.5 Implement active state styling
+  - [x] 9.5 Implement active state styling
     - Add 3px brand-colored left border for active item
     - Apply soft brand background highlight
     - _Requirements: 5.5_
 
-  - [~] 9.6 Write property test for sidebar active state
+  - [x] 9.6 Write property test for sidebar active state
     - **Property 7: Sidebar Active State**
     - Test correct item has active class for given path
     - **Validates: Requirements 5.5**
 
-  - [~] 9.7 Implement sidebar text from frontmatter
+  - [x] 9.7 Implement sidebar text from frontmatter
     - Use frontmatter title as display text
     - Fall back to first heading if no title
     - _Requirements: 5.7_
 
-  - [~] 9.8 Write property test for sidebar text source
+  - [x] 9.8 Write property test for sidebar text source
     - **Property 8: Sidebar Text from Frontmatter**
     - Test sidebar text matches frontmatter title or first heading
     - **Validates: Requirements 5.7**
 
 - [ ] 10. Mobile Navigation
-  - [~] 10.1 Create mobile menu component
+  - [x] 10.1 Create mobile menu component
     - Create `src/components/layout/MobileMenu.astro`
     - Implement hamburger button
     - Create slide-out overlay menu
     - _Requirements: 5.6_
 
-  - [~] 10.2 Implement responsive breakpoints
+  - [x] 10.2 Implement responsive breakpoints
     - Hide sidebar on viewport < 768px
     - Show hamburger menu on mobile
     - Reduce navbar edge margins to 8px on mobile
     - _Requirements: 10.2, 10.3_
 
-- [ ] 11. Doc Layout Implementation
-  - [~] 11.1 Create DocLayout component
+- [x] 11. Doc Layout Implementation
+  - [x] 11.1 Create DocLayout component
     - Create `src/layouts/DocLayout.astro`
     - Extend BaseLayout with navbar, sidebar, content area
     - Add proper spacing for floating navbar
     - _Requirements: 5.1_
 
-  - [~] 11.2 Implement article metadata display
+  - [x] 11.2 Implement article metadata display
     - Create `src/components/content/ArticleMeta.astro`
     - Display title, date, category, tags
     - Calculate and display word count and reading time
     - _Requirements: 9.1, 9.2_
 
-  - [~] 11.3 Write property test for document metadata
+  - [x] 11.3 Write property test for document metadata
     - **Property 16: Document Metadata Display**
     - Test all metadata fields are displayed correctly
     - **Validates: Requirements 9.1, 9.2**
 
-  - [~] 11.4 Add edit on GitHub link
+  - [x] 11.4 Add edit on GitHub link
     - Generate correct GitHub edit URL from file path
     - Display edit link in article footer
     - _Requirements: 9.4_
 
-  - [~] 11.5 Write property test for edit link generation
+  - [x] 11.5 Write property test for edit link generation
     - **Property 17: Edit Link URL Generation**
     - Test edit URLs are generated correctly from file paths
     - **Validates: Requirements 9.4**
 
-  - [~] 11.6 Add last updated display
+  - [x] 11.6 Add last updated display
     - Display last updated timestamp from frontmatter
     - Format date appropriately
     - _Requirements: 9.3_
 
-- [~] 12. Checkpoint - Verify doc layout
+- [x] 12. Checkpoint - Verify doc layout
   - Ensure doc pages render with correct layout
   - Verify sidebar navigation works
   - Test mobile responsive behavior
   - Ask the user if questions arise
 
-- [ ] 13. Code Block Component
-  - [~] 13.1 Create enhanced code block component
+- [x] 13. Code Block Component
+  - [x] 13.1 Create enhanced code block component
     - Create `src/components/content/CodeBlock.astro`
     - Integrate Shiki syntax highlighting
     - Display line numbers
     - Display language label
     - _Requirements: 13.1, 13.4_
 
-  - [~] 13.2 Write property test for code block rendering
+  - [x] 13.2 Write property test for code block rendering
     - **Property 3: Code Block Rendering**
     - Test code blocks have highlighting, line numbers, and language label
     - **Validates: Requirements 2.4, 13.1, 13.4**
 
-  - [~] 13.3 Add copy-to-clipboard button
+  - [x] 13.3 Add copy-to-clipboard button
     - Implement copy button with clipboard API
     - Show confirmation feedback on copy
     - _Requirements: 13.2_
 
 - [ ] 14. Mermaid Diagram Component
-  - [~] 14.1 Create Mermaid renderer
+  - [x] 14.1 Create Mermaid renderer
     - Create `src/components/content/MermaidDiagram.astro`
     - Install and configure mermaid package
     - Render diagrams to SVG at build time
     - _Requirements: 3.1, 3.2_
 
-  - [~] 14.2 Write property test for Mermaid rendering
+  - [x] 14.2 Write property test for Mermaid rendering
     - **Property 4: Mermaid Diagram Rendering**
     - Test valid mermaid code produces SVG output
     - **Validates: Requirements 3.1**
 
-  - [~] 14.3 Implement Mermaid error handling
+  - [x] 14.3 Implement Mermaid error handling
     - Display source code on render failure
     - Show error message to user
     - _Requirements: 3.5_
 
-  - [~] 14.4 Write property test for Mermaid error handling
+  - [x] 14.4 Write property test for Mermaid error handling
     - **Property 5: Mermaid Error Handling**
     - Test invalid mermaid code shows source and error
     - **Validates: Requirements 3.5**
 
-  - [~] 14.5 Create Mermaid modal for zoom
+  - [x] 14.5 Create Mermaid modal for zoom
     - Create `src/components/interactive/MermaidModal.tsx`
     - Implement click-to-zoom functionality
     - Use client:visible directive for hydration
     - _Requirements: 3.3_
 
 - [ ] 15. Markdown Extensions
-  - [~] 15.1 Implement highlight syntax support
+  - [x] 15.1 Implement highlight syntax support
     - Add remark plugin for ==highlight== syntax
     - Render as `<mark>` element
     - _Requirements: 15.2_
 
-  - [~] 15.2 Write property test for highlight syntax
+  - [x] 15.2 Write property test for highlight syntax
     - **Property 23: Markdown Highlight Syntax**
     - Test ==text== renders as `<mark>` element
     - **Validates: Requirements 15.2**
 
-  - [~] 15.3 Implement image size syntax
+  - [x] 15.3 Implement image size syntax
     - Add remark plugin for image size syntax
     - Support `![alt](url =WxH)` format
     - _Requirements: 15.3_
 
-  - [~] 15.4 Write property test for image size syntax
+  - [x] 15.4 Write property test for image size syntax
     - **Property 24: Image Size Syntax**
     - Test image size syntax produces correct dimensions
     - **Validates: Requirements 15.3**
 
-  - [~] 15.5 Configure relative image path handling
+  - [x] 15.5 Configure relative image path handling
     - Ensure relative paths resolve correctly
     - Handle images in same directory as markdown
     - _Requirements: 15.4_
 
-  - [~] 15.6 Write property test for relative image paths
+  - [x] 15.6 Write property test for relative image paths
     - **Property 25: Relative Image Path Resolution**
     - Test relative paths resolve to correct URLs
     - **Validates: Requirements 15.4**
 
-  - [~] 15.7 Configure math equation support
+  - [x] 15.7 Configure math equation support
     - Install remark-math and rehype-katex
     - Support inline ($...$) and block ($$...$$) math
     - _Requirements: 15.5_
 
-  - [~] 15.8 Write property test for math equations
+  - [x] 15.8 Write property test for math equations
     - **Property 26: Math Equation Rendering**
     - Test math syntax renders correctly
     - **Validates: Requirements 15.5**
 
-- [~] 16. Checkpoint - Verify content rendering
+- [x] 16. Checkpoint - Verify content rendering
   - Ensure code blocks render with all features
   - Verify Mermaid diagrams render correctly
   - Test markdown extensions (highlight, image size, math)
   - Ask the user if questions arise
 
 - [ ] 17. Search Implementation
-  - [~] 17.1 Integrate Pagefind
+  - [-] 17.1 Integrate Pagefind
     - Install `@pagefind/default-ui`
     - Configure Pagefind in build process
     - Generate search index at build time

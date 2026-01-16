@@ -1,0 +1,122 @@
+---
+interface Props {
+  code: string;
+  id?: string;
+}
+
+const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro.props;
+---
+
+<div class="mermaid-container my-6">
+  <div 
+    class="mermaid-diagram bg-[var(--color-bg-secondary)] rounded-lg p-4 overflow-x-auto cursor-pointer"
+    data-mermaid-code={code}
+    data-mermaid-id={id}
+  >
+    <!-- Placeholder while loading -->
+    <div class="mermaid-loading flex items-center justify-center py-8 text-[var(--color-text-muted)]">
+      <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      加载图表中...
+    </div>
+    
+    <!-- Rendered diagram will be inserted here -->
+    <div class="mermaid-output hidden"></div>
+    
+    <!-- Error display -->
+    <div class="mermaid-error hidden">
+      <div class="text-red-500 text-sm mb-2">图表渲染失败</div>
+      <pre class="text-xs bg-[var(--color-bg)] p-2 rounded overflow-x-auto"><code>{code}</code></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function initMermaid() {
+    const containers = document.querySelectorAll('.mermaid-diagram');
+    if (containers.length === 0) return;
+
+    // Dynamically import mermaid
+    const { default: mermaid } = await import('mermaid');
+    
+    // Initialize mermaid with theme based on current mode
+    const isDark = document.documentElement.classList.contains('dark');
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      securityLevel: 'loose',
+    });
+
+    containers.forEach(async (container) => {
+      const code = container.getAttribute('data-mermaid-code');
+      const id = container.getAttribute('data-mermaid-id');
+      const loading = container.querySelector('.mermaid-loading');
+      const output = container.querySelector('.mermaid-output');
+      const error = container.querySelector('.mermaid-error');
+
+      if (!code || !id || !output || !error || !loading) return;
+
+      try {
+        const { svg } = await mermaid.render(id, code);
+        output.innerHTML = svg;
+        loading.classList.add('hidden');
+        output.classList.remove('hidden');
+        
+        // Add click handler for zoom modal
+        container.addEventListener('click', () => {
+          openMermaidModal(svg);
+        });
+      } catch (err) {
+        console.error('Mermaid render error:', err);
+        loading.classList.add('hidden');
+        error.classList.remove('hidden');
+      }
+    });
+  }
+
+  function openMermaidModal(svg: string) {
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4';
+    modal.innerHTML = `
+      <div class="relative max-w-[90vw] max-h-[90vh] overflow-auto bg-white dark:bg-slate-800 rounded-lg p-4">
+        <button class="absolute top-2 right-2 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="mermaid-modal-content">${svg}</div>
+      </div>
+    `;
+
+    // Close handlers
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+    modal.querySelector('button')?.addEventListener('click', () => modal.remove());
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', handler);
+      }
+    });
+
+    document.body.appendChild(modal);
+  }
+
+  // Initialize on load and after navigation
+  initMermaid();
+  document.addEventListener('astro:after-swap', initMermaid);
+  
+  // Re-render on theme change
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') {
+        initMermaid();
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+</script>

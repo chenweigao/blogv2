@@ -1,0 +1,169 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Navbar from '../components/layout/Navbar.astro';
+import Sidebar from '../components/layout/Sidebar.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import ThemeToggle from '../components/ui/ThemeToggle.astro';
+import ArticleMeta from '../components/content/ArticleMeta.astro';
+import { getCollection } from 'astro:content';
+import { buildSidebar } from '../lib/sidebar';
+
+interface Props {
+  title: string;
+  description?: string;
+  date?: Date;
+  category?: string | string[];
+  tags?: string[];
+  lastUpdated?: Date;
+  filePath?: string;
+}
+
+const { 
+  title, 
+  description,
+  date,
+  category,
+  tags = [],
+  lastUpdated,
+  filePath
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+
+// Get all docs for sidebar
+const allDocs = await getCollection('docs');
+const sidebarSections = buildSidebar(allDocs);
+
+// Get current section's items
+const currentSection = currentPath.split('/')[2]; // /blogv2/section/...
+const currentSectionItems = sidebarSections.find(s => 
+  s.title.toLowerCase().replace(/\s+/g, '-') === currentSection
+)?.items || [];
+---
+
+<BaseLayout title={title} description={description}>
+  <Navbar currentPath={currentPath}>
+    <ThemeToggle slot="theme-toggle" />
+  </Navbar>
+  
+  <MobileMenu items={currentSectionItems} currentPath={currentPath} />
+
+  <div class="pt-20 px-4 md:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto flex gap-8">
+      <!-- Sidebar -->
+      <Sidebar items={currentSectionItems} currentPath={currentPath} />
+
+      <!-- Main content -->
+      <main id="main-content" class="flex-1 min-w-0">
+        <article class="glass rounded-2xl p-6 md:p-8">
+          <!-- Article header -->
+          <header class="mb-8 pb-6 border-b border-[var(--color-border)]">
+            <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">
+              {title}
+            </h1>
+            
+            <ArticleMeta 
+              date={date}
+              category={category}
+              tags={tags}
+              lastUpdated={lastUpdated}
+            />
+          </header>
+
+          <!-- Article content -->
+          <div class="prose prose-slate dark:prose-invert max-w-none">
+            <slot />
+          </div>
+
+          <!-- Article footer -->
+          <footer class="mt-12 pt-6 border-t border-[var(--color-border)]">
+            <div class="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--color-text-muted)]">
+              {lastUpdated && (
+                <span>
+                  最后更新: {lastUpdated.toLocaleDateString('zh-CN')}
+                </span>
+              )}
+              
+              {filePath && (
+                <a
+                  href={`https://github.com/username/repo/edit/main/${filePath}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 hover:text-[var(--color-primary)] transition-colors cursor-pointer"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  在 GitHub 上编辑
+                </a>
+              )}
+            </div>
+          </footer>
+        </article>
+      </main>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  /* Prose styling for markdown content */
+  .prose {
+    --tw-prose-body: var(--color-text);
+    --tw-prose-headings: var(--color-text);
+    --tw-prose-links: var(--color-primary);
+    --tw-prose-code: var(--color-text);
+    --tw-prose-pre-bg: var(--color-bg-secondary);
+  }
+
+  .prose h2 {
+    @apply text-2xl font-bold mt-8 mb-4 pb-2 border-b border-[var(--color-border)];
+  }
+
+  .prose h3 {
+    @apply text-xl font-semibold mt-6 mb-3;
+  }
+
+  .prose p {
+    @apply my-4 leading-relaxed;
+  }
+
+  .prose a {
+    @apply text-[var(--color-primary)] hover:underline;
+  }
+
+  .prose code:not(pre code) {
+    @apply px-1.5 py-0.5 rounded bg-[var(--color-bg-secondary)] text-sm font-mono;
+  }
+
+  .prose pre {
+    @apply rounded-lg p-4 overflow-x-auto my-4;
+  }
+
+  .prose ul, .prose ol {
+    @apply my-4 pl-6;
+  }
+
+  .prose li {
+    @apply my-1;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-[var(--color-primary)] pl-4 my-4 italic text-[var(--color-text-muted)];
+  }
+
+  .prose img {
+    @apply rounded-lg my-4;
+  }
+
+  .prose table {
+    @apply w-full my-4 border-collapse;
+  }
+
+  .prose th, .prose td {
+    @apply border border-[var(--color-border)] px-3 py-2 text-left;
+  }
+
+  .prose th {
+    @apply bg-[var(--color-bg-secondary)] font-semibold;
+  }
+</style>

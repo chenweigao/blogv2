@@ -1,0 +1,62 @@
+---
+interface Props {
+  date?: Date;
+  category?: string | string[];
+  tags?: string[];
+  lastUpdated?: Date;
+  wordCount?: number;
+}
+
+const { date, category, tags = [], lastUpdated, wordCount } = Astro.props;
+
+// Normalize category to array
+const categories = category 
+  ? (Array.isArray(category) ? category : [category])
+  : [];
+
+// Calculate reading time (assuming 200 words per minute for Chinese)
+const readingTime = wordCount ? Math.ceil(wordCount / 200) : undefined;
+---
+
+<div class="flex flex-wrap items-center gap-4 text-sm text-[var(--color-text-muted)]">
+  {date && (
+    <time datetime={date.toISOString()} class="flex items-center gap-1">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      {date.toLocaleDateString('zh-CN')}
+    </time>
+  )}
+
+  {categories.length > 0 && (
+    <div class="flex items-center gap-1">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+      </svg>
+      {categories.map((cat, i) => (
+        <span>
+          {cat}{i < categories.length - 1 ? ', ' : ''}
+        </span>
+      ))}
+    </div>
+  )}
+
+  {readingTime && (
+    <span class="flex items-center gap-1">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      约 {readingTime} 分钟阅读
+    </span>
+  )}
+</div>
+
+{tags.length > 0 && (
+  <div class="flex flex-wrap gap-2 mt-3">
+    {tags.map((tag) => (
+      <span class="px-2 py-1 text-xs rounded-full bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)]">
+        #{tag}
+      </span>
+    ))}
+  </div>
+)}
