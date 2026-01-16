@@ -311,8 +311,12 @@ const addScrollEffect = () => {
     if (navbar) {
       if (scrollY > 10) {
         navbar.classList.add('scrolled')
+        navbar.classList.add('has-scrolled')
+        navbar.setAttribute('data-scrolled', 'true')
       } else {
         navbar.classList.remove('scrolled')
+        navbar.classList.remove('has-scrolled')
+        navbar.setAttribute('data-scrolled', 'false')
       }
     }
     
@@ -327,6 +331,9 @@ const addScrollEffect = () => {
   }
   
   window.addEventListener('scroll', handleScroll, { passive: true })
+  
+  // Initial check
+  updateNavBarStyle()
   
   return () => {
     window.removeEventListener('scroll', handleScroll)

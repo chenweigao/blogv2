@@ -49,6 +49,7 @@
 @import url('./styles/components.css') layer(components);
 @import url('./styles/responsive-images.css') layer(components);
 @import url('./styles/animations.css') layer(components);
+@import url('./styles/navbar.css') layer(components);
 @import url('./styles/navbar-animations.css') layer(components);
 @import url('./styles/scrollbars.css') layer(components);
 @import url('./styles/markdown-callouts.css') layer(components);
