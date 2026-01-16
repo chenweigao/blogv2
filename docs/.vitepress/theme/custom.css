@@ -54,10 +54,18 @@
 @import url('./styles/sidebar.css') layer(components);
 @import url('./styles/scrollbars.css') layer(components);
 @import url('./styles/markdown-callouts.css') layer(components);
-/* 🆕 首页样式增强 */
+/* 🆕 首页样式增强 - Hero Section (Requirements 6.1-6.8) */
 @import url('./styles/home.css') layer(components);
-/* 🆕 卡片组件样式 - Glassmorphism */
+/* 🆕 卡片组件样式 - Glassmorphism (Requirements 4.1-4.8) */
 @import url('./styles/cards.css') layer(components);
+/* 🆕 代码块样式 - Modern Glassmorphism (Requirements 5.1-5.8) */
+@import url('./styles/code-blocks.css') layer(components);
+/* 移动端样式覆盖 */
+@import url('./styles/mobile.css') layer(components);
+/* 侧边栏动态组件样式 */
+@import url('./styles/sidebar-widget.css') layer(components);
+/* Mermaid 图表样式（横向滚动支持和弹窗样式） */
+@import url('./styles/mermaid-modal.css') layer(components);
 
 /* ============================================
    工具类层

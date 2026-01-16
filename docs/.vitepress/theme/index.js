@@ -1,21 +1,19 @@
 import DefaultTheme from 'vitepress/theme'
 import Layout from './Layout.vue'
+// 主样式入口 - 包含所有模块化CSS（设计令牌、变量、基础、布局、组件等）
 import './custom.css'
+// 增强型目录样式
 import './enhanced-toc.css'
-import './styles/responsive-images.css'
-import './styles/navbar-animations.css'
-// 新增：移动端样式覆盖
-import './styles/mobile.css'
-// 新增：侧边栏动态组件样式
-import './styles/sidebar-widget.css'
-// Mermaid 图表样式（横向滚动支持和弹窗样式）
-import './styles/mermaid-modal.css'
-// 代码块样式 - 现代玻璃拟态风格 (Requirements 5.1-5.8)
-import './styles/code-blocks.css'
 // 注意：以下CSS文件已整合到 custom.css 的模块化结构中，避免重复导入
+// import './styles/responsive-images.css'  // 已整合到 custom.css
+// import './styles/navbar-animations.css'  // 已整合到 custom.css
+// import './styles/mobile.css'             // 已整合到 custom.css
+// import './styles/sidebar-widget.css'     // 已整合到 custom.css
+// import './styles/mermaid-modal.css'      // 已整合到 custom.css
+// import './styles/code-blocks.css'        // 已整合到 custom.css
 // import './styles/code-block-fix.css'     // 已整合到 content.css
-// import './styles/sidebar-effects.css'   // 已整合到 layout.css  
-// import './styles/hover-effects.css'     // 已分散到各个相关模块
+// import './styles/sidebar-effects.css'    // 已整合到 layout.css  
+// import './styles/hover-effects.css'      // 已分散到各个相关模块
 import ArticleMeta from './components/ArticleMeta.vue'
 import PageTransition from './components/PageTransition.vue'
 import ScrollAnimations from './components/ScrollAnimations.vue'
@@ -38,8 +36,7 @@ import { initAnalytics } from './utils/analytics.js'
 import { initErrorMonitor } from './utils/errorMonitor.js'
 import { initWebVitals } from './utils/webVitals.js'
 import 'uno.css'
-import './custom.css'
-import './enhanced-toc.css'
+// 注意：custom.css 和 enhanced-toc.css 已在文件顶部导入，避免重复
 
 // 创建一个全局的代码块弹窗状态
 const codeModalState = {
