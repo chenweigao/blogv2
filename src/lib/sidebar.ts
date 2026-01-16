@@ -1,8 +1,6 @@
 /**
  * Sidebar Generator Utility
- * Validates: Requirements 5.3
- * 
- * Generates hierarchical navigation structure from content collection
+ * Supports nested folder structure with collapsible sections
  */
 
 export interface SidebarItem {
@@ -27,105 +25,171 @@ interface ContentEntry {
 
 /**
  * Extract title from content entry
- * Falls back to formatted slug if no title in frontmatter
  */
 export function getTitle(entry: ContentEntry): string {
   if (entry.data.title) return entry.data.title;
   
-  // Extract filename from path and format it
   const filename = entry.id.split('/').pop() || entry.id;
-  return filename
-    .replace(/\.md$/, '')
+  return formatName(filename.replace(/\.md$/, ''));
+}
+
+/**
+ * Format folder/file name for display
+ */
+function formatName(name: string): string {
+  return name
     .replace(/[-_]/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+interface TreeNode {
+  type: 'file' | 'folder';
+  name: string;
+  entry?: ContentEntry;
+  href?: string;
+  children: Map<string, TreeNode>;
+}
+
 /**
- * Build hierarchical sidebar from flat content entries
+ * Build hierarchical sidebar from content entries
  */
 export function buildSidebar(entries: ContentEntry[], basePath: string = '/blogv2/'): SidebarSection[] {
-  // Group entries by top-level folder
-  const groups = new Map<string, ContentEntry[]>();
+  // Group entries by top-level category
+  const categories = new Map<string, ContentEntry[]>();
   
   for (const entry of entries) {
     const parts = entry.id.split('/');
-    const topLevel = parts[0] || 'root';
+    const category = parts[0];
     
-    if (!groups.has(topLevel)) {
-      groups.set(topLevel, []);
+    if (!categories.has(category)) {
+      categories.set(category, []);
     }
-    groups.get(topLevel)!.push(entry);
+    categories.get(category)!.push(entry);
   }
 
-  // Convert groups to sidebar sections
+  // Build sections
   const sections: SidebarSection[] = [];
   
-  for (const [folder, folderEntries] of groups) {
-    const items = buildSidebarItems(folderEntries, basePath);
+  for (const [category, categoryEntries] of categories) {
+    const items = buildNestedItems(categoryEntries, category, basePath);
     
     sections.push({
-      title: formatFolderName(folder),
+      title: formatName(category),
       items: sortItems(items),
     });
   }
 
-  return sections.sort((a, b) => a.title.localeCompare(b.title));
+  return sections.sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
 }
 
 /**
- * Build sidebar items from entries in a folder
+ * Build nested sidebar items for a category
  */
-function buildSidebarItems(entries: ContentEntry[], basePath: string): SidebarItem[] {
-  const itemMap = new Map<string, SidebarItem>();
+function buildNestedItems(
+  entries: ContentEntry[], 
+  category: string, 
+  basePath: string
+): SidebarItem[] {
+  // Build a tree structure
+  const root: Map<string, TreeNode> = new Map();
   
   for (const entry of entries) {
     const parts = entry.id.split('/');
-    const href = `${basePath}${entry.id.replace(/\.md$/, '')}/`;
     
+    // Handle single-level entries (e.g., "readme" without category)
     if (parts.length === 1) {
-      // Root level item
-      itemMap.set(entry.id, {
-        title: getTitle(entry),
-        href,
-        order: entry.data.order,
+      const slug = entry.id;
+      root.set(entry.id, {
+        type: 'file',
+        name: entry.id,
+        entry,
+        href: `${basePath}${slug}/`,
+        children: new Map(),
       });
-    } else {
-      // Nested item - build hierarchy
-      let currentMap = itemMap;
+      continue;
+    }
+    
+    // Skip the category part (first element)
+    const relativeParts = parts.slice(1);
+    
+    if (relativeParts.length === 0) continue;
+    
+    let current = root;
+    
+    for (let i = 0; i < relativeParts.length; i++) {
+      const part = relativeParts[i];
+      const isLast = i === relativeParts.length - 1;
       
-      for (let i = 1; i < parts.length; i++) {
-        const isLast = i === parts.length - 1;
-        const partPath = parts.slice(0, i + 1).join('/');
+      if (isLast) {
+        // This is a file
+        const slug = entry.id.endsWith('/index') 
+          ? entry.id.slice(0, -6) 
+          : entry.id;
         
-        if (isLast) {
-          // This is the actual file
-          const existing = currentMap.get(partPath);
-          if (existing) {
-            existing.title = getTitle(entry);
-            existing.href = href;
-            existing.order = entry.data.order;
-          } else {
-            currentMap.set(partPath, {
-              title: getTitle(entry),
-              href,
-              order: entry.data.order,
-            });
-          }
-        } else {
-          // This is a folder
-          if (!currentMap.has(partPath)) {
-            currentMap.set(partPath, {
-              title: formatFolderName(parts[i]),
-              href: `${basePath}${partPath}/`,
-              children: [],
-            });
-          }
+        current.set(part, {
+          type: 'file',
+          name: part,
+          entry,
+          href: `${basePath}${slug}/`,
+          children: new Map(),
+        });
+      } else {
+        // This is a folder
+        if (!current.has(part)) {
+          current.set(part, {
+            type: 'folder',
+            name: part,
+            children: new Map(),
+          });
         }
+        const node = current.get(part)!;
+        current = node.children;
       }
     }
   }
+  
+  // Convert tree to SidebarItem array
+  return treeToItems(root, category, basePath);
+}
 
-  return Array.from(itemMap.values());
+/**
+ * Convert tree structure to SidebarItem array
+ */
+function treeToItems(
+  tree: Map<string, TreeNode>, 
+  parentPath: string, 
+  basePath: string
+): SidebarItem[] {
+  const items: SidebarItem[] = [];
+  
+  for (const [key, node] of tree) {
+    if (node.type === 'file') {
+      // Skip index files - they're handled by folder items
+      if (key === 'index') continue;
+      
+      items.push({
+        title: node.entry ? getTitle(node.entry) : formatName(key),
+        href: node.href || `${basePath}${parentPath}/${key}/`,
+        order: node.entry?.data.order,
+      });
+    } else if (node.type === 'folder') {
+      const folderPath = `${parentPath}/${node.name}`;
+      const children = treeToItems(node.children, folderPath, basePath);
+      
+      // Check if folder has an index file
+      const indexNode = node.children.get('index');
+      const href = indexNode?.href || `${basePath}${folderPath}/`;
+      
+      items.push({
+        title: formatName(node.name),
+        href,
+        children: children.length > 0 ? sortItems(children) : undefined,
+        order: indexNode?.entry?.data?.order,
+      });
+    }
+  }
+  
+  return items;
 }
 
 /**
@@ -133,32 +197,17 @@ function buildSidebarItems(entries: ContentEntry[], basePath: string): SidebarIt
  */
 function sortItems(items: SidebarItem[]): SidebarItem[] {
   return items.sort((a, b) => {
-    // Items with order come first
     if (a.order !== undefined && b.order !== undefined) {
       return a.order - b.order;
     }
     if (a.order !== undefined) return -1;
     if (b.order !== undefined) return 1;
-    
-    // Then sort alphabetically
-    return a.title.localeCompare(b.title);
-  }).map(item => ({
-    ...item,
-    children: item.children ? sortItems(item.children) : undefined,
-  }));
+    return a.title.localeCompare(b.title, 'zh-CN');
+  });
 }
 
 /**
- * Format folder name for display
- */
-function formatFolderName(name: string): string {
-  return name
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-/**
- * Check if a path is active (current page or parent of current page)
+ * Check if a path is active (current page or parent)
  */
 export function isActive(itemHref: string, currentPath: string): boolean {
   const normalizedItem = itemHref.replace(/\/$/, '');
