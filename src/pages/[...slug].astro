@@ -2,22 +2,41 @@
 import { getCollection, render } from 'astro:content';
 import DocLayout from '../layouts/DocLayout.astro';
 
+// Categories that have auto-generated index pages
+const autoIndexCategories = new Set([
+  'algorithms',
+  'computer-systems', 
+  'programming-languages',
+  'artificial-intelligence',
+  'development-tools',
+  'research-projects',
+]);
+
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
-  return docs.map((entry) => {
-    // Remove trailing /index from the slug for index pages
-    let slug = entry.id;
-    if (slug.endsWith('/index')) {
-      slug = slug.slice(0, -6) || 'index'; // Remove '/index', keep root as 'index'
-    }
-    if (slug === 'index') {
-      slug = ''; // Root index becomes empty slug (handled by index.astro)
-    }
-    return {
-      params: { slug },
-      props: { entry },
-    };
-  });
+  return docs
+    .filter(entry => {
+      // Skip category index files - they're handled by [category]/index.astro
+      const parts = entry.id.split('/');
+      if (parts.length === 2 && parts[1] === 'index' && autoIndexCategories.has(parts[0])) {
+        return false;
+      }
+      return true;
+    })
+    .map((entry) => {
+      // Remove trailing /index from the slug for index pages
+      let slug = entry.id;
+      if (slug.endsWith('/index')) {
+        slug = slug.slice(0, -6) || 'index';
+      }
+      if (slug === 'index') {
+        slug = '';
+      }
+      return {
+        params: { slug },
+        props: { entry },
+      };
+    });
 }
 
 const { entry } = Astro.props;

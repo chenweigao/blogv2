@@ -1,0 +1,176 @@
+---
+import { getCollection } from 'astro:content';
+import DocLayout from '../../layouts/DocLayout.astro';
+
+// Define category metadata
+const categoryMeta: Record<string, { title: string; description: string }> = {
+  'algorithms': {
+    title: '算法与数据结构',
+    description: '排序、搜索、图算法、动态规划和复杂度分析',
+  },
+  'computer-systems': {
+    title: '计算机系统',
+    description: 'CPU/GPU 架构、操作系统、内存管理和性能优化',
+  },
+  'programming-languages': {
+    title: '编程语言',
+    description: 'Java、Python、JVM 内部原理、语言特性和最佳实践',
+  },
+  'artificial-intelligence': {
+    title: '人工智能',
+    description: 'GPU 计算、分布式训练、性能分析和训练框架',
+  },
+  'development-tools': {
+    title: '开发工具',
+    description: '云服务、数据库、框架、前端开发和网络编程',
+  },
+  'research-projects': {
+    title: '研究项目',
+    description: '学术论文、研究项目和实验记录',
+  },
+};
+
+export async function getStaticPaths() {
+  const categories = Object.keys({
+    'algorithms': true,
+    'computer-systems': true,
+    'programming-languages': true,
+    'artificial-intelligence': true,
+    'development-tools': true,
+    'research-projects': true,
+  });
+  
+  return categories.map(category => ({
+    params: { category },
+  }));
+}
+
+const { category } = Astro.params;
+const meta = categoryMeta[category] || { title: category, description: '' };
+
+// Get all docs in this category
+const allDocs = await getCollection('docs');
+const categoryDocs = allDocs.filter(doc => {
+  const docCategory = doc.id.split('/')[0];
+  return docCategory === category && !doc.id.endsWith('/index');
+});
+
+// Group by subcategory
+const grouped = new Map<string, typeof categoryDocs>();
+
+categoryDocs.forEach(doc => {
+  const parts = doc.id.split('/');
+  // If doc is in a subfolder, use that as subcategory
+  const subcategory = parts.length > 2 ? parts[1] : '文章';
+  
+  if (!grouped.has(subcategory)) {
+    grouped.set(subcategory, []);
+  }
+  grouped.get(subcategory)!.push(doc);
+});
+
+// Sort docs within each group by date or title
+grouped.forEach((docs, key) => {
+  docs.sort((a, b) => {
+    // Sort by date if available, otherwise by title
+    if (a.data.date && b.data.date) {
+      return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+    }
+    const titleA = a.data.title || a.id;
+    const titleB = b.data.title || b.id;
+    return titleA.localeCompare(titleB, 'zh-CN');
+  });
+});
+
+// Sort subcategories - put '文章' last
+const sortedGroups = [...grouped.entries()].sort((a, b) => {
+  if (a[0] === '文章') return 1;
+  if (b[0] === '文章') return -1;
+  return a[0].localeCompare(b[0], 'zh-CN');
+});
+
+// Format subcategory name
+function formatSubcategory(name: string): string {
+  return name
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+// Get doc URL - handle index removal
+function getDocUrl(docId: string): string {
+  let slug = docId;
+  if (slug.endsWith('/index')) {
+    slug = slug.slice(0, -6);
+  }
+  return `/blogv2/${slug}/`;
+}
+---
+
+<DocLayout 
+  title={meta.title}
+  description={meta.description}
+>
+  <div class="space-y-8">
+    <!-- Category Header -->
+    <div class="mb-8">
+      <p class="text-[var(--color-text-muted)] text-lg">
+        {meta.description}
+      </p>
+      <p class="text-sm text-[var(--color-text-muted)] mt-2">
+        共 {categoryDocs.length} 篇文章
+      </p>
+    </div>
+
+    <!-- Grouped Articles -->
+    {sortedGroups.map(([subcategory, docs]) => (
+      <section>
+        {subcategory !== '文章' && (
+          <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4 pb-2 border-b border-[var(--color-border)]">
+            {formatSubcategory(subcategory)}
+          </h2>
+        )}
+        
+        <div class="grid gap-3">
+          {docs.map(doc => (
+            <a 
+              href={getDocUrl(doc.id)}
+              class="group flex items-center justify-between p-4 rounded-lg hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+            >
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+                  {doc.data.title || doc.id.split('/').pop()?.replace(/-/g, ' ')}
+                </h3>
+                {doc.data.description && (
+                  <p class="text-sm text-[var(--color-text-muted)] mt-1 truncate">
+                    {doc.data.description}
+                  </p>
+                )}
+              </div>
+              
+              <div class="flex items-center gap-3 ml-4 shrink-0">
+                {doc.data.date && (
+                  <time 
+                    datetime={doc.data.date.toISOString()}
+                    class="text-xs text-[var(--color-text-muted)]"
+                  >
+                    {doc.data.date.toLocaleDateString('zh-CN')}
+                  </time>
+                )}
+                <svg class="w-4 h-4 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    {categoryDocs.length === 0 && (
+      <div class="text-center py-12 text-[var(--color-text-muted)]">
+        <p>暂无文章</p>
+      </div>
+    )}
+  </div>
+</DocLayout>
