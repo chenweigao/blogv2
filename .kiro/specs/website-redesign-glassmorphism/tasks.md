@@ -324,7 +324,7 @@ This implementation plan breaks down the website redesign into discrete, increme
     - Compare against baseline in both light and dark modes
     - _Requirements: All_
 
-- [-] 16. Final Checkpoint
+- [x] 16. Final Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
