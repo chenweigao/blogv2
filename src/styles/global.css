@@ -96,3 +96,33 @@ code, pre, kbd, samp {
 a, button, input, select, textarea {
   transition: all var(--transition-fast);
 }
+
+/* ============================================
+   Page Transitions - CSS Only (No Snapshots)
+   ============================================ */
+
+/* Disable all view transition snapshot animations */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+}
+
+/* Content entrance animation */
+@keyframes content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.page-content {
+  animation: content-enter 200ms ease-out;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .page-content {
+    animation: none;
+  }
+}

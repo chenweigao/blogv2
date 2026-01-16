@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -53,6 +54,17 @@ const siteTitle = `${title} | Knowledge Wiki`;
         document.documentElement.classList.toggle('dark', theme === 'dark');
       })();
     </script>
+    
+    <!-- Preserve theme during View Transitions -->
+    <script is:inline>
+      document.addEventListener('astro:before-swap', (e) => {
+        const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        e.newDocument.documentElement.classList.toggle('dark', theme === 'dark');
+      });
+    </script>
+    
+    <!-- View Transitions -->
+    <ViewTransitions fallback="none" />
     
     <slot name="head" />
   </head>

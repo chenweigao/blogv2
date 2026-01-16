@@ -6,16 +6,22 @@ interface Props {
 const { currentPath = Astro.url.pathname } = Astro.props;
 
 const navLinks = [
-  { href: '/blogv2/', label: '首页' },
+  { href: '/blogv2/', label: '首页', exact: true },
   { href: '/blogv2/algorithms/', label: '算法' },
   { href: '/blogv2/computer-systems/', label: '系统' },
   { href: '/blogv2/programming-languages/', label: '编程语言' },
   { href: '/blogv2/artificial-intelligence/', label: 'AI' },
   { href: '/blogv2/development-tools/', label: '开发工具' },
 ];
+
+// Find active index
+const activeIndex = navLinks.findIndex((link) => {
+  if (link.exact) return currentPath === link.href;
+  return currentPath.startsWith(link.href);
+});
 ---
 
-<header class="fixed top-3 left-4 right-4 z-50 md:left-4 md:right-4">
+<header class="fixed top-3 left-4 right-4 z-50">
   <nav 
     class="glass rounded-2xl px-4 py-3 flex items-center justify-between max-w-7xl mx-auto"
     aria-label="主导航"
@@ -31,37 +37,55 @@ const navLinks = [
       <span class="font-semibold text-lg hidden sm:inline">Knowledge Wiki</span>
     </a>
 
-    <!-- Desktop Navigation -->
-    <div class="hidden md:flex items-center gap-1">
-      {navLinks.map((link) => (
-        <a
-          href={link.href}
-          class:list={[
-            'px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer',
-            currentPath.startsWith(link.href) && link.href !== '/blogv2/'
-              ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
-              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]'
-          ]}
-        >
-          {link.label}
-        </a>
-      ))}
+    <!-- Desktop Navigation with sliding indicator -->
+    <div class="hidden md:block">
+      <div class="nav-container relative flex items-center gap-0.5 p-1 rounded-xl bg-[var(--color-bg-secondary)]/50">
+        <!-- Sliding background indicator -->
+        <div 
+          class="nav-indicator absolute h-[calc(100%-8px)] rounded-lg bg-gradient-to-r from-violet-400/80 via-purple-400/80 to-fuchsia-400/80 transition-all duration-300 ease-out"
+          data-active-index={activeIndex}
+          aria-hidden="true"
+        ></div>
+        
+        {navLinks.map((link, index) => {
+          const isActive = link.exact 
+            ? currentPath === link.href 
+            : currentPath.startsWith(link.href);
+          return (
+            <a
+              href={link.href}
+              data-nav-index={index}
+              class:list={[
+                'nav-link relative z-10 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap',
+                isActive
+                  ? 'text-white'
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
+              ]}
+            >
+              {link.label}
+            </a>
+          );
+        })}
+      </div>
     </div>
 
     <!-- Right side actions -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1">
       <!-- Search button -->
       <button
         id="search-trigger"
-        class="p-2 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
         aria-label="搜索"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
+        <kbd class="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium rounded bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
+          <span class="text-xs">⌘</span>K
+        </kbd>
       </button>
 
-      <!-- Theme toggle placeholder -->
+      <!-- Theme toggle -->
       <div id="theme-toggle-slot">
         <slot name="theme-toggle" />
       </div>
@@ -94,17 +118,113 @@ const navLinks = [
   </nav>
 </header>
 
-<style>
-  /* Glassmorphism fallback */
-  @supports not (backdrop-filter: blur(1px)) {
-    nav.glass {
-      background: var(--color-bg);
-      opacity: 0.98;
+<script>
+  function initNavIndicator() {
+    const container = document.querySelector('.nav-container');
+    const indicator = document.querySelector('.nav-indicator') as HTMLElement;
+    const links = document.querySelectorAll('.nav-link') as NodeListOf<HTMLElement>;
+    
+    if (!container || !indicator || links.length === 0) return;
+    
+    // Get active index from data attribute
+    const activeIndex = parseInt(indicator.dataset.activeIndex || '-1');
+    
+    function updateIndicator(index: number, animate = true) {
+      if (index < 0 || index >= links.length) {
+        indicator.style.opacity = '0';
+        return;
+      }
+      
+      const link = links[index];
+      const containerRect = container!.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      
+      const left = linkRect.left - containerRect.left;
+      const width = linkRect.width;
+      
+      if (!animate) {
+        indicator.style.transition = 'none';
+      }
+      
+      indicator.style.opacity = '1';
+      indicator.style.left = `${left}px`;
+      indicator.style.width = `${width}px`;
+      
+      if (!animate) {
+        // Force reflow then restore transition
+        indicator.offsetHeight;
+        indicator.style.transition = '';
+      }
     }
+    
+    // Initial position without animation
+    updateIndicator(activeIndex, false);
+    
+    // Hover effect - move indicator to hovered link
+    links.forEach((link, index) => {
+      link.addEventListener('mouseenter', () => {
+        updateIndicator(index);
+        // Temporarily change text color
+        links.forEach((l, i) => {
+          if (i === index) {
+            l.classList.add('text-white');
+            l.classList.remove('text-[var(--color-text-muted)]');
+          } else {
+            l.classList.remove('text-white');
+            if (i !== activeIndex) {
+              l.classList.add('text-[var(--color-text-muted)]');
+            }
+          }
+        });
+      });
+    });
+    
+    // Return to active on mouse leave
+    container.addEventListener('mouseleave', () => {
+      updateIndicator(activeIndex);
+      // Restore text colors
+      links.forEach((link, index) => {
+        if (index === activeIndex) {
+          link.classList.add('text-white');
+          link.classList.remove('text-[var(--color-text-muted)]');
+        } else {
+          link.classList.remove('text-white');
+          link.classList.add('text-[var(--color-text-muted)]');
+        }
+      });
+    });
   }
   
-  /* Dark mode adjustments */
-  :global(.dark) nav.glass {
-    --glass-opacity: 0.85;
+  // Initialize on load and after navigation
+  initNavIndicator();
+  document.addEventListener('astro:after-swap', initNavIndicator);
+</script>
+
+<style>
+  .nav-indicator {
+    top: 4px;
+    box-shadow: 
+      0 2px 8px rgba(139, 92, 246, 0.3),
+      0 0 20px rgba(192, 132, 252, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Dark mode - slightly more vibrant */
+  :global(.dark) .nav-indicator {
+    background: linear-gradient(to right, 
+      rgba(167, 139, 250, 0.85), 
+      rgba(192, 132, 252, 0.85), 
+      rgba(232, 121, 249, 0.85)
+    );
+    box-shadow: 
+      0 2px 12px rgba(167, 139, 250, 0.4),
+      0 0 24px rgba(192, 132, 252, 0.25);
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .nav-indicator {
+      transition: none !important;
+    }
   }
 </style>
