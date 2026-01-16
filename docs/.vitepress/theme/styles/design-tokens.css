@@ -74,17 +74,18 @@
      3. 玻璃拟态系统 (Glassmorphism)
      ======================================== */
   
-  /* 玻璃背景 - Light Mode */
+  /* 玻璃背景 - Light Mode (Req 7.2: 0.7-0.9 opacity for visibility) */
   --glass-bg-light: rgba(255, 255, 255, 0.72);
-  --glass-bg-medium: rgba(255, 255, 255, 0.56);
-  --glass-bg-heavy: rgba(255, 255, 255, 0.88);
-  --glass-bg-ultra: rgba(255, 255, 255, 0.95);
+  --glass-bg-medium: rgba(255, 255, 255, 0.65);
+  --glass-bg-heavy: rgba(255, 255, 255, 0.85);
+  --glass-bg-ultra: rgba(255, 255, 255, 0.92);
   
-  /* 玻璃背景透明度变体 - Light Mode (0.7-0.9 range for visibility) */
-  --glass-opacity-navbar: 0.8;
-  --glass-opacity-sidebar: 0.7;
-  --glass-opacity-card: 0.75;
-  --glass-opacity-modal: 0.9;
+  /* 玻璃背景透明度变体 - Light Mode (0.7-0.9 range for visibility per Req 7.2) */
+  --glass-opacity-navbar: 0.82;
+  --glass-opacity-sidebar: 0.75;
+  --glass-opacity-card: 0.78;
+  --glass-opacity-modal: 0.88;
+  --glass-opacity-code: 0.72;
   
   /* 玻璃边框 */
   --glass-border-light: rgba(255, 255, 255, 0.18);
@@ -104,18 +105,20 @@
   --glass-blur-modal: 24px;     /* Modal: using lg blur */
   --glass-blur-code: 8px;       /* Code blocks: subtle blur */
   
-  /* 玻璃效果预设 - Light Mode */
+  /* 玻璃效果预设 - Light Mode (Req 7.2: 0.7-0.9 opacity) */
   --glass-effect-light: 
     rgba(255, 255, 255, 0.72) 
     blur(16px);
   --glass-effect-navbar: 
-    rgba(255, 255, 255, 0.8);
+    rgba(255, 255, 255, 0.82);
   --glass-effect-sidebar: 
-    rgba(255, 255, 255, 0.7);
-  --glass-effect-card: 
     rgba(255, 255, 255, 0.75);
+  --glass-effect-card: 
+    rgba(255, 255, 255, 0.78);
   --glass-effect-modal: 
-    rgba(255, 255, 255, 0.9);
+    rgba(255, 255, 255, 0.88);
+  --glass-effect-code:
+    rgba(255, 255, 255, 0.72);
 
   /* ========================================
      4. 阴影系统 - 柔和多层次
@@ -406,28 +409,30 @@
   --apple-divider: rgba(255, 255, 255, 0.08);
   --apple-divider-light: rgba(255, 255, 255, 0.04);
   
-  /* 玻璃背景 - 暗色 (darker base colors per Req 7.3) */
-  --glass-bg-light: rgba(28, 28, 30, 0.72);
-  --glass-bg-medium: rgba(28, 28, 30, 0.56);
-  --glass-bg-heavy: rgba(28, 28, 30, 0.88);
-  --glass-bg-ultra: rgba(28, 28, 30, 0.95);
+  /* 玻璃背景 - 暗色 (Req 7.3: darker base colors) */
+  --glass-bg-light: rgba(20, 20, 22, 0.72);
+  --glass-bg-medium: rgba(20, 20, 22, 0.65);
+  --glass-bg-heavy: rgba(20, 20, 22, 0.85);
+  --glass-bg-ultra: rgba(20, 20, 22, 0.92);
   
-  /* 玻璃背景透明度变体 - Dark Mode (adjusted for dark backgrounds) */
-  --glass-opacity-navbar: 0.85;
-  --glass-opacity-sidebar: 0.75;
-  --glass-opacity-card: 0.8;
+  /* 玻璃背景透明度变体 - Dark Mode (adjusted for dark backgrounds per Req 7.3) */
+  --glass-opacity-navbar: 0.88;
+  --glass-opacity-sidebar: 0.82;
+  --glass-opacity-card: 0.85;
   --glass-opacity-modal: 0.92;
+  --glass-opacity-code: 0.78;
   
   /* 玻璃边框 - 暗色 */
   --glass-border-light: rgba(255, 255, 255, 0.08);
   --glass-border-medium: rgba(255, 255, 255, 0.12);
   --glass-border-heavy: rgba(255, 255, 255, 0.18);
   
-  /* 玻璃效果预设 - 暗色 */
-  --glass-effect-navbar: rgba(28, 28, 30, 0.85);
-  --glass-effect-sidebar: rgba(28, 28, 30, 0.75);
-  --glass-effect-card: rgba(28, 28, 30, 0.8);
-  --glass-effect-modal: rgba(28, 28, 30, 0.92);
+  /* 玻璃效果预设 - 暗色 (Req 7.3: darker base colors) */
+  --glass-effect-navbar: rgba(20, 20, 22, 0.88);
+  --glass-effect-sidebar: rgba(20, 20, 22, 0.82);
+  --glass-effect-card: rgba(20, 20, 22, 0.85);
+  --glass-effect-modal: rgba(20, 20, 22, 0.92);
+  --glass-effect-code: rgba(20, 20, 22, 0.78);
   
   /* 阴影 - 暗色主题更深 (proportional intensity per Req 7.4) */
   --shadow-xs: 

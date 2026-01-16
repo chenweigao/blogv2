@@ -25,17 +25,17 @@
   --vp-c-bg-soft: rgba(0, 0, 0, 0.03);
   --vp-c-bg-mute: #FAFAFA;
   
-  /* 玻璃拟态背景 */
+  /* 玻璃拟态背景 (Req 7.2: 0.7-0.9 opacity for light mode) */
   --vp-c-bg-glass: rgba(255, 255, 255, 0.72);
-  --vp-c-bg-glass-heavy: rgba(255, 255, 255, 0.88);
-  --vp-c-bg-glass-light: rgba(255, 255, 255, 0.56);
+  --vp-c-bg-glass-heavy: rgba(255, 255, 255, 0.85);
+  --vp-c-bg-glass-light: rgba(255, 255, 255, 0.65);
   
-  /* 组件专用玻璃背景 (Requirements 7.1) */
-  --vp-c-bg-glass-navbar: rgba(255, 255, 255, 0.8);
-  --vp-c-bg-glass-sidebar: rgba(255, 255, 255, 0.7);
-  --vp-c-bg-glass-card: rgba(255, 255, 255, 0.75);
-  --vp-c-bg-glass-modal: rgba(255, 255, 255, 0.9);
-  --vp-c-bg-glass-code: rgba(255, 255, 255, 0.6);
+  /* 组件专用玻璃背景 (Requirements 7.1, 7.2) */
+  --vp-c-bg-glass-navbar: rgba(255, 255, 255, 0.82);
+  --vp-c-bg-glass-sidebar: rgba(255, 255, 255, 0.75);
+  --vp-c-bg-glass-card: rgba(255, 255, 255, 0.78);
+  --vp-c-bg-glass-modal: rgba(255, 255, 255, 0.88);
+  --vp-c-bg-glass-code: rgba(255, 255, 255, 0.72);
   
   /* ========================================
      文本色彩系统 - Apple 风格层级
@@ -313,17 +313,17 @@
   --vp-c-bg-soft: rgba(255, 255, 255, 0.05);
   --vp-c-bg-mute: #2C2C2E;
   
-  /* 玻璃拟态背景 - 暗色 */
-  --vp-c-bg-glass: rgba(28, 28, 30, 0.72);
-  --vp-c-bg-glass-heavy: rgba(28, 28, 30, 0.88);
-  --vp-c-bg-glass-light: rgba(28, 28, 30, 0.56);
+  /* 玻璃拟态背景 - 暗色 (Req 7.3: darker base colors) */
+  --vp-c-bg-glass: rgba(20, 20, 22, 0.72);
+  --vp-c-bg-glass-heavy: rgba(20, 20, 22, 0.85);
+  --vp-c-bg-glass-light: rgba(20, 20, 22, 0.65);
   
   /* 组件专用玻璃背景 - 暗色 (Requirements 7.3) */
-  --vp-c-bg-glass-navbar: rgba(28, 28, 30, 0.85);
-  --vp-c-bg-glass-sidebar: rgba(28, 28, 30, 0.75);
-  --vp-c-bg-glass-card: rgba(28, 28, 30, 0.8);
-  --vp-c-bg-glass-modal: rgba(28, 28, 30, 0.92);
-  --vp-c-bg-glass-code: rgba(28, 28, 30, 0.65);
+  --vp-c-bg-glass-navbar: rgba(20, 20, 22, 0.88);
+  --vp-c-bg-glass-sidebar: rgba(20, 20, 22, 0.82);
+  --vp-c-bg-glass-card: rgba(20, 20, 22, 0.85);
+  --vp-c-bg-glass-modal: rgba(20, 20, 22, 0.92);
+  --vp-c-bg-glass-code: rgba(20, 20, 22, 0.78);
   
   /* 文本色 - Apple 暗色风格 */
   --vp-c-text-1: #F5F5F7;

@@ -42,6 +42,8 @@
 @import url('./styles/content.css') layer(theme);
 @import url('./styles/responsive.css') layer(theme);
 @import url('./styles/content-width-enhancement.css') layer(theme);
+/* 🆕 主题切换过渡效果 - Smooth transitions (Requirement 7.6) */
+@import url('./styles/theme-transitions.css') layer(theme);
 
 /* ============================================
    组件层样式
@@ -78,3 +80,5 @@
 @import url('./styles/accessibility.css') layer(overrides);
 @import url('./styles/hide-aside.css') layer(overrides);
 @import url('./styles/print.css') layer(overrides);
+/* 🆕 玻璃拟态降级样式 - Fallback for unsupported browsers (Requirement 7.8) */
+@import url('./styles/glassmorphism-fallback.css') layer(overrides);

@@ -196,19 +196,19 @@ This implementation plan breaks down the website redesign into discrete, increme
 - [x] 10. Checkpoint - Components Complete
   - Ensure all card, code block, and hero tests pass, ask the user if questions arise.
 
-- [-] 11. Implement Dark/Light Mode Consistency
-  - [ ] 11.1 Audit and complete color palette definitions
+- [x] 11. Implement Dark/Light Mode Consistency
+  - [x] 11.1 Audit and complete color palette definitions
     - Verify all tokens have light and dark variants
     - Ensure glass opacity is appropriate for each mode (0.7-0.9 light)
     - Adjust dark mode glass backgrounds to darker base colors
     - _Requirements: 7.1, 7.2, 7.3_
   
-  - [ ] 11.2 Implement theme transition smoothness
+  - [x] 11.2 Implement theme transition smoothness
     - Add smooth color transitions (200-300ms) on theme switch
     - Prevent flash of unstyled content during transition
     - _Requirements: 7.6_
   
-  - [ ] 11.3 Add glassmorphism fallback styles
+  - [x] 11.3 Add glassmorphism fallback styles
     - Implement @supports rules for backdrop-filter
     - Provide solid background fallbacks for unsupported browsers
     - _Requirements: 7.8_
@@ -324,7 +324,7 @@ This implementation plan breaks down the website redesign into discrete, increme
     - Compare against baseline in both light and dark modes
     - _Requirements: All_
 
-- [ ] 16. Final Checkpoint
+- [-] 16. Final Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
