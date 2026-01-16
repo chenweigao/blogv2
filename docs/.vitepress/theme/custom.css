@@ -56,6 +56,8 @@
 @import url('./styles/markdown-callouts.css') layer(components);
 /* 🆕 首页样式增强 */
 @import url('./styles/home.css') layer(components);
+/* 🆕 卡片组件样式 - Glassmorphism */
+@import url('./styles/cards.css') layer(components);
 
 /* ============================================
    工具类层

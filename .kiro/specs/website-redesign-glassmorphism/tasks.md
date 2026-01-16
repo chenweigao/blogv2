@@ -120,15 +120,15 @@ This implementation plan breaks down the website redesign into discrete, increme
 - [x] 6. Checkpoint - Core Layout Complete
   - Ensure all navbar, sidebar, and content tests pass, ask the user if questions arise.
 
-- [ ] 7. Implement Card Components
-  - [ ] 7.1 Create cards.css with glassmorphism card styles
+- [x] 7. Implement Card Components
+  - [x] 7.1 Create cards.css with glassmorphism card styles
     - Apply glassmorphism background with backdrop blur (12-16px)
     - Add soft multi-layered shadows for depth
     - Set rounded corners using design token (16px)
     - Add cursor: pointer for interactive cards
     - _Requirements: 4.1, 4.2, 4.3, 4.8_
   
-  - [ ] 7.2 Implement card hover effects
+  - [x] 7.2 Implement card hover effects
     - Add elevation increase with enhanced shadow on hover
     - Implement subtle border color change on hover
     - Apply smooth transitions (200-300ms) with ease-out
@@ -143,8 +143,8 @@ This implementation plan breaks down the website redesign into discrete, increme
     - **Property 15: Border Radius Consistency (Cards)**
     - **Validates: Requirements 4.3**
 
-- [ ] 8. Implement Code Block Styling
-  - [ ] 8.1 Create code-blocks.css with modern code block styles
+- [-] 8. Implement Code Block Styling
+  - [-] 8.1 Create code-blocks.css with modern code block styles
     - Apply distinct background with subtle glassmorphism
     - Set rounded corners (12px) consistent with design system
     - Configure monospace font stack with 14px size
@@ -166,7 +166,7 @@ This implementation plan breaks down the website redesign into discrete, increme
     - **Property 8: Typography Stack Consistency (Code)**
     - **Validates: Requirements 5.3**
 
-- [ ] 9. Implement Hero Section Redesign
+- [~] 9. Implement Hero Section Redesign
   - [ ] 9.1 Update home.css with enhanced hero styles
     - Apply gradient background using brand colors with radial gradients
     - Implement gradient text effect for site title

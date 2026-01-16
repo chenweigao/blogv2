@@ -38,6 +38,7 @@
   "devDependencies": {
     "@braintree/sanitize-url": "^7.1.1",
     "@types/node": "^24.3.0",
+    "@vitest/coverage-v8": "^4.0.17",
     "@vue/eslint-config-prettier": "^9.0.0",
     "chokidar": "^4.0.3",
     "concurrently": "^9.2.0",
