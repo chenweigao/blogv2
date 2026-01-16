@@ -86,13 +86,14 @@
 
     // Load pagefind dynamically at runtime
     try {
-      // Use a variable to prevent Vite from analyzing the import
-      const pagefindPath = '/blogv2/pagefind/pagefind.js';
+      // Determine base path from current URL or use default
+      const basePath = import.meta.env.BASE_URL || '/blogv2/';
+      const pagefindPath = `${basePath}pagefind/pagefind.js`;
       // @ts-ignore - pagefind is generated at build time
       pagefind = await import(/* @vite-ignore */ pagefindPath);
       await pagefind.init();
     } catch (e) {
-      console.warn('Pagefind not available:', e);
+      console.warn('Pagefind not available. Run "npm run build" first to generate search index.', e);
     }
 
     function openModal() {
