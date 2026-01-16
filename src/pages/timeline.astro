@@ -80,7 +80,7 @@ const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', 
         {Object.entries(grouped)
           .sort(([a], [b]) => parseInt(b) - parseInt(a))
           .map(([year, months]) => (
-            <section>
+            <section data-year-section>
               <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6 sticky top-20 bg-[var(--color-bg)] py-2 z-10">
                 {year}
               </h2>
@@ -89,7 +89,7 @@ const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', 
                 {Object.entries(months)
                   .sort(([a], [b]) => parseInt(b) - parseInt(a))
                   .map(([month, docs]) => (
-                    <div>
+                    <div data-month-section>
                       <h3 class="text-lg font-semibold text-[var(--color-text-muted)] mb-4">
                         {monthNames[parseInt(month) - 1]}
                       </h3>
@@ -158,6 +158,8 @@ const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', 
   function initTimelineFilter() {
     const buttons = document.querySelectorAll('.filter-btn');
     const entries = document.querySelectorAll('.timeline-entry');
+    const monthSections = document.querySelectorAll('[data-month-section]');
+    const yearSections = document.querySelectorAll('[data-year-section]');
 
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -176,6 +178,18 @@ const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', 
           const entryCategories = entry.getAttribute('data-categories')?.split(',') || [];
           const show = category === 'all' || entryCategories.includes(category!);
           (entry as HTMLElement).style.display = show ? '' : 'none';
+        });
+
+        // Hide empty month sections
+        monthSections.forEach(section => {
+          const visibleEntries = section.querySelectorAll('.timeline-entry:not([style*="display: none"])');
+          (section as HTMLElement).style.display = visibleEntries.length > 0 ? '' : 'none';
+        });
+
+        // Hide empty year sections
+        yearSections.forEach(section => {
+          const visibleMonths = section.querySelectorAll('[data-month-section]:not([style*="display: none"])');
+          (section as HTMLElement).style.display = visibleMonths.length > 0 ? '' : 'none';
         });
       });
     });

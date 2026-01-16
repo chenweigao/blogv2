@@ -1,17 +1,50 @@
 @import "tailwindcss";
 @import "./design-tokens.css";
 
-/* Base Styles */
+/* Base Styles - Apple/Linear inspired typography */
 html {
   font-family: var(--font-sans);
   background-color: var(--color-bg);
   color: var(--color-text);
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
 }
 
 body {
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: var(--line-height-relaxed);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--tracking-normal);
+}
+
+/* Headings - Tight tracking, bold weight */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--line-height-tight);
+}
+
+h1 {
+  letter-spacing: var(--tracking-tighter);
+}
+
+/* Body text optimization */
+p, li, td, th {
+  line-height: var(--line-height-relaxed);
+}
+
+/* Small text - slightly wider tracking */
+small, .text-sm, .text-xs {
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Code - Monospace with proper sizing */
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+  font-feature-settings: "liga" 0;
 }
 
 /* Glassmorphism Utility */
@@ -40,16 +73,26 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  
+  html {
+    scroll-behavior: auto;
+  }
 }
 
-/* Focus Visible */
+/* Focus Visible - Apple-style ring */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary), 0 0 0 5px rgba(94, 92, 230, 0.2);
+  border-radius: var(--radius-sm);
 }
 
 /* Selection */
 ::selection {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: rgba(94, 92, 230, 0.3);
+  color: inherit;
+}
+
+/* Smooth transitions for interactive elements */
+a, button, input, select, textarea {
+  transition: all var(--transition-fast);
 }
