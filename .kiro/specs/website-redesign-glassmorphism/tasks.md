@@ -143,21 +143,21 @@ This implementation plan breaks down the website redesign into discrete, increme
     - **Property 15: Border Radius Consistency (Cards)**
     - **Validates: Requirements 4.3**
 
-- [-] 8. Implement Code Block Styling
-  - [-] 8.1 Create code-blocks.css with modern code block styles
+- [x] 8. Implement Code Block Styling
+  - [x] 8.1 Create code-blocks.css with modern code block styles
     - Apply distinct background with subtle glassmorphism
     - Set rounded corners (12px) consistent with design system
     - Configure monospace font stack with 14px size
     - Add subtle top border accent in brand color
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
   
-  - [ ] 8.2 Implement code block line numbers and copy button
+  - [x] 8.2 Implement code block line numbers and copy button
     - Style line numbers with reduced opacity
     - Add copy button with hover feedback
     - Implement subtle elevation change on hover
     - _Requirements: 5.5, 5.6, 5.7_
   
-  - [ ] 8.3 Ensure code block contrast in both modes
+  - [x] 8.3 Ensure code block contrast in both modes
     - Verify syntax highlighting contrast in light mode
     - Verify syntax highlighting contrast in dark mode
     - _Requirements: 5.8_
@@ -166,25 +166,25 @@ This implementation plan breaks down the website redesign into discrete, increme
     - **Property 8: Typography Stack Consistency (Code)**
     - **Validates: Requirements 5.3**
 
-- [~] 9. Implement Hero Section Redesign
-  - [ ] 9.1 Update home.css with enhanced hero styles
+- [x] 9. Implement Hero Section Redesign
+  - [x] 9.1 Update home.css with enhanced hero styles
     - Apply gradient background using brand colors with radial gradients
     - Implement gradient text effect for site title
     - Style primary CTA with brand gradient and soft shadow
     - Style secondary CTA with glassmorphism effect
     - _Requirements: 6.1, 6.3, 6.4, 6.5_
   
-  - [ ] 9.2 Add hero entrance animations
+  - [x] 9.2 Add hero entrance animations
     - Implement staggered fade-in for title, tagline, and buttons
     - Add hover effects for CTA buttons (elevation and scale)
     - _Requirements: 6.2, 6.6_
   
-  - [ ] 9.3 Implement hero reduced motion support
+  - [x] 9.3 Implement hero reduced motion support
     - Add @media (prefers-reduced-motion) rules
     - Disable or minimize animations when preference is set
     - _Requirements: 6.7_
   
-  - [ ] 9.4 Make hero section responsive
+  - [x] 9.4 Make hero section responsive
     - Adjust layout and typography for mobile screens
     - Ensure proper sizing at all breakpoints
     - _Requirements: 6.8_
@@ -193,7 +193,7 @@ This implementation plan breaks down the website redesign into discrete, increme
     - **Property 5: Reduced Motion Respect**
     - **Validates: Requirements 6.7, 9.4, 10.7**
 
-- [ ] 10. Checkpoint - Components Complete
+- [x] 10. Checkpoint - Components Complete
   - Ensure all card, code block, and hero tests pass, ask the user if questions arise.
 
 - [ ] 11. Implement Dark/Light Mode Consistency

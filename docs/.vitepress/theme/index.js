@@ -10,6 +10,8 @@ import './styles/mobile.css'
 import './styles/sidebar-widget.css'
 // Mermaid 图表样式（横向滚动支持和弹窗样式）
 import './styles/mermaid-modal.css'
+// 代码块样式 - 现代玻璃拟态风格 (Requirements 5.1-5.8)
+import './styles/code-blocks.css'
 // 注意：以下CSS文件已整合到 custom.css 的模块化结构中，避免重复导入
 // import './styles/code-block-fix.css'     // 已整合到 content.css
 // import './styles/sidebar-effects.css'   // 已整合到 layout.css  

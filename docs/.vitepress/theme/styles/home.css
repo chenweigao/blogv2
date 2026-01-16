@@ -1,17 +1,22 @@
 /* ============================================
    首页样式增强 - Apple/Linear 风格
+   Hero Section Redesign - Requirements 6.1-6.8
    ============================================ */
 
 /* ============================================
-   Hero 区域
+   Hero 区域 - Enhanced Glassmorphism Design
    ============================================ */
 .VPHero {
-  padding: 64px 24px 80px;
+  padding: var(--vp-space-48) var(--vp-space-24) var(--vp-space-48);
   position: relative;
   overflow: hidden;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Hero 背景渐变 */
+/* Hero 背景渐变 - Requirement 6.1: Gradient background with radial gradients */
 .VPHero::before {
   content: '';
   position: absolute;
@@ -20,53 +25,138 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(var(--vp-c-brand-rgb), 0.15), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(var(--vp-c-brand-rgb), 0.08), transparent),
-    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(var(--vp-c-brand-rgb), 0.05), transparent);
+    /* Primary radial gradient - top center */
+    radial-gradient(ellipse 100% 80% at 50% -30%, rgba(var(--vp-c-brand-rgb), 0.18), transparent 70%),
+    /* Secondary radial gradient - right side */
+    radial-gradient(ellipse 70% 50% at 90% 40%, rgba(var(--vp-c-brand-rgb), 0.12), transparent 60%),
+    /* Tertiary radial gradient - left bottom */
+    radial-gradient(ellipse 60% 40% at 10% 80%, rgba(var(--vp-c-brand-rgb), 0.08), transparent 50%),
+    /* Accent gradient - center glow */
+    radial-gradient(circle at 50% 50%, rgba(var(--vp-c-brand-rgb), 0.05), transparent 60%);
   pointer-events: none;
   z-index: 0;
+  transition: opacity var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out);
 }
 
+/* Dark mode gradient - enhanced visibility */
 .dark .VPHero::before {
   background: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(var(--vp-c-brand-rgb), 0.2), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(var(--vp-c-brand-rgb), 0.1), transparent),
-    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(var(--vp-c-brand-rgb), 0.08), transparent);
+    /* Primary radial gradient - top center - brighter in dark mode */
+    radial-gradient(ellipse 100% 80% at 50% -30%, rgba(var(--vp-c-brand-rgb), 0.25), transparent 70%),
+    /* Secondary radial gradient - right side */
+    radial-gradient(ellipse 70% 50% at 90% 40%, rgba(var(--vp-c-brand-rgb), 0.15), transparent 60%),
+    /* Tertiary radial gradient - left bottom */
+    radial-gradient(ellipse 60% 40% at 10% 80%, rgba(var(--vp-c-brand-rgb), 0.1), transparent 50%),
+    /* Accent gradient - center glow - more prominent in dark */
+    radial-gradient(circle at 50% 50%, rgba(var(--vp-c-brand-rgb), 0.08), transparent 60%);
+}
+
+/* Animated gradient overlay for subtle movement */
+.VPHero::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(var(--vp-c-brand-rgb), 0.03), transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(var(--vp-c-brand-rgb), 0.02), transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+  animation: heroGradientFloat 20s ease-in-out infinite;
+}
+
+@keyframes heroGradientFloat {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(2%, 1%) rotate(1deg);
+  }
+  50% {
+    transform: translate(0, 2%) rotate(0deg);
+  }
+  75% {
+    transform: translate(-2%, 1%) rotate(-1deg);
+  }
 }
 
 .VPHero .container {
   position: relative;
   z-index: 1;
+  max-width: var(--vp-layout-max-width);
+  margin: 0 auto;
 }
 
-/* Hero 标题 */
+/* Hero 标题 - Requirement 6.3: Gradient text effect for site title */
 .VPHero .name {
   background: var(--vp-c-brand-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  animation: fadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  /* Staggered animation - first element */
+  animation: heroFadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out) forwards;
+  opacity: 0;
+}
+
+/* Enhanced gradient text with shimmer effect */
+.VPHero .name::selection {
+  background: var(--vp-c-brand-soft);
+  -webkit-text-fill-color: var(--vp-c-brand-1);
 }
 
 .VPHero .text {
   color: var(--vp-c-text-1);
   font-weight: 600;
-  letter-spacing: -0.01em;
-  animation: fadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out) 0.1s both;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  /* Staggered animation - second element with delay */
+  animation: heroFadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out) 0.1s forwards;
+  opacity: 0;
 }
 
 .VPHero .tagline {
   color: var(--vp-c-text-2);
   font-weight: 400;
   line-height: 1.6;
-  animation: fadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out) 0.2s both;
+  max-width: 600px;
+  /* Staggered animation - third element with delay */
+  animation: heroFadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out) 0.2s forwards;
+  opacity: 0;
+}
+
+/* Hero entrance animation keyframes */
+@keyframes heroFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Hero 图片 */
 .VPHero .image-container {
-  animation: scaleIn var(--vp-animation-duration-slow) var(--vp-animation-easing-spring) 0.3s both;
+  /* Staggered animation - with delay */
+  animation: heroScaleIn var(--vp-animation-duration-slow) var(--vp-animation-easing-spring) 0.3s forwards;
+  opacity: 0;
+}
+
+@keyframes heroScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .VPHero .image-container img {
@@ -83,33 +173,63 @@
   }
 }
 
-/* Hero 按钮 */
+/* Hero 按钮容器 - Staggered animation */
 .VPHero .actions {
-  animation: fadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out) 0.4s both;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vp-space-12);
+  justify-content: center;
+  /* Staggered animation - last element with delay */
+  animation: heroFadeInUp var(--vp-animation-duration-slow) var(--vp-animation-easing-expo-out) 0.35s forwards;
+  opacity: 0;
 }
 
 .VPHero .action {
-  margin: 8px;
+  margin: 0;
 }
 
-/* 主要按钮 - 品牌渐变 */
+/* 主要按钮 - Requirement 6.4: Brand gradient background and soft shadow */
 .VPHero .VPButton.brand {
   background: var(--vp-c-brand-gradient);
   border: none;
   color: white;
   font-weight: 600;
-  padding: 12px 28px;
+  padding: var(--vp-space-12) var(--vp-space-32);
   border-radius: var(--vp-border-radius-large);
-  box-shadow: var(--vp-shadow-brand-md);
+  box-shadow: var(--vp-shadow-brand-button);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
   transition: 
     transform var(--vp-animation-duration-fast) var(--vp-animation-easing-spring),
     box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out);
 }
 
+/* Primary button shine effect */
+.VPHero .VPButton.brand::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
 @media (hover: hover) {
   .VPHero .VPButton.brand:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: var(--vp-shadow-brand-lg);
+    box-shadow: var(--vp-shadow-brand-button-hover);
+  }
+  
+  .VPHero .VPButton.brand:hover::before {
+    left: 100%;
   }
 }
 
@@ -117,7 +237,13 @@
   transform: translateY(0) scale(0.98);
 }
 
-/* 次要按钮 - 玻璃效果 */
+/* Focus state for accessibility */
+.VPHero .VPButton.brand:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+/* 次要按钮 - Requirement 6.5: Glassmorphism effect */
 .VPHero .VPButton.alt {
   background: var(--vp-c-bg-glass);
   backdrop-filter: blur(var(--vp-blur-sm));
@@ -125,14 +251,22 @@
   border: 1px solid var(--vp-c-border);
   color: var(--vp-c-text-1);
   font-weight: 500;
-  padding: 12px 28px;
+  padding: var(--vp-space-12) var(--vp-space-32);
   border-radius: var(--vp-border-radius-large);
   box-shadow: var(--vp-shadow-2);
+  cursor: pointer;
   transition: 
     transform var(--vp-animation-duration-fast) var(--vp-animation-easing-spring),
     box-shadow var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
     background-color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out),
     border-color var(--vp-animation-duration-fast) var(--vp-animation-easing-expo-out);
+}
+
+/* Glassmorphism fallback for unsupported browsers */
+@supports not (backdrop-filter: blur(1px)) {
+  .VPHero .VPButton.alt {
+    background: var(--vp-c-bg-alt);
+  }
 }
 
 @media (hover: hover) {
@@ -146,6 +280,12 @@
 
 .VPHero .VPButton.alt:active {
   transform: translateY(0) scale(0.98);
+}
+
+/* Focus state for accessibility */
+.VPHero .VPButton.alt:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
 }
 
 /* ============================================
@@ -392,25 +532,151 @@
 }
 
 /* ============================================
-   响应式调整
+   响应式调整 - Requirement 6.8: Fully responsive
    ============================================ */
-@media (max-width: 768px) {
+
+/* Large screens (1280px+) */
+@media (min-width: 1280px) {
   .VPHero {
-    padding: 48px 16px 64px;
+    padding: var(--vp-space-48) var(--vp-space-48) var(--vp-space-48);
+    min-height: 75vh;
+  }
+  
+  .VPHero .name {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+  }
+  
+  .VPHero .text {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+  }
+  
+  .VPHero .tagline {
+    font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  }
+}
+
+/* Desktop (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .VPHero {
+    padding: var(--vp-space-48) var(--vp-space-32) var(--vp-space-48);
+    min-height: 70vh;
+  }
+  
+  .VPHero .name {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+  }
+  
+  .VPHero .text {
+    font-size: clamp(1.75rem, 2.5vw, 2rem);
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .VPHero {
+    padding: var(--vp-space-32) var(--vp-space-24) var(--vp-space-32);
+    min-height: 60vh;
+  }
+  
+  .VPHero .name {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  
+  .VPHero .text {
+    font-size: clamp(1.5rem, 2.5vw, 1.75rem);
+  }
+  
+  .VPHero .tagline {
+    font-size: 1rem;
+    max-width: 500px;
   }
   
   .VPHero .VPButton.brand,
   .VPHero .VPButton.alt {
-    padding: 10px 20px;
-    font-size: 14px;
+    padding: var(--vp-space-12) var(--vp-space-24);
   }
   
   .VPFeatures {
-    padding: 32px 16px 64px;
+    padding: var(--vp-space-32) var(--vp-space-24) var(--vp-space-48);
+  }
+}
+
+/* Mobile landscape and small tablets (640px - 767px) */
+@media (min-width: 640px) and (max-width: 767px) {
+  .VPHero {
+    padding: var(--vp-space-32) var(--vp-space-16) var(--vp-space-32);
+    min-height: 55vh;
+  }
+  
+  .VPHero .name {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+  }
+  
+  .VPHero .text {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+  }
+  
+  .VPHero .tagline {
+    font-size: 0.9375rem;
+    max-width: 450px;
+  }
+  
+  .VPHero .actions {
+    gap: var(--vp-space-8);
+  }
+  
+  .VPHero .VPButton.brand,
+  .VPHero .VPButton.alt {
+    padding: var(--vp-space-8) var(--vp-space-16);
+    font-size: 0.875rem;
+  }
+}
+
+/* Mobile portrait (480px - 639px) */
+@media (min-width: 480px) and (max-width: 639px) {
+  .VPHero {
+    padding: var(--vp-space-24) var(--vp-space-16) var(--vp-space-24);
+    min-height: 50vh;
+  }
+  
+  .VPHero .name {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+  
+  .VPHero .text {
+    font-size: clamp(1.125rem, 4vw, 1.375rem);
+  }
+  
+  .VPHero .tagline {
+    font-size: 0.875rem;
+    max-width: 100%;
+    line-height: 1.5;
+  }
+  
+  .VPHero .actions {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--vp-space-8);
+  }
+  
+  .VPHero .action {
+    width: 100%;
+  }
+  
+  .VPHero .VPButton.brand,
+  .VPHero .VPButton.alt {
+    width: 100%;
+    padding: var(--vp-space-12) var(--vp-space-16);
+    font-size: 0.875rem;
+    justify-content: center;
+  }
+  
+  .VPFeatures {
+    padding: var(--vp-space-24) var(--vp-space-16) var(--vp-space-32);
   }
   
   .VPFeature {
-    padding: 20px;
+    padding: var(--vp-space-16);
   }
   
   .VPFeature .icon {
@@ -420,35 +686,169 @@
   }
   
   .VPFeature .title {
-    font-size: 16px;
+    font-size: 1rem;
   }
   
   .VPHome .vp-doc {
-    padding: 32px 16px;
+    padding: var(--vp-space-24) var(--vp-space-16);
   }
   
   .VPHome .vp-doc h2 {
-    font-size: 24px;
+    font-size: 1.375rem;
+  }
+}
+
+/* Small mobile (< 480px) */
+@media (max-width: 479px) {
+  .VPHero {
+    padding: var(--vp-space-16) var(--vp-space-12) var(--vp-space-16);
+    min-height: 45vh;
+  }
+  
+  .VPHero .name {
+    font-size: clamp(1.25rem, 7vw, 1.75rem);
+    letter-spacing: -0.02em;
+  }
+  
+  .VPHero .text {
+    font-size: clamp(1rem, 5vw, 1.25rem);
+    letter-spacing: -0.01em;
+  }
+  
+  .VPHero .tagline {
+    font-size: 0.8125rem;
+    max-width: 100%;
+    line-height: 1.5;
+  }
+  
+  .VPHero .actions {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--vp-space-8);
+  }
+  
+  .VPHero .action {
+    width: 100%;
+  }
+  
+  .VPHero .VPButton.brand,
+  .VPHero .VPButton.alt {
+    width: 100%;
+    padding: var(--vp-space-12) var(--vp-space-12);
+    font-size: 0.8125rem;
+    justify-content: center;
+  }
+  
+  /* Disable animated gradient on small screens for performance */
+  .VPHero::after {
+    animation: none;
+  }
+  
+  .VPFeatures {
+    padding: var(--vp-space-16) var(--vp-space-12) var(--vp-space-24);
+  }
+  
+  .VPFeature {
+    padding: var(--vp-space-12);
+  }
+  
+  .VPFeature .icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    margin-bottom: var(--vp-space-12);
+  }
+  
+  .VPFeature .title {
+    font-size: 0.9375rem;
+    margin-bottom: var(--vp-space-4);
+  }
+  
+  .VPFeature .details {
+    font-size: 0.8125rem;
+  }
+  
+  .VPHome .vp-doc {
+    padding: var(--vp-space-16) var(--vp-space-12);
+  }
+  
+  .VPHome .vp-doc h2 {
+    font-size: 1.25rem;
+    margin-top: var(--vp-space-32);
+    margin-bottom: var(--vp-space-16);
+  }
+  
+  .VPHome .vp-doc h3 {
+    font-size: 1.0625rem;
+    margin-top: var(--vp-space-24);
+    margin-bottom: var(--vp-space-12);
   }
 }
 
 /* ============================================
-   减少动画偏好支持
+   减少动画偏好支持 - Requirement 6.7: Respect prefers-reduced-motion
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
+  /* Disable all hero entrance animations */
   .VPHero .name,
   .VPHero .text,
   .VPHero .tagline,
   .VPHero .image-container,
-  .VPHero .actions,
+  .VPHero .actions {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  /* Disable feature card animations */
   .VPFeature {
+    animation: none;
+    opacity: 1;
+  }
+  
+  /* Disable background gradient animation */
+  .VPHero::after {
     animation: none;
   }
   
+  /* Disable all transitions on interactive elements */
   .VPFeature,
   .VPHero .VPButton.brand,
   .VPHero .VPButton.alt,
-  .VPHero .image-container img {
+  .VPHero .image-container img,
+  .VPFeature .icon,
+  .VPFeature .title,
+  .VPFeature .link-text,
+  .VPFeature .link-text::after {
     transition: none;
+  }
+  
+  /* Keep minimal visual feedback for hover states without motion */
+  @media (hover: hover) {
+    .VPHero .VPButton.brand:hover {
+      transform: none;
+      box-shadow: var(--vp-shadow-brand-button-hover);
+    }
+    
+    .VPHero .VPButton.alt:hover {
+      transform: none;
+      background: var(--vp-c-bg-glass-heavy);
+      border-color: var(--vp-c-border-hover);
+    }
+    
+    .VPFeature:hover {
+      transform: none;
+      box-shadow: var(--vp-shadow-hover);
+      border-color: var(--vp-c-border-hover);
+    }
+    
+    .VPHero .image-container img:hover {
+      transform: none;
+    }
+  }
+  
+  /* Disable shine effect on primary button */
+  .VPHero .VPButton.brand::before {
+    display: none;
   }
 }
