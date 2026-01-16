@@ -1,0 +1,398 @@
+---
+/**
+ * Mermaid Renderer Component
+ * 
+ * Handles client-side rendering of Mermaid diagrams with:
+ * - Modern Apple/Linear-inspired theming
+ * - Smooth loading states
+ * - Theme-aware rendering
+ * - Click-to-zoom modal
+ */
+---
+
+<!-- Loading placeholder styles -->
+<style is:global>
+  @reference "tailwindcss";
+  
+  /* Mermaid container */
+  .mermaid-wrapper {
+    @apply my-6 rounded-xl overflow-hidden relative;
+    background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
+    border: 1px solid var(--color-border);
+  }
+
+  .mermaid-wrapper svg {
+    @apply max-w-full h-auto mx-auto block p-6;
+  }
+
+  /* Loading skeleton */
+  .mermaid-loading {
+    @apply flex items-center justify-center py-16 text-[var(--color-text-muted)];
+  }
+
+  .mermaid-loading::before {
+    content: '';
+    @apply w-8 h-8 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-primary)] animate-spin mr-3;
+  }
+
+  /* Zoom hint */
+  .mermaid-wrapper::after {
+    content: '点击放大';
+    @apply absolute bottom-2 right-3 text-xs text-[var(--color-text-muted)] opacity-0 transition-opacity duration-200 pointer-events-none;
+    @apply px-2 py-1 rounded-md bg-[var(--color-bg)]/80 backdrop-blur-sm;
+  }
+
+  .mermaid-wrapper:hover::after {
+    @apply opacity-100;
+  }
+
+  /* Modal styles */
+  .mermaid-modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .mermaid-modal-content {
+    @apply relative max-w-[90vw] max-h-[90vh] overflow-auto rounded-2xl p-8;
+    background: var(--color-bg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .mermaid-modal-close {
+    @apply absolute top-4 right-4 p-2 rounded-lg transition-colors cursor-pointer;
+    @apply text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)];
+  }
+
+  /* Error state */
+  .mermaid-error {
+    @apply p-6 text-center;
+  }
+
+  .mermaid-error-title {
+    @apply text-sm text-red-500 mb-2 font-medium;
+  }
+
+  .mermaid-error-code {
+    @apply text-xs bg-[var(--color-bg)] p-3 rounded-lg overflow-x-auto text-left;
+    @apply font-mono text-[var(--color-text-muted)];
+  }
+</style>
+
+<script>
+  // Modern Apple/Linear-inspired Mermaid theme configuration
+  const modernThemeConfig = {
+    // Light mode - clean, minimal, Apple-inspired
+    light: {
+      theme: 'base',
+      themeVariables: {
+        // Primary colors - subtle blue accent
+        primaryColor: '#F5F5F7',
+        primaryTextColor: '#1D1D1F',
+        primaryBorderColor: '#D2D2D7',
+        
+        // Secondary colors
+        secondaryColor: '#FBFBFD',
+        secondaryTextColor: '#1D1D1F',
+        secondaryBorderColor: '#D2D2D7',
+        
+        // Tertiary colors
+        tertiaryColor: '#F5F5F7',
+        tertiaryTextColor: '#1D1D1F',
+        tertiaryBorderColor: '#D2D2D7',
+        
+        // Line and text
+        lineColor: '#86868B',
+        textColor: '#1D1D1F',
+        
+        // Background
+        mainBkg: '#FFFFFF',
+        nodeBkg: '#F5F5F7',
+        nodeBorder: '#D2D2D7',
+        
+        // Flowchart specific
+        clusterBkg: '#FBFBFD',
+        clusterBorder: '#D2D2D7',
+        
+        // Sequence diagram
+        actorBkg: '#F5F5F7',
+        actorBorder: '#D2D2D7',
+        actorTextColor: '#1D1D1F',
+        actorLineColor: '#86868B',
+        signalColor: '#1D1D1F',
+        signalTextColor: '#1D1D1F',
+        labelBoxBkgColor: '#F5F5F7',
+        labelBoxBorderColor: '#D2D2D7',
+        labelTextColor: '#1D1D1F',
+        loopTextColor: '#1D1D1F',
+        noteBkgColor: '#FFF9E6',
+        noteBorderColor: '#E6D9A6',
+        noteTextColor: '#1D1D1F',
+        
+        // State diagram
+        labelColor: '#1D1D1F',
+        
+        // Class diagram
+        classText: '#1D1D1F',
+        
+        // Gantt
+        taskBkgColor: '#007AFF',
+        taskBorderColor: '#0056B3',
+        taskTextColor: '#FFFFFF',
+        taskTextLightColor: '#FFFFFF',
+        taskTextOutsideColor: '#1D1D1F',
+        activeTaskBkgColor: '#34C759',
+        activeTaskBorderColor: '#248A3D',
+        doneTaskBkgColor: '#E5E5EA',
+        doneTaskBorderColor: '#D2D2D7',
+        critBkgColor: '#FF3B30',
+        critBorderColor: '#D70015',
+        todayLineColor: '#FF9500',
+        
+        // Pie chart
+        pie1: '#007AFF',
+        pie2: '#34C759',
+        pie3: '#FF9500',
+        pie4: '#AF52DE',
+        pie5: '#FF3B30',
+        pie6: '#5AC8FA',
+        pie7: '#FFCC00',
+        pieStrokeColor: '#FFFFFF',
+        pieStrokeWidth: '2px',
+        pieTitleTextColor: '#1D1D1F',
+        pieSectionTextColor: '#FFFFFF',
+        
+        // Fonts
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+        fontSize: '14px',
+      },
+    },
+    
+    // Dark mode - sleek, modern, Linear-inspired
+    dark: {
+      theme: 'base',
+      themeVariables: {
+        // Primary colors
+        primaryColor: '#2C2C2E',
+        primaryTextColor: '#F5F5F7',
+        primaryBorderColor: '#3A3A3C',
+        
+        // Secondary colors
+        secondaryColor: '#1C1C1E',
+        secondaryTextColor: '#F5F5F7',
+        secondaryBorderColor: '#3A3A3C',
+        
+        // Tertiary colors
+        tertiaryColor: '#2C2C2E',
+        tertiaryTextColor: '#F5F5F7',
+        tertiaryBorderColor: '#3A3A3C',
+        
+        // Line and text
+        lineColor: '#8E8E93',
+        textColor: '#F5F5F7',
+        
+        // Background
+        mainBkg: '#1C1C1E',
+        nodeBkg: '#2C2C2E',
+        nodeBorder: '#3A3A3C',
+        
+        // Flowchart specific
+        clusterBkg: '#1C1C1E',
+        clusterBorder: '#3A3A3C',
+        
+        // Sequence diagram
+        actorBkg: '#2C2C2E',
+        actorBorder: '#3A3A3C',
+        actorTextColor: '#F5F5F7',
+        actorLineColor: '#8E8E93',
+        signalColor: '#F5F5F7',
+        signalTextColor: '#F5F5F7',
+        labelBoxBkgColor: '#2C2C2E',
+        labelBoxBorderColor: '#3A3A3C',
+        labelTextColor: '#F5F5F7',
+        loopTextColor: '#F5F5F7',
+        noteBkgColor: '#3A3A3C',
+        noteBorderColor: '#48484A',
+        noteTextColor: '#F5F5F7',
+        
+        // State diagram
+        labelColor: '#F5F5F7',
+        
+        // Class diagram
+        classText: '#F5F5F7',
+        
+        // Gantt
+        taskBkgColor: '#0A84FF',
+        taskBorderColor: '#0056B3',
+        taskTextColor: '#FFFFFF',
+        taskTextLightColor: '#FFFFFF',
+        taskTextOutsideColor: '#F5F5F7',
+        activeTaskBkgColor: '#30D158',
+        activeTaskBorderColor: '#248A3D',
+        doneTaskBkgColor: '#3A3A3C',
+        doneTaskBorderColor: '#48484A',
+        critBkgColor: '#FF453A',
+        critBorderColor: '#D70015',
+        todayLineColor: '#FF9F0A',
+        
+        // Pie chart
+        pie1: '#0A84FF',
+        pie2: '#30D158',
+        pie3: '#FF9F0A',
+        pie4: '#BF5AF2',
+        pie5: '#FF453A',
+        pie6: '#64D2FF',
+        pie7: '#FFD60A',
+        pieStrokeColor: '#1C1C1E',
+        pieStrokeWidth: '2px',
+        pieTitleTextColor: '#F5F5F7',
+        pieSectionTextColor: '#FFFFFF',
+        
+        // Fonts
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+        fontSize: '14px',
+      },
+    },
+  };
+
+  // Track rendered diagrams to avoid re-rendering
+  const renderedDiagrams = new WeakSet<Element>();
+
+  async function initMermaidDiagrams() {
+    const mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
+    if (mermaidBlocks.length === 0) return;
+
+    // Filter out already rendered diagrams
+    const blocksToRender = Array.from(mermaidBlocks).filter(
+      (block) => !renderedDiagrams.has(block)
+    );
+    if (blocksToRender.length === 0) return;
+
+    const { default: mermaid } = await import('mermaid');
+    const isDark = document.documentElement.classList.contains('dark');
+    const config = isDark ? modernThemeConfig.dark : modernThemeConfig.light;
+
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      ...config,
+    });
+
+    for (let i = 0; i < blocksToRender.length; i++) {
+      const pre = blocksToRender[i] as HTMLPreElement;
+      const codeElement = pre.querySelector('code');
+      if (!codeElement) continue;
+
+      const code = codeElement.textContent || '';
+      const id = `mermaid-${Date.now()}-${i}`;
+
+      // Create wrapper with loading state
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mermaid-wrapper cursor-pointer';
+      wrapper.innerHTML = '<div class="mermaid-loading">加载图表中...</div>';
+      pre.replaceWith(wrapper);
+
+      try {
+        const { svg } = await mermaid.render(id, code);
+        wrapper.innerHTML = svg;
+        wrapper.addEventListener('click', () => openMermaidModal(svg));
+        renderedDiagrams.add(wrapper);
+      } catch (err) {
+        console.error('Mermaid render error:', err);
+        wrapper.innerHTML = `
+          <div class="mermaid-error">
+            <div class="mermaid-error-title">图表渲染失败</div>
+            <pre class="mermaid-error-code"><code>${escapeHtml(code)}</code></pre>
+          </div>
+        `;
+      }
+    }
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function openMermaidModal(svg: string) {
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-modal';
+    modal.innerHTML = `
+      <div class="mermaid-modal-content">
+        <button class="mermaid-modal-close" aria-label="关闭">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="pt-4">${svg}</div>
+      </div>
+    `;
+
+    const closeModal = () => {
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.remove(), 200);
+    };
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    modal.querySelector('.mermaid-modal-close')?.addEventListener('click', closeModal);
+
+    const escHandler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    document.body.appendChild(modal);
+    
+    // Trigger animation
+    requestAnimationFrame(() => {
+      modal.style.opacity = '1';
+    });
+  }
+
+  // Handle theme changes - re-render with new theme
+  let themeChangeTimeout: number;
+  function handleThemeChange() {
+    clearTimeout(themeChangeTimeout);
+    themeChangeTimeout = window.setTimeout(() => {
+      // Clear rendered cache and re-render
+      document.querySelectorAll('.mermaid-wrapper').forEach((wrapper) => {
+        renderedDiagrams.delete(wrapper);
+      });
+      
+      // Convert back to pre blocks for re-rendering
+      document.querySelectorAll('.mermaid-wrapper').forEach((wrapper) => {
+        const svg = wrapper.querySelector('svg');
+        if (!svg) return;
+        
+        // We need to store original code - for now just re-init page
+        // A more elegant solution would store the original code in a data attribute
+      });
+      
+      // For simplicity, reload mermaid diagrams
+      // In production, you'd want to cache the original code
+      location.reload();
+    }, 100);
+  }
+
+  // Initialize
+  initMermaidDiagrams();
+  document.addEventListener('astro:after-swap', initMermaidDiagrams);
+
+  // Theme change observer (optional - can cause full re-render)
+  // Uncomment if you want diagrams to update on theme change
+  // const themeObserver = new MutationObserver((mutations) => {
+  //   mutations.forEach((mutation) => {
+  //     if (mutation.attributeName === 'class') {
+  //       handleThemeChange();
+  //     }
+  //   });
+  // });
+  // themeObserver.observe(document.documentElement, { attributes: true });
+</script>
