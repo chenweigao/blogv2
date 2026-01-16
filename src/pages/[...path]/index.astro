@@ -1,0 +1,234 @@
+---
+/**
+ * Dynamic index page generator for subfolders without index.md
+ * Auto-generates listing pages for any folder path
+ */
+import { getCollection } from 'astro:content';
+import DocLayout from '../../layouts/DocLayout.astro';
+
+// Get all unique folder paths that need auto-generated index pages
+export async function getStaticPaths() {
+  const allDocs = await getCollection('docs');
+  
+  // Collect all folder paths from doc IDs
+  const folderPaths = new Set<string>();
+  
+  for (const doc of allDocs) {
+    const parts = doc.id.split('/');
+    // Build all parent paths
+    for (let i = 1; i < parts.length; i++) {
+      const folderPath = parts.slice(0, i).join('/');
+      folderPaths.add(folderPath);
+    }
+  }
+  
+  // Filter out paths that have their own index.md
+  const pathsWithIndex = new Set(
+    allDocs
+      .filter(doc => doc.id.endsWith('/index'))
+      .map(doc => doc.id.replace(/\/index$/, ''))
+  );
+  
+  // Also filter out top-level categories (handled by [category]/index.astro)
+  const topLevelCategories = new Set([
+    'algorithms',
+    'computer-systems',
+    'programming-languages',
+    'artificial-intelligence',
+    'development-tools',
+    'research-projects',
+  ]);
+  
+  // Generate paths for folders without index.md
+  const paths = [...folderPaths]
+    .filter(path => {
+      // Skip if has index.md
+      if (pathsWithIndex.has(path)) return false;
+      // Skip top-level categories
+      if (topLevelCategories.has(path)) return false;
+      // Skip image/code/asset folders
+      if (path.includes('/image') || path.includes('/images') || 
+          path.includes('/code') || path.includes('/pics') ||
+          path.includes('/public') || path.includes('/_optimized') ||
+          path.includes('/attachments')) return false;
+      return true;
+    })
+    .map(path => ({
+      params: { path },
+    }));
+  
+  return paths;
+}
+
+const { path } = Astro.params;
+const pathParts = path?.split('/') || [];
+
+// Get folder name for title
+const folderName = pathParts[pathParts.length - 1] || '';
+const title = folderName
+  .replace(/[-_]/g, ' ')
+  .replace(/\b\w/g, c => c.toUpperCase());
+
+// Get all docs in this folder
+const allDocs = await getCollection('docs');
+const folderDocs = allDocs.filter(doc => {
+  // Must start with this path
+  if (!doc.id.startsWith(path + '/')) return false;
+  // Skip index files
+  if (doc.id.endsWith('/index')) return false;
+  // Get relative path after folder
+  const relativePath = doc.id.slice(path.length + 1);
+  // Only include direct children (no more slashes) or subfolder indexes
+  const slashCount = (relativePath.match(/\//g) || []).length;
+  return slashCount === 0 || (slashCount === 1 && relativePath.endsWith('/index'));
+});
+
+// Group by subfolder
+const subfolders = new Map<string, typeof folderDocs>();
+const directFiles: typeof folderDocs = [];
+
+for (const doc of folderDocs) {
+  const relativePath = doc.id.slice(path.length + 1);
+  const parts = relativePath.split('/');
+  
+  if (parts.length === 1) {
+    directFiles.push(doc);
+  } else {
+    const subfolder = parts[0];
+    if (!subfolders.has(subfolder)) {
+      subfolders.set(subfolder, []);
+    }
+  }
+}
+
+// Get all subfolders (including those without direct files)
+const allSubfolders = new Set<string>();
+for (const doc of allDocs) {
+  if (doc.id.startsWith(path + '/')) {
+    const relativePath = doc.id.slice(path.length + 1);
+    const parts = relativePath.split('/');
+    if (parts.length > 1) {
+      allSubfolders.add(parts[0]);
+    }
+  }
+}
+
+// Sort files by date or title
+directFiles.sort((a, b) => {
+  if (a.data.date && b.data.date) {
+    return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+  }
+  const titleA = a.data.title || a.id;
+  const titleB = b.data.title || b.id;
+  return titleA.localeCompare(titleB, 'zh-CN');
+});
+
+// Helper to get doc URL
+function getDocUrl(docId: string): string {
+  let slug = docId;
+  if (slug.endsWith('/index')) {
+    slug = slug.slice(0, -6);
+  }
+  return `/blogv2/${slug}/`;
+}
+
+// Helper to format name
+function formatName(name: string): string {
+  return name
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+---
+
+<DocLayout title={title}>
+  <div class="space-y-8">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-[var(--color-text-muted)]">
+      <ol class="flex items-center gap-2">
+        {pathParts.map((part, i) => (
+          <>
+            {i > 0 && <span>/</span>}
+            <li>
+              {i === pathParts.length - 1 ? (
+                <span class="text-[var(--color-text)]">{formatName(part)}</span>
+              ) : (
+                <a 
+                  href={`/blogv2/${pathParts.slice(0, i + 1).join('/')}/`}
+                  class="hover:text-[var(--color-primary)] transition-colors"
+                >
+                  {formatName(part)}
+                </a>
+              )}
+            </li>
+          </>
+        ))}
+      </ol>
+    </nav>
+
+    <!-- Subfolders -->
+    {[...allSubfolders].length > 0 && (
+      <section>
+        <h2 class="text-lg font-semibold text-[var(--color-text)] mb-4">子目录</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[...allSubfolders]
+            .filter(f => !f.includes('image') && !f.includes('code') && !f.includes('pics'))
+            .sort((a, b) => a.localeCompare(b, 'zh-CN'))
+            .map(subfolder => (
+              <a 
+                href={`/blogv2/${path}/${subfolder}/`}
+                class="flex items-center gap-3 p-4 rounded-lg bg-[var(--color-bg-secondary)] hover:bg-[var(--color-primary)]/10 transition-colors cursor-pointer group"
+              >
+                <svg class="w-5 h-5 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+                <span class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)]">
+                  {formatName(subfolder)}
+                </span>
+              </a>
+            ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Direct files -->
+    {directFiles.length > 0 && (
+      <section>
+        <h2 class="text-lg font-semibold text-[var(--color-text)] mb-4">文章</h2>
+        <div class="grid gap-3">
+          {directFiles.map(doc => (
+            <a 
+              href={getDocUrl(doc.id)}
+              class="group flex items-center justify-between p-4 rounded-lg hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+            >
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+                  {doc.data.title || doc.id.split('/').pop()?.replace(/-/g, ' ')}
+                </h3>
+              </div>
+              
+              <div class="flex items-center gap-3 ml-4 shrink-0">
+                {doc.data.date && (
+                  <time 
+                    datetime={doc.data.date.toISOString()}
+                    class="text-xs text-[var(--color-text-muted)]"
+                  >
+                    {doc.data.date.toLocaleDateString('zh-CN')}
+                  </time>
+                )}
+                <svg class="w-4 h-4 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {directFiles.length === 0 && [...allSubfolders].filter(f => !f.includes('image') && !f.includes('code') && !f.includes('pics')).length === 0 && (
+      <div class="text-center py-12 text-[var(--color-text-muted)]">
+        <p>暂无内容</p>
+      </div>
+    )}
+  </div>
+</DocLayout>
