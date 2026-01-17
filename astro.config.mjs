@@ -6,7 +6,6 @@ import sitemap from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkDirective from 'remark-directive';
-import { remarkRelativeImages } from './src/lib/remark-relative-images.ts';
 import { remarkCallouts } from './src/lib/remark-callouts.ts';
 import { remarkHighlight } from './src/lib/remark-highlight.ts';
 
@@ -30,7 +29,8 @@ export default defineConfig({
         dark: 'github-dark',
       },
     },
-    remarkPlugins: [remarkMath, remarkDirective, remarkCallouts, remarkRelativeImages, remarkHighlight],
+    // remarkRelativeImages disabled - testing Astro native image handling
+    remarkPlugins: [remarkMath, remarkDirective, remarkCallouts, remarkHighlight],
     rehypePlugins: [rehypeKatex],
   },
   image: {
