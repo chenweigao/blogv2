@@ -578,5 +578,14 @@ mark {
   background: linear-gradient(120deg, rgba(255, 193, 7, 0.3) 0%, rgba(255, 193, 7, 0.4) 100%);
 }
 
+/* ============================================
+   Excalidraw SVG Dark Mode Fix
+   ============================================ */
+
+/* Invert Excalidraw SVGs in dark mode */
+.dark img[src*="excalidraw"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 
 
