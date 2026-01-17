@@ -1,6 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/layout/Navbar.astro';
+import ThemeToggle from '../../components/ui/ThemeToggle.astro';
+import SearchModal from '../../components/interactive/SearchModal.astro';
 
 export async function getStaticPaths() {
   const allDocs = await getCollection('docs');
@@ -63,7 +66,13 @@ function getCategory(doc: typeof articles[0]): string {
 ---
 
 <BaseLayout title={`#${tag}`} description={`Articles tagged with ${tag}`}>
-  <main class="page-content min-h-screen">
+  <Navbar currentPath="/tags/">
+    <ThemeToggle slot="theme-toggle" />
+  </Navbar>
+  
+  <SearchModal />
+  
+  <main class="page-content min-h-screen pt-20">
     <!-- Hero Section -->
     <div class="relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/8 via-transparent to-purple-500/5"></div>

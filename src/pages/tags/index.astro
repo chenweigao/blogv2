@@ -1,6 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/layout/Navbar.astro';
+import ThemeToggle from '../../components/ui/ThemeToggle.astro';
+import SearchModal from '../../components/interactive/SearchModal.astro';
 
 // Get all docs and extract tags
 const allDocs = await getCollection('docs');
@@ -34,7 +37,13 @@ const totalArticles = allDocs.filter(doc => {
 ---
 
 <BaseLayout title="Tags" description="Browse all tags">
-  <main class="page-content min-h-screen">
+  <Navbar currentPath="/tags/">
+    <ThemeToggle slot="theme-toggle" />
+  </Navbar>
+  
+  <SearchModal />
+  
+  <main class="page-content min-h-screen pt-20">
     <!-- Hero Section with gradient background -->
     <div class="relative overflow-hidden">
       <!-- Gradient background -->
