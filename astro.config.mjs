@@ -5,7 +5,9 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkDirective from 'remark-directive';
 import { remarkRelativeImages } from './src/lib/remark-relative-images.ts';
+import { remarkCallouts } from './src/lib/remark-callouts.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -27,7 +29,7 @@ export default defineConfig({
         dark: 'github-dark',
       },
     },
-    remarkPlugins: [remarkMath, remarkRelativeImages],
+    remarkPlugins: [remarkMath, remarkDirective, remarkCallouts, remarkRelativeImages],
     rehypePlugins: [rehypeKatex],
   },
   image: {
