@@ -11,7 +11,7 @@ Four Layers of TCP/IP model.
 
 ## 1. Abstract
 
-![abs](../image/1739175279351-77f4f699-bde7-4914-af50-fb93c020e111.webp)
+<!-- ![abs](./images/1739175279351-77f4f699-bde7-4914-af50-fb93c020e111.webp) -->
 
 ## 2. IP
 
@@ -63,7 +63,7 @@ TCP header 中保存着在流中的 index,  这使得流可以分割为若干个
 
 ### 3.3. TCP 四层模型
 
-![tcp_4](../image/tcp_4.jpg)
+<!-- ![tcp_4](./images/tcp_4.jpg) -->
 
 | 层数  | 备注                                                                      |
 |:--- |:----------------------------------------------------------------------- |
@@ -249,10 +249,10 @@ seq1 - seq2 = 1111 1111 - 0000 0001 = 1111 1110, 由于结果被强制类型转�
 
 ### 3.9. TCP 状态机
 
-![tcp](../image/tcp.jpg)
+<!-- ![tcp](./images/tcp.jpg) -->
 
 连接：
-
+e
 1. SYN_SENT
 2. SYN_RCVD(LISTEN 转变)
 3. ESTABLISHED
@@ -350,7 +350,7 @@ Congestion Control State Machine. 拥塞控制状态机的状态有五种，分�
       
       举例说明：
       
-      ![cwnd and ssthresh](../image/cwnd.jpg)
+      <!-- ![cwnd and ssthresh](./images/cwnd.jpg) -->
       
       假设在 cwnd 为32个报文段时发生拥塞（超时引起），于是设 ssthresh 为16个报文段，而 cwnd 为1个报文段，cwnd 在收到发送报文的 ACK 时指数增长，直到 cwnd 等于 ssthresh 才停止，从这时起 cwnd 线性增加，并在每个往返时间内最多增加1个报文段。
 
