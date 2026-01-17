@@ -54,9 +54,15 @@ const readingTime = wordCount ? Math.ceil(wordCount / 200) : undefined;
 {tags.length > 0 && (
   <div class="flex flex-wrap gap-2 mt-3">
     {tags.map((tag) => (
-      <span class="px-2 py-1 text-xs rounded-full bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)]">
+      <a 
+        href={`/tags/${encodeURIComponent(tag.toLowerCase().trim())}`}
+        class="px-2 py-1 text-xs rounded-full 
+               bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)]
+               hover:bg-[var(--color-primary)] hover:text-white
+               transition-all duration-200 cursor-pointer"
+      >
         #{tag}
-      </span>
+      </a>
     ))}
   </div>
 )}

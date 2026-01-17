@@ -1,0 +1,228 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const allDocs = await getCollection('docs');
+  
+  const tagSet = new Set<string>();
+  allDocs.forEach((doc) => {
+    const tags = doc.data.tags || 
+      (doc.data.tag ? (Array.isArray(doc.data.tag) ? doc.data.tag : [doc.data.tag]) : []);
+    tags.forEach((tag: string) => tagSet.add(tag.toLowerCase().trim()));
+  });
+
+  return Array.from(tagSet).map((tag) => ({
+    params: { tag },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const allDocs = await getCollection('docs');
+
+// Filter and sort articles
+const articles = allDocs.filter((doc) => {
+  const tags = doc.data.tags || 
+    (doc.data.tag ? (Array.isArray(doc.data.tag) ? doc.data.tag : [doc.data.tag]) : []);
+  return tags.some((t: string) => t.toLowerCase().trim() === tag);
+}).sort((a, b) => {
+  const dateA = a.data.date ? new Date(a.data.date).getTime() : 0;
+  const dateB = b.data.date ? new Date(b.data.date).getTime() : 0;
+  return dateB - dateA;
+});
+
+// Get related tags (tags that appear with this tag)
+const relatedTags = new Map<string, number>();
+articles.forEach((doc) => {
+  const tags = doc.data.tags || 
+    (doc.data.tag ? (Array.isArray(doc.data.tag) ? doc.data.tag : [doc.data.tag]) : []);
+  tags.forEach((t: string) => {
+    const normalized = t.toLowerCase().trim();
+    if (normalized !== tag) {
+      relatedTags.set(normalized, (relatedTags.get(normalized) || 0) + 1);
+    }
+  });
+});
+const topRelatedTags = Array.from(relatedTags.entries())
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5);
+
+function getTitle(doc: typeof articles[0]): string {
+  return doc.data.title || doc.id.split('/').pop()?.replace(/-/g, ' ') || 'Untitled';
+}
+
+function getPath(doc: typeof articles[0]): string {
+  return `/${doc.id}`;
+}
+
+function getCategory(doc: typeof articles[0]): string {
+  const parts = doc.id.split('/');
+  return parts.length > 1 ? parts.slice(0, -1).join(' / ') : '';
+}
+---
+
+<BaseLayout title={`#${tag}`} description={`Articles tagged with ${tag}`}>
+  <main class="page-content min-h-screen">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/8 via-transparent to-purple-500/5"></div>
+      <div class="absolute top-10 left-1/3 w-72 h-72 bg-[var(--color-primary)]/15 rounded-full blur-3xl"></div>
+      
+      <div class="relative max-w-5xl mx-auto px-6 pt-16 pb-10">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm text-[var(--color-text-muted)] mb-8">
+          <a href="/" class="hover:text-[var(--color-primary)] transition-colors cursor-pointer">首页</a>
+          <svg class="w-4 h-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <a href="/tags" class="hover:text-[var(--color-primary)] transition-colors cursor-pointer">标签</a>
+          <svg class="w-4 h-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <span class="text-[var(--color-text)]">{tag}</span>
+        </nav>
+
+        <!-- Tag Badge -->
+        <div class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl 
+                    bg-gradient-to-r from-[var(--color-primary)] to-purple-500 
+                    text-white shadow-lg shadow-[var(--color-primary)]/25">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+          <span class="text-xl font-semibold">{tag}</span>
+        </div>
+
+        <p class="mt-6 text-lg text-[var(--color-text-muted)]">
+          共 <span class="text-[var(--color-primary)] font-semibold">{articles.length}</span> 篇相关文章
+        </p>
+
+        <!-- Related Tags -->
+        {topRelatedTags.length > 0 && (
+          <div class="flex flex-wrap items-center gap-2 mt-6">
+            <span class="text-sm text-[var(--color-text-muted)]">相关标签：</span>
+            {topRelatedTags.map(([relatedTag]) => (
+              <a
+                href={`/tags/${encodeURIComponent(relatedTag)}`}
+                class="px-3 py-1 text-sm rounded-full cursor-pointer
+                       bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)]
+                       hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)]
+                       transition-all duration-200"
+              >
+                {relatedTag}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+
+    <!-- Article List -->
+    <section class="max-w-5xl mx-auto px-6 py-12">
+      <div class="space-y-4">
+        {articles.map((article, index) => (
+          <a
+            href={getPath(article)}
+            class="group relative block p-6 rounded-2xl cursor-pointer
+                   bg-[var(--color-bg-secondary)]/50 hover:bg-[var(--color-bg-secondary)]
+                   border border-[var(--color-border)]/30 hover:border-[var(--color-border)]
+                   transition-all duration-300 ease-out
+                   hover:shadow-lg hover:-translate-y-1"
+          >
+            {/* Subtle gradient on hover */}
+            <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-[var(--color-primary)]/0 to-purple-500/0 
+                        group-hover:from-[var(--color-primary)]/5 group-hover:to-purple-500/5 transition-all duration-300"></div>
+            
+            <div class="relative flex items-start gap-4">
+              {/* Index number */}
+              <div class="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl 
+                          bg-[var(--color-bg)] border border-[var(--color-border)]/50
+                          text-[var(--color-text-muted)] font-mono text-sm
+                          group-hover:border-[var(--color-primary)]/30 group-hover:text-[var(--color-primary)]
+                          transition-all duration-200">
+                {String(index + 1).padStart(2, '0')}
+              </div>
+              
+              <div class="flex-1 min-w-0">
+                <h2 class="font-semibold text-lg text-[var(--color-text)]
+                           group-hover:text-[var(--color-primary)] transition-colors duration-200">
+                  {getTitle(article)}
+                </h2>
+                
+                <p class="text-sm text-[var(--color-text-muted)] mt-1.5 line-clamp-1">
+                  {getCategory(article)}
+                </p>
+                
+                {/* Tags */}
+                {(() => {
+                  const articleTags = article.data.tags || 
+                    (article.data.tag ? (Array.isArray(article.data.tag) ? article.data.tag : [article.data.tag]) : []);
+                  return articleTags.length > 0 && (
+                    <div class="flex flex-wrap gap-1.5 mt-3">
+                      {articleTags.slice(0, 4).map((t: string) => (
+                        <span class:list={[
+                          "px-2 py-0.5 text-xs rounded-full",
+                          t.toLowerCase().trim() === tag 
+                            ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)]" 
+                            : "bg-[var(--color-bg)] text-[var(--color-text-muted)]"
+                        ]}>
+                          {t}
+                        </span>
+                      ))}
+                      {articleTags.length > 4 && (
+                        <span class="px-2 py-0.5 text-xs rounded-full bg-[var(--color-bg)] text-[var(--color-text-muted)]">
+                          +{articleTags.length - 4}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+              
+              {/* Date and arrow */}
+              <div class="flex items-center gap-3">
+                {article.data.date && (
+                  <time 
+                    datetime={new Date(article.data.date).toISOString()}
+                    class="hidden sm:block text-sm text-[var(--color-text-muted)] whitespace-nowrap"
+                  >
+                    {new Date(article.data.date).toLocaleDateString('zh-CN', { 
+                      year: 'numeric', 
+                      month: 'short', 
+                      day: 'numeric' 
+                    })}
+                  </time>
+                )}
+                <svg class="w-5 h-5 text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 
+                            transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" 
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {/* Empty state */}
+      {articles.length === 0 && (
+        <div class="text-center py-20">
+          <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[var(--color-bg-secondary)] 
+                      flex items-center justify-center">
+            <svg class="w-8 h-8 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p class="text-[var(--color-text-muted)]">暂无相关文章</p>
+          <a href="/tags" class="inline-flex items-center gap-2 mt-4 text-[var(--color-primary)] 
+                                 hover:underline cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            返回标签列表
+          </a>
+        </div>
+      )}
+    </section>
+  </main>
+</BaseLayout>

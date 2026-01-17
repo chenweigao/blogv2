@@ -1,0 +1,177 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Get all docs and extract tags
+const allDocs = await getCollection('docs');
+
+// Build tag map with count and articles
+const tagMap = new Map<string, { count: number; articles: typeof allDocs }>();
+
+allDocs.forEach((doc) => {
+  const tags = doc.data.tags || 
+    (doc.data.tag ? (Array.isArray(doc.data.tag) ? doc.data.tag : [doc.data.tag]) : []);
+  
+  tags.forEach((tag: string) => {
+    const normalizedTag = tag.toLowerCase().trim();
+    if (!tagMap.has(normalizedTag)) {
+      tagMap.set(normalizedTag, { count: 0, articles: [] });
+    }
+    const entry = tagMap.get(normalizedTag)!;
+    entry.count++;
+    entry.articles.push(doc);
+  });
+});
+
+// Sort tags by count (descending)
+const sortedTags = Array.from(tagMap.entries())
+  .sort((a, b) => b[1].count - a[1].count);
+
+const totalArticles = allDocs.filter(doc => {
+  const tags = doc.data.tags || doc.data.tag;
+  return tags && (Array.isArray(tags) ? tags.length > 0 : true);
+}).length;
+---
+
+<BaseLayout title="Tags" description="Browse all tags">
+  <main class="page-content min-h-screen">
+    <!-- Hero Section with gradient background -->
+    <div class="relative overflow-hidden">
+      <!-- Gradient background -->
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 via-transparent to-purple-500/5"></div>
+      <div class="absolute top-20 left-1/4 w-96 h-96 bg-[var(--color-primary)]/10 rounded-full blur-3xl"></div>
+      <div class="absolute top-40 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
+      
+      <div class="relative max-w-5xl mx-auto px-6 pt-16 pb-12">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm text-[var(--color-text-muted)] mb-8">
+          <a href="/" class="hover:text-[var(--color-primary)] transition-colors">首页</a>
+          <svg class="w-4 h-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <span>标签</span>
+        </nav>
+
+        <!-- Title -->
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-[var(--color-text)] to-[var(--color-text-muted)] bg-clip-text text-transparent">
+          标签
+        </h1>
+        <p class="mt-4 text-lg text-[var(--color-text-muted)] max-w-2xl">
+          通过标签发现相关内容，共 <span class="text-[var(--color-primary)] font-medium">{sortedTags.length}</span> 个标签
+        </p>
+
+        <!-- Stats -->
+        <div class="flex gap-6 mt-8">
+          <div class="glass px-5 py-3 rounded-2xl">
+            <div class="text-2xl font-bold text-[var(--color-text)]">{sortedTags.length}</div>
+            <div class="text-sm text-[var(--color-text-muted)]">标签</div>
+          </div>
+          <div class="glass px-5 py-3 rounded-2xl">
+            <div class="text-2xl font-bold text-[var(--color-text)]">{totalArticles}</div>
+            <div class="text-sm text-[var(--color-text-muted)]">已标记文章</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag Cloud Section -->
+    <section class="max-w-5xl mx-auto px-6 py-12">
+      <div class="glass rounded-3xl p-8 sm:p-10">
+        <div class="flex flex-wrap gap-3 justify-center">
+          {sortedTags.map(([tag, data], index) => {
+            // Calculate visual weight based on count
+            const maxCount = sortedTags[0][1].count;
+            const ratio = data.count / maxCount;
+            const isLarge = ratio > 0.6;
+            const isMedium = ratio > 0.3;
+            
+            return (
+              <a
+                href={`/tags/${encodeURIComponent(tag)}`}
+                class:list={[
+                  "group relative inline-flex items-center gap-2 rounded-full cursor-pointer",
+                  "transition-all duration-300 ease-out",
+                  "hover:-translate-y-1 hover:shadow-lg",
+                  isLarge ? "px-5 py-2.5 text-base font-semibold" : 
+                  isMedium ? "px-4 py-2 text-sm font-medium" : 
+                  "px-3 py-1.5 text-sm",
+                  // Gradient backgrounds for top tags
+                  index === 0 ? "bg-gradient-to-r from-[var(--color-primary)] to-purple-500 text-white shadow-md shadow-[var(--color-primary)]/25" :
+                  index < 3 ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white" :
+                  "bg-[var(--color-bg-secondary)] text-[var(--color-text)] hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)]"
+                ]}
+              >
+                <span>{tag}</span>
+                <span class:list={[
+                  "text-xs px-1.5 py-0.5 rounded-full",
+                  index === 0 ? "bg-white/20" :
+                  index < 3 ? "bg-[var(--color-primary)]/20 group-hover:bg-white/20" :
+                  "bg-[var(--color-bg)]/80"
+                ]}>
+                  {data.count}
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- Tag List Section -->
+    <section class="max-w-5xl mx-auto px-6 pb-16">
+      <h2 class="text-xl font-semibold mb-6 flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-[var(--color-primary)]/10 flex items-center justify-center">
+          <svg class="w-4 h-4 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+        </div>
+        全部标签
+      </h2>
+      
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {sortedTags.map(([tag, data], index) => (
+          <a
+            href={`/tags/${encodeURIComponent(tag)}`}
+            class="group relative flex items-center justify-between p-4 rounded-2xl cursor-pointer
+                   bg-[var(--color-bg-secondary)]/50 hover:bg-[var(--color-bg-secondary)]
+                   border border-[var(--color-border)]/50 hover:border-[var(--color-border)]
+                   transition-all duration-200
+                   hover:shadow-md hover:-translate-y-0.5"
+          >
+            {/* Rank indicator for top 3 */}
+            {index < 3 && (
+              <div class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-purple-500 
+                          flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                {index + 1}
+              </div>
+            )}
+            
+            <div class="flex items-center gap-3">
+              <div class:list={[
+                "w-2 h-2 rounded-full",
+                index === 0 ? "bg-[var(--color-primary)]" :
+                index < 3 ? "bg-purple-500" :
+                "bg-[var(--color-text-muted)]/30"
+              ]}></div>
+              <span class="font-medium group-hover:text-[var(--color-primary)] transition-colors">
+                {tag}
+              </span>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-[var(--color-text-muted)] bg-[var(--color-bg)] 
+                           px-2.5 py-1 rounded-full border border-[var(--color-border)]/50">
+                {data.count} 篇
+              </span>
+              <svg class="w-4 h-4 text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 
+                          transform translate-x-0 group-hover:translate-x-1 transition-all" 
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
