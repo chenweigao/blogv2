@@ -25,7 +25,9 @@ const tocItems = headings.filter(h => h.depth >= 2 && h.depth <= 3);
              bg-[var(--color-bg)] border border-[var(--color-border)]
              shadow-lg hover:shadow-xl
              hover:border-[var(--color-primary)]/50
-             transition-shadow duration-200"
+             focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2
+             transition-shadow duration-200
+             -webkit-tap-highlight-color-transparent"
       aria-label="打开目录"
       aria-expanded="false"
       aria-controls="toc-panel"
@@ -113,6 +115,12 @@ const tocItems = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 )}
 
 <style>
+  /* Remove tap highlight on mobile */
+  .toc-button {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+  
   /* Active state for TOC links */
   .toc-link.active {
     color: var(--color-primary);
@@ -208,7 +216,8 @@ const tocItems = headings.filter(h => h.depth >= 2 && h.depth <= 3);
       
       // Disable tab navigation
       tocLinks.forEach(link => link.setAttribute('tabindex', '-1'));
-      toggle.focus();
+      // Blur the button to remove focus outline on mobile
+      toggle.blur();
     }
     
     function togglePanel() {
