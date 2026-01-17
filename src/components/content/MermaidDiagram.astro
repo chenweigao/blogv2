@@ -200,50 +200,47 @@ const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro
   }
 
   function openMermaidModal(svg: string) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
-    modal.style.cssText = 'background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);';
+    // Create a temporary container to measure SVG dimensions
+    const container = document.createElement('div');
+    container.style.cssText = 'position: absolute; visibility: hidden; pointer-events: none;';
+    container.innerHTML = svg;
+    document.body.appendChild(container);
     
-    modal.innerHTML = `
-      <div class="relative flex items-center justify-center rounded-2xl overflow-hidden transition-transform duration-300 scale-95" 
-           style="width: 95vw; height: 90vh; max-width: 95vw; max-height: 90vh; background: var(--color-bg); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-        <button class="absolute top-4 right-4 p-2 rounded-lg transition-colors cursor-pointer z-10 text-[var(--color-text-muted)] hover:text-[var(--color-text)]" style="background: var(--color-bg-secondary);" aria-label="关闭">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <div class="w-full h-full flex items-center justify-center p-8 overflow-auto">${svg}</div>
-      </div>
-    `;
+    const svgEl = container.querySelector('svg');
+    const width = svgEl?.getAttribute('width') || svgEl?.viewBox?.baseVal?.width || 800;
+    const height = svgEl?.getAttribute('height') || svgEl?.viewBox?.baseVal?.height || 600;
+    container.remove();
 
-    document.body.style.overflow = 'hidden';
+    // Convert SVG to data URL for PhotoSwipe
+    const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
+    const svgUrl = URL.createObjectURL(svgBlob);
 
-    const closeModal = () => {
-      modal.style.opacity = '0';
-      (modal.firstElementChild as HTMLElement).style.transform = 'scale(0.95)';
-      document.body.style.overflow = '';
-      setTimeout(() => modal.remove(), 300);
-    };
+    // Import and use PhotoSwipe
+    Promise.all([
+      import('photoswipe/lightbox'),
+      import('photoswipe'),
+    ]).then(([{ default: PhotoSwipeLightbox }, pswpModule]) => {
+      const lightbox = new PhotoSwipeLightbox({
+        dataSource: [{
+          src: svgUrl,
+          width: Number(width) * 2,
+          height: Number(height) * 2,
+        }],
+        showHideAnimationType: 'fade',
+        pswpModule: () => pswpModule,
+        bgOpacity: 0.92,
+        padding: { top: 20, bottom: 20, left: 20, right: 20 },
+        wheelToZoom: true,
+        pinchToClose: true,
+        closeOnVerticalDrag: true,
+      });
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-    modal.querySelector('button')?.addEventListener('click', closeModal);
-    
-    const escHandler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeModal();
-        document.removeEventListener('keydown', escHandler);
-      }
-    };
-    document.addEventListener('keydown', escHandler);
+      lightbox.on('destroy', () => {
+        URL.revokeObjectURL(svgUrl);
+      });
 
-    document.body.appendChild(modal);
-    
-    // Trigger animation
-    requestAnimationFrame(() => {
-      modal.style.opacity = '1';
-      (modal.firstElementChild as HTMLElement).style.transform = 'scale(1)';
+      lightbox.init();
+      lightbox.loadAndOpen(0);
     });
   }
 

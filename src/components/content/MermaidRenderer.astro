@@ -99,8 +99,18 @@
   }
 
   .mermaid-modal-close {
-    @apply absolute top-4 right-4 p-2 rounded-lg transition-colors cursor-pointer z-10;
-    @apply text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)];
+    @apply fixed top-3 right-3 p-3 rounded-full transition-all cursor-pointer z-[60];
+    @apply text-white hover:scale-110 active:scale-95;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  @media (min-width: 640px) {
+    .mermaid-modal-close {
+      @apply top-4 right-4 p-2;
+    }
   }
 
   /* Error state */
