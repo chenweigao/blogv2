@@ -34,19 +34,27 @@ export function remarkCallouts() {
         node.type === 'leafDirective' ||
         node.type === 'textDirective'
       ) {
-        const directive = node as ContainerDirective;
+        const directive = node as ContainerDirective & { 
+          attributes?: Record<string, string>;
+          label?: string;
+        };
         const type = directive.name;
 
         if (!calloutTypes[type]) return;
 
         const config = calloutTypes[type];
-        const customTitle = directive.children?.[0]?.type === 'paragraph' 
-          ? getTextContent(directive.children[0])
-          : null;
         
-        // Check if first child is just the title (single line with no other content indicator)
-        const hasCustomTitle = customTitle && !customTitle.includes('\n');
-        const title = hasCustomTitle ? customTitle : config.label;
+        // Get custom title from directive label (:::tip[Title]) or attributes
+        // remark-directive puts inline content after directive name into children[0] as directiveLabel
+        let customTitle: string | null = null;
+        
+        // Check for label in directive (:::tip[Title] syntax)
+        if (directive.children?.[0]?.data?.directiveLabel) {
+          customTitle = getTextContent(directive.children[0]);
+        }
+        
+        const title = customTitle || config.label;
+        const contentChildren = customTitle ? directive.children.slice(1) : directive.children;
         
         // For details type, use HTML details/summary
         if (type === 'details') {
@@ -62,7 +70,7 @@ export function remarkCallouts() {
               type: 'html',
               value: `<summary class="callout-header"><span class="callout-icon-wrapper">${config.icon}</span><span class="callout-title">${title}</span></summary><div class="callout-content">`,
             } as any,
-            ...(hasCustomTitle ? directive.children.slice(1) : directive.children),
+            ...contentChildren,
             {
               type: 'html',
               value: '</div>',
@@ -83,7 +91,7 @@ export function remarkCallouts() {
               type: 'html',
               value: `<div class="callout-header"><span class="callout-icon-wrapper">${config.icon}</span><span class="callout-title">${title}</span></div><div class="callout-content">`,
             } as any,
-            ...(hasCustomTitle ? directive.children.slice(1) : directive.children),
+            ...contentChildren,
             {
               type: 'html',
               value: '</div>',
