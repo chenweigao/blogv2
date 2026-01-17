@@ -1,0 +1,89 @@
+---
+/**
+ * Git History Component
+ * Displays commit history for the current article in a collapsible timeline
+ */
+import { getGitHistory, formatTime, type GitCommit } from '../../lib/git-history';
+
+interface Props {
+  filePath: string;
+  maxCommits?: number;
+  repoUrl?: string;
+}
+
+const { filePath, maxCommits = 50, repoUrl = 'https://github.com/chenweigao/blogv2' } = Astro.props;
+
+const commits = getGitHistory(filePath, maxCommits);
+---
+
+{commits.length > 0 && (
+  <div class="git-history mt-8">
+    <details class="group">
+      <summary class="flex items-center gap-2 cursor-pointer select-none 
+                      text-sm font-medium text-[var(--color-text-muted)]
+                      hover:text-[var(--color-text)] transition-colors">
+        <svg class="w-4 h-4 transition-transform group-open:rotate-90" 
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>修改历史</span>
+        <span class="px-1.5 py-0.5 text-xs rounded-full bg-[var(--color-bg-secondary)]">
+          {commits.length} 次提交
+        </span>
+      </summary>
+      
+      <div class="mt-4 pl-6 border-l-2 border-[var(--color-border)]">
+        <ul class="space-y-4">
+          {commits.map((commit: GitCommit) => (
+            <li class="relative">
+              <div class="absolute -left-[25px] top-1.5 w-2 h-2 rounded-full 
+                          bg-[var(--color-primary)] ring-2 ring-[var(--color-bg)]" />
+              
+              <div class="text-sm">
+                <a href={`${repoUrl}/commit/${commit.hash}`}
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] 
+                          transition-colors cursor-pointer line-clamp-1">
+                  {commit.message}
+                </a>
+                
+                <div class="flex flex-wrap items-center gap-2 mt-1 text-xs text-[var(--color-text-muted)]">
+                  <span class="inline-flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    {commit.author}
+                  </span>
+                  <span>·</span>
+                  <time datetime={commit.date.toISOString()} 
+                        title={commit.date.toLocaleString('zh-CN')}>
+                    {formatTime(commit.date)}
+                  </time>
+                  <span>·</span>
+                  <code class="px-1 py-0.5 rounded bg-[var(--color-bg-secondary)] font-mono">
+                    {commit.shortHash}
+                  </code>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </details>
+  </div>
+)}
+
+<style>
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

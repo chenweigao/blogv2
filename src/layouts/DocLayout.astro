@@ -5,6 +5,7 @@ import Sidebar from '../components/layout/Sidebar.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import ThemeToggle from '../components/ui/ThemeToggle.astro';
 import ArticleMeta from '../components/content/ArticleMeta.astro';
+import GitHistory from '../components/content/GitHistory.astro';
 import MermaidRenderer from '../components/content/MermaidRenderer.astro';
 import TableOfContents from '../components/content/TableOfContents.astro';
 import { getCollection } from 'astro:content';
@@ -85,8 +86,17 @@ const currentSectionItems = sidebarSections.find(s =>
             <slot />
           </div>
 
+          <!-- Git History -->
+          {filePath && (
+            <GitHistory 
+              filePath={filePath} 
+              maxCommits={50}
+              repoUrl="https://github.com/chenweigao/blogv2"
+            />
+          )}
+
           <!-- Article footer -->
-          <footer class="mt-12 pt-6 border-t border-[var(--color-border)]">
+          <footer class="mt-8 pt-6 border-t border-[var(--color-border)]">
             <div class="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--color-text-muted)]">
               {lastUpdated && (
                 <span>
@@ -96,7 +106,7 @@ const currentSectionItems = sidebarSections.find(s =>
               
               {filePath && (
                 <a
-                  href={`https://github.com/username/repo/edit/main/${filePath}`}
+                  href={`https://github.com/chenweigao/blogv2/edit/main/${filePath}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1 hover:text-[var(--color-primary)] transition-colors cursor-pointer"
