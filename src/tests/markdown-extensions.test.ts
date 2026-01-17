@@ -105,7 +105,7 @@ describe('Property 24: Image Size Syntax', () => {
  * Validates: Requirements 15.4
  */
 
-function resolveImagePath(imagePath: string, docPath: string, basePath: string = '/blogv2/'): string {
+function resolveImagePath(imagePath: string, docPath: string, basePath: string = '/'): string {
   if (imagePath.startsWith('/') || imagePath.startsWith('http')) {
     return imagePath;
   }
@@ -131,12 +131,12 @@ function resolveImagePath(imagePath: string, docPath: string, basePath: string =
 describe('Property 25: Relative Image Path Resolution', () => {
   it('resolves same-directory image', () => {
     expect(resolveImagePath('image.png', 'docs/algorithms/dp.md'))
-      .toBe('/blogv2/docs/algorithms/image.png');
+      .toBe('/docs/algorithms/image.png');
   });
 
   it('resolves parent-directory image', () => {
     expect(resolveImagePath('../image.png', 'docs/algorithms/dp.md'))
-      .toBe('/blogv2/docs/image.png');
+      .toBe('/docs/image.png');
   });
 
   it('preserves absolute paths', () => {
@@ -157,7 +157,7 @@ describe('Property 25: Relative Image Path Resolution', () => {
         (filename, pathParts) => {
           const docPath = pathParts.join('/') + '/doc.md';
           const result = resolveImagePath(filename, docPath);
-          return result.startsWith('/blogv2/');
+          return result.startsWith('/');
         }
       ),
       { numRuns: 100 }

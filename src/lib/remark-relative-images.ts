@@ -1,7 +1,7 @@
 /**
  * Remark plugin to transform relative image paths to absolute paths
  * This handles images in content collections that use relative paths
- * Images are served from /blogv2/docs/... (copied from src/content/docs to public/docs)
+ * Images are served from /docs/... (copied from src/content/docs to public/docs)
  */
 
 import { visit } from 'unist-util-visit';
@@ -35,8 +35,8 @@ export function remarkRelativeImages() {
           const normalizedPath = path.normalize(resolvedPath).replace(/\\/g, '/');
           
           // Convert to absolute path for the public folder
-          // Images are served from /blogv2/docs/...
-          node.url = `/blogv2/docs${normalizedPath}`;
+          // Images are served from /docs/...
+          node.url = `/docs${normalizedPath}`;
         }
       }
     });

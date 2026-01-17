@@ -110,7 +110,7 @@ function formatSubcategory(name: string): string {
 function getDocUrl(docId: string): string {
   let slug = docId;
   if (slug.endsWith('/index')) slug = slug.slice(0, -6);
-  return `/blogv2/${slug}/`;
+  return `/${slug}/`;
 }
 ---
 

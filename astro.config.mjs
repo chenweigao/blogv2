@@ -10,7 +10,7 @@ import { remarkRelativeImages } from './src/lib/remark-relative-images.ts';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://username.github.io',
-  base: '/blogv2/',
+  base: '/',
   output: 'static',
   build: {
     format: 'directory',
@@ -41,7 +41,7 @@ export default defineConfig({
     build: {
       rollupOptions: {
         // Externalize pagefind since it's generated post-build
-        external: [/^\/blogv2\/pagefind\//],
+        external: [/^\/pagefind\//],
       },
     },
   },

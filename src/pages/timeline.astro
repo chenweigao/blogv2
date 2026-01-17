@@ -42,7 +42,7 @@ const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', 
 ---
 
 <BaseLayout title="时间线" description="按时间顺序浏览所有文章">
-  <Navbar currentPath="/blogv2/timeline/">
+  <Navbar currentPath="/timeline/">
     <ThemeToggle slot="theme-toggle" />
   </Navbar>
 
@@ -108,7 +108,7 @@ const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', 
                               <div class="absolute left-0 top-2 w-3 h-3 -translate-x-[7px] rounded-full bg-[var(--color-primary)]"></div>
                               
                               <a 
-                                href={`/blogv2/${doc.id}/`}
+                                href={`/${doc.id}/`}
                                 class="block glass rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
                               >
                                 <div class="flex items-start justify-between gap-4">

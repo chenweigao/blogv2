@@ -6,12 +6,12 @@ interface Props {
 const { currentPath = Astro.url.pathname } = Astro.props;
 
 const navLinks = [
-  { href: '/blogv2/', label: '首页', exact: true },
-  { href: '/blogv2/algorithms/', label: '算法' },
-  { href: '/blogv2/computer-systems/', label: '系统' },
-  { href: '/blogv2/programming-languages/', label: '编程语言' },
-  { href: '/blogv2/artificial-intelligence/', label: 'AI' },
-  { href: '/blogv2/development-tools/', label: '开发工具' },
+  { href: '/', label: '首页', exact: true },
+  { href: '/algorithms/', label: '算法' },
+  { href: '/computer-systems/', label: '系统' },
+  { href: '/programming-languages/', label: '编程语言' },
+  { href: '/artificial-intelligence/', label: 'AI' },
+  { href: '/development-tools/', label: '开发工具' },
 ];
 
 // Find active index
@@ -28,7 +28,7 @@ const activeIndex = navLinks.findIndex((link) => {
   >
     <!-- Logo -->
     <a 
-      href="/blogv2/" 
+      href="/" 
       class="flex items-center gap-2 text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"
     >
       <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

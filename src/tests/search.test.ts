@@ -33,14 +33,14 @@ function highlightMatches(text: string, query: string): string {
 describe('Property 11: Search Results Content', () => {
   it('processes result with all fields', () => {
     const raw = {
-      url: '/blogv2/algorithms/dp/',
+      url: '/algorithms/dp/',
       meta: { title: 'Dynamic Programming', category: 'Algorithms' },
       excerpt: 'Learn about DP techniques',
     };
     
     const result = processSearchResult(raw);
     
-    expect(result.url).toBe('/blogv2/algorithms/dp/');
+    expect(result.url).toBe('/algorithms/dp/');
     expect(result.title).toBe('Dynamic Programming');
     expect(result.excerpt).toBe('Learn about DP techniques');
     expect(result.category).toBe('Algorithms');

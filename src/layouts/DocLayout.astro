@@ -36,7 +36,7 @@ const allDocs = await getCollection('docs');
 const sidebarSections = buildSidebar(allDocs);
 
 // Get current section's items
-const currentSection = currentPath.split('/')[2]; // /blogv2/section/...
+const currentSection = currentPath.split('/')[1]; // /section/...
 const currentSectionItems = sidebarSections.find(s => 
   s.title.toLowerCase().replace(/\s+/g, '-') === currentSection
 )?.items || [];

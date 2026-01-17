@@ -75,22 +75,22 @@ describe('Property 6: Sidebar Generation from Folder Structure', () => {
  */
 describe('Property 7: Sidebar Active State', () => {
   it('marks exact path as active', () => {
-    expect(isActive('/blogv2/algorithms/dp/', '/blogv2/algorithms/dp/')).toBe(true);
-    expect(isExactActive('/blogv2/algorithms/dp/', '/blogv2/algorithms/dp/')).toBe(true);
+    expect(isActive('/algorithms/dp/', '/algorithms/dp/')).toBe(true);
+    expect(isExactActive('/algorithms/dp/', '/algorithms/dp/')).toBe(true);
   });
 
   it('marks parent path as active', () => {
-    expect(isActive('/blogv2/algorithms/', '/blogv2/algorithms/dp/')).toBe(true);
-    expect(isExactActive('/blogv2/algorithms/', '/blogv2/algorithms/dp/')).toBe(false);
+    expect(isActive('/algorithms/', '/algorithms/dp/')).toBe(true);
+    expect(isExactActive('/algorithms/', '/algorithms/dp/')).toBe(false);
   });
 
   it('does not mark unrelated path as active', () => {
-    expect(isActive('/blogv2/systems/', '/blogv2/algorithms/dp/')).toBe(false);
+    expect(isActive('/systems/', '/algorithms/dp/')).toBe(false);
   });
 
   it('property: exact match is always active', () => {
     const pathArb = fc.array(fc.stringMatching(/^[a-z]+$/), { minLength: 1, maxLength: 4 })
-      .map(parts => '/blogv2/' + parts.join('/') + '/');
+      .map(parts => '/' + parts.join('/') + '/');
 
     fc.assert(
       fc.property(pathArb, (path) => {
@@ -102,12 +102,12 @@ describe('Property 7: Sidebar Active State', () => {
 
   it('property: child path makes parent active but not exact', () => {
     const pathArb = fc.array(fc.stringMatching(/^[a-z]+$/), { minLength: 2, maxLength: 4 })
-      .map(parts => '/blogv2/' + parts.join('/') + '/');
+      .map(parts => '/' + parts.join('/') + '/');
 
     fc.assert(
       fc.property(pathArb, (childPath) => {
         const parts = childPath.split('/').filter(Boolean);
-        if (parts.length < 3) return true; // Need at least blogv2/parent/child
+        if (parts.length < 2) return true; // Need at least parent/child
         
         const parentPath = '/' + parts.slice(0, -1).join('/') + '/';
         return isActive(parentPath, childPath) && !isExactActive(parentPath, childPath);

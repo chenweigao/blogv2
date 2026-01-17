@@ -9,7 +9,7 @@ import * as fc from 'fast-check';
  */
 
 // Simulates the URL generation logic from [...slug].astro
-function filePathToUrl(filePath: string, basePath: string = '/blogv2/'): string {
+function filePathToUrl(filePath: string, basePath: string = '/'): string {
   // Remove .md extension and normalize
   const slug = filePath.replace(/\.md$/, '').replace(/\\/g, '/');
   return `${basePath}${slug}/`;
@@ -22,13 +22,13 @@ function filePathToSlug(filePath: string): string {
 
 describe('Property 2: Content URL Routing', () => {
   it('generates correct URL for simple file path', () => {
-    expect(filePathToUrl('algorithms/dp.md')).toBe('/blogv2/algorithms/dp/');
-    expect(filePathToUrl('index.md')).toBe('/blogv2/index/');
+    expect(filePathToUrl('algorithms/dp.md')).toBe('/algorithms/dp/');
+    expect(filePathToUrl('index.md')).toBe('/index/');
   });
 
   it('generates correct URL for nested paths', () => {
     expect(filePathToUrl('computer-systems/linux/kernel/README.md'))
-      .toBe('/blogv2/computer-systems/linux/kernel/README/');
+      .toBe('/computer-systems/linux/kernel/README/');
   });
 
   it('property: URL always starts with base path', () => {
@@ -40,7 +40,7 @@ describe('Property 2: Content URL Routing', () => {
     fc.assert(
       fc.property(filePathArb, (filePath) => {
         const url = filePathToUrl(filePath);
-        return url.startsWith('/blogv2/');
+        return url.startsWith('/');
       }),
       { numRuns: 100 }
     );
@@ -86,7 +86,7 @@ describe('Property 2: Content URL Routing', () => {
       fc.property(filePathArb, (filePath) => {
         const url = filePathToUrl(filePath);
         const expectedSegments = filePath.replace('.md', '').split('/');
-        const urlSegments = url.replace('/blogv2/', '').replace(/\/$/, '').split('/');
+        const urlSegments = url.replace(/^\//, '').replace(/\/$/, '').split('/');
         return JSON.stringify(expectedSegments) === JSON.stringify(urlSegments);
       }),
       { numRuns: 100 }

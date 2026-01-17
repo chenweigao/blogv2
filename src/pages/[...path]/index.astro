@@ -81,7 +81,7 @@ folderDocs.sort((a, b) => {
 });
 
 const formatName = (name: string) => name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-const getDocUrl = (id: string) => `/blogv2/${id.endsWith('/index') ? id.slice(0, -6) : id}/`;
+const getDocUrl = (id: string) => `/${id.endsWith('/index') ? id.slice(0, -6) : id}/`;
 const totalItems = displaySubfolders.length + folderDocs.length;
 ---
 
@@ -97,7 +97,7 @@ const totalItems = displaySubfolders.length + folderDocs.length;
         <nav class="mb-5">
           <ol class="flex items-center gap-2 text-sm flex-wrap">
             <li>
-              <a href="/blogv2/" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors cursor-pointer">
+              <a href="/" class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors cursor-pointer">
                 首页
               </a>
             </li>
@@ -109,7 +109,7 @@ const totalItems = displaySubfolders.length + folderDocs.length;
                     <span class="font-medium text-[var(--color-text)]">{formatName(part)}</span>
                   ) : (
                     <a 
-                      href={`/blogv2/${pathParts.slice(0, i + 1).join('/')}/`} 
+                      href={`/${pathParts.slice(0, i + 1).join('/')}/`} 
                       class="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors cursor-pointer"
                     >
                       {formatName(part)}
@@ -154,7 +154,7 @@ const totalItems = displaySubfolders.length + folderDocs.length;
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {displaySubfolders.map((subfolder) => (
             <a 
-              href={`/blogv2/${path}/${subfolder}/`}
+              href={`/${path}/${subfolder}/`}
               class="group flex items-center gap-3 p-4 rounded-xl
                      bg-[var(--color-bg)] hover:bg-[var(--color-bg-secondary)]/50
                      border border-[var(--color-border)]/50 hover:border-[var(--color-border)]

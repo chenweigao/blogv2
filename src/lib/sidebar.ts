@@ -53,7 +53,7 @@ interface TreeNode {
 /**
  * Build hierarchical sidebar from content entries
  */
-export function buildSidebar(entries: ContentEntry[], basePath: string = '/blogv2/'): SidebarSection[] {
+export function buildSidebar(entries: ContentEntry[], basePath: string = '/'): SidebarSection[] {
   // Group entries by top-level category
   const categories = new Map<string, ContentEntry[]>();
   

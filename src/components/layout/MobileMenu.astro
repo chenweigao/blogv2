@@ -9,12 +9,12 @@ interface Props {
 const { items, currentPath } = Astro.props;
 
 const navLinks = [
-  { href: '/blogv2/', label: '首页' },
-  { href: '/blogv2/algorithms/', label: '算法' },
-  { href: '/blogv2/computer-systems/', label: '系统' },
-  { href: '/blogv2/programming-languages/', label: '编程语言' },
-  { href: '/blogv2/artificial-intelligence/', label: 'AI' },
-  { href: '/blogv2/development-tools/', label: '开发工具' },
+  { href: '/', label: '首页' },
+  { href: '/algorithms/', label: '算法' },
+  { href: '/computer-systems/', label: '系统' },
+  { href: '/programming-languages/', label: '编程语言' },
+  { href: '/artificial-intelligence/', label: 'AI' },
+  { href: '/development-tools/', label: '开发工具' },
 ];
 ---
 
@@ -59,7 +59,7 @@ const navLinks = [
               href={link.href}
               class:list={[
                 'block px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer',
-                currentPath.startsWith(link.href) && link.href !== '/blogv2/'
+                currentPath.startsWith(link.href) && link.href !== '/'
                   ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
                   : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]'
               ]}
