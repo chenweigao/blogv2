@@ -9,63 +9,186 @@ const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro
 
 <div class="mermaid-container my-6">
   <div 
-    class="mermaid-diagram bg-[var(--color-bg-secondary)] rounded-lg p-4 overflow-x-auto cursor-pointer"
+    class="mermaid-diagram rounded-xl overflow-hidden relative cursor-pointer transition-all duration-200 hover:shadow-lg"
+    style="background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%); border: 1px solid var(--color-border);"
     data-mermaid-code={code}
     data-mermaid-id={id}
   >
     <!-- Placeholder while loading -->
-    <div class="mermaid-loading flex items-center justify-center py-8 text-[var(--color-text-muted)]">
-      <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
+    <div class="mermaid-loading flex items-center justify-center py-12 text-[var(--color-text-muted)]">
+      <div class="w-6 h-6 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-primary)] animate-spin mr-3"></div>
       加载图表中...
     </div>
     
     <!-- Rendered diagram will be inserted here -->
-    <div class="mermaid-output hidden"></div>
+    <div class="mermaid-output hidden p-6"></div>
+    
+    <!-- Zoom hint -->
+    <div class="mermaid-hint absolute bottom-2 right-3 text-xs text-[var(--color-text-muted)] opacity-0 transition-opacity duration-200 px-2 py-1 rounded-md pointer-events-none" style="background: var(--color-bg);">
+      点击放大
+    </div>
     
     <!-- Error display -->
-    <div class="mermaid-error hidden">
-      <div class="text-red-500 text-sm mb-2">图表渲染失败</div>
-      <pre class="text-xs bg-[var(--color-bg)] p-2 rounded overflow-x-auto"><code>{code}</code></pre>
+    <div class="mermaid-error hidden p-6">
+      <div class="text-red-500 text-sm mb-2 font-medium">图表渲染失败</div>
+      <pre class="text-xs p-3 rounded-lg overflow-x-auto font-mono" style="background: var(--color-bg); color: var(--color-text-muted);"><code>{code}</code></pre>
     </div>
   </div>
 </div>
 
+<style>
+  .mermaid-diagram:hover .mermaid-hint {
+    opacity: 1;
+  }
+  
+  .mermaid-output :global(svg) {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+</style>
+
 <script>
-  async function initMermaid() {
+  // Apple/Linear-inspired theme configuration for dark/light modes
+  const mermaidThemes = {
+    light: {
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#F5F5F7',
+        primaryTextColor: '#1D1D1F',
+        primaryBorderColor: '#D2D2D7',
+        secondaryColor: '#FBFBFD',
+        secondaryTextColor: '#1D1D1F',
+        secondaryBorderColor: '#D2D2D7',
+        tertiaryColor: '#F5F5F7',
+        tertiaryTextColor: '#1D1D1F',
+        tertiaryBorderColor: '#D2D2D7',
+        lineColor: '#86868B',
+        textColor: '#1D1D1F',
+        mainBkg: '#FFFFFF',
+        nodeBkg: '#F5F5F7',
+        nodeBorder: '#D2D2D7',
+        clusterBkg: '#FBFBFD',
+        clusterBorder: '#D2D2D7',
+        actorBkg: '#F5F5F7',
+        actorBorder: '#D2D2D7',
+        actorTextColor: '#1D1D1F',
+        actorLineColor: '#86868B',
+        signalColor: '#1D1D1F',
+        signalTextColor: '#1D1D1F',
+        labelBoxBkgColor: '#F5F5F7',
+        labelBoxBorderColor: '#D2D2D7',
+        labelTextColor: '#1D1D1F',
+        loopTextColor: '#1D1D1F',
+        noteBkgColor: '#FFF9E6',
+        noteBorderColor: '#E6D9A6',
+        noteTextColor: '#1D1D1F',
+        labelColor: '#1D1D1F',
+        classText: '#1D1D1F',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+        fontSize: '14px',
+      },
+    },
+    dark: {
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#2C2C2E',
+        primaryTextColor: '#F5F5F7',
+        primaryBorderColor: '#3A3A3C',
+        secondaryColor: '#1C1C1E',
+        secondaryTextColor: '#F5F5F7',
+        secondaryBorderColor: '#3A3A3C',
+        tertiaryColor: '#2C2C2E',
+        tertiaryTextColor: '#F5F5F7',
+        tertiaryBorderColor: '#3A3A3C',
+        lineColor: '#8E8E93',
+        textColor: '#F5F5F7',
+        mainBkg: '#1C1C1E',
+        nodeBkg: '#2C2C2E',
+        nodeBorder: '#3A3A3C',
+        clusterBkg: '#1C1C1E',
+        clusterBorder: '#3A3A3C',
+        actorBkg: '#2C2C2E',
+        actorBorder: '#3A3A3C',
+        actorTextColor: '#F5F5F7',
+        actorLineColor: '#8E8E93',
+        signalColor: '#F5F5F7',
+        signalTextColor: '#F5F5F7',
+        labelBoxBkgColor: '#2C2C2E',
+        labelBoxBorderColor: '#3A3A3C',
+        labelTextColor: '#F5F5F7',
+        loopTextColor: '#F5F5F7',
+        noteBkgColor: '#3A3A3C',
+        noteBorderColor: '#48484A',
+        noteTextColor: '#F5F5F7',
+        labelColor: '#F5F5F7',
+        classText: '#F5F5F7',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+        fontSize: '14px',
+      },
+    },
+  };
+
+  // Track current theme to detect changes
+  let currentTheme: 'light' | 'dark' | null = null;
+  // Counter for unique IDs on re-render
+  let renderCounter = 0;
+
+  async function initMermaid(forceRerender = false) {
     const containers = document.querySelectorAll('.mermaid-diagram');
     if (containers.length === 0) return;
 
-    // Dynamically import mermaid
-    const { default: mermaid } = await import('mermaid');
-    
-    // Initialize mermaid with theme based on current mode
     const isDark = document.documentElement.classList.contains('dark');
+    const newTheme = isDark ? 'dark' : 'light';
+    
+    // Skip if theme hasn't changed and not forcing re-render
+    if (!forceRerender && currentTheme === newTheme) return;
+    currentTheme = newTheme;
+
+    const { default: mermaid } = await import('mermaid');
+    const themeConfig = mermaidThemes[newTheme];
+    
     mermaid.initialize({
       startOnLoad: false,
-      theme: isDark ? 'dark' : 'default',
       securityLevel: 'loose',
+      ...themeConfig,
     });
 
-    containers.forEach(async (container) => {
+    for (const container of containers) {
       const code = container.getAttribute('data-mermaid-code');
-      const id = container.getAttribute('data-mermaid-id');
-      const loading = container.querySelector('.mermaid-loading');
-      const output = container.querySelector('.mermaid-output');
-      const error = container.querySelector('.mermaid-error');
+      const baseId = container.getAttribute('data-mermaid-id');
+      const loading = container.querySelector('.mermaid-loading') as HTMLElement;
+      const output = container.querySelector('.mermaid-output') as HTMLElement;
+      const error = container.querySelector('.mermaid-error') as HTMLElement;
 
-      if (!code || !id || !output || !error || !loading) return;
+      if (!code || !baseId || !output || !error || !loading) continue;
+
+      // Generate unique ID for each render to avoid mermaid ID conflicts
+      const uniqueId = `${baseId}-${newTheme}-${++renderCounter}`;
+
+      // Show loading state on theme change
+      loading.classList.remove('hidden');
+      output.classList.add('hidden');
+      error.classList.add('hidden');
 
       try {
-        const { svg } = await mermaid.render(id, code);
+        const { svg } = await mermaid.render(uniqueId, code);
         output.innerHTML = svg;
         loading.classList.add('hidden');
         output.classList.remove('hidden');
         
-        // Add click handler for zoom modal
-        container.addEventListener('click', () => {
+        // Remove old click handlers and add new one
+        const newContainer = container.cloneNode(true) as HTMLElement;
+        container.parentNode?.replaceChild(newContainer, container);
+        
+        // Re-query elements after clone
+        const newOutput = newContainer.querySelector('.mermaid-output') as HTMLElement;
+        newOutput.innerHTML = svg;
+        newOutput.classList.remove('hidden');
+        (newContainer.querySelector('.mermaid-loading') as HTMLElement)?.classList.add('hidden');
+        
+        newContainer.addEventListener('click', () => {
           openMermaidModal(svg);
         });
       } catch (err) {
@@ -73,50 +196,78 @@ const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro
         loading.classList.add('hidden');
         error.classList.remove('hidden');
       }
-    });
+    }
   }
 
   function openMermaidModal(svg: string) {
-    // Create modal
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
+    modal.style.cssText = 'background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);';
+    
     modal.innerHTML = `
-      <div class="relative max-w-[90vw] max-h-[90vh] overflow-auto bg-white dark:bg-slate-800 rounded-lg p-4">
-        <button class="absolute top-2 right-2 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+      <div class="relative flex items-center justify-center rounded-2xl overflow-hidden transition-transform duration-300 scale-95" 
+           style="width: 95vw; height: 90vh; max-width: 95vw; max-height: 90vh; background: var(--color-bg); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+        <button class="absolute top-4 right-4 p-2 rounded-lg transition-colors cursor-pointer z-10 text-[var(--color-text-muted)] hover:text-[var(--color-text)]" style="background: var(--color-bg-secondary);" aria-label="关闭">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <div class="mermaid-modal-content">${svg}</div>
+        <div class="w-full h-full flex items-center justify-center p-8 overflow-auto">${svg}</div>
       </div>
     `;
 
-    // Close handlers
+    document.body.style.overflow = 'hidden';
+
+    const closeModal = () => {
+      modal.style.opacity = '0';
+      (modal.firstElementChild as HTMLElement).style.transform = 'scale(0.95)';
+      document.body.style.overflow = '';
+      setTimeout(() => modal.remove(), 300);
+    };
+
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.remove();
+      if (e.target === modal) closeModal();
     });
-    modal.querySelector('button')?.addEventListener('click', () => modal.remove());
-    document.addEventListener('keydown', function handler(e) {
+    modal.querySelector('button')?.addEventListener('click', closeModal);
+    
+    const escHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        modal.remove();
-        document.removeEventListener('keydown', handler);
+        closeModal();
+        document.removeEventListener('keydown', escHandler);
       }
-    });
+    };
+    document.addEventListener('keydown', escHandler);
 
     document.body.appendChild(modal);
+    
+    // Trigger animation
+    requestAnimationFrame(() => {
+      modal.style.opacity = '1';
+      (modal.firstElementChild as HTMLElement).style.transform = 'scale(1)';
+    });
   }
 
-  // Initialize on load and after navigation
-  initMermaid();
-  document.addEventListener('astro:after-swap', initMermaid);
+  // Initialize on load
+  initMermaid(true);
   
-  // Re-render on theme change
+  // Re-init after Astro navigation
+  document.addEventListener('astro:after-swap', () => {
+    currentTheme = null;
+    initMermaid(true);
+  });
+  
+  // Re-render on theme change with debounce
+  let themeChangeTimeout: number;
   const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
+    for (const mutation of mutations) {
       if (mutation.attributeName === 'class') {
-        initMermaid();
+        clearTimeout(themeChangeTimeout);
+        themeChangeTimeout = window.setTimeout(() => {
+          initMermaid(true);
+        }, 50);
+        break;
       }
-    });
+    }
   });
   observer.observe(document.documentElement, { attributes: true });
 </script>

@@ -294,21 +294,32 @@
     },
   };
 
-  // Track rendered diagrams to avoid re-rendering
-  const renderedDiagrams = new WeakSet<Element>();
+  // Track current theme and render counter for unique IDs
+  let currentTheme: 'light' | 'dark' | null = null;
+  let renderCounter = 0;
 
-  async function initMermaidDiagrams() {
+  // Store original code for re-rendering on theme change
+  const diagramCodeMap = new WeakMap<Element, string>();
+
+  async function initMermaidDiagrams(forceRerender = false) {
+    const isDark = document.documentElement.classList.contains('dark');
+    const newTheme = isDark ? 'dark' : 'light';
+    
+    // Check if we need to re-render existing diagrams due to theme change
+    const existingWrappers = document.querySelectorAll('.mermaid-wrapper');
     const mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
+    
+    // If theme changed and we have existing diagrams, re-render them
+    if (currentTheme !== null && currentTheme !== newTheme && existingWrappers.length > 0) {
+      await reRenderDiagrams(newTheme);
+      currentTheme = newTheme;
+      return;
+    }
+    
     if (mermaidBlocks.length === 0) return;
-
-    // Filter out already rendered diagrams
-    const blocksToRender = Array.from(mermaidBlocks).filter(
-      (block) => !renderedDiagrams.has(block)
-    );
-    if (blocksToRender.length === 0) return;
+    currentTheme = newTheme;
 
     const { default: mermaid } = await import('mermaid');
-    const isDark = document.documentElement.classList.contains('dark');
     const config = isDark ? modernThemeConfig.dark : modernThemeConfig.light;
 
     mermaid.initialize({
@@ -317,25 +328,27 @@
       ...config,
     });
 
-    for (let i = 0; i < blocksToRender.length; i++) {
-      const pre = blocksToRender[i] as HTMLPreElement;
+    for (let i = 0; i < mermaidBlocks.length; i++) {
+      const pre = mermaidBlocks[i] as HTMLPreElement;
       const codeElement = pre.querySelector('code');
       if (!codeElement) continue;
 
       const code = codeElement.textContent || '';
-      const id = `mermaid-${Date.now()}-${i}`;
+      const id = `mermaid-${newTheme}-${Date.now()}-${++renderCounter}`;
 
       // Create wrapper with loading state
       const wrapper = document.createElement('div');
       wrapper.className = 'mermaid-wrapper cursor-pointer';
       wrapper.innerHTML = '<div class="mermaid-loading">加载图表中...</div>';
       pre.replaceWith(wrapper);
+      
+      // Store original code for theme change re-rendering
+      diagramCodeMap.set(wrapper, code);
 
       try {
         const { svg } = await mermaid.render(id, code);
         wrapper.innerHTML = svg;
         wrapper.addEventListener('click', () => openMermaidModal(svg));
-        renderedDiagrams.add(wrapper);
       } catch (err) {
         console.error('Mermaid render error:', err);
         wrapper.innerHTML = `
@@ -344,6 +357,46 @@
             <pre class="mermaid-error-code"><code>${escapeHtml(code)}</code></pre>
           </div>
         `;
+      }
+    }
+  }
+
+  async function reRenderDiagrams(newTheme: 'light' | 'dark') {
+    const wrappers = document.querySelectorAll('.mermaid-wrapper');
+    if (wrappers.length === 0) return;
+
+    const { default: mermaid } = await import('mermaid');
+    const config = newTheme === 'dark' ? modernThemeConfig.dark : modernThemeConfig.light;
+
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      ...config,
+    });
+
+    for (const wrapper of wrappers) {
+      const code = diagramCodeMap.get(wrapper);
+      if (!code) continue;
+
+      const id = `mermaid-${newTheme}-${Date.now()}-${++renderCounter}`;
+      
+      // Show loading state
+      const currentSvg = wrapper.querySelector('svg');
+      if (currentSvg) {
+        currentSvg.style.opacity = '0.5';
+      }
+
+      try {
+        const { svg } = await mermaid.render(id, code);
+        wrapper.innerHTML = svg;
+        
+        // Re-attach click handler
+        wrapper.addEventListener('click', () => openMermaidModal(svg));
+        
+        // Re-store code reference (wrapper element is same, but innerHTML changed)
+        diagramCodeMap.set(wrapper, code);
+      } catch (err) {
+        console.error('Mermaid re-render error:', err);
       }
     }
   }
@@ -402,43 +455,25 @@
     });
   }
 
-  // Handle theme changes - re-render with new theme
-  let themeChangeTimeout: number;
-  function handleThemeChange() {
-    clearTimeout(themeChangeTimeout);
-    themeChangeTimeout = window.setTimeout(() => {
-      // Clear rendered cache and re-render
-      document.querySelectorAll('.mermaid-wrapper').forEach((wrapper) => {
-        renderedDiagrams.delete(wrapper);
-      });
-      
-      // Convert back to pre blocks for re-rendering
-      document.querySelectorAll('.mermaid-wrapper').forEach((wrapper) => {
-        const svg = wrapper.querySelector('svg');
-        if (!svg) return;
-        
-        // We need to store original code - for now just re-init page
-        // A more elegant solution would store the original code in a data attribute
-      });
-      
-      // For simplicity, reload mermaid diagrams
-      // In production, you'd want to cache the original code
-      location.reload();
-    }, 100);
-  }
-
   // Initialize
-  initMermaidDiagrams();
-  document.addEventListener('astro:after-swap', initMermaidDiagrams);
+  initMermaidDiagrams(true);
+  document.addEventListener('astro:after-swap', () => {
+    currentTheme = null;
+    initMermaidDiagrams(true);
+  });
 
-  // Theme change observer (optional - can cause full re-render)
-  // Uncomment if you want diagrams to update on theme change
-  // const themeObserver = new MutationObserver((mutations) => {
-  //   mutations.forEach((mutation) => {
-  //     if (mutation.attributeName === 'class') {
-  //       handleThemeChange();
-  //     }
-  //   });
-  // });
-  // themeObserver.observe(document.documentElement, { attributes: true });
+  // Theme change observer - re-render diagrams with new theme
+  let themeChangeTimeout: number;
+  const themeObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.attributeName === 'class') {
+        clearTimeout(themeChangeTimeout);
+        themeChangeTimeout = window.setTimeout(() => {
+          initMermaidDiagrams(true);
+        }, 50);
+        break;
+      }
+    }
+  });
+  themeObserver.observe(document.documentElement, { attributes: true });
 </script>
