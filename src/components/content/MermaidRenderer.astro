@@ -48,20 +48,58 @@
 
   /* Modal styles */
   .mermaid-modal {
-    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
-    background: rgba(0, 0, 0, 0.8);
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .mermaid-modal.is-open {
+    opacity: 1;
   }
 
   .mermaid-modal-content {
-    @apply relative max-w-[90vw] max-h-[90vh] overflow-auto rounded-2xl p-8;
+    @apply relative flex items-center justify-center rounded-2xl;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
     background: var(--color-bg);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+  }
+
+  .mermaid-modal.is-open .mermaid-modal-content {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .mermaid-modal-content .mermaid-svg-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow: auto;
+  }
+
+  .mermaid-modal-content svg {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
   .mermaid-modal-close {
-    @apply absolute top-4 right-4 p-2 rounded-lg transition-colors cursor-pointer;
+    @apply absolute top-4 right-4 p-2 rounded-lg transition-colors cursor-pointer z-10;
     @apply text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)];
   }
 
@@ -322,24 +360,32 @@
     modal.innerHTML = `
       <div class="mermaid-modal-content">
         <button class="mermaid-modal-close" aria-label="关闭">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <div class="pt-4">${svg}</div>
+        <div class="mermaid-svg-container">${svg}</div>
       </div>
     `;
 
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+
     const closeModal = () => {
-      modal.classList.add('opacity-0');
-      setTimeout(() => modal.remove(), 200);
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      setTimeout(() => modal.remove(), 300);
     };
 
+    // Close on backdrop click
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal();
     });
+    
+    // Close button
     modal.querySelector('.mermaid-modal-close')?.addEventListener('click', closeModal);
 
+    // ESC key handler
     const escHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         closeModal();
@@ -352,7 +398,7 @@
     
     // Trigger animation
     requestAnimationFrame(() => {
-      modal.style.opacity = '1';
+      modal.classList.add('is-open');
     });
   }
 
