@@ -244,9 +244,15 @@ Tensor Cores 是**专为矩阵运算优化的专用硬件单元**，首次出现
 - **第四代 Tensor Core**（Hopper/Ada Lovelace 架构）：支持更多精度（如 FP8、INT4）和稀疏化技术，矩阵运算吞吐量进一步提升（如 H200 NVL 的 FP8 Tensor Core 稀疏性能达 3341 TFLOPS）。
 - **数量对比**：Tensor Core 数量远少于 CUDA Cores（如 H200 NVL：528 个 Tensor Core vs 16896 个 CUDA Core），但每个 Tensor Core 的矩阵运算效率极高。
 
-![](./images/gpu_arch-1746957249811.png)
+| GPU | 架构 | CUDA Cores | Tensor Cores | FP32 (TFLOPS) | FP16 Tensor (TFLOPS) | FP8 Tensor (TFLOPS) | Memory |
+|-----|------|------------|--------------|---------------|---------------------|---------------------|--------|
+| V100 | Volta | 5120 | 640 | 15.7 | 125 | N/A | 32GB HBM2 |
+| A100 | Ampere | 6912 | 432 | 19.5 | 312 | N/A | 80GB HBM2e |
+| H100 | Hopper | 16896 | 528 | 51.2 | 989 | 1979 | 80GB HBM3 |
+| H200 NVL | Hopper | 16896 | 528 | 51.2 | 989 | 1979 (3958 sparse) | 141GB HBM3e |
+| L40S | Ada Lovelace | 18176 | 568 | 91.6 | 362 | 733 | 48GB GDDR6 |
 
-图片来源：https://g.masse.me/gpu-specs/
+数据来源：[GPU Specs](https://g.masse.me/gpu-specs/)
 
 
 #### 5.4.3. SM 内的 Tensor Core 布局
