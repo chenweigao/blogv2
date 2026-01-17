@@ -170,8 +170,10 @@
     if (pagefind) return pagefind;
     
     try {
-      // @ts-ignore - pagefind is generated at build time
-      pagefind = await import('/pagefind/pagefind.js');
+      // Dynamic import with vite-ignore to prevent build-time resolution
+      // pagefind is only available after running "pnpm build"
+      const pagefindPath = '/pagefind/pagefind.js';
+      pagefind = await import(/* @vite-ignore */ pagefindPath);
       await pagefind.init();
       return pagefind;
     } catch (e) {

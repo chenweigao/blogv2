@@ -10,11 +10,10 @@ const { items, currentPath } = Astro.props;
 
 const navLinks = [
   { href: '/', label: '首页' },
-  { href: '/algorithms/', label: '算法' },
-  { href: '/computer-systems/', label: '系统' },
-  { href: '/programming-languages/', label: '编程语言' },
-  { href: '/artificial-intelligence/', label: 'AI' },
-  { href: '/development-tools/', label: '开发工具' },
+  { href: '/ai-systems/', label: 'AI 系统' },
+  { href: '/architecture/', label: '计算机架构' },
+  { href: '/fundamentals/', label: '编程基础' },
+  { href: '/toolbox/', label: '工具箱' },
 ];
 ---
 
@@ -101,30 +100,42 @@ const navLinks = [
     const panel = document.getElementById('mobile-menu-panel');
     const close = document.getElementById('mobile-menu-close');
 
-    if (!trigger || !overlay || !panel) return;
+    if (!trigger || !overlay || !panel) {
+      console.warn('Mobile menu elements not found');
+      return;
+    }
+
+    // Remove existing listeners by cloning
+    const newTrigger = trigger.cloneNode(true);
+    trigger.parentNode?.replaceChild(newTrigger, trigger);
 
     function openMenu() {
-      overlay?.classList.remove('hidden');
+      overlay.classList.remove('hidden');
       requestAnimationFrame(() => {
-        overlay?.classList.remove('opacity-0');
-        panel?.classList.remove('translate-x-full');
+        overlay.classList.remove('opacity-0');
+        panel.classList.remove('translate-x-full');
       });
-      trigger?.setAttribute('aria-expanded', 'true');
+      newTrigger.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
     }
 
     function closeMenu() {
-      overlay?.classList.add('opacity-0');
-      panel?.classList.add('translate-x-full');
-      trigger?.setAttribute('aria-expanded', 'false');
+      overlay.classList.add('opacity-0');
+      panel.classList.add('translate-x-full');
+      newTrigger.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
       
       setTimeout(() => {
-        overlay?.classList.add('hidden');
+        overlay.classList.add('hidden');
       }, 300);
     }
 
-    trigger.addEventListener('click', openMenu);
+    newTrigger.addEventListener('click', openMenu);
+    newTrigger.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      openMenu();
+    });
+    
     overlay.addEventListener('click', closeMenu);
     close?.addEventListener('click', closeMenu);
 
@@ -143,4 +154,5 @@ const navLinks = [
 
   initMobileMenu();
   document.addEventListener('astro:after-swap', initMobileMenu);
+  document.addEventListener('DOMContentLoaded', initMobileMenu);
 </script>
