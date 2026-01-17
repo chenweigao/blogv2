@@ -6,15 +6,44 @@
 ---
 
 <style is:global>
-  /* Make article images zoomable */
+  /* Article images - responsive with max-width constraint */
   .prose img {
     cursor: zoom-in;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem auto;
+    display: block;
+  }
+
+  /* Don't force small images to be full width */
+  .prose img:not([width]) {
+    width: auto;
+    max-width: min(100%, 720px);
+  }
+
+  /* Images with explicit width should respect it */
+  .prose img[width] {
+    width: auto;
+    max-width: 100%;
   }
 
   .prose img:hover {
     transform: scale(1.01);
     box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Image captions */
+  .prose figure {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .prose figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
   }
 
   @media (prefers-reduced-motion: reduce) {
