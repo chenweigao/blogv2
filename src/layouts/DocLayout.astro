@@ -9,6 +9,7 @@ import GitHistory from '../components/content/GitHistory.astro';
 import MermaidRenderer from '../components/content/MermaidRenderer.astro';
 import TableOfContents from '../components/content/TableOfContents.astro';
 import SearchModal from '../components/interactive/SearchModal.astro';
+import ImageLightbox from '../components/content/ImageLightbox.astro';
 import { getCollection } from 'astro:content';
 import { buildSidebar } from '../lib/sidebar';
 
@@ -128,6 +129,9 @@ const currentSectionItems = sidebarSections.find(s =>
   
   <!-- Floating TOC -->
   <TableOfContents headings={headings} />
+  
+  <!-- Image Lightbox -->
+  <ImageLightbox />
 </BaseLayout>
 
 <!-- Mermaid Renderer Component -->
