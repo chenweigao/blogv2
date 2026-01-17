@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/copy-images.mjs",
+    "prebuild": "mkdir -p public/docs && rsync -av --include='*/' --include='*.jpg' --include='*.jpeg' --include='*.png' --include='*.gif' --include='*.svg' --include='*.webp' --include='*.avif' --exclude='*' src/content/docs/ public/docs/",
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
