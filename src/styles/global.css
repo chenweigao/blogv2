@@ -387,3 +387,178 @@ details.callout-details summary::-webkit-details-marker {
 details.callout-details summary::marker {
   display: none;
 }
+
+/* ============================================
+   List Styles - Modern Documentation Style
+   ============================================ */
+
+/* Unordered Lists */
+ul:not([class]) {
+  list-style: none;
+  padding-left: 0;
+  margin: var(--space-4) 0;
+}
+
+ul:not([class]) > li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+ul:not([class]) > li::before {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  opacity: 0.8;
+}
+
+/* Nested unordered lists */
+ul:not([class]) ul {
+  margin: 0.5rem 0;
+}
+
+ul:not([class]) ul > li::before {
+  width: 5px;
+  height: 5px;
+  background-color: transparent;
+  border: 1.5px solid var(--color-text-muted);
+}
+
+ul:not([class]) ul ul > li::before {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  border: none;
+  background-color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+/* Ordered Lists */
+ol:not([class]) {
+  list-style: none;
+  padding-left: 0;
+  margin: var(--space-4) 0;
+  counter-reset: list-counter;
+}
+
+ol:not([class]) > li {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.5rem;
+  counter-increment: list-counter;
+}
+
+ol:not([class]) > li::before {
+  content: counter(list-counter) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.875em;
+  color: var(--color-primary);
+  font-feature-settings: "tnum" 1;
+}
+
+/* Nested ordered lists */
+ol:not([class]) ol {
+  margin: 0.5rem 0;
+  counter-reset: nested-counter;
+}
+
+ol:not([class]) ol > li {
+  counter-increment: nested-counter;
+}
+
+ol:not([class]) ol > li::before {
+  content: counter(nested-counter, lower-alpha) ".";
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+ol:not([class]) ol ol > li::before {
+  content: counter(nested-counter, lower-roman) ".";
+}
+
+/* Task Lists / Checkboxes */
+ul:not([class]) > li:has(> input[type="checkbox"]) {
+  padding-left: 0;
+}
+
+ul:not([class]) > li:has(> input[type="checkbox"])::before {
+  display: none;
+}
+
+ul:not([class]) > li > input[type="checkbox"] {
+  appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+ul:not([class]) > li > input[type="checkbox"]:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+ul:not([class]) > li > input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* List items with completed tasks */
+ul:not([class]) > li:has(> input[type="checkbox"]:checked) {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--color-border);
+}
+
+/* Definition Lists */
+dl:not([class]) {
+  margin: var(--space-4) 0;
+}
+
+dl:not([class]) dt {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-top: var(--space-3);
+}
+
+dl:not([class]) dt:first-child {
+  margin-top: 0;
+}
+
+dl:not([class]) dd {
+  margin-left: 1.5rem;
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+}
+
+/* Lists inside callouts */
+.callout-content ul:not([class]),
+.callout-content ol:not([class]) {
+  margin: 0.75rem 0;
+}
+
+.callout-content ul:not([class]) > li,
+.callout-content ol:not([class]) > li {
+  margin-bottom: 0.375rem;
+}
