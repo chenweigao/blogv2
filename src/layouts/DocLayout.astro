@@ -8,6 +8,7 @@ import ArticleMeta from '../components/content/ArticleMeta.astro';
 import GitHistory from '../components/content/GitHistory.astro';
 import MermaidRenderer from '../components/content/MermaidRenderer.astro';
 import TableOfContents from '../components/content/TableOfContents.astro';
+import SearchModal from '../components/interactive/SearchModal.astro';
 import { getCollection } from 'astro:content';
 import { buildSidebar } from '../lib/sidebar';
 
@@ -57,6 +58,7 @@ const currentSectionItems = sidebarSections.find(s =>
     <ThemeToggle slot="theme-toggle" />
   </Navbar>
   
+  <SearchModal />
   <MobileMenu items={currentSectionItems} currentPath={currentPath} />
 
   <div class="pt-20 px-4 md:px-6 lg:px-8">

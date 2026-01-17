@@ -74,8 +74,46 @@
 <script>
   let pagefind: any = null;
   let selectedIndex = 0;
+  let isInitialized = false;
+
+  async function loadPagefind() {
+    if (pagefind) return pagefind;
+    
+    try {
+      // Try multiple paths for pagefind
+      const basePath = (document.querySelector('base')?.href || window.location.origin).replace(/\/$/, '');
+      const paths = [
+        '/pagefind/pagefind.js',
+        './pagefind/pagefind.js',
+        `${basePath}/pagefind/pagefind.js`
+      ];
+      
+      for (const path of paths) {
+        try {
+          // Use dynamic script loading instead of import
+          const fullPath = path.startsWith('http') ? path : `${window.location.origin}${path}`;
+          pagefind = await import(/* @vite-ignore */ fullPath);
+          if (pagefind) {
+            await pagefind.init();
+            console.log('Pagefind loaded successfully from:', path);
+            return pagefind;
+          }
+        } catch (e) {
+          // Try next path
+        }
+      }
+      
+      console.warn('Pagefind not available. Run "npm run build" first to generate search index.');
+      return null;
+    } catch (e) {
+      console.warn('Pagefind loading failed:', e);
+      return null;
+    }
+  }
 
   async function initSearch() {
+    if (isInitialized) return;
+    
     const modal = document.getElementById('search-modal');
     const backdrop = document.getElementById('search-backdrop');
     const input = document.getElementById('search-input') as HTMLInputElement;
@@ -84,22 +122,14 @@
 
     if (!modal || !input || !resultsContainer) return;
 
-    // Load pagefind dynamically at runtime
-    try {
-      // Determine base path from current URL or use default
-      const basePath = import.meta.env.BASE_URL || '/';
-      const pagefindPath = `${basePath}pagefind/pagefind.js`;
-      // @ts-ignore - pagefind is generated at build time
-      pagefind = await import(/* @vite-ignore */ pagefindPath);
-      await pagefind.init();
-    } catch (e) {
-      console.warn('Pagefind not available. Run "npm run build" first to generate search index.', e);
-    }
+    isInitialized = true;
 
     function openModal() {
       modal.classList.remove('hidden');
       input.focus();
       document.body.style.overflow = 'hidden';
+      // Load pagefind when modal opens (lazy load)
+      loadPagefind();
     }
 
     function closeModal() {
@@ -237,5 +267,8 @@
   }
 
   initSearch();
-  document.addEventListener('astro:after-swap', initSearch);
+  document.addEventListener('astro:after-swap', () => {
+    isInitialized = false;
+    initSearch();
+  });
 </script>
