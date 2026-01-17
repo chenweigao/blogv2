@@ -8,6 +8,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkDirective from 'remark-directive';
 import { remarkRelativeImages } from './src/lib/remark-relative-images.ts';
 import { remarkCallouts } from './src/lib/remark-callouts.ts';
+import { remarkHighlight } from './src/lib/remark-highlight.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -29,7 +30,7 @@ export default defineConfig({
         dark: 'github-dark',
       },
     },
-    remarkPlugins: [remarkMath, remarkDirective, remarkCallouts, remarkRelativeImages],
+    remarkPlugins: [remarkMath, remarkDirective, remarkCallouts, remarkRelativeImages, remarkHighlight],
     rehypePlugins: [rehypeKatex],
   },
   image: {
