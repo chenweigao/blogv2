@@ -59,6 +59,7 @@
 
   function initPhotoSwipe() {
     const images = Array.from(document.querySelectorAll('.prose img')) as HTMLImageElement[];
+    
     if (images.length === 0) return;
 
     // Build gallery data from all images
@@ -67,45 +68,47 @@
       width: img.naturalWidth || 1200,
       height: img.naturalHeight || 800,
       alt: img.alt || '',
-      element: img,
+      element: img as HTMLElement,
     }));
 
+    // Initialize click handlers for images
     images.forEach((img, index) => {
-      // Skip if already initialized
       if (img.dataset.pswpInit) return;
       img.dataset.pswpInit = 'true';
 
       img.addEventListener('click', (e) => {
         e.preventDefault();
-
-        const pswp = new PhotoSwipe({
-          dataSource: galleryItems.map(item => ({
-            src: item.src,
-            width: item.width,
-            height: item.height,
-            alt: item.alt,
-          })),
-          index: index, // Start from clicked image
-          showHideAnimationType: 'zoom',
-          bgOpacity: 0.92,
-          padding: { top: 20, bottom: 20, left: 20, right: 20 },
-          wheelToZoom: true,
-          pinchToClose: true,
-          closeOnVerticalDrag: true,
-          // Zoom animation from/to clicked image
-          getThumbBoundsFn: (idx) => {
-            const targetImg = galleryItems[idx]?.element;
-            if (targetImg) {
-              const rect = targetImg.getBoundingClientRect();
-              return { x: rect.left, y: rect.top, w: rect.width };
-            }
-            return { x: 0, y: 0, w: 0 };
-          },
-        });
-
-        pswp.init();
+        openPhotoSwipe(index, galleryItems);
       });
     });
+  }
+
+  function openPhotoSwipe(index: number, galleryItems: any[]) {
+    const pswp = new PhotoSwipe({
+      dataSource: galleryItems.map(item => ({
+        src: item.src,
+        width: item.width,
+        height: item.height,
+        alt: item.alt,
+      })),
+      index: index,
+      showHideAnimationType: 'zoom',
+      bgOpacity: 0.92,
+      padding: { top: 20, bottom: 20, left: 20, right: 20 },
+      wheelToZoom: true,
+      pinchToClose: true,
+      closeOnVerticalDrag: true,
+      getThumbBoundsFn: (idx) => {
+        const targetEl = galleryItems[idx]?.element;
+        if (targetEl) {
+          const rect = targetEl.getBoundingClientRect();
+          return { x: rect.left, y: rect.top, w: rect.width };
+        }
+        return { x: 0, y: 0, w: 0 };
+      },
+    });
+
+    pswp.init();
   }
 
   // Initialize after DOM is ready

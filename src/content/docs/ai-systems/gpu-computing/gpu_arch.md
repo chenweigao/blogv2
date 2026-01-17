@@ -201,8 +201,8 @@ SM是GPU中最基本的并行计算单元，相当于一个"微型处理器集�
   - 集成多种计算单元（CUDA Core、Tensor Core）、缓存、寄存器等
 - **架构演进**：不同代次架构的SM设计不同，核心变化在于Tensor Core的引入与升级
 
-![SM早期架构示意图|379x399](./images/gpu_arch-1746957490426.png)
-*早期GPU微架构，具体可参考项目中的Excalidraw*
+![SM早期架构示意图](./images/sm-core.excalidraw.svg)
+
 
 ### 5.3. 不同架构SM对比
 
