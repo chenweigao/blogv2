@@ -25,71 +25,66 @@
 </style>
 
 <script>
-  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  import PhotoSwipe from 'photoswipe';
   import 'photoswipe/style.css';
 
-  let lightbox: PhotoSwipeLightbox | null = null;
-
   function initPhotoSwipe() {
-    // Cleanup existing instance
-    if (lightbox) {
-      lightbox.destroy();
-      lightbox = null;
-    }
-
-    // Get all images in prose content
-    const images = document.querySelectorAll('.prose img') as NodeListOf<HTMLImageElement>;
+    const images = Array.from(document.querySelectorAll('.prose img')) as HTMLImageElement[];
     if (images.length === 0) return;
 
-    // Create gallery data
-    const items: { src: string; width: number; height: number; alt: string; element: HTMLImageElement }[] = [];
-    
+    // Build gallery data from all images
+    const galleryItems = images.map((img) => ({
+      src: img.dataset.src || img.src,
+      width: img.naturalWidth || 1200,
+      height: img.naturalHeight || 800,
+      alt: img.alt || '',
+      element: img,
+    }));
+
     images.forEach((img, index) => {
-      // Skip small images (icons, badges)
-      if (img.naturalWidth < 100 || img.naturalHeight < 100) return;
+      // Skip if already initialized
+      if (img.dataset.pswpInit) return;
+      img.dataset.pswpInit = 'true';
 
-      const src = img.dataset.src || img.src;
-      items.push({
-        src,
-        width: img.naturalWidth || 1200,
-        height: img.naturalHeight || 800,
-        alt: img.alt || '',
-        element: img,
-      });
-
-      // Add click handler
       img.addEventListener('click', (e) => {
         e.preventDefault();
-        const itemIndex = items.findIndex(item => item.element === img);
-        if (itemIndex >= 0 && lightbox) {
-          lightbox.loadAndOpen(itemIndex);
-        }
+
+        const pswp = new PhotoSwipe({
+          dataSource: galleryItems.map(item => ({
+            src: item.src,
+            width: item.width,
+            height: item.height,
+            alt: item.alt,
+          })),
+          index: index, // Start from clicked image
+          showHideAnimationType: 'zoom',
+          bgOpacity: 0.92,
+          padding: { top: 20, bottom: 20, left: 20, right: 20 },
+          wheelToZoom: true,
+          pinchToClose: true,
+          closeOnVerticalDrag: true,
+          // Zoom animation from/to clicked image
+          getThumbBoundsFn: (idx) => {
+            const targetImg = galleryItems[idx]?.element;
+            if (targetImg) {
+              const rect = targetImg.getBoundingClientRect();
+              return { x: rect.left, y: rect.top, w: rect.width };
+            }
+            return { x: 0, y: 0, w: 0 };
+          },
+        });
+
+        pswp.init();
       });
     });
-
-    if (items.length === 0) return;
-
-    // Initialize PhotoSwipe
-    lightbox = new PhotoSwipeLightbox({
-      dataSource: items.map(item => ({
-        src: item.src,
-        width: item.width,
-        height: item.height,
-        alt: item.alt,
-      })),
-      showHideAnimationType: 'zoom',
-      pswpModule: () => import('photoswipe'),
-      bgOpacity: 0.92,
-      padding: { top: 20, bottom: 20, left: 20, right: 20 },
-      wheelToZoom: true,
-      pinchToClose: true,
-      closeOnVerticalDrag: true,
-    });
-
-    lightbox.init();
   }
 
-  // Initialize
-  initPhotoSwipe();
+  // Initialize after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPhotoSwipe);
+  } else {
+    initPhotoSwipe();
+  }
+  
   document.addEventListener('astro:after-swap', initPhotoSwipe);
 </script>
