@@ -11,7 +11,7 @@ Four Layers of TCP/IP model.
 
 ## 1. Abstract
 
-<!-- ![abs](./images/1739175279351-77f4f699-bde7-4914-af50-fb93c020e111.webp) -->
+![abs](./images/1739175279351-77f4f699-bde7-4914-af50-fb93c020e111.webp)
 
 ## 2. IP
 
@@ -63,7 +63,7 @@ TCP header 中保存着在流中的 index,  这使得流可以分割为若干个
 
 ### 3.3. TCP 四层模型
 
-<!-- ![tcp_4](./images/tcp_4.jpg) -->
+![tcp_4](./images/tcp_4.jpg)
 
 | 层数  | 备注                                                                      |
 |:--- |:----------------------------------------------------------------------- |
@@ -249,10 +249,43 @@ seq1 - seq2 = 1111 1111 - 0000 0001 = 1111 1110, 由于结果被强制类型转�
 
 ### 3.9. TCP 状态机
 
-<!-- ![tcp](./images/tcp.jpg) -->
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED
+    
+    CLOSED --> LISTEN: passive open
+    CLOSED --> SYN_SENT: active open / send SYN
+    
+    LISTEN --> SYN_RCVD: recv SYN / send SYN,ACK
+    LISTEN --> CLOSED: close
+    
+    SYN_SENT --> SYN_RCVD: recv SYN / send ACK
+    SYN_SENT --> ESTABLISHED: recv SYN,ACK / send ACK
+    SYN_SENT --> CLOSED: timeout / RST
+    
+    SYN_RCVD --> ESTABLISHED: recv ACK
+    SYN_RCVD --> FIN_WAIT_1: close / send FIN
+    
+    ESTABLISHED --> FIN_WAIT_1: close / send FIN
+    ESTABLISHED --> CLOSE_WAIT: recv FIN / send ACK
+    
+    FIN_WAIT_1 --> FIN_WAIT_2: recv ACK
+    FIN_WAIT_1 --> CLOSING: recv FIN / send ACK
+    FIN_WAIT_1 --> TIME_WAIT: recv FIN,ACK / send ACK
+    
+    FIN_WAIT_2 --> TIME_WAIT: recv FIN / send ACK
+    
+    CLOSING --> TIME_WAIT: recv ACK
+    
+    CLOSE_WAIT --> LAST_ACK: close / send FIN
+    
+    LAST_ACK --> CLOSED: recv ACK
+    
+    TIME_WAIT --> CLOSED: 2MSL timeout
+```
 
 连接：
-e
+
 1. SYN_SENT
 2. SYN_RCVD(LISTEN 转变)
 3. ESTABLISHED
@@ -350,7 +383,7 @@ Congestion Control State Machine. 拥塞控制状态机的状态有五种，分�
       
       举例说明：
       
-      <!-- ![cwnd and ssthresh](./images/cwnd.jpg) -->
+      ![cwnd and ssthresh](./images/cwnd.jpg)
       
       假设在 cwnd 为32个报文段时发生拥塞（超时引起），于是设 ssthresh 为16个报文段，而 cwnd 为1个报文段，cwnd 在收到发送报文的 ACK 时指数增长，直到 cwnd 等于 ssthresh 才停止，从这时起 cwnd 线性增加，并在每个往返时间内最多增加1个报文段。
 
