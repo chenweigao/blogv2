@@ -1,12 +1,31 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Build output
 dist/
-public/*
+
+# Astro cache
+.astro/
+
+# Public generated files (images copied from content)
+public/docs/
+
+# OS files
 .DS_Store
+*.DS_Store
+Thumbs.db
 
-# VitePress 缓存目录
-docs/.vitepress/cache/
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Vue Press 缓存目录（如果需要）
-docs/.vitepress/cache/
-docs/.vitepress/.temp/
+# Logs
+*.log
 dev-dev.log
+
+# Environment
+.env
+.env.*
+!.env.example

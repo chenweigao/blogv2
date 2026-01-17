@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <!-- Book base -->
+  <path 
+    d="M64 20C52 20 42 24 32 30V98C42 92 52 88 64 88C76 88 86 92 96 98V30C86 24 76 20 64 20Z" 
+    stroke="currentColor" 
+    stroke-width="4" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+  <!-- Center spine -->
+  <path 
+    d="M64 20V88" 
+    stroke="currentColor" 
+    stroke-width="4" 
+    stroke-linecap="round"
+  />
+  <!-- Left page lines -->
+  <path d="M40 42H56" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M40 54H52" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M40 66H54" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <!-- Right page lines -->
+  <path d="M72 42H88" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M76 54H88" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M74 66H88" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <!-- Knowledge sparkle -->
+  <circle cx="96" cy="24" r="3" fill="currentColor"/>
+  <path d="M96 16V20M96 28V32M88 24H92M100 24H104" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <style>
+    path, circle { color: #6366f1; }
+    @media (prefers-color-scheme: dark) {
+      path, circle { color: #a5b4fc; }
+    }
+  </style>
+</svg>
