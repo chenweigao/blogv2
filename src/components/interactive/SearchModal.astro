@@ -4,19 +4,20 @@
 
 <div 
   id="search-modal" 
-  class="fixed inset-0 z-50 hidden"
+  class="search-modal fixed inset-0 z-50 hidden opacity-0"
   role="dialog"
   aria-modal="true"
-  aria-label="搜索"
+  aria-labelledby="search-title"
 >
   <!-- Backdrop -->
   <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="search-backdrop"></div>
   
   <!-- Modal content -->
-  <div class="relative flex items-start justify-center pt-[10vh] px-4">
-    <div class="w-full max-w-2xl bg-[var(--color-bg)] rounded-2xl shadow-2xl overflow-hidden">
+  <div class="search-modal-content relative flex items-start justify-center pt-[10vh] px-4 translate-y-4">
+    <div class="w-full max-w-2xl bg-[var(--color-bg)] rounded-2xl shadow-2xl overflow-hidden border border-[var(--color-border)]">
       <!-- Search input -->
       <div class="p-4 border-b border-[var(--color-border)]">
+        <h2 id="search-title" class="sr-only">搜索文档</h2>
         <div class="relative">
           <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -24,21 +25,44 @@
           <input
             type="text"
             id="search-input"
-            class="w-full pl-10 pr-4 py-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            class="w-full pl-10 pr-20 py-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-shadow duration-200"
             placeholder="搜索文档..."
             autocomplete="off"
+            aria-describedby="search-status"
           />
-          <kbd class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs bg-[var(--color-bg)] border border-[var(--color-border)] rounded text-[var(--color-text-muted)]">
-            ESC
-          </kbd>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <button 
+              id="clear-search" 
+              class="hidden p-1 rounded hover:bg-[var(--color-bg)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors cursor-pointer"
+              aria-label="清除搜索"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <kbd class="px-2 py-1 text-xs bg-[var(--color-bg)] border border-[var(--color-border)] rounded text-[var(--color-text-muted)]">
+              ESC
+            </kbd>
+          </div>
         </div>
       </div>
 
       <!-- Results -->
-      <div id="search-results" class="max-h-[60vh] overflow-y-auto p-2">
-        <div class="search-empty p-8 text-center text-[var(--color-text-muted)]">
-          输入关键词开始搜索
+      <div id="search-results" class="max-h-[60vh] overflow-y-auto">
+        <!-- Status for screen readers -->
+        <div id="search-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+        
+        <!-- Empty state -->
+        <div class="search-empty p-6 text-center">
+          <div class="text-[var(--color-text-muted)] mb-4">输入关键词开始搜索</div>
+          <!-- Recent searches -->
+          <div id="recent-searches" class="hidden">
+            <div class="text-xs text-[var(--color-text-muted)] mb-2">最近搜索</div>
+            <div id="recent-list" class="flex flex-wrap justify-center gap-2"></div>
+          </div>
         </div>
+        
+        <!-- Loading state -->
         <div class="search-loading hidden p-8 text-center text-[var(--color-text-muted)]">
           <svg class="animate-spin w-5 h-5 mx-auto mb-2" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -46,10 +70,23 @@
           </svg>
           搜索中...
         </div>
-        <div class="search-no-results hidden p-8 text-center text-[var(--color-text-muted)]">
-          未找到相关结果
+        
+        <!-- No results state -->
+        <div class="search-no-results hidden p-8 text-center">
+          <svg class="w-12 h-12 mx-auto mb-3 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="text-[var(--color-text-muted)]">未找到相关结果</div>
+          <div class="text-sm text-[var(--color-text-muted)] mt-1">尝试使用不同的关键词</div>
         </div>
-        <ul class="search-results-list hidden space-y-1"></ul>
+        
+        <!-- Results header -->
+        <div id="results-header" class="hidden px-4 py-2 text-xs text-[var(--color-text-muted)] border-b border-[var(--color-border)]">
+          找到 <span id="results-count">0</span> 个结果
+        </div>
+        
+        <!-- Results list -->
+        <ul id="search-results-list" class="hidden p-2 space-y-1"></ul>
       </div>
 
       <!-- Footer -->
@@ -71,44 +108,116 @@
   </div>
 </div>
 
+<style>
+  .search-modal {
+    transition: opacity 0.2s ease-out;
+  }
+  
+  .search-modal.is-open {
+    opacity: 1;
+  }
+  
+  .search-modal-content {
+    transition: transform 0.2s ease-out;
+  }
+  
+  .search-modal.is-open .search-modal-content {
+    transform: translateY(0);
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .search-modal,
+    .search-modal-content {
+      transition: none;
+    }
+  }
+  
+  .search-result-item {
+    @apply block p-3 rounded-lg transition-colors cursor-pointer;
+  }
+  
+  .search-result-item:hover,
+  .search-result-item.is-selected {
+    @apply bg-[var(--color-bg-secondary)];
+  }
+  
+  .search-result-item mark {
+    @apply bg-yellow-200 dark:bg-yellow-500/30 text-inherit rounded px-0.5;
+  }
+</style>
+
 <script>
   let pagefind: any = null;
   let selectedIndex = 0;
   let isInitialized = false;
+  let currentResults: any[] = [];
+  const RECENT_SEARCHES_KEY = 'search-recent';
+  const MAX_RECENT = 5;
 
   async function loadPagefind() {
     if (pagefind) return pagefind;
     
     try {
-      // Try multiple paths for pagefind
-      const basePath = (document.querySelector('base')?.href || window.location.origin).replace(/\/$/, '');
-      const paths = [
-        '/pagefind/pagefind.js',
-        './pagefind/pagefind.js',
-        `${basePath}/pagefind/pagefind.js`
-      ];
-      
-      for (const path of paths) {
-        try {
-          // Use dynamic script loading instead of import
-          const fullPath = path.startsWith('http') ? path : `${window.location.origin}${path}`;
-          pagefind = await import(/* @vite-ignore */ fullPath);
-          if (pagefind) {
-            await pagefind.init();
-            console.log('Pagefind loaded successfully from:', path);
-            return pagefind;
-          }
-        } catch (e) {
-          // Try next path
-        }
-      }
-      
-      console.warn('Pagefind not available. Run "npm run build" first to generate search index.');
-      return null;
+      // @ts-ignore - pagefind is generated at build time
+      pagefind = await import('/pagefind/pagefind.js');
+      await pagefind.init();
+      return pagefind;
     } catch (e) {
-      console.warn('Pagefind loading failed:', e);
+      console.warn('Pagefind not available. Run "pnpm build" then "pnpm preview" to test search.');
       return null;
     }
+  }
+
+  function getRecentSearches(): string[] {
+    try {
+      return JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY) || '[]');
+    } catch {
+      return [];
+    }
+  }
+
+  function saveRecentSearch(query: string) {
+    if (!query.trim()) return;
+    const recent = getRecentSearches().filter(q => q !== query);
+    recent.unshift(query);
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(recent.slice(0, MAX_RECENT)));
+  }
+
+  function renderRecentSearches(container: Element, onSelect: (query: string) => void) {
+    const recent = getRecentSearches();
+    const recentContainer = container.querySelector('#recent-searches');
+    const recentList = container.querySelector('#recent-list');
+    
+    if (!recentContainer || !recentList || recent.length === 0) {
+      recentContainer?.classList.add('hidden');
+      return;
+    }
+    
+    recentContainer.classList.remove('hidden');
+    recentList.innerHTML = recent.map(q => `
+      <button 
+        class="px-3 py-1.5 text-sm bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-secondary)]/80 
+               border border-[var(--color-border)] rounded-full text-[var(--color-text-muted)] 
+               hover:text-[var(--color-text)] transition-colors cursor-pointer"
+        data-query="${q}"
+      >${q}</button>
+    `).join('');
+    
+    recentList.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const query = btn.getAttribute('data-query');
+        if (query) onSelect(query);
+      });
+    });
+  }
+
+  function getCategoryFromUrl(url: string): string {
+    const parts = url.split('/').filter(Boolean);
+    if (parts.length > 0) {
+      const category = parts[0].replace(/-/g, ' ');
+      return category.charAt(0).toUpperCase() + category.slice(1);
+    }
+    return '';
   }
 
   async function initSearch() {
@@ -118,84 +227,138 @@
     const backdrop = document.getElementById('search-backdrop');
     const input = document.getElementById('search-input') as HTMLInputElement;
     const trigger = document.getElementById('search-trigger');
+    const clearBtn = document.getElementById('clear-search');
     const resultsContainer = document.getElementById('search-results');
+    const statusEl = document.getElementById('search-status');
 
     if (!modal || !input || !resultsContainer) return;
 
     isInitialized = true;
 
+    // Preload pagefind on trigger hover
+    trigger?.addEventListener('mouseenter', () => loadPagefind(), { once: true });
+
     function openModal() {
       modal.classList.remove('hidden');
+      // Trigger animation
+      requestAnimationFrame(() => {
+        modal.classList.add('is-open');
+      });
       input.focus();
       document.body.style.overflow = 'hidden';
-      // Load pagefind when modal opens (lazy load)
       loadPagefind();
+      renderRecentSearches(resultsContainer, (query) => {
+        input.value = query;
+        input.dispatchEvent(new Event('input'));
+      });
     }
 
     function closeModal() {
-      modal.classList.add('hidden');
-      input.value = '';
-      document.body.style.overflow = '';
-      showEmpty();
+      modal.classList.remove('is-open');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        input.value = '';
+        document.body.style.overflow = '';
+        showEmpty();
+        clearBtn?.classList.add('hidden');
+      }, 200);
+    }
+
+    function updateStatus(message: string) {
+      if (statusEl) statusEl.textContent = message;
     }
 
     function showEmpty() {
       resultsContainer.querySelector('.search-empty')?.classList.remove('hidden');
       resultsContainer.querySelector('.search-loading')?.classList.add('hidden');
       resultsContainer.querySelector('.search-no-results')?.classList.add('hidden');
-      resultsContainer.querySelector('.search-results-list')?.classList.add('hidden');
+      resultsContainer.querySelector('#results-header')?.classList.add('hidden');
+      resultsContainer.querySelector('#search-results-list')?.classList.add('hidden');
+      renderRecentSearches(resultsContainer, (query) => {
+        input.value = query;
+        input.dispatchEvent(new Event('input'));
+      });
     }
 
     function showLoading() {
       resultsContainer.querySelector('.search-empty')?.classList.add('hidden');
       resultsContainer.querySelector('.search-loading')?.classList.remove('hidden');
       resultsContainer.querySelector('.search-no-results')?.classList.add('hidden');
-      resultsContainer.querySelector('.search-results-list')?.classList.add('hidden');
+      resultsContainer.querySelector('#results-header')?.classList.add('hidden');
+      resultsContainer.querySelector('#search-results-list')?.classList.add('hidden');
     }
 
     function showNoResults() {
       resultsContainer.querySelector('.search-empty')?.classList.add('hidden');
       resultsContainer.querySelector('.search-loading')?.classList.add('hidden');
       resultsContainer.querySelector('.search-no-results')?.classList.remove('hidden');
-      resultsContainer.querySelector('.search-results-list')?.classList.add('hidden');
+      resultsContainer.querySelector('#results-header')?.classList.add('hidden');
+      resultsContainer.querySelector('#search-results-list')?.classList.add('hidden');
+      updateStatus('未找到相关结果');
     }
 
     function showResults(results: any[]) {
+      currentResults = results;
       resultsContainer.querySelector('.search-empty')?.classList.add('hidden');
       resultsContainer.querySelector('.search-loading')?.classList.add('hidden');
       resultsContainer.querySelector('.search-no-results')?.classList.add('hidden');
       
-      const list = resultsContainer.querySelector('.search-results-list');
+      const header = resultsContainer.querySelector('#results-header');
+      const countEl = resultsContainer.querySelector('#results-count');
+      const list = resultsContainer.querySelector('#search-results-list');
+      
       if (!list) return;
       
+      header?.classList.remove('hidden');
+      if (countEl) countEl.textContent = String(results.length);
+      
       list.classList.remove('hidden');
-      list.innerHTML = results.map((result, i) => `
-        <li>
-          <a 
-            href="${result.url}" 
-            class="block p-3 rounded-lg hover:bg-[var(--color-bg-secondary)] transition-colors ${i === selectedIndex ? 'bg-[var(--color-bg-secondary)]' : ''}"
-            data-index="${i}"
-          >
-            <div class="font-medium text-[var(--color-text)]">${result.meta?.title || 'Untitled'}</div>
-            <div class="text-sm text-[var(--color-text-muted)] mt-1 line-clamp-2">${result.excerpt || ''}</div>
-          </a>
-        </li>
-      `).join('');
+      list.innerHTML = results.map((result, i) => {
+        const category = getCategoryFromUrl(result.url);
+        const excerpt = result.excerpt || '';
+        
+        return `
+          <li>
+            <a 
+              href="${result.url}" 
+              class="search-result-item ${i === selectedIndex ? 'is-selected' : ''}"
+              data-index="${i}"
+            >
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-medium text-[var(--color-text)]">${result.meta?.title || 'Untitled'}</span>
+                ${category ? `<span class="text-xs px-2 py-0.5 rounded-full bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)]">${category}</span>` : ''}
+              </div>
+              <div class="text-sm text-[var(--color-text-muted)] line-clamp-2">${excerpt}</div>
+            </a>
+          </li>
+        `;
+      }).join('');
+      
+      updateStatus(`找到 ${results.length} 个结果`);
     }
 
     // Event listeners
     trigger?.addEventListener('click', openModal);
     backdrop?.addEventListener('click', closeModal);
+    
+    clearBtn?.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      showEmpty();
+      clearBtn.classList.add('hidden');
+    });
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
-      // Cmd/Ctrl + K to open
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        openModal();
+        if (modal.classList.contains('hidden')) {
+          openModal();
+        } else {
+          closeModal();
+        }
       }
       
-      // Escape to close
       if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
         closeModal();
       }
@@ -207,6 +370,13 @@
       clearTimeout(debounceTimer);
       const query = input.value.trim();
       
+      // Toggle clear button
+      if (query) {
+        clearBtn?.classList.remove('hidden');
+      } else {
+        clearBtn?.classList.add('hidden');
+      }
+      
       if (!query) {
         showEmpty();
         return;
@@ -215,6 +385,10 @@
       showLoading();
       
       debounceTimer = window.setTimeout(async () => {
+        if (!pagefind) {
+          pagefind = await loadPagefind();
+        }
+        
         if (!pagefind) {
           showNoResults();
           return;
@@ -231,6 +405,7 @@
           } else {
             selectedIndex = 0;
             showResults(results);
+            saveRecentSearch(query);
           }
         } catch (e) {
           console.error('Search error:', e);
@@ -241,7 +416,7 @@
 
     // Keyboard navigation
     input.addEventListener('keydown', (e) => {
-      const list = resultsContainer.querySelector('.search-results-list');
+      const list = resultsContainer.querySelector('#search-results-list');
       const items = list?.querySelectorAll('a') || [];
       
       if (e.key === 'ArrowDown') {
@@ -260,7 +435,7 @@
 
     function updateSelection(items: NodeListOf<Element>) {
       items.forEach((item, i) => {
-        item.classList.toggle('bg-[var(--color-bg-secondary)]', i === selectedIndex);
+        item.classList.toggle('is-selected', i === selectedIndex);
       });
       items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
     }
@@ -269,6 +444,7 @@
   initSearch();
   document.addEventListener('astro:after-swap', () => {
     isInitialized = false;
+    pagefind = null;
     initSearch();
   });
 </script>
