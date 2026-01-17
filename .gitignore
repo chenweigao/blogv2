@@ -29,3 +29,4 @@ dev-dev.log
 .env
 .env.*
 !.env.example
+.obsidian/*
