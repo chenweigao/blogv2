@@ -6,8 +6,15 @@ import MobileMenu from '../components/layout/MobileMenu.astro';
 import ThemeToggle from '../components/ui/ThemeToggle.astro';
 import ArticleMeta from '../components/content/ArticleMeta.astro';
 import MermaidRenderer from '../components/content/MermaidRenderer.astro';
+import TableOfContents from '../components/content/TableOfContents.astro';
 import { getCollection } from 'astro:content';
 import { buildSidebar } from '../lib/sidebar';
+
+interface TocItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
 
 interface Props {
   title: string;
@@ -17,6 +24,7 @@ interface Props {
   tags?: string[];
   lastUpdated?: Date;
   filePath?: string;
+  headings?: TocItem[];
 }
 
 const { 
@@ -26,7 +34,8 @@ const {
   category,
   tags = [],
   lastUpdated,
-  filePath
+  filePath,
+  headings = []
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
@@ -104,6 +113,9 @@ const currentSectionItems = sidebarSections.find(s =>
       </main>
     </div>
   </div>
+  
+  <!-- Floating TOC -->
+  <TableOfContents headings={headings} />
 </BaseLayout>
 
 <!-- Mermaid Renderer Component -->

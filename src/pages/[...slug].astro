@@ -40,10 +40,13 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 
 // Extract title from frontmatter or first heading
 const title = entry.data.title || entry.id.split('/').pop()?.replace(/-/g, ' ') || 'Untitled';
+
+// Filter headings for TOC (h2 and h3 only)
+const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 
 // Normalize tags
 const tags = entry.data.tags || (entry.data.tag ? (Array.isArray(entry.data.tag) ? entry.data.tag : [entry.data.tag]) : []);
@@ -57,6 +60,7 @@ const tags = entry.data.tags || (entry.data.tag ? (Array.isArray(entry.data.tag)
   tags={tags}
   lastUpdated={entry.data.lastUpdated}
   filePath={`docs/${entry.id}.md`}
+  headings={tocHeadings}
 >
   <Content />
 </DocLayout>

@@ -1,0 +1,375 @@
+---
+interface TocItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: TocItem[];
+}
+
+const { headings } = Astro.props;
+
+// Filter to only h2 and h3
+const tocItems = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+---
+
+{tocItems.length > 0 && (
+  <div id="toc-container" class="fixed bottom-6 right-6 z-40">
+    {/* Floating button with progress ring */}
+    <button
+      id="toc-toggle"
+      class="toc-button group relative w-12 h-12 rounded-full cursor-pointer
+             flex items-center justify-center
+             bg-[var(--color-bg)] border border-[var(--color-border)]
+             shadow-lg hover:shadow-xl
+             hover:border-[var(--color-primary)]/50
+             transition-shadow duration-200"
+      aria-label="打开目录"
+      aria-expanded="false"
+      aria-controls="toc-panel"
+    >
+      {/* Progress ring */}
+      <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 48 48">
+        <circle
+          class="text-[var(--color-border)]"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="none"
+          r="22"
+          cx="24"
+          cy="24"
+        />
+        <circle
+          id="toc-progress"
+          class="text-[var(--color-primary)] transition-all duration-150"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="none"
+          r="22"
+          cx="24"
+          cy="24"
+          stroke-dasharray="138.23"
+          stroke-dashoffset="138.23"
+          stroke-linecap="round"
+        />
+      </svg>
+      
+      {/* Icons */}
+      <svg id="toc-icon-list" class="relative w-5 h-5 text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+      </svg>
+      <svg id="toc-icon-close" class="relative w-5 h-5 text-[var(--color-text-muted)] hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    {/* TOC Panel */}
+    <div
+      id="toc-panel"
+      role="dialog"
+      aria-label="文章目录"
+      class="absolute bottom-16 right-0 w-64 max-h-80 overflow-y-auto
+             bg-[var(--color-bg)] border border-[var(--color-border)]
+             rounded-2xl shadow-xl p-4
+             opacity-0 invisible translate-y-2
+             transition-all duration-200 origin-bottom-right"
+    >
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+        </svg>
+        目录
+        <span class="ml-auto text-[10px] opacity-60">{tocItems.length}</span>
+      </h2>
+      <nav>
+        <ul class="space-y-0.5 text-sm">
+          {tocItems.map((heading, index) => (
+            <li>
+              <a
+                href={`#${heading.slug}`}
+                data-toc-link
+                data-heading-slug={heading.slug}
+                tabindex={-1}
+                class:list={[
+                  "toc-link block py-1.5 px-2 rounded-lg cursor-pointer",
+                  "text-[var(--color-text-muted)] hover:text-[var(--color-text)]",
+                  "hover:bg-[var(--color-bg-secondary)]",
+                  "transition-colors duration-150",
+                  "truncate",
+                  heading.depth === 3 ? "pl-5 text-xs" : ""
+                ]}
+                title={heading.text}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </div>
+)}
+
+<style>
+  /* Active state for TOC links */
+  .toc-link.active {
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    font-weight: 500;
+  }
+  
+  /* Panel open state */
+  #toc-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* Button active state when panel is open */
+  .toc-button.active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+  
+  /* Enable tabindex when panel is open */
+  #toc-panel.open .toc-link {
+    tabindex: 0;
+  }
+  
+  /* Scrollbar styling */
+  #toc-panel::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  #toc-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  #toc-panel::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .toc-button,
+    #toc-panel,
+    .toc-link,
+    #toc-progress {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initToc() {
+    const container = document.getElementById('toc-container');
+    const toggle = document.getElementById('toc-toggle');
+    const panel = document.getElementById('toc-panel');
+    const iconList = document.getElementById('toc-icon-list');
+    const iconClose = document.getElementById('toc-icon-close');
+    const progressRing = document.getElementById('toc-progress') as SVGCircleElement | null;
+    const tocLinks = document.querySelectorAll('[data-toc-link]');
+    
+    if (!toggle || !panel || tocLinks.length === 0) return;
+    
+    let isOpen = false;
+    const circumference = 138.23; // 2 * PI * 22
+    
+    // Cleanup previous listeners
+    const abortController = new AbortController();
+    const { signal } = abortController;
+    
+    // Toggle panel
+    function openPanel() {
+      if (isOpen) return;
+      isOpen = true;
+      panel.classList.add('open');
+      toggle.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+      iconList?.classList.add('hidden');
+      iconClose?.classList.remove('hidden');
+      
+      // Enable tab navigation and focus first link
+      tocLinks.forEach(link => link.setAttribute('tabindex', '0'));
+      (tocLinks[0] as HTMLElement)?.focus();
+    }
+    
+    function closePanel() {
+      if (!isOpen) return;
+      isOpen = false;
+      panel.classList.remove('open');
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      iconList?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      
+      // Disable tab navigation
+      tocLinks.forEach(link => link.setAttribute('tabindex', '-1'));
+      toggle.focus();
+    }
+    
+    function togglePanel() {
+      isOpen ? closePanel() : openPanel();
+    }
+    
+    toggle.addEventListener('click', togglePanel, { signal });
+    
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (isOpen && container && !container.contains(e.target as Node)) {
+        closePanel();
+      }
+    }, { signal });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        closePanel();
+      }
+    }, { signal });
+    
+    // Trap focus in panel when open
+    panel.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && isOpen) {
+        const focusableLinks = Array.from(tocLinks) as HTMLElement[];
+        const firstLink = focusableLinks[0];
+        const lastLink = focusableLinks[focusableLinks.length - 1];
+        
+        if (e.shiftKey && document.activeElement === firstLink) {
+          e.preventDefault();
+          lastLink.focus();
+        } else if (!e.shiftKey && document.activeElement === lastLink) {
+          e.preventDefault();
+          firstLink.focus();
+        }
+      }
+    }, { signal });
+    
+    // Scroll spy and progress
+    const headingSlugs = Array.from(tocLinks).map(link => 
+      (link as HTMLElement).dataset.headingSlug
+    );
+    
+    const headings = headingSlugs
+      .map(slug => document.getElementById(slug!))
+      .filter(Boolean) as HTMLElement[];
+    
+    if (headings.length === 0) return;
+    
+    let activeSlug: string | null = null;
+    
+    function updateActiveLink(slug: string | null) {
+      if (slug === activeSlug) return;
+      activeSlug = slug;
+      
+      tocLinks.forEach(link => {
+        const linkSlug = (link as HTMLElement).dataset.headingSlug;
+        link.classList.toggle('active', linkSlug === slug);
+      });
+    }
+    
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = Math.min(scrollTop / docHeight, 1);
+      
+      if (progressRing) {
+        const offset = circumference - (progress * circumference);
+        progressRing.style.strokeDashoffset = String(offset);
+      }
+    }
+    
+    // Throttled scroll handler
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateProgress();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    
+    window.addEventListener('scroll', onScroll, { passive: true, signal });
+    
+    // Initial progress
+    updateProgress();
+    
+    // Intersection Observer for active heading
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries.filter(e => e.isIntersecting);
+        
+        if (visibleEntries.length > 0) {
+          const topEntry = visibleEntries.reduce((prev, curr) => 
+            prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr
+          );
+          updateActiveLink(topEntry.target.id);
+        } else {
+          const scrollY = window.scrollY;
+          let closestHeading: HTMLElement | null = null;
+          
+          for (const heading of headings) {
+            if (heading.offsetTop <= scrollY + 100) {
+              closestHeading = heading;
+            } else {
+              break;
+            }
+          }
+          
+          if (closestHeading) {
+            updateActiveLink(closestHeading.id);
+          }
+        }
+      },
+      {
+        rootMargin: '-80px 0px -70% 0px',
+        threshold: 0
+      }
+    );
+    
+    headings.forEach(heading => observer.observe(heading));
+    
+    // Smooth scroll on link click
+    tocLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const slug = (link as HTMLElement).dataset.headingSlug;
+        const target = document.getElementById(slug!);
+        if (target) {
+          const offset = 100;
+          const top = target.offsetTop - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+          closePanel();
+        }
+      }, { signal });
+    });
+    
+    // Initial highlight
+    const scrollY = window.scrollY;
+    let initialHeading: HTMLElement | null = null;
+    for (const heading of headings) {
+      if (heading.offsetTop <= scrollY + 100) {
+        initialHeading = heading;
+      }
+    }
+    if (initialHeading) {
+      updateActiveLink(initialHeading.id);
+    } else if (headings[0]) {
+      updateActiveLink(headings[0].id);
+    }
+    
+    // Cleanup on page navigation
+    document.addEventListener('astro:before-swap', () => {
+      abortController.abort();
+      observer.disconnect();
+    }, { once: true });
+  }
+  
+  initToc();
+  document.addEventListener('astro:after-swap', initToc);
+</script>
