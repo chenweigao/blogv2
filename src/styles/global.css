@@ -18,6 +18,7 @@ body {
   line-height: var(--line-height-relaxed);
   font-weight: var(--font-weight-normal);
   letter-spacing: var(--tracking-normal);
+  overflow-x: hidden;
 }
 
 /* Headings - Tight tracking, bold weight */
