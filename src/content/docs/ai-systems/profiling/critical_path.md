@@ -1,13 +1,15 @@
 ---
 title: Critical Path of AI Trace
 date: 2026-01-04
-category:
-  - Algorithm
+tags: 
   - AI
+  - Trace
+  - Critical Path
+  - GPU
+  - Performance Analysis
+description: "GPU kernel trace/timeline 的关键路径算法原理、实现思路及可视化示例。"
 ---
 
-> 本文重点说明 GPU kernel trace/timeline 的关键路径算法原理、实现思路及可视化示例。
->
 ## 1. 算法基本概念与理论基础
 
 ### 1.1. 问题目标
