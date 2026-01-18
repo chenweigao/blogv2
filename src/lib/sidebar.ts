@@ -54,10 +54,20 @@ interface TreeNode {
  * Build hierarchical sidebar from content entries
  */
 export function buildSidebar(entries: ContentEntry[], basePath: string = '/'): SidebarSection[] {
+  // Filter out entries in 'images' folders or excalidraw files
+  const filteredEntries = entries.filter(entry => {
+    const parts = entry.id.split('/');
+    // Exclude entries inside 'images' folders
+    if (parts.includes('images')) return false;
+    // Exclude excalidraw markdown files
+    if (entry.id.endsWith('.excalidraw')) return false;
+    return true;
+  });
+
   // Group entries by top-level category
   const categories = new Map<string, ContentEntry[]>();
   
-  for (const entry of entries) {
+  for (const entry of filteredEntries) {
     const parts = entry.id.split('/');
     const category = parts[0];
     
