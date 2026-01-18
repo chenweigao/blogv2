@@ -52,15 +52,26 @@ code, pre, kbd, samp {
    Code Block - Shiki Dual Theme
    ============================================ */
 
+/* Code block wrapper for proper overflow handling */
+.prose pre.astro-code,
 pre.astro-code {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   font-size: 0.875rem;
   line-height: var(--line-height-relaxed);
   margin: var(--space-4) 0;
   background-color: #F5F5F7 !important;
   border: 1px solid rgba(0, 0, 0, 0.06);
+  max-width: 100%;
+}
+
+/* Ensure code content doesn't wrap */
+pre.astro-code code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
 }
 
 .dark pre.astro-code {
@@ -115,6 +126,16 @@ pre.astro-code::-webkit-scrollbar-thumb:hover {
 
 .dark pre.astro-code::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox scrollbar styling for code blocks */
+pre.astro-code {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+.dark pre.astro-code {
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
 
 /* Glassmorphism Utility */
@@ -586,6 +607,93 @@ mark {
 /* Invert Excalidraw SVGs in dark mode */
 .dark img[src*="excalidraw"] {
   filter: invert(1) hue-rotate(180deg);
+}
+
+/* ============================================
+   Mobile Overflow Handling
+   ============================================ */
+
+/* Table wrapper for horizontal scrolling */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: var(--space-4) calc(-1 * var(--space-2));
+  padding: 0 var(--space-2);
+}
+
+/* Focus state for keyboard navigation */
+.table-wrapper:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.table-wrapper:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.table-wrapper table {
+  min-width: max-content;
+}
+
+/* Scrollbar styling for table wrapper */
+.table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.dark .table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.dark .table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox scrollbar styling */
+.table-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+.dark .table-wrapper {
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+/* Ensure long inline code doesn't break layout */
+:not(pre) > code {
+  word-break: break-word;
+}
+
+/* Prevent horizontal scroll on mobile while allowing scrollable elements */
+@media (max-width: 768px) {
+  .prose pre.astro-code,
+  pre.astro-code {
+    margin-left: calc(-1 * var(--space-2));
+    margin-right: calc(-1 * var(--space-2));
+    border-radius: 0;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  
+  .table-wrapper {
+    margin-left: calc(-1 * var(--space-4));
+    margin-right: calc(-1 * var(--space-4));
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
 }
 
 

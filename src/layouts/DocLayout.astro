@@ -68,8 +68,8 @@ const currentSectionItems = sidebarSections.find(s =>
       <Sidebar items={currentSectionItems} currentPath={currentPath} />
 
       <!-- Main content -->
-      <main id="main-content" class="flex-1 min-w-0">
-        <article class="glass rounded-2xl p-6 md:p-8 page-content">
+      <main id="main-content" class="flex-1 min-w-0 overflow-hidden">
+        <article class="glass rounded-2xl p-6 md:p-8 page-content overflow-hidden">
           <!-- Article header -->
           <header class="mb-8 pb-6 border-b border-[var(--color-border)]">
             <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">
@@ -85,7 +85,7 @@ const currentSectionItems = sidebarSections.find(s =>
           </header>
 
           <!-- Article content -->
-          <div class="prose prose-slate dark:prose-invert max-w-none">
+          <div class="prose prose-slate dark:prose-invert max-w-none overflow-x-hidden">
             <slot />
           </div>
 
@@ -137,6 +137,31 @@ const currentSectionItems = sidebarSections.find(s =>
 <!-- Mermaid Renderer Component -->
 <MermaidRenderer />
 
+<script>
+  // Wrap tables in scrollable container for mobile
+  function wrapTables() {
+    const tables = document.querySelectorAll('.prose table:not(.table-wrapper table)');
+    tables.forEach(table => {
+      // Skip if already wrapped
+      if (table.parentElement?.classList.contains('table-wrapper')) return;
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = 'table-wrapper';
+      wrapper.setAttribute('role', 'region');
+      wrapper.setAttribute('aria-label', '可滚动表格');
+      wrapper.setAttribute('tabindex', '0');
+      table.parentNode?.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+    });
+  }
+
+  // Initialize on page load
+  wrapTables();
+  
+  // Re-initialize after Astro page transitions
+  document.addEventListener('astro:after-swap', wrapTables);
+</script>
+
 <style is:global>
   @reference "tailwindcss";
   
@@ -147,7 +172,8 @@ const currentSectionItems = sidebarSections.find(s =>
     --tw-prose-links: var(--color-primary);
     --tw-prose-code: var(--color-text);
     --tw-prose-pre-bg: var(--color-bg-secondary);
-    overflow-x: hidden;
+    /* Allow content to define its own overflow behavior */
+    overflow-x: visible;
   }
 
   .prose h2 {
@@ -190,15 +216,28 @@ const currentSectionItems = sidebarSections.find(s =>
     @apply rounded-lg my-4;
   }
 
+  /* Table wrapper for horizontal scrolling on mobile */
+  .prose .table-wrapper {
+    @apply overflow-x-auto -mx-2 px-2 my-4;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .prose table {
-    @apply w-full my-4 border-collapse;
+    @apply w-full border-collapse;
+    min-width: max-content;
   }
 
   .prose th, .prose td {
     @apply border border-[var(--color-border)] px-3 py-2 text-left;
   }
 
+  /* Allow text wrapping for description columns */
+  .prose td:last-child {
+    @apply whitespace-normal;
+    min-width: 200px;
+  }
+
   .prose th {
-    @apply bg-[var(--color-bg-secondary)] font-semibold;
+    @apply bg-[var(--color-bg-secondary)] font-semibold whitespace-nowrap;
   }
 </style>
