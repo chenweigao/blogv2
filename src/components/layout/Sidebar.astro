@@ -19,7 +19,7 @@ function renderItem(item: SidebarItem, currentPath: string, depth: number = 0): 
       <li>
         <details class="group" ${isItemActive ? 'open' : ''}>
           <summary class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors">
-            <a href="${item.href}" class="flex-1 text-sm font-medium ${isItemExact ? 'text-[var(--color-primary)]' : ''}">${item.title}</a>
+            <a href="${item.href}" class="flex-1 text-sm font-medium ${isItemExact ? 'text-[var(--color-text)] font-semibold' : ''}">${item.title}</a>
             <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-90 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -37,7 +37,7 @@ function renderItem(item: SidebarItem, currentPath: string, depth: number = 0): 
           href="${item.href}"
           class="block px-3 py-1.5 rounded-lg text-sm transition-colors cursor-pointer ${
             isItemExact
-              ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-medium'
+              ? 'text-[var(--color-text)] font-semibold'
               : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)]'
           }"
           ${isItemExact ? 'aria-current="page"' : ''}

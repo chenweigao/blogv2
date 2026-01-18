@@ -16,6 +16,28 @@ export interface GitCommit {
 }
 
 /**
+ * Get the last modified date from git for a specific file
+ */
+export function getLastModified(filePath: string): Date | null {
+  try {
+    const fullPath = join(process.cwd(), filePath);
+    if (!existsSync(fullPath)) {
+      return null;
+    }
+
+    const result = execSync(
+      `git log -1 --format="%aI" -- "${filePath}"`,
+      { encoding: 'utf-8', cwd: process.cwd() }
+    );
+
+    if (!result.trim()) return null;
+    return new Date(result.trim());
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Get git commit history for a specific file
  */
 export function getGitHistory(filePath: string, maxCommits: number = 50): GitCommit[] {

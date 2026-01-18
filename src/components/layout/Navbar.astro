@@ -28,24 +28,17 @@ const activeIndex = navLinks.findIndex((link) => {
     <!-- Logo -->
     <a 
       href="/" 
-      class="flex items-center gap-2 text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"
+      class="nav-logo flex items-center gap-2 cursor-pointer"
     >
       <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
       </svg>
-      <span class="font-semibold text-lg hidden sm:inline">Knowledge Wiki</span>
+      <span class="nav-logo-text hidden sm:inline">Knowledge Wiki</span>
     </a>
 
-    <!-- Desktop Navigation with sliding indicator -->
+    <!-- Desktop Navigation - Pure Apple style (no background indicator) -->
     <div class="hidden md:block">
-      <div class="nav-container relative flex items-center gap-0.5 p-1 rounded-xl bg-[var(--color-bg-secondary)]/50">
-        <!-- Sliding background indicator -->
-        <div 
-          class="nav-indicator absolute h-[calc(100%-8px)] rounded-lg bg-gradient-to-r from-violet-400/80 via-purple-400/80 to-fuchsia-400/80 transition-all duration-300 ease-out"
-          data-active-index={activeIndex}
-          aria-hidden="true"
-        ></div>
-        
+      <div class="nav-container">
         {navLinks.map((link, index) => {
           const isActive = link.exact 
             ? currentPath === link.href 
@@ -55,11 +48,10 @@ const activeIndex = navLinks.findIndex((link) => {
               href={link.href}
               data-nav-index={index}
               class:list={[
-                'nav-link relative z-10 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap',
-                isActive
-                  ? 'text-white'
-                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
+                'nav-link',
+                isActive && 'is-active'
               ]}
+              aria-current={isActive ? 'page' : undefined}
             >
               {link.label}
             </a>
@@ -73,14 +65,14 @@ const activeIndex = navLinks.findIndex((link) => {
       <!-- Search button -->
       <button
         id="search-trigger"
-        class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+        class="nav-action-btn"
         aria-label="搜索"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <kbd class="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium rounded bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
-          <span class="text-xs">⌘</span>K
+        <kbd class="nav-kbd hidden sm:inline-flex">
+          <span>⌘</span>K
         </kbd>
       </button>
 
@@ -94,7 +86,7 @@ const activeIndex = navLinks.findIndex((link) => {
         href="https://github.com"
         target="_blank"
         rel="noopener noreferrer"
-        class="p-2 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+        class="nav-icon-btn"
         aria-label="GitHub"
       >
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -105,7 +97,7 @@ const activeIndex = navLinks.findIndex((link) => {
       <!-- Mobile menu button -->
       <button
         id="mobile-menu-trigger"
-        class="md:hidden p-2 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer relative z-10"
+        class="nav-icon-btn md:hidden"
         aria-label="打开菜单"
         aria-expanded="false"
         type="button"
@@ -119,112 +111,195 @@ const activeIndex = navLinks.findIndex((link) => {
 </header>
 
 <script>
-  function initNavIndicator() {
-    const container = document.querySelector('.nav-container');
-    const indicator = document.querySelector('.nav-indicator') as HTMLElement;
-    const links = document.querySelectorAll('.nav-link') as NodeListOf<HTMLElement>;
+  // No indicator animation needed - pure text-based navigation
+  // Just handle Astro page transitions
+  function initNav() {
+    const links = document.querySelectorAll('.nav-link');
+    if (!links.length) return;
     
-    if (!container || !indicator || links.length === 0) return;
-    
-    // Get active index from data attribute
-    const activeIndex = parseInt(indicator.dataset.activeIndex || '-1');
-    
-    function updateIndicator(index: number, animate = true) {
-      if (index < 0 || index >= links.length) {
-        indicator.style.opacity = '0';
-        return;
-      }
-      
-      const link = links[index];
-      const containerRect = container!.getBoundingClientRect();
-      const linkRect = link.getBoundingClientRect();
-      
-      const left = linkRect.left - containerRect.left;
-      const width = linkRect.width;
-      
-      if (!animate) {
-        indicator.style.transition = 'none';
-      }
-      
-      indicator.style.opacity = '1';
-      indicator.style.left = `${left}px`;
-      indicator.style.width = `${width}px`;
-      
-      if (!animate) {
-        // Force reflow then restore transition
-        indicator.offsetHeight;
-        indicator.style.transition = '';
-      }
-    }
-    
-    // Initial position without animation
-    updateIndicator(activeIndex, false);
-    
-    // Hover effect - move indicator to hovered link
-    links.forEach((link, index) => {
-      link.addEventListener('mouseenter', () => {
-        updateIndicator(index);
-        // Temporarily change text color
-        links.forEach((l, i) => {
-          if (i === index) {
-            l.classList.add('text-white');
-            l.classList.remove('text-[var(--color-text-muted)]');
-          } else {
-            l.classList.remove('text-white');
-            if (i !== activeIndex) {
-              l.classList.add('text-[var(--color-text-muted)]');
-            }
-          }
-        });
-      });
-    });
-    
-    // Return to active on mouse leave
-    container.addEventListener('mouseleave', () => {
-      updateIndicator(activeIndex);
-      // Restore text colors
-      links.forEach((link, index) => {
-        if (index === activeIndex) {
-          link.classList.add('text-white');
-          link.classList.remove('text-[var(--color-text-muted)]');
-        } else {
-          link.classList.remove('text-white');
-          link.classList.add('text-[var(--color-text-muted)]');
-        }
-      });
+    // Handle window resize for any layout adjustments
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        // Force repaint if needed
+      }, 100);
     });
   }
   
-  // Initialize on load and after navigation
-  initNavIndicator();
-  document.addEventListener('astro:after-swap', initNavIndicator);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
+  document.addEventListener('astro:after-swap', initNav);
 </script>
 
 <style>
-  .nav-indicator {
-    top: 4px;
-    box-shadow: 
-      0 2px 8px rgba(139, 92, 246, 0.3),
-      0 0 20px rgba(192, 132, 252, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  /* ============================================
+     Navigation - Pure Apple Style
+     ============================================ */
+  
+  /* Logo */
+  .nav-logo {
+    color: #1D1D1F;
+    transition: opacity 200ms ease;
   }
   
-  /* Dark mode - slightly more vibrant */
-  :global(.dark) .nav-indicator {
-    background: linear-gradient(to right, 
-      rgba(167, 139, 250, 0.85), 
-      rgba(192, 132, 252, 0.85), 
-      rgba(232, 121, 249, 0.85)
-    );
-    box-shadow: 
-      0 2px 12px rgba(167, 139, 250, 0.4),
-      0 0 24px rgba(192, 132, 252, 0.25);
+  .nav-logo:hover {
+    opacity: 0.7;
+  }
+  
+  .nav-logo-text {
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  
+  :global(.dark) .nav-logo {
+    color: #F5F5F7;
+  }
+  
+  /* Navigation Container - No background */
+  .nav-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  /* Navigation Links - Apple style: text only, no backgrounds */
+  .nav-link {
+    position: relative;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 200ms ease;
+    -webkit-tap-highlight-color: transparent;
+    
+    /* Light mode - muted gray */
+    color: #86868B;
+  }
+  
+  .nav-link:hover {
+    color: #1D1D1F;
+  }
+  
+  .nav-link.is-active {
+    color: #1D1D1F;
+    font-weight: 600;
+  }
+  
+  /* Dark mode */
+  :global(.dark) .nav-link {
+    color: #A1A1A6;
+  }
+  
+  :global(.dark) .nav-link:hover {
+    color: #F5F5F7;
+  }
+  
+  :global(.dark) .nav-link.is-active {
+    color: #F5F5F7;
+  }
+  
+  /* Action Buttons */
+  .nav-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 200ms ease;
+    color: #86868B;
+  }
+  
+  .nav-action-btn:hover {
+    color: #1D1D1F;
+  }
+  
+  :global(.dark) .nav-action-btn {
+    color: #A1A1A6;
+  }
+  
+  :global(.dark) .nav-action-btn:hover {
+    color: #F5F5F7;
+  }
+  
+  /* Icon Buttons */
+  .nav-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color 200ms ease;
+    color: #86868B;
+  }
+  
+  .nav-icon-btn:hover {
+    color: #1D1D1F;
+  }
+  
+  :global(.dark) .nav-icon-btn {
+    color: #A1A1A6;
+  }
+  
+  :global(.dark) .nav-icon-btn:hover {
+    color: #F5F5F7;
+  }
+  
+  /* Keyboard Shortcut Badge */
+  .nav-kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.06);
+    color: #86868B;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  
+  :global(.dark) .nav-kbd {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #A1A1A6;
+    border-color: rgba(255, 255, 255, 0.1);
   }
   
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .nav-indicator {
+    .nav-link,
+    .nav-action-btn,
+    .nav-icon-btn,
+    .nav-logo {
       transition: none !important;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .nav-link {
+      color: #000;
+    }
+    
+    .nav-link.is-active {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+    
+    :global(.dark) .nav-link {
+      color: #fff;
     }
   }
 </style>

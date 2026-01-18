@@ -16,10 +16,10 @@
 
   /* Glassmorphism Variables */
   --glass-blur: 20px;
-  --glass-opacity: 0.72;
+  --glass-opacity: 0.55;
   --glass-saturation: 180%;
   --glass-bg: rgba(255, 255, 255, var(--glass-opacity));
-  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.3);
 
   /* Shadows - Subtle, layered */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -86,9 +86,9 @@
   --color-text-muted: #8E8E93;
   --color-border: #2C2C2E;
 
-  --glass-opacity: 0.8;
-  --glass-bg: rgba(20, 20, 21, var(--glass-opacity));
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-opacity: 0.65;
+  --glass-bg: rgba(10, 10, 11, var(--glass-opacity));
+  --glass-border: rgba(255, 255, 255, 0.06);
 
   --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
 }

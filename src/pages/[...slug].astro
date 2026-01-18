@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import DocLayout from '../layouts/DocLayout.astro';
+import { getLastModified } from '../lib/git-history';
 
 // Categories that have auto-generated index pages
 const autoIndexCategories = new Set([
@@ -50,6 +51,10 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 
 // Normalize tags
 const tags = entry.data.tags || (entry.data.tag ? (Array.isArray(entry.data.tag) ? entry.data.tag : [entry.data.tag]) : []);
+
+// Get file path and last modified date from Git
+const filePath = `src/content/docs/${entry.id}.md`;
+const lastUpdated = entry.data.lastUpdated || getLastModified(filePath);
 ---
 
 <DocLayout 
@@ -58,8 +63,8 @@ const tags = entry.data.tags || (entry.data.tag ? (Array.isArray(entry.data.tag)
   date={entry.data.date}
   category={entry.data.category}
   tags={tags}
-  lastUpdated={entry.data.lastUpdated}
-  filePath={`src/content/docs/${entry.id}.md`}
+  lastUpdated={lastUpdated}
+  filePath={filePath}
   headings={tocHeadings}
 >
   <Content />
