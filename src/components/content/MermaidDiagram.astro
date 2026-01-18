@@ -134,6 +134,8 @@ const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro
   let currentTheme: 'light' | 'dark' | null = null;
   // Counter for unique IDs on re-render
   let renderCounter = 0;
+  // Store click handlers to avoid duplicates
+  const clickHandlers = new WeakMap<Element, () => void>();
 
   async function initMermaid(forceRerender = false) {
     const containers = document.querySelectorAll('.mermaid-diagram');
@@ -142,8 +144,12 @@ const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro
     const isDark = document.documentElement.classList.contains('dark');
     const newTheme = isDark ? 'dark' : 'light';
     
-    // Skip if theme hasn't changed and not forcing re-render
-    if (!forceRerender && currentTheme === newTheme) return;
+    // Skip if theme hasn't actually changed (prevents false triggers from other class changes)
+    if (currentTheme === newTheme && !forceRerender) return;
+    
+    // For theme change observer calls, only proceed if theme actually changed
+    if (!forceRerender && currentTheme !== null && currentTheme === newTheme) return;
+    
     currentTheme = newTheme;
 
     const { default: mermaid } = await import('mermaid');
@@ -178,19 +184,16 @@ const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro
         loading.classList.add('hidden');
         output.classList.remove('hidden');
         
-        // Remove old click handlers and add new one
-        const newContainer = container.cloneNode(true) as HTMLElement;
-        container.parentNode?.replaceChild(newContainer, container);
+        // Remove old click handler if exists
+        const oldHandler = clickHandlers.get(container);
+        if (oldHandler) {
+          container.removeEventListener('click', oldHandler);
+        }
         
-        // Re-query elements after clone
-        const newOutput = newContainer.querySelector('.mermaid-output') as HTMLElement;
-        newOutput.innerHTML = svg;
-        newOutput.classList.remove('hidden');
-        (newContainer.querySelector('.mermaid-loading') as HTMLElement)?.classList.add('hidden');
-        
-        newContainer.addEventListener('click', () => {
-          openMermaidModal(svg);
-        });
+        // Create and store new click handler
+        const newHandler = () => openMermaidModal(svg);
+        clickHandlers.set(container, newHandler);
+        container.addEventListener('click', newHandler);
       } catch (err) {
         console.error('Mermaid render error:', err);
         loading.classList.add('hidden');
@@ -253,15 +256,17 @@ const { code, id = `mermaid-${Math.random().toString(36).slice(2, 9)}` } = Astro
     initMermaid(true);
   });
   
-  // Re-render on theme change with debounce
-  let themeChangeTimeout: number;
+  // Re-render on theme change - only when dark class actually changes
+  let lastDarkState = document.documentElement.classList.contains('dark');
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (mutation.attributeName === 'class') {
-        clearTimeout(themeChangeTimeout);
-        themeChangeTimeout = window.setTimeout(() => {
+        const newDarkState = document.documentElement.classList.contains('dark');
+        // Only trigger if dark mode actually changed
+        if (newDarkState !== lastDarkState) {
+          lastDarkState = newDarkState;
           initMermaid(true);
-        }, 50);
+        }
         break;
       }
     }

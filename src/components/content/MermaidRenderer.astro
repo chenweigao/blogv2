@@ -472,15 +472,17 @@
     initMermaidDiagrams(true);
   });
 
-  // Theme change observer - re-render diagrams with new theme
-  let themeChangeTimeout: number;
+  // Theme change observer - only re-render when dark class actually changes
+  let lastDarkState = document.documentElement.classList.contains('dark');
   const themeObserver = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (mutation.attributeName === 'class') {
-        clearTimeout(themeChangeTimeout);
-        themeChangeTimeout = window.setTimeout(() => {
+        const newDarkState = document.documentElement.classList.contains('dark');
+        // Only trigger if dark mode actually changed
+        if (newDarkState !== lastDarkState) {
+          lastDarkState = newDarkState;
           initMermaidDiagrams(true);
-        }, 50);
+        }
         break;
       }
     }
