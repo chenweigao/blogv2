@@ -49,21 +49,47 @@ HTA 利用此机制构建 CPU operator → GPU kernel 的映射关系。
 
 ### 问题定义
 
-GPU 空闲时间（无 kernel 运行）需要归因到具体原因，以指导优化方向。
+了解 GPU 空闲时长及其成因，是制定优化策略的关键。当 GPU 上没有 Kernel 在执行时，即视为空闲状态。HTA 开发了一套算法，将空闲时间归类为以下三种类型：
 
 ### 三类空闲原因
 
+**1. Host Wait（主机等待）**
+
+CPU 提交 Kernel 的速度不足以让 GPU 保持忙碌，导致 GPU 处于"饥饿"状态。这是 CPU 端瓶颈的典型表现。
+
+优化建议：
+- 检查导致减速的 CPU 算子（operators）
+- 增大批大小（batch size），提升单次计算量
+- 应用算子融合（operator fusion），将多个相邻操作合并为单一 Kernel，减少内存访问和启动开销
+
+**2. Kernel Wait（Kernel 等待）**
+
+连续 Kernel 启动之间的短暂开销累积。每次 Kernel 启动通常需要 3-15μs 的 CPU 开销，当工作负载由大量短时 Kernel 组成时，这些开销会成为性能瓶颈。
+
+优化建议：
+- 使用 CUDA Graph 将多个 Kernel 操作捕获为可重放的图结构，将启动开销从"每次执行"降为"一次性"
+- 对于迭代执行的工作流尤为有效
+
+**3. Other Wait（其他等待）**
+
+因信息不足而暂时无法明确归因的空闲时间。可能原因包括：
+- CUDA 流（streams）之间通过 CUDA 事件（events）进行的同步等待
+- Kernel 启动时的调度延迟
+- 隐式的 Host-Device 同步点
+
+### 归因判定条件
+
 | 类别 | 判定条件 | 根因 |
 |------|----------|------|
-| **Host Wait** | GPU 空闲时 CPU 尚未发起 kernel launch | CPU 成为瓶颈 |
+| **Host Wait** | GPU 空闲期间 CPU 无 kernel launch 活动 | CPU 成为瓶颈 |
 | **Kernel Wait** | 连续 kernel 间隔 < 阈值 (默认 30ns) | kernel launch 固有开销 |
 | **Other Wait** | 无法归因到上述两类 | stream 同步、event 等待等 |
 
 ### 算法流程
 
-```
-输入: GPU kernel 事件列表 (按 stream 分组, 按时间排序)
-输出: 每个空闲区间的归因类别
+```python
+# 输入: GPU kernel 事件列表 (按 stream 分组, 按时间排序)
+# 输出: 每个空闲区间的归因类别
 
 for each stream:
     kernels = sorted(stream.kernels, by=start_time)
@@ -86,6 +112,8 @@ for each stream:
                 category = OTHER_WAIT
 ```
 
+> **kernel wait：CPU 早就调用了下一个 kernel（`curr_ts_runtime <= prev_end_ts`），但两个 kernel 在 GPU 上之间仍有一段“小于阈值 consecutive_kernel_delay 的短 idle 间隙”，这段 idle 记为 kernel wait**。
+
 ### Host Wait 判定细节
 
 Host Wait 的核心判断：在 GPU 空闲期间，CPU 是否有"动作"。
@@ -103,7 +131,10 @@ def is_host_wait(gap_start, gap_end, cpu_events):
     return True
 ```
 
+> **host wait：CPU 发起下一次 kernel 调用的时间晚于上一个 kernel 结束时间（`curr_ts_runtime > prev_end_ts`）**。
 ### Kernel Wait 阈值选择
+
+**归因算法说明**: Host Wait 可理解为"GPU 因 CPU 原因而停滞的时间"。对于 Kernel Wait 的归因，采用以下启发式规则：当连续 Kernel 之间的空闲间隔小于特定阈值时，将其归类为 Kernel Wait。
 
 默认阈值 30ns 的依据：
 - CUDA kernel launch 的最小开销约 5-20μs (CPU 端)

@@ -93,9 +93,8 @@ graph LR
 2. **灵活分支**：支持线程级条件执行，无需手动管理掩码
 3. **硬件抽象**：向量宽度对程序员透明，代码可跨代运行
 
-::: warning 关键理解
-SIMT 的本质是**将 SIMD 硬件暴露为多线程编程模型**，让程序员以标量思维编程，由硬件完成向量化执行。
-:::
+> [!tip] SIMT 本质
+> SIMT 的本质是**将 SIMD 硬件暴露为多线程编程模型**，让程序员以标量思维编程，由硬件完成向量化执行。
 
 ---
 
@@ -183,37 +182,60 @@ int col = blockIdx.x * blockDim.x + threadIdx.x;
 ### 4.1 概念层次总览
 
 ```mermaid
-graph TB
-    subgraph Software["软件抽象层 (程序员视角)"]
-        KERNEL["Kernel<br/>GPU 函数"]
-        STREAM["Stream<br/>命令队列"]
-        GRID["Grid<br/>线程网格"]
-        BLOCK["Block<br/>线程块"]
-        THREAD["Thread<br/>线程"]
+graph TD
+    %% 软件逻辑层
+    subgraph Software_Level [软件逻辑层 / 程序员视角]
+        Stream[<b>Stream 流</b><br/>管理任务排队和异步执行]
+        Kernel[<b>Kernel 算子</b><br/>一次具体的函数启动]
+        Grid[<b>Grid 网格</b><br/>整个任务的逻辑布局]
+        Block[<b>Block 线程块</b><br/>逻辑上的协作小组]
+        Thread[<b>Thread 线程</b><br/>最基本的逻辑单元]
     end
-    
-    subgraph Hardware["硬件执行层 (GPU 视角)"]
-        GPU_DEV["GPU Device"]
-        SM["SM<br/>流多处理器"]
-        WARP["Warp<br/>32线程束"]
-        CORE["CUDA Core"]
+
+    %% 硬件执行层
+    subgraph Hardware_Level [硬件执行层 / GPU内部视角]
+        GPU[<b>GPU 显卡</b><br/>整个计算工厂]
+        SM[<b>SM 流多处理器</b><br/>独立的车间]
+        Warp_Sched[<b>Warp Scheduler 调度器</b><br/>指挥 PC 跳动, 翻牌子]
+        PC[<b>PC 程序计数器</b><br/>Warp 的行动指挥棒]
+        Warp[<b>Warp 线程束</b><br/>32个线程组成的最小执行单元]
+        Cores[<b>执行核心</b><br/>CUDA Cores / Tensor Cores]
     end
-    
-    KERNEL -->|"启动"| GRID
-    STREAM -->|"调度"| KERNEL
-    GRID -->|"包含"| BLOCK
-    BLOCK -->|"包含"| THREAD
-    
-    GPU_DEV -->|"包含多个"| SM
-    SM -->|"调度"| WARP
-    WARP -->|"映射到"| CORE
-    
-    GRID -.->|"分配到"| GPU_DEV
-    BLOCK -.->|"绑定到"| SM
-    THREAD -.->|"组成"| WARP
-    
-    style Software fill:#e3f2fd
-    style Hardware fill:#fff3e0
+
+    %% 数据层
+    subgraph Data_Level [数据层]
+        VRAM[(<b>VRAM 显存</b>)]
+        Tensor[<b>Tensor 张量</b><br/>多维数据矩阵]
+        Reg[<b>Registers 寄存器</b><br/>线程私有数据区]
+    end
+
+    %% 关系连接
+    Stream -- 包含一组 --> Kernel
+    Kernel -- 表现为 --> Grid
+    Grid -- 划分成多个 --> Block
+    Block -- 包含多个 --> Thread
+
+    GPU -- 包含多个 --> SM
+    SM -- 管理多个 --> Warp
+    SM -- 调度中心 --> Warp_Sched
+    Warp_Sched -- 控制 --> PC
+    PC -- 广播指令给 --> Warp
+    Warp -- 映射到硬件 --> Cores
+
+    %% 软硬件映射关系
+    Block -. 被分发到 .-> SM
+    Thread -. 组合成 .-> Warp
+    Thread -. 通过 ID 索引 .-> Tensor
+    Tensor -. 存储在 .-> VRAM
+    VRAM -. 加载数据到 .-> Reg
+    Reg -. 供核心计算 .-> Cores
+
+    %% 样式美化
+    style Stream fill:#f9f,stroke:#333,stroke-width:2px
+    style SM fill:#bbf,stroke:#333,stroke-width:2px
+    style Warp fill:#dfd,stroke:#333,stroke-width:2px
+    style Tensor fill:#ffd,stroke:#333,stroke-width:2px
+    style PC fill:#f96,stroke:#333,stroke-width:2px
 ```
 
 ### 4.2 各概念定义与关系
@@ -227,6 +249,8 @@ graph TB
 | **Thread** | 软件 | 最小执行单元 | 32 个 Thread 组成一个 Warp |
 | **Warp** | 硬件 | 调度和执行的基本单位 | SM 以 Warp 为单位调度执行 |
 | **SM** | 硬件 | 流多处理器 | 执行分配给它的 Block |
+
+> 一个 Stream 里包含了一串 Kernel（也就是 Grid），而一个 Grid 里包含了一堆 Block。
 
 ### 4.3 从 Kernel 到 Warp：完整执行流程
 
@@ -256,6 +280,18 @@ sequenceDiagram
     SM->>TBS: Block 执行完成
     TBS->>Driver: Grid 执行完成
     Driver->>Host: Kernel 返回
+```
+
+具体的调用关系可能是：
+
+```
+[ 你 (Python Code) ]
+       ⬇️  调用
+[ PyTorch (Framework) ]  <-- 这里计算 Grid/Block，决定用哪个 Stream
+       ⬇️  kernel<<<...>>> (调用 CUDA Runtime API)
+[ CUDA Driver (.so/.dll) ] <-- 这里把任务塞进 Stream 队列
+       ⬇️  PCIe 传输指令
+[ GPU 硬件 (Scheduler) ]   <-- 这里真正把 Kernel 放到 SM 上跑
 ```
 
 ### 4.4 具体示例：向量加法的执行过程
@@ -413,8 +449,7 @@ graph TB
 
 ### 4.7 关键理解要点
 
-::: tip 核心关系总结
-
+:::tip[核心关系总结]
 1. **Kernel → Grid**: 一次 Kernel 调用创建一个 Grid
 2. **Grid → Block**: Grid 由多个 Block 组成，Block 数量由 `gridDim` 决定
 3. **Block → Thread**: Block 由多个 Thread 组成，Thread 数量由 `blockDim` 决定
@@ -422,19 +457,14 @@ graph TB
 5. **Block → SM**: 每个 Block 被分配到一个 SM 执行（不可跨 SM）
 6. **Warp → 执行**: SM 以 Warp 为单位调度和执行指令
 7. **Stream → Kernel**: Stream 控制多个 Kernel 的执行顺序和并发
-
 :::
 
-::: warning 常见误区
-
+:::warning[常见误区]
 - **误区 1**: Warp 是程序员创建的 → **错误**，Warp 由硬件自动划分
 - **误区 2**: 一个 Block 只能有一个 Warp → **错误**，Block 可包含多个 Warp
 - **误区 3**: Stream 影响 Block 内的并行 → **错误**，Stream 控制 Kernel 级并发
 - **误区 4**: Block 可以跨 SM 执行 → **错误**，Block 绑定到单个 SM
-
 :::
-
----
 
 ## 5. Warp：GPU 执行的基本单元
 
@@ -442,12 +472,11 @@ graph TB
 
 **Warp** 是 GPU 调度和执行的基本单位：
 
-| 厂商 | 名称 | 线程数 | 特点 |
-|------|------|--------|------|
-| NVIDIA | Warp | 32 | 所有 CUDA 架构 |
-| AMD | Wavefront | 64 (CDNA) / 32 (RDNA) | 架构相关 |
-| Intel | EU Thread | 8-16 | Xe 架构 |
-
+| 厂商     | 名称        | 线程数                   | 特点         |
+| ------ | --------- | --------------------- | ---------- |
+| NVIDIA | Warp      | 32                    | 所有 CUDA 架构 |
+| AMD    | Wavefront | 64 (CDNA) / 32 (RDNA) | 架构相关       |
+| Intel  | EU Thread | 8-16                  | Xe 架构      |
 
 ### 5.2 Warp 执行机制
 
@@ -498,14 +527,12 @@ graph TB
 | Path B | 16-31 (16/32) | 50% |
 | 总体 | 串行执行两路径 | 50% |
 
-::: tip 优化建议
+:::tip[优化建议]
 - 尽量让同一 Warp 内线程执行相同分支
 - 使用谓词执行替代短分支
 - 重组数据布局减少分化
 :::
 
-
----
 
 ---
 
@@ -558,6 +585,16 @@ graph TB
     Control --> Scheduler
 ```
 
+我们拆开 GPU 的一个 **SM (Streaming Multiprocessor)** 看看。一个 SM 内部通常被分成 4 个 **Processing Blocks (Sub-Partitions)**。
+
+每个子块里都有自己的：
+
+- **Warp Scheduler (调度器)**：负责盯着哪些 Warp 准备好干活了。
+- **Dispatch Unit (分发单元)**：负责把指令发出去。
+- **执行单元 (Execution Units)**：
+    - **CUDA Cores**：处理基础数学运算（加减乘除、浮点 $FP32$、$INT32$）。
+    - **Tensor Cores**：专门处理混合精度的矩阵乘法（$D = A \times B + C$）。
+    - **Special Function Units (SFU)**：处理正余弦、对数等复杂函数。
 
 ### 6.2 SM 架构演进
 
@@ -602,7 +639,7 @@ graph TB
 
 #### 6.3.2 Tensor Core 工作原理
 
-Tensor Core 执行**混合精度矩阵乘累加（MMA）**操作：
+Tensor Core 执行 **混合精度矩阵乘累加（MMA）** 操作：
 
 ```
 D[4×4] = A[4×4] × B[4×4] + C[4×4]
@@ -652,7 +689,7 @@ graph LR
 | 寄存器文件 | 64K × 32-bit | 64K × 32-bit | 每线程寄存器使用 |
 | 共享内存 | 164 KB | 228 KB | 每 Block 共享内存 |
 
-::: warning 占用率计算
+:::warning[占用率计算]
 SM 占用率 = 实际活跃 Warp 数 / 最大 Warp 数
 
 影响占用率的因素：
