@@ -7,6 +7,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkDirective from 'remark-directive';
 import { remarkCallouts } from './src/lib/remark-callouts.ts';
+import { remarkObsidianCallouts } from './src/lib/remark-obsidian-callouts.ts';
 import { remarkHighlight } from './src/lib/remark-highlight.ts';
 
 // https://astro.build/config
@@ -30,7 +31,7 @@ export default defineConfig({
       },
     },
     // remarkRelativeImages disabled - testing Astro native image handling
-    remarkPlugins: [remarkMath, remarkDirective, remarkCallouts, remarkHighlight],
+    remarkPlugins: [remarkMath, remarkDirective, remarkCallouts, remarkObsidianCallouts, remarkHighlight],
     rehypePlugins: [rehypeKatex],
   },
   image: {
