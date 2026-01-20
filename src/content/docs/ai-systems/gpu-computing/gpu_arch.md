@@ -16,20 +16,33 @@ description: 系统性解析现代GPU架构设计原理，涵盖SIMT执行模型
 CPU 和 GPU 的架构差异源于其设计目标的根本不同：
 
 ```mermaid
-graph LR
-    subgraph CPU["CPU 设计目标"]
-        A1[低延迟] --> A2[复杂控制逻辑]
-        A2 --> A3[大容量缓存]
-        A3 --> A4[分支预测]
-        A4 --> A5[乱序执行]
+graph TB
+    subgraph CPU["🖥️ CPU: 追求低延迟"]
+        direction TB
+        C_GOAL["🎯 目标: 单任务最快完成"]
+        C_GOAL --> C_CTRL["🧠 复杂控制逻辑"]
+        C_GOAL --> C_CACHE["💾 大容量缓存 (MB级)"]
+        C_GOAL --> C_BRANCH["🔮 分支预测器"]
+        C_GOAL --> C_OOO["⚡ 乱序执行"]
+        C_CTRL --> C_RESULT["少量强核心<br/>4-64 cores"]
     end
     
-    subgraph GPU["GPU 设计目标"]
-        B1[高吞吐量] --> B2[简单控制逻辑]
-        B2 --> B3[大量计算单元]
-        B3 --> B4[硬件多线程]
-        B4 --> B5[延迟隐藏]
+    subgraph GPU["🎮 GPU: 追求高吞吐"]
+        direction TB
+        G_GOAL["🎯 目标: 总任务量最大"]
+        G_GOAL --> G_CTRL["📋 简单控制逻辑"]
+        G_GOAL --> G_CACHE["💨 小容量流式缓存"]
+        G_GOAL --> G_SIMT["🔄 SIMT 执行"]
+        G_GOAL --> G_HIDE["🎭 延迟隐藏"]
+        G_CTRL --> G_RESULT["大量弱核心<br/>数千 cores"]
     end
+    
+    style CPU fill:#4a90d9,stroke:#6ab0ff,stroke-width:2px,color:#fff
+    style GPU fill:#d97b4a,stroke:#ffab6b,stroke-width:2px,color:#fff
+    style C_GOAL fill:#3d7ab8,stroke:#5a9bd4,color:#fff
+    style G_GOAL fill:#b8663d,stroke:#d4895a,color:#fff
+    style C_RESULT fill:#2d5a8a,stroke:#4a90d9,stroke-width:2px,color:#fff
+    style G_RESULT fill:#8a4a2d,stroke:#d97b4a,stroke-width:2px,color:#fff
 ```
 
 | 特性 | CPU | GPU |
@@ -65,17 +78,24 @@ graph TB
 **SIMT（Single Instruction, Multiple Threads）** 是 NVIDIA 定义的 GPU 执行模型，区别于传统 SIMD：
 
 ```mermaid
-graph LR
-    subgraph SIMD["传统 SIMD"]
-        S1[单指令] --> S2[固定向量宽度]
-        S2 --> S3[显式向量编程]
+graph TB
+    subgraph SIMD["SIMD (AVX-512, NEON)"]
+        direction LR
+        S_IN["向量寄存器<br/>v[0:7]"] --> S_OP["单条向量指令<br/>VADD v1,v2,v3"]
+        S_OP --> S_OUT["固定宽度输出<br/>编译时确定"]
     end
     
-    subgraph SIMT["GPU SIMT"]
-        T1[单指令] --> T2[多标量线程]
-        T2 --> T3[隐式向量化]
-        T3 --> T4[独立程序计数器]
+    subgraph SIMT["SIMT (CUDA, ROCm)"]
+        direction LR
+        T_IN["32 标量线程<br/>各有独立 PC/寄存器"] --> T_OP["同一指令广播<br/>硬件自动向量化"]
+        T_OP --> T_OUT["灵活分支处理<br/>运行时掩码"]
     end
+    
+    SIMD -.->|"程序员管理向量"| SIMT
+    SIMT -.->|"硬件管理并行"| SIMD
+    
+    style SIMD fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style SIMT fill:#fff3e0,stroke:#f57c00,stroke-width:2px
 ```
 
 
@@ -284,14 +304,15 @@ sequenceDiagram
 
 具体的调用关系可能是：
 
-```
-[ 你 (Python Code) ]
-       ⬇️  调用
-[ PyTorch (Framework) ]  <-- 这里计算 Grid/Block，决定用哪个 Stream
-       ⬇️  kernel<<<...>>> (调用 CUDA Runtime API)
-[ CUDA Driver (.so/.dll) ] <-- 这里把任务塞进 Stream 队列
-       ⬇️  PCIe 传输指令
-[ GPU 硬件 (Scheduler) ]   <-- 这里真正把 Kernel 放到 SM 上跑
+```mermaid
+flowchart TB
+    A["你 (Python Code)"] -->|调用| B["PyTorch (Framework)"]
+    B -->|"kernel<<<...>>><br/>(调用 CUDA Runtime API)"| C["CUDA Driver (.so/.dll)"]
+    C -->|PCIe 传输指令| D["GPU 硬件 (Scheduler)"]
+    
+    B -.- B1["这里计算 Grid/Block，决定用哪个 Stream"]
+    C -.- C1["这里把任务塞进 Stream 队列"]
+    D -.- D1["这里真正把 Kernel 放到 SM 上跑"]
 ```
 
 ### 4.4 具体示例：向量加法的执行过程
