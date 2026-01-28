@@ -692,6 +692,121 @@ flowchart LR
 
 ---
 
+## 算法分析 - Convolution
+
+### Convolution
+
+要理解为什么 MIOpen 会导致 GPU 空闲，我们需要把 **“卷积（Convolution）”** 看作一个**数学定义**，而把 **“MIOpen 的算法搜索”** 看作**工程实现的选择过程**。
+
+如果把卷积比作“**从 A 地开车到 B 地**”，那么 MIOpen 就是一个**导航软件**。它的工作不仅是让你到达目的地，还要根据当前的路况（硬件）、车型（显卡架构）和具体路线（卷积参数）选择一条**最快**的路。
+
+---
+
+以下是 MIOpen 算法搜索与卷积关系的详细技术解析：
+### 1. 为什么卷积需要“搜索”算法？
+
+在深度学习框架（如 PyTorch）中，`Conv2d` 只是一个逻辑指令。但在底层 GPU 硬件上，计算同一个卷积有多种完全不同的数学实现方式（Solvers）。
+
+对于一张输入图片和卷积核，MIOpen 可以选择以下几种“解法”之一：
+
+- **GEMM (General Matrix Multiply)**:
+    
+    - 原理：使用 `im2col` 将图片展开成大矩阵，然后用矩阵乘法计算。
+        
+    - 特点：通用性强，但内存占用大（显存消耗高）。
+        
+- **Winograd**:
+    
+    - 原理：通过数学变换减少乘法次数。
+        
+    - 特点：对于 $3 \times 3$ 卷积速度极快（计算量通常减少 2-4 倍），但精度有微小损失，且不适用于大卷积核。
+        
+- **Direct (直接卷积)**:
+    
+    - 原理：直接在 GPU 显存上按滑动窗口计算。
+        
+    - 特点：没有额外的内存开销，适合非标准尺寸或显存受限场景。
+        
+- **Implicit GEMM (隐式 GEMM)**:
+    
+    - 原理：无需 `im2col` 显式展开内存，直接在计算时通过索引映射进行矩阵乘法。
+        
+    - 特点：目前 NVIDIA Cutlass 和 AMD Composable Kernel 的主流方向，速度快且省显存。
+        
+- **FFT (快速傅里叶变换)**:
+    
+    - 原理：转换到频域计算。
+        
+    - 特点：仅对超大卷积核有效（现在的 CNN 中很少见）。
+        
+
+**关键点**：没有一种算法在所有情况下都是最快的。最佳算法取决于：
+
+1. **Tensor Shape**: Batch Size, Channel 数, 图片 $H \times W$。
+    
+2. **Kernel Size**: $1 \times 1$, $3 \times 3$, $7 \times 7$ 等。
+    
+3. **Hardware**: Compute Unit 数量, 显存带宽。
+    
+
+### 2. MIOpen 的工作流程：从 Request 到 Execution
+
+当你调用 `aten::miopen_convolution` 时，MIOpen 内部发生了以下步骤，这解释了你看到的“GPU 空闲”：
+
+#### 阶段一：查表 (Heuristic / Cache Lookup)
+
+MIOpen 首先会检查本地数据库（System PerfDb 或 User PerfDb）。
+
+- **System PerfDb**: AMD 官方随驱动发布的数据库，记录了常见模型（ResNet, YOLO 等）在常见显卡上的最佳配置。
+    
+- **User PerfDb**: 用户本地运行产生的缓存文件（通常在 `~/.config/miopen/` 下）。
+    
+
+**如果查到了**：直接发射对应的 Kernel 到 GPU，**无延迟**。
+
+#### 阶段二：搜索 (Search / Profiling) —— **性能杀手**
+
+**如果没查到（Unknown Shape）**，MIOpen 必须现场寻找最佳算法。这就是你 Trace 中 GPU 空闲的原因。此时 CPU 正在做繁重的工作：
+
+1. **筛选 (Applicability)**: 排除不支持当前参数的算法（例如 Kernel 是 $5 \times 5$，就不能用针对 $3 \times 3$ 的 Winograd）。
+    
+2. **编译 (JIT Compilation)**: **(最耗时)** 如果选中的算法（如基于 Composable Kernel 的解法）没有预编译好的二进制文件，MIOpen 会调用 LLVM/HIP 编译器在 CPU 上现场编译 C++ 代码生成 GPU汇编（GCN/CDNA ISA）。**这一步纯靠 CPU，GPU 是完全空闲的。**
+    
+3. **基准测试 (Benchmarking)**: 编译完成后，MIOpen 可能会在 GPU 上实际运行几个微小的 Dummy Kernel 来测量每个算法的速度。
+    
+
+#### 阶段三：缓存 (Save)
+
+找到最快算法后，MIOpen 会将结果写入 **User PerfDb**。下次再遇到同样的 Input Shape，直接跳回阶段一。
+
+### 3. 对应到你的 Trace 图
+
+回到你之前的堆栈图：
+
+- **现象**：`aten::miopen_convolution` 持续时间很长，但下方没有 GPU Kernel。
+    
+- **真相**：
+    
+    1. 你遇到的极有可能是 **JIT 编译阶段**。MIOpen 发现了一个新的卷积配置，正在调用编译器生成对应的 `.co` (Code Object) 文件。
+        
+    2. 或者是 **Solver 构建阶段**。CPU 正在遍历可能的解法列表。
+        
+
+### 4. 总结与建议
+
+MIOpen 的算法搜索是为了**用一次性的 CPU 等待（编译/搜索耗时），换取后续无数次推理的 GPU 极速运行**。
+
+- **如果不做 Warmup**：用户的第一次请求会因为等待 JIT 编译而感觉到巨大的延迟（几百毫秒甚至几秒）。
+    
+- **如果做了 Warmup**：编译在初始化阶段完成，推理时直接查表，延迟极低。
+    
+
+**给你的 Action Item：**
+
+1. **确认缓存路径**：检查容器或系统中的 `~/.config/miopen/` 或 `/var/lib/miopen/` 是否有写入权限。如果无法写入，MIOpen 每次重启都要重新搜索。
+    
+2. **查看日志**：设置环境变量 `MIOPEN_ENABLE_LOGGING=1`，再次运行代码。你会看到 MIOpen 在控制台打印它正在尝试哪些 Solver，以及是否触发了 `Compile`。
+
 ## 10. 错误处理
 
 ### 10.1 错误处理流程

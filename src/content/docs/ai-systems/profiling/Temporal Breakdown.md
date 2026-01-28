@@ -10,6 +10,15 @@ date: 2026-01-28
 - **non_compute_time**: 非计算时间（COMMUNICATION、MEMORY 等类型的 kernel）
 - **idle_time**: 空闲时间（GPU 没有执行任何 kernel 的时间）
 
+核心要点：
+- 多 stream 的 kernel 通过贪心区间合并算法处理，将所有重叠区间合并为不重叠的区间集合
+- idle_time = 总时间跨度 - 合并后的实际运行时间
+- non_compute_time = 总时间跨度 - compute_time - idle_time
+
+:::tip
+总时间跨度不是多个 stream 时间加起来，而是从第一个 kernel 开始到最后一个 kernel 结束的墙钟时间（wall clock time）。所以 idle_time 反映的是真实的 GPU 空闲间隙，即所有 stream 都没有 kernel 在执行的时间段。
+:::
+
 ## 整体计算流程
 
 ```mermaid
@@ -132,23 +141,8 @@ pub fn merge_kernel_intervals(kernels: &[GPUKernel]) -> Vec<TimeInterval> {
 
 GPU 可以有多个 CUDA Stream 并行执行 kernel。不同 stream 上的 kernel 可能在时间上重叠：
 
-```mermaid
-gantt
-    title 多 Stream Kernel 执行示例
-    dateFormat X
-    axisFormat %s
-    
-    section Stream 0
-    Kernel A    :a1, 0, 100
-    Kernel C    :a2, 150, 250
-    
-    section Stream 1
-    Kernel B    :b1, 50, 180
-    Kernel D    :b2, 200, 300
-    
-    section Stream 2
-    Kernel E    :c1, 80, 120
-```
+![多 Stream Kernel 执行示例](./images/multi_stream_kernel.png "多 Stream Kernel 执行示例")
+
 
 ### 合并策略
 
@@ -321,34 +315,26 @@ pub struct TimeInterval {
 
 ## 多 Stream 场景的完整示例
 
-```mermaid
-gantt
-    title 多 Stream 时间分解示例
-    dateFormat X
-    axisFormat %s
-    
-    section Stream 0
-    GEMM (Compute)     :active, a1, 0, 100
-    NCCL (Comm)        :crit, a2, 120, 180
-    
-    section Stream 1
-    Softmax (Compute)  :active, b1, 50, 90
-    Memcpy (Memory)    :done, b2, 200, 250
-    
-    section 合并后
-    Active             :active, m1, 0, 100
-    Active             :active, m2, 120, 180
-    Active             :active, m3, 200, 250
-    Idle               :m4, 100, 120
-    Idle               :m5, 180, 200
+> **注意**: 同一个 CUDA Stream 内的 kernel 是**串行执行**的，不能同时运行。
+> 不同 Stream 之间可以**并行执行**。
+
+举例来说：
+
+```
+Stream 0:  [====]          [====]
+           0   100        200  300
+
+Stream 1:       [====]
+               50   150
+
+合并后:    [=========]     [====]
+           0       150    200  300
+
+总时间跨度 = 300 - 0 = 300 (不是 100+100+100=300)
+实际运行时间 = (150-0) + (300-200) = 150 + 100 = 250
+idle_time = 300 - 250 = 50 (就是 150~200 这段空隙)
 ```
 
-**计算过程：**
-1. 总时间跨度 = 250 - 0 = 250
-2. 合并后运行时间 = (100-0) + (180-120) + (250-200) = 100 + 60 + 50 = 210
-3. 空闲时间 = 250 - 210 = 40
-4. 计算时间（仅 COMPUTATION）= 合并 [0,100] 和 [50,90] = [0,100] = 100
-5. 非计算时间 = 250 - 100 - 40 = 110
 
 ## 性能优化
 
